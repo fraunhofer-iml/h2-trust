@@ -9,7 +9,7 @@
 import { PowerPurchaseAgreementDecision } from '@prisma/client';
 import { auditTimestamp } from './audit-timestamp.constant';
 import { PowerPurchaseAgreementSeed } from './power-purchase-agreement.seed';
-import { PowerProductionUnitSeed } from './unit';
+import { UnitSpecificationSeed } from './unit';
 import { UserSeed } from './user.seed';
 
 export const PowerPurchaseAgreementDecisionSeed: readonly PowerPurchaseAgreementDecision[] = Object.freeze([
@@ -19,7 +19,7 @@ export const PowerPurchaseAgreementDecisionSeed: readonly PowerPurchaseAgreement
     comment: 'Qed',
     powerPurchaseAgreementId: PowerPurchaseAgreementSeed[0].id,
     userId: UserSeed[0].id,
-    grantedPowerProductionUnitId: PowerProductionUnitSeed[0].id,
+    grantedPowerProductionUnitId: UnitSpecificationSeed[0].id,
   },
   {
     id: 'power-purchase-agreement-decision-2',
@@ -27,7 +27,7 @@ export const PowerPurchaseAgreementDecisionSeed: readonly PowerPurchaseAgreement
     comment: 'Qed',
     powerPurchaseAgreementId: PowerPurchaseAgreementSeed[1].id,
     userId: UserSeed[0].id,
-    grantedPowerProductionUnitId: PowerProductionUnitSeed[1].id,
+    grantedPowerProductionUnitId: UnitSpecificationSeed[1].id,
   },
   {
     id: 'power-purchase-agreement-decision-3',
@@ -35,7 +35,7 @@ export const PowerPurchaseAgreementDecisionSeed: readonly PowerPurchaseAgreement
     comment: 'Qed',
     powerPurchaseAgreementId: PowerPurchaseAgreementSeed[2].id,
     userId: UserSeed[0].id,
-    grantedPowerProductionUnitId: PowerProductionUnitSeed[2].id,
+    grantedPowerProductionUnitId: UnitSpecificationSeed[2].id,
   },
   {
     id: 'power-purchase-agreement-decision-4',
@@ -43,6 +43,6 @@ export const PowerPurchaseAgreementDecisionSeed: readonly PowerPurchaseAgreement
     comment: 'Qed',
     powerPurchaseAgreementId: PowerPurchaseAgreementSeed[3].id,
     userId: UserSeed[0].id,
-    grantedPowerProductionUnitId: PowerProductionUnitSeed[3].id,
+    grantedPowerProductionUnitId: UnitSpecificationSeed[3].id,
   },
 ]);

@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { BaseUnitDeepDbType, BaseUnitFlatDbType, BaseUnitNestedDbType } from '@h2-trust/database';
+import { UnitDeepDbType, UnitFlatDbType, UnitNestedDbType } from '@h2-trust/database';
 import { UnitType } from '@h2-trust/domain';
 import { AddressEntity } from '../address';
 import { CompanyEntity } from '../company';
@@ -59,7 +59,7 @@ export abstract class BaseUnitEntity {
     this.active = active;
   }
 
-  static fromDeepBaseUnit(unit: BaseUnitDeepDbType): BaseUnitEntity {
+  static fromDeepBaseUnit(unit: UnitDeepDbType): BaseUnitEntity {
     return <BaseUnitEntity>{
       id: unit.id,
       name: unit.name,
@@ -77,7 +77,7 @@ export abstract class BaseUnitEntity {
     };
   }
 
-  static fromNestedBaseUnit(unit: BaseUnitNestedDbType): BaseUnitEntity {
+  static fromNestedBaseUnit(unit: UnitNestedDbType): BaseUnitEntity {
     return <BaseUnitEntity>{
       id: unit.id,
       name: unit.name,
@@ -95,7 +95,7 @@ export abstract class BaseUnitEntity {
     };
   }
 
-  static fromFlatBaseUnit(unit: BaseUnitFlatDbType): BaseUnitEntity {
+  static fromFlatBaseUnit(unit: UnitFlatDbType): BaseUnitEntity {
     return <BaseUnitEntity>{
       id: unit.id,
       name: unit.name,
@@ -113,7 +113,7 @@ export abstract class BaseUnitEntity {
     };
   }
 
-  protected static mapOwner(unit: BaseUnitDeepDbType) {
+  protected static mapOwner(unit: UnitDeepDbType) {
     return unit.owner
       ? {
           id: unit.ownerId,
@@ -122,7 +122,7 @@ export abstract class BaseUnitEntity {
       : undefined;
   }
 
-  private static mapHydrogenAgreements(unit: BaseUnitDeepDbType) {
+  private static mapHydrogenAgreements(unit: UnitDeepDbType) {
     return (
       unit.owner?.hydrogenAgreements?.map((agreement) => ({
         powerPurchaseAgreementStatus: agreement.status,

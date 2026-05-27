@@ -7,10 +7,10 @@
  */
 
 import { Prisma } from '@prisma/client';
-import { baseUnitFlatQueryArgs } from '../unit';
+import { unitFlatQueryArgs } from '../unit';
 
 export const stagedProductionNestedQueryArgs = Prisma.validator<Prisma.StagedProductionDefaultArgs>()({
   include: {
-    productionUnit: baseUnitFlatQueryArgs,
+    productionUnit: unitFlatQueryArgs,
   },
 });

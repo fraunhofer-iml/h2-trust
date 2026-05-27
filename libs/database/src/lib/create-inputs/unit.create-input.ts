@@ -82,11 +82,10 @@ export function buildHydrogenProductionUnitCreateInput(
 export function buildHydrogenStorageUnitCreateInput(payload: CreateHydrogenStorageUnitPayload): Prisma.UnitCreateInput {
   return Prisma.validator<Prisma.UnitCreateInput>()({
     ...buildBaseUnitCreateInput(payload),
-    hydrogenStorageUnit: {
+    specification: {
       create: {
         capacity: new Prisma.Decimal(payload.capacity),
-        pressure: new Prisma.Decimal(payload.pressure),
-        type: payload.storageType,
+        storageType: payload.storageType,
       },
     },
   });

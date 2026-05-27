@@ -6,13 +6,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { BaseUnitNestedDbType } from '@h2-trust/database';
+import { UnitNestedDbType } from '@h2-trust/database';
 import { HydrogenProductionUnitEntity } from './hydrogen-production-unit.entity';
 import { HydrogenStorageUnitEntity } from './hydrogen-storage-unit.entity';
 import { PowerProductionUnitEntity } from './power-production-unit.entity';
 import { ConcreteUnitEntity } from './unit.type';
 
-export function getSpecificUnit(unit: BaseUnitNestedDbType): ConcreteUnitEntity {
+export function getSpecificUnit(unit: UnitNestedDbType): ConcreteUnitEntity {
   if (unit.hydrogenProductionUnit) {
     return HydrogenProductionUnitEntity.fromNestedDatabase(unit);
   }

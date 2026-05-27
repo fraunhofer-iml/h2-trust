@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { BaseUnitDeepDbType, BaseUnitNestedDbType } from '@h2-trust/database';
+import { UnitDeepDbType, UnitNestedDbType } from '@h2-trust/database';
 import { BiddingZone, HydrogenProductionMethod, HydrogenProductionTechnology, UnitType } from '@h2-trust/domain';
 import { assertDefined, assertValidEnum } from '@h2-trust/utils';
 import { AddressEntity } from '../address';
@@ -67,7 +67,7 @@ export class HydrogenProductionUnitEntity extends BaseUnitEntity {
     this.waterConsumptionLitersPerHour = waterConsumptionLitersPerHour;
   }
 
-  static fromDeepDatabase(baseUnit: BaseUnitDeepDbType): HydrogenProductionUnitEntity {
+  static fromDeepDatabase(baseUnit: UnitDeepDbType): HydrogenProductionUnitEntity {
     assertDefined(baseUnit.hydrogenProductionUnit, 'hydrogenProductionUnit');
     assertValidEnum(baseUnit.hydrogenProductionUnit.method, HydrogenProductionMethod, 'HydrogenProductionMethod');
     assertValidEnum(
@@ -90,7 +90,7 @@ export class HydrogenProductionUnitEntity extends BaseUnitEntity {
     };
   }
 
-  static fromNestedDatabase(baseUnit: BaseUnitNestedDbType): HydrogenProductionUnitEntity {
+  static fromNestedDatabase(baseUnit: UnitNestedDbType): HydrogenProductionUnitEntity {
     assertDefined(baseUnit.hydrogenProductionUnit, 'hydrogenProductionUnit');
     assertValidEnum(baseUnit.hydrogenProductionUnit.method, HydrogenProductionMethod, 'HydrogenProductionMethod');
     assertValidEnum(

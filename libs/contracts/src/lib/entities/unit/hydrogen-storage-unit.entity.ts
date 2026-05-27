@@ -7,10 +7,10 @@
  */
 
 import {
-  BaseUnitDeepDbType,
-  BaseUnitNestedDbType,
   HydrogenStorageUnitDeepDbType,
   HydrogenStorageUnitNestedDbType,
+  UnitDeepDbType,
+  UnitNestedDbType,
 } from '@h2-trust/database';
 import { HydrogenStorageType, RfnboType, UnitType } from '@h2-trust/domain';
 import { assertValidEnum } from '@h2-trust/utils';
@@ -67,7 +67,7 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
     this.filling = filling;
   }
 
-  static fromDeepDatabase(baseUnit: BaseUnitDeepDbType): HydrogenStorageUnitEntity {
+  static fromDeepDatabase(baseUnit: UnitDeepDbType): HydrogenStorageUnitEntity {
     assertValidEnum(baseUnit.hydrogenStorageUnit?.type, HydrogenStorageType, 'HydrogenStorageType');
 
     return {
@@ -81,7 +81,7 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
     };
   }
 
-  static fromNestedDatabase(baseUnit: BaseUnitNestedDbType): HydrogenStorageUnitEntity {
+  static fromNestedDatabase(baseUnit: UnitNestedDbType): HydrogenStorageUnitEntity {
     assertValidEnum(baseUnit.hydrogenStorageUnit?.type, HydrogenStorageType, 'HydrogenStorageType');
 
     return {

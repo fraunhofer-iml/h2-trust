@@ -8,19 +8,14 @@
 
 import { Prisma } from '@prisma/client';
 import { batchNestedQueryArgs } from '../batch/batch.nested.query-args';
-import { baseUnitNestedQueryArgs } from '../unit/unit.nested.query-args';
+import { unitNestedQueryArgs } from '../unit/unit.nested.query-args';
 import { userNestedQueryArgs } from '../user/user.nested.query-args';
 
 export const processStepDeepQueryArgs = Prisma.validator<Prisma.ProcessStepDefaultArgs>()({
   include: {
     batch: batchNestedQueryArgs,
-    executedBy: baseUnitNestedQueryArgs,
+    executedBy: unitNestedQueryArgs,
     recordedBy: userNestedQueryArgs,
     documents: true,
-    processStepDetails: {
-      include: {
-        transportationDetails: true,
-      },
-    },
   },
 });

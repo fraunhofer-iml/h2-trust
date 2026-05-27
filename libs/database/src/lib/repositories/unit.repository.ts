@@ -22,6 +22,7 @@ import {
   CreatePowerProductionUnitPayload,
   UpdateUnitStatusPayload,
 } from '@h2-trust/contracts/payloads';
+import { UnitType } from '@h2-trust/domain';
 import { DomainException, ErrorCode } from '@h2-trust/exceptions';
 import {
   buildHydrogenProductionUnitCreateInput,
@@ -29,7 +30,7 @@ import {
   buildPowerProductionUnitCreateInput,
 } from '../create-inputs';
 import { PrismaService } from '../prisma.service';
-import { baseUnitDeepQueryArgs } from '../query-args';
+import { unitDeepQueryArgs } from '../query-args';
 import { wrapPrismaError } from './prisma-error.wrapper';
 import { assertAllIdsFound, assertRecordFound } from './repository-assertions';
 
@@ -39,7 +40,7 @@ export class UnitRepository {
 
   async findUnitById(id: string): Promise<ConcreteUnitEntity> {
     const unit = await this.prismaService.unit
-      .findUnique({ where: { id }, ...baseUnitDeepQueryArgs })
+      .findUnique({ where: { id }, ...unitDeepQueryArgs })
       .catch(wrapPrismaError);
 
     assertRecordFound(unit, id);
@@ -48,23 +49,23 @@ export class UnitRepository {
 
   async findUnitsByIds(ids: string[]): Promise<ConcreteUnitEntity[]> {
     const units = await this.prismaService.unit
-      .findMany({ where: { id: { in: ids } }, ...baseUnitDeepQueryArgs })
+      .findMany({ where: { id: { in: ids } }, ...unitDeepQueryArgs })
       .catch(wrapPrismaError);
 
     assertAllIdsFound(units, ids);
     return units.map(this.mapToActualUnitEntity);
   }
 
-  mapToActualUnitEntity(baseUnit: Prisma.UnitGetPayload<typeof baseUnitDeepQueryArgs>): ConcreteUnitEntity {
-    if (baseUnit.powerProductionUnit) {
+  mapToActualUnitEntity(baseUnit: Prisma.UnitGetPayload<typeof unitDeepQueryArgs>): ConcreteUnitEntity {
+    if (baseUnit.type === UnitType.POWER_PRODUCTION) {
       return PowerProductionUnitEntity.fromDeepDatabase(baseUnit);
     }
 
-    if (baseUnit.hydrogenProductionUnit) {
+    if (baseUnit.type === UnitType.HYDROGEN_PRODUCTION) {
       return HydrogenProductionUnitEntity.fromDeepDatabase(baseUnit);
     }
 
-    if (baseUnit.hydrogenStorageUnit) {
+    if (baseUnit.type === UnitType.HYDROGEN_STORAGE) {
       return HydrogenStorageUnitEntity.fromDeepDatabase(baseUnit);
     }
 
@@ -73,7 +74,7 @@ export class UnitRepository {
 
   async findPowerProductionUnitsByOwnerId(ownerId: string): Promise<PowerProductionUnitEntity[]> {
     const units = await this.prismaService.unit
-      .findMany({ where: { ownerId, powerProductionUnit: { isNot: null } }, ...baseUnitDeepQueryArgs })
+      .findMany({ where: { ownerId, type: UnitType.POWER_PRODUCTION }, ...unitDeepQueryArgs })
       .catch(wrapPrismaError);
 
     return units.map(PowerProductionUnitEntity.fromDeepDatabase);
@@ -81,7 +82,7 @@ export class UnitRepository {
 
   async findPowerProductionUnitsByIds(ids: string[]): Promise<PowerProductionUnitEntity[]> {
     const units = await this.prismaService.unit
-      .findMany({ where: { id: { in: ids }, powerProductionUnit: { isNot: null } }, ...baseUnitDeepQueryArgs })
+      .findMany({ where: { id: { in: ids }, type: UnitType.POWER_PRODUCTION }, ...unitDeepQueryArgs })
       .catch(wrapPrismaError);
 
     assertAllIdsFound(units, ids);
@@ -90,7 +91,7 @@ export class UnitRepository {
 
   async findHydrogenProductionUnitsByOwnerId(ownerId: string): Promise<HydrogenProductionUnitEntity[]> {
     const units = await this.prismaService.unit
-      .findMany({ where: { ownerId, hydrogenProductionUnit: { isNot: null } }, ...baseUnitDeepQueryArgs })
+      .findMany({ where: { ownerId, type: UnitType.HYDROGEN_PRODUCTION }, ...unitDeepQueryArgs })
       .catch(wrapPrismaError);
 
     return units.map(HydrogenProductionUnitEntity.fromDeepDatabase);
@@ -98,7 +99,7 @@ export class UnitRepository {
 
   async findHydrogenProductionUnitsByIds(ids: string[]): Promise<HydrogenProductionUnitEntity[]> {
     const units = await this.prismaService.unit
-      .findMany({ where: { id: { in: ids }, hydrogenProductionUnit: { isNot: null } }, ...baseUnitDeepQueryArgs })
+      .findMany({ where: { id: { in: ids }, type: UnitType.HYDROGEN_PRODUCTION }, ...unitDeepQueryArgs })
       .catch(wrapPrismaError);
 
     assertAllIdsFound(units, ids);
@@ -107,7 +108,7 @@ export class UnitRepository {
 
   async findHydrogenStorageUnitsByOwnerId(ownerId: string): Promise<HydrogenStorageUnitEntity[]> {
     const units = await this.prismaService.unit
-      .findMany({ where: { ownerId, hydrogenStorageUnit: { isNot: null } }, ...baseUnitDeepQueryArgs })
+      .findMany({ where: { ownerId, type: UnitType.HYDROGEN_STORAGE }, ...unitDeepQueryArgs })
       .catch(wrapPrismaError);
 
     return units.map(HydrogenStorageUnitEntity.fromDeepDatabase);
@@ -115,7 +116,7 @@ export class UnitRepository {
 
   async updateUnitStatus(payload: UpdateUnitStatusPayload): Promise<BaseUnitEntity> {
     const unit = await this.prismaService.unit
-      .update({ where: { id: payload.id }, data: { active: payload.active }, include: baseUnitDeepQueryArgs.include })
+      .update({ where: { id: payload.id }, data: { active: payload.active }, include: unitDeepQueryArgs.include })
       .catch(wrapPrismaError);
 
     return BaseUnitEntity.fromDeepBaseUnit(unit);
@@ -133,7 +134,6 @@ export class UnitRepository {
         where: { id: payload.id ?? '' },
         update: {
           name: payload.name,
-          mastrNumber: payload.mastrNumber,
           commissionedOn: payload.commissionedOn,
           owner: { connect: { id: payload.ownerId } },
           manufacturer: payload.manufacturer,
@@ -153,7 +153,7 @@ export class UnitRepository {
               },
             },
           },
-          hydrogenProductionUnit: {
+          specification: {
             update: {
               where: { id: payload.id },
               data: {
@@ -161,14 +161,12 @@ export class UnitRepository {
                 technology: payload.technology,
                 biddingZone: payload.biddingZone,
                 ratedPower: new Prisma.Decimal(payload.ratedPower),
-                pressure: new Prisma.Decimal(payload.pressure),
-                waterConsumptionLitersPerHour: new Prisma.Decimal(payload.waterConsumptionLitersPerHour),
               },
             },
           },
         },
         create: buildHydrogenProductionUnitCreateInput(payload),
-        include: baseUnitDeepQueryArgs.include,
+        include: unitDeepQueryArgs.include,
       })
       .catch(wrapPrismaError);
 
@@ -187,7 +185,6 @@ export class UnitRepository {
         where: { id: payload.id ?? '' },
         update: {
           name: payload.name,
-          mastrNumber: payload.mastrNumber,
           commissionedOn: payload.commissionedOn,
           owner: { connect: { id: payload.ownerId } },
           manufacturer: payload.manufacturer,
@@ -207,25 +204,21 @@ export class UnitRepository {
               },
             },
           },
-          powerProductionUnit: {
+          specification: {
             update: {
               where: { id: payload.id },
               data: {
-                electricityMeterNumber: payload.electricityMeterNumber,
-                gridOperator: payload.gridOperator,
-                gridConnectionNumber: payload.gridConnectionNumber,
-                gridLevel: payload.gridLevel,
                 biddingZone: payload.biddingZone,
                 ratedPower: new Prisma.Decimal(payload.ratedPower),
                 decommissioningPlannedOn: payload.decommissioningPlannedOn,
                 financialSupportReceived: payload.financialSupportReceived,
-                type: { connect: { name: payload.powerProductionType } },
+                energySource: payload.powerProductionType,
               },
             },
           },
         },
         create: buildPowerProductionUnitCreateInput(payload),
-        include: baseUnitDeepQueryArgs.include,
+        include: unitDeepQueryArgs.include,
       })
       .catch(wrapPrismaError);
 
@@ -244,7 +237,6 @@ export class UnitRepository {
         where: { id: payload.id ?? '' },
         update: {
           name: payload.name,
-          mastrNumber: payload.mastrNumber,
           commissionedOn: payload.commissionedOn,
           owner: { connect: { id: payload.ownerId } },
           manufacturer: payload.manufacturer,
@@ -264,19 +256,18 @@ export class UnitRepository {
               },
             },
           },
-          hydrogenStorageUnit: {
+          specification: {
             update: {
               where: { id: payload.id },
               data: {
-                type: payload.storageType,
+                storageType: payload.storageType,
                 capacity: new Prisma.Decimal(payload.capacity),
-                pressure: new Prisma.Decimal(payload.pressure),
               },
             },
           },
         },
         create: buildHydrogenStorageUnitCreateInput(payload),
-        include: baseUnitDeepQueryArgs.include,
+        include: unitDeepQueryArgs.include,
       })
       .catch(wrapPrismaError);
 

@@ -134,8 +134,10 @@ model Unit {
   operator   Company @relation(name: "UnitOperator", fields: [operatorId], references: [id])
   operatorId String
 
+  specification   UnitSpecification @relation(fields: [specificationId], references: [id])
+  specificationId String            @unique
+
   // Relations
-  specifications          UnitSpecifications?
   documents               Document[]
   processSteps            ProcessStep[]
   stagedProductions       StagedProduction[]
@@ -143,13 +145,10 @@ model Unit {
   decisions               PowerPurchaseAgreementDecision[]
 }
 
-model UnitSpecifications {
+model UnitSpecification {
   id        String   @id
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  unit   Unit   @relation(fields: [unitId], references: [id])
-  unitId String @unique
 
   // Power Production
   powerProductionType      String?
@@ -170,6 +169,7 @@ model UnitSpecifications {
   // Storage
   storageType String?
   capacity    Decimal? @db.Decimal(18, 6)
+  unit        Unit?
 }
 
 model Batch {

@@ -28,12 +28,12 @@ import {
   BatchSeed,
   CompanySeed,
   DocumentSeed,
-  PowerProductionUnitSeed,
   PowerPurchaseAgreementDecisionSeed,
   PowerPurchaseAgreementSeed,
   ProcessStepSeed,
   QualityDetailsSeed,
   UnitSeed,
+  UnitSpecificationSeed,
   UserSeed,
 } from './data';
 import { Data, importData } from './data-importer';
@@ -58,14 +58,14 @@ export async function seedDatabase() {
       createRecord: (data) => prisma.user.create({ data: data as User }),
     },
     {
+      name: 'unitSpecifications',
+      records: UnitSpecificationSeed,
+      createRecord: (data: any) => prisma.unitSpecification.create({ data }),
+    },
+    {
       name: 'unit',
       records: UnitSeed,
       createRecord: (data) => prisma.unit.create({ data: data as Unit }),
-    },
-    {
-      name: 'unitSpecifications',
-      records: PowerProductionUnitSeed,
-      createRecord: (data: any) => prisma.unitSpecifications.create({ data }),
     },
     {
       name: 'batch',

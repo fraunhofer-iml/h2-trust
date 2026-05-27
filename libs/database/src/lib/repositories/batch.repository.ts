@@ -25,14 +25,10 @@ export class BatchRepository {
   }
 
   async setRfnboStatus(batchId: string, rfnboType: RfnboType): Promise<{ id: string; batchId: string }> {
-    return this.prismaService.batchDetails
+    return this.prismaService.qualityDetails
       .update({
         where: { batchId: batchId },
-        data: {
-          qualityDetails: {
-            update: { rfnboType },
-          },
-        },
+        data: { rfnboType },
       })
       .catch(wrapPrismaError);
   }

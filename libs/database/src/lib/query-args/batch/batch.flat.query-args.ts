@@ -13,12 +13,7 @@ export const batchFlatQueryArgs = Prisma.validator<Prisma.BatchDefaultArgs>()({
     owner: true,
     predecessors: true,
     successors: true,
-    hydrogenStorageUnit: true,
-    batchDetails: {
-      include: {
-        qualityDetails: true,
-      },
-    },
+    qualityDetails: true,
     processStep: true,
   },
 });
@@ -26,11 +21,7 @@ export const batchFlatQueryArgs = Prisma.validator<Prisma.BatchDefaultArgs>()({
 export const activeBatchFlatQueryArgs = Prisma.validator<Prisma.BatchFindManyArgs>()({
   include: {
     processStep: true,
-    batchDetails: {
-      include: {
-        qualityDetails: true,
-      },
-    },
+    qualityDetails: true,
   },
   where: {
     active: true,

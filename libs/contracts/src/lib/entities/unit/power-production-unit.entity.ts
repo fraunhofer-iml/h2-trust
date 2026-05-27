@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { BaseUnitDeepDbType, BaseUnitNestedDbType, PowerProductionUnitNestedDbType } from '@h2-trust/database';
+import { PowerProductionUnitNestedDbType, UnitDeepDbType, UnitNestedDbType } from '@h2-trust/database';
 import { BiddingZone, GridLevel, UnitType } from '@h2-trust/domain';
 import { assertDefined, assertValidEnum } from '@h2-trust/utils';
 import { AddressEntity } from '../address';
@@ -77,7 +77,7 @@ export class PowerProductionUnitEntity extends BaseUnitEntity {
     this.type = type;
   }
 
-  static fromDeepDatabase(baseUnit: BaseUnitDeepDbType): PowerProductionUnitEntity {
+  static fromDeepDatabase(baseUnit: UnitDeepDbType): PowerProductionUnitEntity {
     assertDefined(baseUnit.powerProductionUnit, 'powerProductionUnit');
     assertValidEnum(baseUnit.powerProductionUnit.gridLevel, GridLevel, 'GridLevel');
     assertValidEnum(baseUnit.powerProductionUnit.biddingZone, BiddingZone, 'BiddingZone');
@@ -98,7 +98,7 @@ export class PowerProductionUnitEntity extends BaseUnitEntity {
     };
   }
 
-  static fromNestedDatabase(baseUnit: BaseUnitNestedDbType): PowerProductionUnitEntity {
+  static fromNestedDatabase(baseUnit: UnitNestedDbType): PowerProductionUnitEntity {
     assertDefined(baseUnit.powerProductionUnit, 'powerProductionUnit');
     assertValidEnum(baseUnit.powerProductionUnit.gridLevel, GridLevel, 'GridLevel');
     assertValidEnum(baseUnit.powerProductionUnit.biddingZone, BiddingZone, 'BiddingZone');

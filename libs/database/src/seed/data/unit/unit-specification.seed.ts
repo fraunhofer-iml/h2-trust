@@ -6,14 +6,21 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Prisma, UnitSpecifications } from '@prisma/client';
-import { BiddingZone, PowerProductionType } from '@h2-trust/domain';
+import { Prisma, UnitSpecification } from '@prisma/client';
+import {
+  BiddingZone,
+  FuelType,
+  HydrogenProductionMethod,
+  HydrogenProductionTechnology,
+  HydrogenStorageType,
+  PowerProductionType,
+  TransportMode,
+} from '@h2-trust/domain';
 import { auditTimestamp } from '../audit-timestamp.constant';
-import { UnitSeed } from './unit.seed';
 
-export const PowerProductionUnitSeed: readonly Partial<UnitSpecifications>[] = Object.freeze([
+export const UnitSpecificationSeed: readonly Partial<UnitSpecification>[] = Object.freeze([
   {
-    id: UnitSeed[0].id,
+    id: 'power-production-unit-0',
     createdAt: auditTimestamp,
     updatedAt: auditTimestamp,
     powerProductionType: PowerProductionType.PHOTOVOLTAIC_SYSTEM,
@@ -21,10 +28,9 @@ export const PowerProductionUnitSeed: readonly Partial<UnitSpecifications>[] = O
     ratedPower: new Prisma.Decimal(4.5),
     decommissioningPlannedOn: new Date('2045-04-01'),
     financialSupportReceived: false,
-    unitId: UnitSeed[0].id,
   },
   {
-    id: UnitSeed[1].id,
+    id: 'power-production-unit-1',
     createdAt: auditTimestamp,
     updatedAt: auditTimestamp,
     powerProductionType: PowerProductionType.WIND_TURBINE,
@@ -32,10 +38,9 @@ export const PowerProductionUnitSeed: readonly Partial<UnitSpecifications>[] = O
     ratedPower: new Prisma.Decimal(1500),
     decommissioningPlannedOn: new Date('2043-06-15'),
     financialSupportReceived: true,
-    unitId: UnitSeed[1].id,
   },
   {
-    id: UnitSeed[2].id,
+    id: 'power-production-unit-2',
     createdAt: auditTimestamp,
     updatedAt: auditTimestamp,
     powerProductionType: PowerProductionType.WIND_TURBINE,
@@ -43,10 +48,9 @@ export const PowerProductionUnitSeed: readonly Partial<UnitSpecifications>[] = O
     ratedPower: new Prisma.Decimal(1500),
     decommissioningPlannedOn: new Date('2043-06-15'),
     financialSupportReceived: true,
-    unitId: UnitSeed[2].id,
   },
   {
-    id: UnitSeed[3].id,
+    id: 'power-production-unit-3',
     createdAt: auditTimestamp,
     updatedAt: auditTimestamp,
     powerProductionType: PowerProductionType.GRID,
@@ -54,6 +58,28 @@ export const PowerProductionUnitSeed: readonly Partial<UnitSpecifications>[] = O
     ratedPower: new Prisma.Decimal(100000),
     decommissioningPlannedOn: new Date('2045-08-14'),
     financialSupportReceived: false,
-    unitId: UnitSeed[3].id,
+  },
+  {
+    id: 'hydrogen-production-unit-0',
+    createdAt: auditTimestamp,
+    updatedAt: auditTimestamp,
+    method: HydrogenProductionMethod.ELECTROLYSIS,
+    technology: HydrogenProductionTechnology.PEM,
+    biddingZone: BiddingZone.DE_LU,
+    ratedPower: new Prisma.Decimal(5),
+  },
+  {
+    id: 'hydrogen-storage-unit-0',
+    createdAt: auditTimestamp,
+    updatedAt: auditTimestamp,
+    storageType: HydrogenStorageType.COMPRESSED_GASEOUS_HYDROGEN,
+    capacity: new Prisma.Decimal(1200),
+  },
+  {
+    id: 'hydrogen-transport-unit-0',
+    createdAt: auditTimestamp,
+    updatedAt: auditTimestamp,
+    transportMode: TransportMode.TRAILER,
+    fuelType: FuelType.DIESEL,
   },
 ]);
