@@ -11,6 +11,7 @@ import {
   ProofOfSustainabilityEmissionCalculationEntity,
   ProofOfSustainabilityEmissionEntity,
   ProvenanceEntity,
+  TransportUnitEntity,
 } from '@h2-trust/contracts/entities';
 import {
   CalculationTopic,
@@ -20,6 +21,7 @@ import {
   MeasurementUnit,
   ProcessType,
   TransportMode,
+  UnitType,
 } from '@h2-trust/domain';
 import { InternalException } from '@h2-trust/exceptions';
 import { getFuelType } from '@h2-trust/strings';
@@ -98,7 +100,15 @@ export function assembleHydrogenTransportationEmissionCalculation(
     );
   }
 
-  const transportMode: string = hydrogenTransportation.transportationDetails?.transportMode;
+  if (hydrogenTransportation?.executedBy.unitType !== UnitType.TRANSPORT) {
+    throw new InternalException(
+      `Invalid unit type [${hydrogenTransportation?.executedBy.unitType}] for hydrogen transportation emission calculation`,
+    );
+  }
+
+  const transportUnit: TransportUnitEntity = hydrogenTransportation.executedBy as TransportUnitEntity;
+
+  const transportMode: string = transportUnit?.transportMode;
 
   switch (transportMode) {
     case TransportMode.PIPELINE:
@@ -106,8 +116,8 @@ export function assembleHydrogenTransportationEmissionCalculation(
     case TransportMode.TRAILER:
       return assembleTrailerEmissionCalculation(
         hydrogenTransportation.batch.amount,
-        hydrogenTransportation.transportationDetails.fuelType,
-        hydrogenTransportation.transportationDetails.distance,
+        transportUnit.fuelType,
+        hydrogenTransportation.batch?.qualityDetails?.distance,
       );
     default:
       throw new InternalException(

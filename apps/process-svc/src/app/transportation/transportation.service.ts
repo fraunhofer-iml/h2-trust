@@ -7,10 +7,9 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import { ProcessStepEntity, TransportationDetailsEntity } from '@h2-trust/contracts/entities';
+import { ProcessStepEntity } from '@h2-trust/contracts/entities';
 import { CreateHydrogenTransportationPayload } from '@h2-trust/contracts/payloads';
-import { BatchType, FuelType, ProcessType, TransportMode } from '@h2-trust/domain';
-import { ValidationException } from '@h2-trust/exceptions';
+import { BatchType, ProcessType } from '@h2-trust/domain';
 import { ProcessStepService } from '../process-step/process-step.service';
 
 @Injectable()
@@ -20,12 +19,7 @@ export class TransportationService {
   async createHydrogenTransportationProcessStep(
     payload: CreateHydrogenTransportationPayload,
   ): Promise<ProcessStepEntity> {
-    const transportationDetails: TransportationDetailsEntity = this.buildTransportationDetails(
-      payload.transportMode,
-      payload.distance,
-      payload.fuelType,
-    );
-
+    //TODO-LG: add transport emission data here (distance)
     const transportation: ProcessStepEntity = {
       ...payload.processStep,
       type: ProcessType.HYDROGEN_TRANSPORTATION,
@@ -34,40 +28,9 @@ export class TransportationService {
         type: BatchType.HYDROGEN,
         predecessors: [payload.predecessorBatch],
       },
-      transportationDetails,
     };
 
     await this.processStepService.setBatchesInactive([payload.predecessorBatch.id]);
     return this.processStepService.createProcessStep(transportation);
-  }
-
-  private buildTransportationDetails(
-    transportMode: TransportMode,
-    distance: number,
-    fuelType: FuelType,
-  ): TransportationDetailsEntity {
-    let output: TransportationDetailsEntity;
-
-    switch (transportMode) {
-      case TransportMode.TRAILER:
-        if (!distance) {
-          throw new ValidationException(`Distance is required for transport mode [${TransportMode.TRAILER}].`);
-        }
-
-        if (!fuelType) {
-          throw new ValidationException(`Fuel type is required for transport mode [${TransportMode.TRAILER}].`);
-        }
-
-        output = new TransportationDetailsEntity(undefined, distance, transportMode, fuelType);
-        break;
-      case TransportMode.PIPELINE:
-        output = new TransportationDetailsEntity(undefined, 0, transportMode, undefined);
-        break;
-      default: {
-        throw new ValidationException(`Invalid transport mode: ${transportMode}`);
-      }
-    }
-
-    return output;
   }
 }

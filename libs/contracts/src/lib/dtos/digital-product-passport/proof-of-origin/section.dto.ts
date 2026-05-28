@@ -80,7 +80,7 @@ export class SectionDto {
       MeasurementUnit.KWH,
       batch.producer ?? '',
       batch.unitId ?? '',
-      batch.energySource,
+      batch.powerProductionType,
       batch.accountingPeriodEnd,
       batch.powerType,
     );

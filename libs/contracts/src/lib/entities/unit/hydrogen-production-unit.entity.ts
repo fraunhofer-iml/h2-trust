@@ -23,7 +23,6 @@ export class HydrogenProductionUnitEntity extends BaseUnitEntity {
   constructor(
     id: string,
     name: string,
-    mastrNumber: string,
     manufacturer: string,
     modelType: string,
     modelNumber: string,
@@ -44,7 +43,6 @@ export class HydrogenProductionUnitEntity extends BaseUnitEntity {
     super(
       id,
       name,
-      mastrNumber,
       manufacturer,
       modelType,
       modelNumber,

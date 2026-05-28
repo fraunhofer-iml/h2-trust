@@ -14,7 +14,6 @@ import { CompanyEntity } from '../company';
 export abstract class BaseUnitEntity {
   id: string;
   name: string;
-  mastrNumber: string;
   manufacturer: string;
   modelType: string;
   modelNumber: string;
@@ -30,7 +29,6 @@ export abstract class BaseUnitEntity {
   protected constructor(
     id: string,
     name: string,
-    mastrNumber: string,
     manufacturer: string,
     modelType: string,
     modelNumber: string,
@@ -45,7 +43,6 @@ export abstract class BaseUnitEntity {
   ) {
     this.id = id;
     this.name = name;
-    this.mastrNumber = mastrNumber;
     this.manufacturer = manufacturer;
     this.modelType = modelType;
     this.modelNumber = modelNumber;

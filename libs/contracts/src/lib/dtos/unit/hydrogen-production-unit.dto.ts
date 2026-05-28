@@ -18,13 +18,11 @@ export class HydrogenProductionUnitDto extends BaseUnitDto {
   technology: HydrogenProductionTechnology;
   biddingZone: BiddingZone;
   ratedPower: number;
-  pressure: number;
   waterConsumptionLitersPerHour: number;
 
   constructor(
     id: string,
     name: string,
-    mastrNumber: string,
     manufacturer: string,
     modelType: string,
     serialNumber: string,
@@ -37,7 +35,6 @@ export class HydrogenProductionUnitDto extends BaseUnitDto {
     operator: CompanyBaseDto,
     unitType: UnitType,
     biddingZone: BiddingZone,
-    pressure: number,
     method: HydrogenProductionMethod,
     technology: HydrogenProductionTechnology,
     waterConsumptionLitersPerHour: number,
@@ -46,7 +43,6 @@ export class HydrogenProductionUnitDto extends BaseUnitDto {
     super(
       id,
       name,
-      mastrNumber,
       manufacturer,
       modelType,
       serialNumber,
@@ -63,7 +59,6 @@ export class HydrogenProductionUnitDto extends BaseUnitDto {
     this.technology = technology;
     this.biddingZone = biddingZone;
     this.ratedPower = ratedPower;
-    this.pressure = pressure;
     this.waterConsumptionLitersPerHour = waterConsumptionLitersPerHour;
   }
 
@@ -74,7 +69,6 @@ export class HydrogenProductionUnitDto extends BaseUnitDto {
       technology: unit.technology,
       biddingZone: unit.biddingZone,
       ratedPower: unit.ratedPower,
-      pressure: unit.pressure,
       waterConsumptionLitersPerHour: unit.waterConsumptionLitersPerHour,
     };
   }

@@ -17,13 +17,11 @@ import { UnitOwnerDto } from './unit-owner.dto';
 export class HydrogenStorageUnitDto extends BaseUnitDto {
   storageType: HydrogenStorageType;
   capacity: number;
-  pressure: number;
   filling: FillingDto[];
 
   constructor(
     id: string,
     name: string,
-    mastrNumber: string,
     manufacturer: string,
     modelType: string,
     serialNumber: string,
@@ -32,7 +30,6 @@ export class HydrogenStorageUnitDto extends BaseUnitDto {
     address: AddressDto,
     capacity: number,
     filling: FillingDto[],
-    pressure: number,
     storageType: HydrogenStorageType,
     unitType: UnitType,
     modelNumber: string,
@@ -43,7 +40,6 @@ export class HydrogenStorageUnitDto extends BaseUnitDto {
     super(
       id,
       name,
-      mastrNumber,
       manufacturer,
       modelType,
       serialNumber,
@@ -58,7 +54,6 @@ export class HydrogenStorageUnitDto extends BaseUnitDto {
     );
     this.capacity = capacity;
     this.filling = filling;
-    this.pressure = pressure;
     this.storageType = storageType;
   }
 
@@ -67,7 +62,6 @@ export class HydrogenStorageUnitDto extends BaseUnitDto {
       ...BaseUnitDto.fromEntity(unit),
       storageType: unit.type,
       capacity: unit.capacity,
-      pressure: unit.pressure,
       filling:
         unit.filling?.map((filling) => ({
           id: '',
