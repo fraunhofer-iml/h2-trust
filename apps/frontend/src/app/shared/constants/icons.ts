@@ -16,7 +16,7 @@ import {
   UnitType,
 } from '@h2-trust/domain';
 
-export const ICONS = {
+const ICONS = {
   UNITS: {
     POWER_PRODUCTION: 'electric_bolt',
     HYDROGEN_PRODUCTION: 'water_ec',
@@ -71,7 +71,7 @@ const CSV_CONTENT_ICON_BY_TYPE: Record<CsvContentType, string> = {
   [CsvContentType.POWER]: ICONS.UNITS.POWER_PRODUCTION,
 };
 
-const RFNBO_TYPE_ICON_BY_TYPE: Record<RfnboType, string> = {
+const RFNBO_ICON_BY_TYPE: Record<RfnboType, string> = {
   [RfnboType.NOT_SPECIFIED]: ICONS.HYDROGEN.BASE,
   [RfnboType.RFNBO_READY]: ICONS.HYDROGEN.RFNBO_READY,
   [RfnboType.NON_CERTIFIABLE]: ICONS.HYDROGEN.NON_CERTIFIABLE,
@@ -80,13 +80,7 @@ const RFNBO_TYPE_ICON_BY_TYPE: Record<RfnboType, string> = {
 const SELECTABLE_TYPE_ICON_BY_TYPE: Record<UnitType | CsvContentType | RfnboType, string> = {
   ...UNIT_ICON_BY_TYPE,
   ...CSV_CONTENT_ICON_BY_TYPE,
-  ...RFNBO_TYPE_ICON_BY_TYPE,
-};
-
-const RFNBO_ICON_BY_TYPE: Record<RfnboType, string> = {
-  [RfnboType.NOT_SPECIFIED]: ICONS.HYDROGEN.BASE,
-  [RfnboType.RFNBO_READY]: ICONS.HYDROGEN.RFNBO_READY,
-  [RfnboType.NON_CERTIFIABLE]: ICONS.HYDROGEN.NON_CERTIFIABLE,
+  ...RFNBO_ICON_BY_TYPE,
 };
 
 const PPA_STATUS_ICON_BY_TYPE: Record<PowerPurchaseAgreementStatus, string> = {
@@ -139,6 +133,10 @@ export function getSelectableTypeIcon(type: UnitType | CsvContentType | RfnboTyp
   return SELECTABLE_TYPE_ICON_BY_TYPE[type] ?? '';
 }
 
+export function getCsvContentTypeIcon(type: CsvContentType): string {
+  return CSV_CONTENT_ICON_BY_TYPE[type];
+}
+
 export function getRfnboIcon(type: RfnboType): string {
   return RFNBO_ICON_BY_TYPE[type];
 }
@@ -157,15 +155,6 @@ export function getBatchTypeIcon(type: BatchType): string {
 
 export function getCalculationTopicIcon(topic: CalculationTopic): string {
   return CALCULATION_TOPIC_ICON_BY_TYPE[topic];
-}
-
-export function getRfnboComplianceStatus(isRfnboReady: boolean): {
-  text: RfnboType;
-  icon: string;
-} {
-  return isRfnboReady
-    ? { text: RfnboType.RFNBO_READY, icon: RFNBO_ICON_BY_TYPE[RfnboType.RFNBO_READY] }
-    : { text: RfnboType.NON_CERTIFIABLE, icon: RFNBO_ICON_BY_TYPE[RfnboType.NON_CERTIFIABLE] };
 }
 
 export function getPowerStatisticsIcon(key: PowerStatisticsIconKey): string {

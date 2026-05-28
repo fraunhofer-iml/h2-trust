@@ -8,7 +8,7 @@
 
 import { Component, computed, input } from '@angular/core';
 import { CsvContentType } from '@h2-trust/domain';
-import { ICONS } from '../../shared/constants/icons';
+import { getCsvContentTypeIcon } from '../../shared/constants/icons';
 import { StatusChipComponent } from './status-chip.component';
 
 @Component({
@@ -32,7 +32,7 @@ export class CsvContentTypeChipComponent {
   };
 
   icon = computed(() => {
-    return this.type() === CsvContentType.HYDROGEN ? ICONS.UNITS.HYDROGEN_PRODUCTION : ICONS.UNITS.POWER_PRODUCTION;
+    return getCsvContentTypeIcon(this.type());
   });
 
   label = computed(() => {

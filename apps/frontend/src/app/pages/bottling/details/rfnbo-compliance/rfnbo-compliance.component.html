@@ -19,8 +19,8 @@
             : 'border-neutral-200 bg-neutral-100 text-neutral-600'
         "
       >
-        <span class="material-symbols-outlined text-3xl"> {{ rfnboStatus().icon }}</span>
-        <span class="font-semibold">{{ rfnboStatus().text | enum: 'rfnboType' }}</span>
+        <span class="material-symbols-outlined text-3xl"> {{ icon() }}</span>
+        <span class="font-semibold">{{ rfnboType() | enum: 'rfnboType' }}</span>
         <p>The calculation is based on RED III</p>
       </div>
       <div class="flex w-2/3 flex-col gap-3 p-4">
