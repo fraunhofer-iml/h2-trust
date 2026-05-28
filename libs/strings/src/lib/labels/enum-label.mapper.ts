@@ -83,6 +83,10 @@ const UNIT_TYPE_LABELS: Record<UnitType, string> = {
   [UnitType.POWER_PRODUCTION]: 'Power Production',
   [UnitType.HYDROGEN_PRODUCTION]: 'Hydrogen Production',
   [UnitType.HYDROGEN_STORAGE]: 'Hydrogen Storage',
+  [UnitType.COMPRESSION]: 'Compression',
+  [UnitType.BOTTLING]: 'Bottling',
+  [UnitType.TRANSPORT]: 'Transport',
+  [UnitType.CONSUME]: 'Consume',
 };
 
 const CALCULATION_TOPIC_LABELS: Record<CalculationTopic, string> = {

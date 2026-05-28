@@ -15,7 +15,6 @@ import { BaseUnitEntity } from './base-unit.entity';
 
 export class HydrogenProductionUnitEntity extends BaseUnitEntity {
   ratedPower: number;
-  pressure: number;
   method: HydrogenProductionMethod;
   technology: HydrogenProductionTechnology;
   biddingZone: BiddingZone;
@@ -36,7 +35,6 @@ export class HydrogenProductionUnitEntity extends BaseUnitEntity {
     operator: CompanyEntity,
     unitType: UnitType,
     ratedPower: number,
-    pressure: number,
     method: HydrogenProductionMethod,
     technology: HydrogenProductionTechnology,
     biddingZone: BiddingZone,
@@ -62,54 +60,43 @@ export class HydrogenProductionUnitEntity extends BaseUnitEntity {
     this.method = method;
     this.technology = technology;
     this.ratedPower = ratedPower;
-    this.pressure = pressure;
     this.biddingZone = biddingZone;
     this.waterConsumptionLitersPerHour = waterConsumptionLitersPerHour;
   }
 
-  static fromDeepDatabase(baseUnit: UnitDeepDbType): HydrogenProductionUnitEntity {
-    assertDefined(baseUnit.hydrogenProductionUnit, 'hydrogenProductionUnit');
-    assertValidEnum(baseUnit.hydrogenProductionUnit.method, HydrogenProductionMethod, 'HydrogenProductionMethod');
-    assertValidEnum(
-      baseUnit.hydrogenProductionUnit.technology,
-      HydrogenProductionTechnology,
-      'HydrogenProductionTechnology',
-    );
-    assertValidEnum(baseUnit.hydrogenProductionUnit.biddingZone, BiddingZone, 'BiddingZone');
+  static fromDeepDatabase(unit: UnitDeepDbType): HydrogenProductionUnitEntity {
+    assertDefined(unit.specification, 'hydrogenProductionUnit');
+    assertValidEnum(unit.specification.method, HydrogenProductionMethod, 'HydrogenProductionMethod');
+    assertValidEnum(unit.specification.technology, HydrogenProductionTechnology, 'HydrogenProductionTechnology');
+    assertValidEnum(unit.specification.biddingZone, BiddingZone, 'BiddingZone');
 
     return <HydrogenProductionUnitEntity>{
-      ...BaseUnitEntity.fromDeepBaseUnit(baseUnit),
+      ...BaseUnitEntity.fromDeepBaseUnit(unit),
       unitType: UnitType.HYDROGEN_PRODUCTION,
 
-      ratedPower: baseUnit.hydrogenProductionUnit.ratedPower.toNumber(),
-      pressure: baseUnit.hydrogenProductionUnit.pressure.toNumber(),
-      method: baseUnit.hydrogenProductionUnit.method,
-      technology: baseUnit.hydrogenProductionUnit.technology,
-      biddingZone: baseUnit.hydrogenProductionUnit.biddingZone,
-      waterConsumptionLitersPerHour: baseUnit.hydrogenProductionUnit.waterConsumptionLitersPerHour.toNumber(),
+      ratedPower: unit.specification.ratedPower.toNumber(),
+      method: unit.specification.method,
+      technology: unit.specification.technology,
+      biddingZone: unit.specification.biddingZone,
+      waterConsumptionLitersPerHour: unit.specification.waterConsumptionLitersPerHour.toNumber(),
     };
   }
 
   static fromNestedDatabase(baseUnit: UnitNestedDbType): HydrogenProductionUnitEntity {
-    assertDefined(baseUnit.hydrogenProductionUnit, 'hydrogenProductionUnit');
-    assertValidEnum(baseUnit.hydrogenProductionUnit.method, HydrogenProductionMethod, 'HydrogenProductionMethod');
-    assertValidEnum(
-      baseUnit.hydrogenProductionUnit.technology,
-      HydrogenProductionTechnology,
-      'HydrogenProductionTechnology',
-    );
-    assertValidEnum(baseUnit.hydrogenProductionUnit.biddingZone, BiddingZone, 'BiddingZone');
+    assertDefined(baseUnit.specification, 'hydrogenProductionUnit');
+    assertValidEnum(baseUnit.specification.method, HydrogenProductionMethod, 'HydrogenProductionMethod');
+    assertValidEnum(baseUnit.specification.technology, HydrogenProductionTechnology, 'HydrogenProductionTechnology');
+    assertValidEnum(baseUnit.specification.biddingZone, BiddingZone, 'BiddingZone');
 
     return <HydrogenProductionUnitEntity>{
       ...BaseUnitEntity.fromNestedBaseUnit(baseUnit),
       unitType: UnitType.HYDROGEN_PRODUCTION,
 
-      ratedPower: baseUnit.hydrogenProductionUnit.ratedPower.toNumber(),
-      pressure: baseUnit.hydrogenProductionUnit.pressure.toNumber(),
-      method: baseUnit.hydrogenProductionUnit.method,
-      technology: baseUnit.hydrogenProductionUnit.technology,
-      biddingZone: baseUnit.hydrogenProductionUnit.biddingZone,
-      waterConsumptionLitersPerHour: baseUnit.hydrogenProductionUnit.waterConsumptionLitersPerHour.toNumber(),
+      ratedPower: baseUnit.specification.ratedPower.toNumber(),
+      method: baseUnit.specification.method,
+      technology: baseUnit.specification.technology,
+      biddingZone: baseUnit.specification.biddingZone,
+      waterConsumptionLitersPerHour: baseUnit.specification.waterConsumptionLitersPerHour.toNumber(),
     };
   }
 }

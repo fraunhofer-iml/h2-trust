@@ -6,24 +6,19 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { PowerProductionUnitNestedDbType, UnitDeepDbType, UnitNestedDbType } from '@h2-trust/database';
-import { BiddingZone, GridLevel, UnitType } from '@h2-trust/domain';
+import { UnitDeepDbType, UnitNestedDbType } from '@h2-trust/database';
+import { BiddingZone, PowerProductionType, UnitType } from '@h2-trust/domain';
 import { assertDefined, assertValidEnum } from '@h2-trust/utils';
 import { AddressEntity } from '../address';
 import { CompanyEntity } from '../company';
 import { BaseUnitEntity } from './base-unit.entity';
-import { PowerProductionTypeEntity } from './power-production-type.entity';
 
 export class PowerProductionUnitEntity extends BaseUnitEntity {
   decommissioningPlannedOn: Date;
-  electricityMeterNumber: string;
   ratedPower: number;
-  gridOperator: string;
-  gridLevel: GridLevel;
   biddingZone: BiddingZone;
-  gridConnectionNumber: string;
   financialSupportReceived: boolean;
-  type: PowerProductionTypeEntity;
+  type: PowerProductionType;
 
   constructor(
     id: string,
@@ -40,14 +35,10 @@ export class PowerProductionUnitEntity extends BaseUnitEntity {
     operator: CompanyEntity,
     unitType: UnitType,
     decommissioningPlannedOn: Date,
-    electricityMeterNumber: string,
     ratedPower: number,
-    gridOperator: string,
-    gridLevel: GridLevel,
     biddingZone: BiddingZone,
-    gridConnectionNumber: string,
     financialSupportReceived: boolean,
-    type: PowerProductionTypeEntity,
+    type: PowerProductionType,
     active: boolean,
   ) {
     super(
@@ -67,78 +58,40 @@ export class PowerProductionUnitEntity extends BaseUnitEntity {
       active,
     );
     this.decommissioningPlannedOn = decommissioningPlannedOn;
-    this.electricityMeterNumber = electricityMeterNumber;
     this.ratedPower = ratedPower;
-    this.gridOperator = gridOperator;
-    this.gridLevel = gridLevel;
     this.biddingZone = biddingZone;
-    this.gridConnectionNumber = gridConnectionNumber;
     this.financialSupportReceived = financialSupportReceived;
     this.type = type;
   }
 
-  static fromDeepDatabase(baseUnit: UnitDeepDbType): PowerProductionUnitEntity {
-    assertDefined(baseUnit.powerProductionUnit, 'powerProductionUnit');
-    assertValidEnum(baseUnit.powerProductionUnit.gridLevel, GridLevel, 'GridLevel');
-    assertValidEnum(baseUnit.powerProductionUnit.biddingZone, BiddingZone, 'BiddingZone');
+  static fromDeepUnitDatabase(baseUnit: UnitDeepDbType): PowerProductionUnitEntity {
+    assertDefined(baseUnit.specification, 'powerProductionUnit');
+    assertValidEnum(baseUnit.specification.biddingZone, BiddingZone, 'BiddingZone');
 
     return <PowerProductionUnitEntity>{
       ...BaseUnitEntity.fromDeepBaseUnit(baseUnit),
       unitType: UnitType.POWER_PRODUCTION,
-
-      decommissioningPlannedOn: baseUnit.powerProductionUnit.decommissioningPlannedOn,
-      electricityMeterNumber: baseUnit.powerProductionUnit.electricityMeterNumber,
-      ratedPower: baseUnit.powerProductionUnit.ratedPower?.toNumber() ?? 0,
-      gridOperator: baseUnit.powerProductionUnit.gridOperator,
-      gridLevel: baseUnit.powerProductionUnit.gridLevel,
-      biddingZone: baseUnit.powerProductionUnit.biddingZone,
-      gridConnectionNumber: baseUnit.powerProductionUnit.gridConnectionNumber,
-      financialSupportReceived: baseUnit.powerProductionUnit.financialSupportReceived,
-      type: baseUnit.powerProductionUnit.type,
+      decommissioningPlannedOn: baseUnit.specification.decommissioningPlannedOn,
+      ratedPower: baseUnit.specification.ratedPower?.toNumber() ?? 0,
+      biddingZone: baseUnit.specification.biddingZone,
+      financialSupportReceived: baseUnit.specification.financialSupportReceived,
+      type: baseUnit.specification.powerProductionType,
     };
   }
 
-  static fromNestedDatabase(baseUnit: UnitNestedDbType): PowerProductionUnitEntity {
-    assertDefined(baseUnit.powerProductionUnit, 'powerProductionUnit');
-    assertValidEnum(baseUnit.powerProductionUnit.gridLevel, GridLevel, 'GridLevel');
-    assertValidEnum(baseUnit.powerProductionUnit.biddingZone, BiddingZone, 'BiddingZone');
+  static fromNestedUnitDatabase(unit: UnitNestedDbType): PowerProductionUnitEntity {
+    assertDefined(unit.specification, 'powerProductionUnit');
+    assertValidEnum(unit.specification.biddingZone, BiddingZone, 'BiddingZone');
 
     return <PowerProductionUnitEntity>{
-      ...BaseUnitEntity.fromNestedBaseUnit(baseUnit),
+      ...BaseUnitEntity.fromNestedBaseUnit(unit),
       unitType: UnitType.POWER_PRODUCTION,
 
-      decommissioningPlannedOn: baseUnit.powerProductionUnit.decommissioningPlannedOn,
-      electricityMeterNumber: baseUnit.powerProductionUnit.electricityMeterNumber,
-      ratedPower: baseUnit.powerProductionUnit.ratedPower?.toNumber() ?? 0,
-      gridOperator: baseUnit.powerProductionUnit.gridOperator,
-      gridLevel: baseUnit.powerProductionUnit.gridLevel,
-      biddingZone: baseUnit.powerProductionUnit.biddingZone,
-      gridConnectionNumber: baseUnit.powerProductionUnit.gridConnectionNumber,
-      financialSupportReceived: baseUnit.powerProductionUnit.financialSupportReceived,
-      type: baseUnit.powerProductionUnit.type,
-    };
-  }
-
-  static fromNestedPowerProductionUnit(
-    powerProductionUnit: PowerProductionUnitNestedDbType,
-  ): PowerProductionUnitEntity {
-    assertDefined(powerProductionUnit.generalInfo.powerProductionUnit, 'powerProductionUnit');
-    assertValidEnum(powerProductionUnit.generalInfo.powerProductionUnit.gridLevel, GridLevel, 'GridLevel');
-    assertValidEnum(powerProductionUnit.generalInfo.powerProductionUnit.biddingZone, BiddingZone, 'BiddingZone');
-
-    return <PowerProductionUnitEntity>{
-      ...BaseUnitEntity.fromFlatBaseUnit(powerProductionUnit.generalInfo),
-      unitType: UnitType.POWER_PRODUCTION,
-
-      decommissioningPlannedOn: powerProductionUnit.generalInfo.powerProductionUnit.decommissioningPlannedOn,
-      electricityMeterNumber: powerProductionUnit.generalInfo.powerProductionUnit.electricityMeterNumber,
-      ratedPower: powerProductionUnit.generalInfo.powerProductionUnit.ratedPower?.toNumber() ?? 0,
-      gridOperator: powerProductionUnit.generalInfo.powerProductionUnit.gridOperator,
-      gridLevel: powerProductionUnit.generalInfo.powerProductionUnit.gridLevel,
-      biddingZone: powerProductionUnit.generalInfo.powerProductionUnit.biddingZone,
-      gridConnectionNumber: powerProductionUnit.generalInfo.powerProductionUnit.gridConnectionNumber,
-      financialSupportReceived: powerProductionUnit.generalInfo.powerProductionUnit.financialSupportReceived,
-      type: powerProductionUnit.generalInfo.powerProductionUnit.type,
+      decommissioningPlannedOn: unit.specification.decommissioningPlannedOn,
+      ratedPower: unit.specification.ratedPower?.toNumber() ?? 0,
+      biddingZone: unit.specification.biddingZone,
+      financialSupportReceived: unit.specification.financialSupportReceived,
+      type: unit.specification.powerProductionType,
     };
   }
 }

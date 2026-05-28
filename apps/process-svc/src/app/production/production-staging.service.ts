@@ -37,7 +37,7 @@ import {
 import {
   CsvContentType,
   DefaultGridProvider,
-  EnergySource,
+  PowerProductionType,
   PowerPurchaseAgreementStatus,
   PowerType,
   StagingScope,
@@ -298,7 +298,7 @@ export class ProductionStagingService {
       stagedHydrogenProduction.ownerId,
       partialWaterConsumption,
     );
-    return splitGridPowerProduction(gridPowerCreateEntity, EnergySource.GRID);
+    return splitGridPowerProduction(gridPowerCreateEntity, PowerProductionType.GRID);
   }
 
   /**

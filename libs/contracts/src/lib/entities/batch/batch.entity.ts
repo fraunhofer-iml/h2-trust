@@ -10,7 +10,6 @@ import { BatchDeepDbType, BatchFlatDbType, BatchNestedDbType } from '@h2-trust/d
 import { BatchType } from '@h2-trust/domain';
 import { assertValidEnum } from '@h2-trust/utils';
 import { CompanyEntity } from '../company';
-import { HydrogenStorageUnitEntity } from '../unit';
 import { QualityDetailsEntity } from './quality-details.entity';
 
 export class BatchEntity {
@@ -21,7 +20,6 @@ export class BatchEntity {
   predecessors?: BatchEntity[];
   successors?: BatchEntity[];
   owner: CompanyEntity;
-  hydrogenStorageUnit?: HydrogenStorageUnitEntity;
   qualityDetails?: QualityDetailsEntity;
   processStepId?: string;
 
@@ -33,7 +31,6 @@ export class BatchEntity {
     predecessors: BatchEntity[] | undefined,
     successors: BatchEntity[] | undefined,
     owner: CompanyEntity,
-    hydrogenStorageUnit: HydrogenStorageUnitEntity | undefined,
     qualityDetails?: QualityDetailsEntity,
     processStepId?: string,
   ) {
@@ -44,7 +41,6 @@ export class BatchEntity {
     this.predecessors = predecessors;
     this.successors = successors;
     this.owner = owner;
-    this.hydrogenStorageUnit = hydrogenStorageUnit;
     this.qualityDetails = qualityDetails;
     this.processStepId = processStepId;
   }
@@ -59,12 +55,7 @@ export class BatchEntity {
       batch.predecessors.map((pred) => BatchEntity.fromNestedDatabase({ ...pred, predecessors: [], successors: [] })),
       batch.successors.map((succ) => BatchEntity.fromNestedDatabase({ ...succ, predecessors: [], successors: [] })),
       CompanyEntity.fromNestedDatabase(batch.owner),
-      batch.hydrogenStorageUnit
-        ? HydrogenStorageUnitEntity.fromNestedHydrogenStorageUnit(batch.hydrogenStorageUnit)
-        : undefined,
-      batch.batchDetails?.qualityDetails
-        ? QualityDetailsEntity.fromDatabase(batch.batchDetails.qualityDetails)
-        : undefined,
+      batch?.qualityDetails ? QualityDetailsEntity.fromDatabase(batch.qualityDetails) : undefined,
       batch.processStep?.id,
     );
   }
@@ -79,12 +70,7 @@ export class BatchEntity {
       batch.predecessors.map((pred) => BatchEntity.fromFlatDatabase({ ...pred, predecessors: [], successors: [] })),
       batch.successors.map((succ) => BatchEntity.fromFlatDatabase({ ...succ, predecessors: [], successors: [] })),
       CompanyEntity.fromFlatDatabase(batch.owner),
-      batch.hydrogenStorageUnit
-        ? HydrogenStorageUnitEntity.fromNestedHydrogenStorageUnit(batch.hydrogenStorageUnit)
-        : undefined,
-      batch.batchDetails?.qualityDetails
-        ? QualityDetailsEntity.fromDatabase(batch.batchDetails.qualityDetails)
-        : undefined,
+      batch?.qualityDetails ? QualityDetailsEntity.fromDatabase(batch.qualityDetails) : undefined,
       batch.processStep?.id,
     );
   }
@@ -99,10 +85,7 @@ export class BatchEntity {
       [],
       [],
       CompanyEntity.fromBaseType(batch.owner),
-      undefined,
-      batch.batchDetails?.qualityDetails
-        ? QualityDetailsEntity.fromDatabase(batch.batchDetails.qualityDetails)
-        : undefined,
+      batch?.qualityDetails ? QualityDetailsEntity.fromDatabase(batch.qualityDetails) : undefined,
       batch.processStep?.id,
     );
   }

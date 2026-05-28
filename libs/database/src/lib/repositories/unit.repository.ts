@@ -58,7 +58,7 @@ export class UnitRepository {
 
   mapToActualUnitEntity(baseUnit: Prisma.UnitGetPayload<typeof unitDeepQueryArgs>): ConcreteUnitEntity {
     if (baseUnit.type === UnitType.POWER_PRODUCTION) {
-      return PowerProductionUnitEntity.fromDeepDatabase(baseUnit);
+      return PowerProductionUnitEntity.fromDeepUnitDatabase(baseUnit);
     }
 
     if (baseUnit.type === UnitType.HYDROGEN_PRODUCTION) {
@@ -66,7 +66,8 @@ export class UnitRepository {
     }
 
     if (baseUnit.type === UnitType.HYDROGEN_STORAGE) {
-      return HydrogenStorageUnitEntity.fromDeepDatabase(baseUnit);
+      //TODO-LG: add process steps of hydrogen storage here
+      return HydrogenStorageUnitEntity.fromDeepDatabase(baseUnit, []);
     }
 
     throw new DomainException(ErrorCode.DOMAIN_INCOMPATIBLE_DATA, 'Incompatible unit: no matching unit type found');
@@ -77,7 +78,7 @@ export class UnitRepository {
       .findMany({ where: { ownerId, type: UnitType.POWER_PRODUCTION }, ...unitDeepQueryArgs })
       .catch(wrapPrismaError);
 
-    return units.map(PowerProductionUnitEntity.fromDeepDatabase);
+    return units.map(PowerProductionUnitEntity.fromDeepUnitDatabase);
   }
 
   async findPowerProductionUnitsByIds(ids: string[]): Promise<PowerProductionUnitEntity[]> {
@@ -86,7 +87,7 @@ export class UnitRepository {
       .catch(wrapPrismaError);
 
     assertAllIdsFound(units, ids);
-    return units.map(PowerProductionUnitEntity.fromDeepDatabase);
+    return units.map(PowerProductionUnitEntity.fromDeepUnitDatabase);
   }
 
   async findHydrogenProductionUnitsByOwnerId(ownerId: string): Promise<HydrogenProductionUnitEntity[]> {
@@ -110,8 +111,8 @@ export class UnitRepository {
     const units = await this.prismaService.unit
       .findMany({ where: { ownerId, type: UnitType.HYDROGEN_STORAGE }, ...unitDeepQueryArgs })
       .catch(wrapPrismaError);
-
-    return units.map(HydrogenStorageUnitEntity.fromDeepDatabase);
+    //TODO-LG: add process steps of storage unit here
+    return units.map((unit) => HydrogenStorageUnitEntity.fromDeepDatabase(unit, []));
   }
 
   async updateUnitStatus(payload: UpdateUnitStatusPayload): Promise<BaseUnitEntity> {
@@ -222,7 +223,7 @@ export class UnitRepository {
       })
       .catch(wrapPrismaError);
 
-    return PowerProductionUnitEntity.fromDeepDatabase(unit);
+    return PowerProductionUnitEntity.fromDeepUnitDatabase(unit);
   }
 
   async updateOrCreateHydrogenStorageUnit(
@@ -271,7 +272,7 @@ export class UnitRepository {
       })
       .catch(wrapPrismaError);
 
-    return HydrogenStorageUnitEntity.fromDeepDatabase(unit);
+    return HydrogenStorageUnitEntity.fromDeepDatabase(unit, []);
   }
 
   private async validateUnitIsActive(id: string): Promise<void> {

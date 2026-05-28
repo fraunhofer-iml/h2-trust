@@ -63,7 +63,7 @@ export class PowerPurchaseAgreementService {
     );
 
     const agreementForGrid = agreements.find(
-      (agreement) => agreement.powerProductionUnit.type.name === PowerProductionType.GRID,
+      (agreement) => agreement.powerProductionUnit.type === PowerProductionType.GRID,
     );
 
     if (!agreementForGrid) {

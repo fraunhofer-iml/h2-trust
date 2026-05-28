@@ -7,7 +7,7 @@
  */
 
 import { PowerPurchaseAgreement } from '@prisma/client';
-import { PowerPurchaseAgreementStatus } from '@h2-trust/domain';
+import { PowerProductionType, PowerPurchaseAgreementStatus } from '@h2-trust/domain';
 import { auditTimestamp } from './audit-timestamp.constant';
 import { CompanySeed } from './company.seed';
 import { UnitSpecificationSeed } from './unit';
@@ -22,6 +22,7 @@ export const PowerPurchaseAgreementSeed: readonly PowerPurchaseAgreement[] = Obj
     validTo: new Date('2025-02-14'),
     status: PowerPurchaseAgreementStatus.APPROVED,
     requestingUserId: UserSeed[0].id,
+    suggestedPowerTypeName: PowerProductionType.PHOTOVOLTAIC_SYSTEM,
     requestedCompanyId: CompanySeed[0].id,
     powerProductionUnitId: UnitSpecificationSeed[0].id,
     hydrogenProducerId: CompanySeed[2].id,
@@ -34,6 +35,7 @@ export const PowerPurchaseAgreementSeed: readonly PowerPurchaseAgreement[] = Obj
     validTo: new Date('2025-02-14'),
     status: PowerPurchaseAgreementStatus.APPROVED,
     requestingUserId: UserSeed[0].id,
+    suggestedPowerTypeName: PowerProductionType.WIND_TURBINE,
     requestedCompanyId: CompanySeed[2].id,
     powerProductionUnitId: UnitSpecificationSeed[1].id,
     hydrogenProducerId: CompanySeed[2].id,
@@ -46,6 +48,7 @@ export const PowerPurchaseAgreementSeed: readonly PowerPurchaseAgreement[] = Obj
     validTo: new Date('2025-08-16'),
     status: PowerPurchaseAgreementStatus.APPROVED,
     requestingUserId: UserSeed[0].id,
+    suggestedPowerTypeName: PowerProductionType.HYDRO_POWER_PLANT,
     requestedCompanyId: CompanySeed[2].id,
     powerProductionUnitId: UnitSpecificationSeed[2].id,
     hydrogenProducerId: CompanySeed[2].id,
@@ -58,6 +61,7 @@ export const PowerPurchaseAgreementSeed: readonly PowerPurchaseAgreement[] = Obj
     validTo: new Date('2025-08-16'),
     status: PowerPurchaseAgreementStatus.APPROVED,
     requestingUserId: UserSeed[0].id,
+    suggestedPowerTypeName: PowerProductionType.HYDRO_POWER_PLANT,
     requestedCompanyId: CompanySeed[1].id,
     powerProductionUnitId: UnitSpecificationSeed[3].id,
     hydrogenProducerId: CompanySeed[2].id,

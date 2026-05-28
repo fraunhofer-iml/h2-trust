@@ -63,7 +63,6 @@ export abstract class BaseUnitEntity {
     return <BaseUnitEntity>{
       id: unit.id,
       name: unit.name,
-      mastrNumber: unit.mastrNumber,
       manufacturer: unit.manufacturer,
       modelType: unit.modelType,
       modelNumber: unit.modelNumber,
@@ -81,7 +80,6 @@ export abstract class BaseUnitEntity {
     return <BaseUnitEntity>{
       id: unit.id,
       name: unit.name,
-      mastrNumber: unit.mastrNumber,
       manufacturer: unit.manufacturer,
       modelType: unit.modelType,
       modelNumber: unit.modelNumber,
@@ -99,7 +97,6 @@ export abstract class BaseUnitEntity {
     return <BaseUnitEntity>{
       id: unit.id,
       name: unit.name,
-      mastrNumber: unit.mastrNumber,
       manufacturer: unit.manufacturer,
       modelType: unit.modelType,
       modelNumber: unit.modelNumber,

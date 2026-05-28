@@ -12,7 +12,6 @@ import {
   ConcreteUnitEntity,
   HydrogenProductionUnitEntity,
   HydrogenStorageUnitEntity,
-  PowerProductionTypeEntity,
   PowerProductionUnitEntity,
 } from '@h2-trust/contracts/entities';
 import {
@@ -23,16 +22,13 @@ import {
   ReadByIdsPayload,
   UpdateUnitStatusPayload,
 } from '@h2-trust/contracts/payloads';
-import { PowerProductionTypeRepository, UnitRepository } from '@h2-trust/database';
+import { UnitRepository } from '@h2-trust/database';
 import { DomainException, ErrorCode } from '@h2-trust/exceptions';
 import { assertDefined } from '@h2-trust/utils';
 
 @Injectable()
 export class UnitService {
-  constructor(
-    private readonly unitRepository: UnitRepository,
-    private readonly powerProductionTypeRepository: PowerProductionTypeRepository,
-  ) {}
+  constructor(private readonly unitRepository: UnitRepository) {}
 
   readUnitById(id: string): Promise<ConcreteUnitEntity> {
     return this.unitRepository.findUnitById(id);
@@ -60,10 +56,6 @@ export class UnitService {
 
   readHydrogenStorageUnitsByOwnerId(payload: ReadByIdPayload): Promise<HydrogenStorageUnitEntity[]> {
     return this.unitRepository.findHydrogenStorageUnitsByOwnerId(payload.id);
-  }
-
-  readPowerProductionTypes(): Promise<PowerProductionTypeEntity[]> {
-    return this.powerProductionTypeRepository.findPowerProductionTypes();
   }
 
   async updateOrCreateHydrogenProductionUnit(

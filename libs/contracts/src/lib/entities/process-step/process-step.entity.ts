@@ -14,7 +14,6 @@ import { DocumentEntity } from '../document';
 import { ConcreteUnitEntity } from '../unit';
 import { getSpecificUnit } from '../unit/unit.factory';
 import { UserEntity } from '../user';
-import { TransportationDetailsEntity } from './transportation-details.entity';
 
 export class ProcessStepEntity {
   id?: string;
@@ -25,7 +24,6 @@ export class ProcessStepEntity {
   recordedBy: UserEntity;
   executedBy: ConcreteUnitEntity;
   documents?: DocumentEntity[];
-  transportationDetails?: TransportationDetailsEntity;
 
   constructor(
     id: string | undefined,
@@ -36,7 +34,6 @@ export class ProcessStepEntity {
     recordedBy: UserEntity,
     executedBy: ConcreteUnitEntity,
     documents?: DocumentEntity[],
-    transportationDetails?: TransportationDetailsEntity,
   ) {
     this.id = id;
     this.startedAt = startedAt;
@@ -46,7 +43,6 @@ export class ProcessStepEntity {
     this.recordedBy = recordedBy;
     this.executedBy = executedBy;
     this.documents = documents;
-    this.transportationDetails = transportationDetails;
   }
 
   static fromDeepDatabase(processStep: ProcessStepDeepDbType): ProcessStepEntity {
@@ -60,9 +56,6 @@ export class ProcessStepEntity {
       UserEntity.fromNestedDatabase(processStep.recordedBy),
       getSpecificUnit(processStep.executedBy),
       processStep.documents.map((doc) => DocumentEntity.fromDatabase(doc)),
-      processStep.processStepDetails?.transportationDetails
-        ? TransportationDetailsEntity.fromDatabase(processStep.processStepDetails.transportationDetails)
-        : undefined,
     );
   }
 }

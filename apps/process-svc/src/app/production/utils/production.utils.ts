@@ -7,7 +7,7 @@
  */
 
 import { BatchEntity, CreateProductionEntity, ProcessStepEntity } from '@h2-trust/contracts/entities';
-import { EnergySource, PowerType, RenewableShareInGridMix, TimeInSeconds } from '@h2-trust/domain';
+import { PowerProductionType, PowerType, RenewableShareInGridMix, TimeInSeconds } from '@h2-trust/domain';
 import { InternalException } from '@h2-trust/exceptions';
 import { convertDateToMilliseconds, convertDateToSeconds } from '@h2-trust/utils';
 import { AccountingPeriod } from '../production.types';
@@ -197,9 +197,9 @@ export function calculatePartialAmountRelativeToPowerProduction(
  */
 export function splitGridPowerProduction(
   createProduction: CreateProductionEntity,
-  powerProductionUnitEnergySource: EnergySource,
+  powerProductionUnitEnergySource: PowerProductionType,
 ): CreateProductionEntity[] {
-  if (powerProductionUnitEnergySource != EnergySource.GRID) {
+  if (powerProductionUnitEnergySource != PowerProductionType.GRID) {
     return [createProduction];
   }
 

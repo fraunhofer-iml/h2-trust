@@ -136,8 +136,8 @@ export class ProcessStepRepository {
     const processSteps = await this.prismaService.processStep
       .findMany({
         where: {
+          executedBy: { id: storageUnitId },
           batch: {
-            hydrogenStorageUnitId: storageUnitId,
             active: true,
           },
         },
@@ -199,7 +199,6 @@ export class ProcessStepRepository {
         amount: ps.batch.amount,
         type: BatchType[ps.batch.type as keyof typeof BatchType],
         ownerId: ps.batch.owner.id,
-        hydrogenStorageUnitId: ps.batch.hydrogenStorageUnit?.id ?? null,
       };
     });
 

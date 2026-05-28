@@ -67,7 +67,7 @@ export class PowerPurchaseAgreementEntity {
       powerPurchaseAgreement.suggestedPowerTypeName,
       UserEntity.fromDeepDatabase(powerPurchaseAgreement.requestingUser),
       powerPurchaseAgreement.powerProductionUnit
-        ? PowerProductionUnitEntity.fromNestedPowerProductionUnit(powerPurchaseAgreement.powerProductionUnit)
+        ? PowerProductionUnitEntity.fromNestedUnitDatabase(powerPurchaseAgreement.powerProductionUnit)
         : undefined,
       powerPurchaseAgreement.decision
         ? PowerPurchaseAgreementDecisionEntity.fromDatabase(powerPurchaseAgreement.decision)
@@ -89,7 +89,7 @@ export class PowerPurchaseAgreementEntity {
       powerPurchaseAgreement.suggestedPowerTypeName,
       UserEntity.fromDeepDatabase(powerPurchaseAgreement.requestingUser),
       powerPurchaseAgreement.powerProductionUnit
-        ? PowerProductionUnitEntity.fromNestedPowerProductionUnit(powerPurchaseAgreement.powerProductionUnit)
+        ? PowerProductionUnitEntity.fromNestedUnitDatabase(powerPurchaseAgreement.powerProductionUnit)
         : undefined,
     );
   }

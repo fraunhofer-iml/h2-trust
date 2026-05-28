@@ -13,7 +13,6 @@ import {
   ConcreteUnitEntity,
   HydrogenProductionUnitEntity,
   HydrogenStorageUnitEntity,
-  PowerProductionTypeEntity,
   PowerProductionUnitEntity,
 } from '@h2-trust/contracts/entities';
 import {
@@ -64,11 +63,6 @@ export class UnitController {
   @MessagePattern(UnitMessagePatterns.READ_HYDROGEN_STORAGE)
   readHydrogenStorageUnits(payload: ReadByIdPayload): Promise<HydrogenStorageUnitEntity[]> {
     return this.service.readHydrogenStorageUnitsByOwnerId(payload);
-  }
-
-  @MessagePattern(UnitMessagePatterns.READ_POWER_PRODUCTION_TYPES)
-  readPowerProductionTypes(): Promise<PowerProductionTypeEntity[]> {
-    return this.service.readPowerProductionTypes();
   }
 
   @MessagePattern(UnitMessagePatterns.CREATE_POWER_PRODUCTION)

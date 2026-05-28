@@ -83,7 +83,7 @@ export class ProductionService {
 
     const createProductionEntities: CreateProductionEntity[] = splitGridPowerProduction(
       createProductionEntity,
-      powerProductionUnit.type.energySource,
+      powerProductionUnit.type,
     );
 
     const productionUnitForId: Map<string, ConcreteUnitEntity> =

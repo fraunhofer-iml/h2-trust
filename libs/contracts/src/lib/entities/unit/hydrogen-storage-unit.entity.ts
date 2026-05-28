@@ -6,22 +6,17 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import {
-  HydrogenStorageUnitDeepDbType,
-  HydrogenStorageUnitNestedDbType,
-  UnitDeepDbType,
-  UnitNestedDbType,
-} from '@h2-trust/database';
+import { UnitDeepDbType, UnitNestedDbType } from '@h2-trust/database';
 import { HydrogenStorageType, RfnboType, UnitType } from '@h2-trust/domain';
 import { assertValidEnum } from '@h2-trust/utils';
 import { AddressEntity } from '../address';
 import { HydrogenComponentEntity } from '../bottling';
 import { CompanyEntity } from '../company';
+import { ProcessStepEntity } from '../process-step';
 import { BaseUnitEntity } from './base-unit.entity';
 
 export class HydrogenStorageUnitEntity extends BaseUnitEntity {
   capacity: number;
-  pressure: number;
   type: HydrogenStorageType;
   filling: HydrogenComponentEntity[];
 
@@ -40,7 +35,6 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
     operator: CompanyEntity,
     unitType: UnitType,
     capacity: number,
-    pressure: number,
     type: HydrogenStorageType,
     filling: HydrogenComponentEntity[],
     active: boolean,
@@ -62,66 +56,67 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
       active,
     );
     this.capacity = capacity;
-    this.pressure = pressure;
     this.type = type;
     this.filling = filling;
   }
 
-  static fromDeepDatabase(baseUnit: UnitDeepDbType): HydrogenStorageUnitEntity {
-    assertValidEnum(baseUnit.hydrogenStorageUnit?.type, HydrogenStorageType, 'HydrogenStorageType');
+  static fromDeepDatabase(
+    baseUnit: UnitDeepDbType,
+    processStepsOfStorageUnit: ProcessStepEntity[],
+  ): HydrogenStorageUnitEntity {
+    assertValidEnum(baseUnit.specification?.storageType, HydrogenStorageType, 'HydrogenStorageType');
 
     return {
       ...BaseUnitEntity.fromDeepBaseUnit(baseUnit),
       unitType: UnitType.HYDROGEN_STORAGE,
 
-      capacity: baseUnit.hydrogenStorageUnit?.capacity.toNumber() ?? 0,
-      pressure: baseUnit.hydrogenStorageUnit?.pressure.toNumber() ?? 0,
-      filling: baseUnit.hydrogenStorageUnit ? HydrogenStorageUnitEntity.mapFilling(baseUnit.hydrogenStorageUnit) : [],
-      type: baseUnit.hydrogenStorageUnit?.type,
+      capacity: baseUnit.specification?.capacity.toNumber() ?? 0,
+      filling: baseUnit.specification ? HydrogenStorageUnitEntity.mapFilling(processStepsOfStorageUnit) : [],
+      type: baseUnit.specification?.storageType,
     };
   }
 
-  static fromNestedDatabase(baseUnit: UnitNestedDbType): HydrogenStorageUnitEntity {
-    assertValidEnum(baseUnit.hydrogenStorageUnit?.type, HydrogenStorageType, 'HydrogenStorageType');
+  static fromNestedDatabase(
+    baseUnit: UnitNestedDbType,
+    processStepsOfStorageUnit: ProcessStepEntity[],
+  ): HydrogenStorageUnitEntity {
+    assertValidEnum(baseUnit.specification?.storageType, HydrogenStorageType, 'HydrogenStorageType');
 
     return {
       ...BaseUnitEntity.fromNestedBaseUnit(baseUnit),
       unitType: UnitType.HYDROGEN_STORAGE,
 
-      capacity: baseUnit.hydrogenStorageUnit?.capacity.toNumber() ?? 0,
-      pressure: baseUnit.hydrogenStorageUnit?.pressure.toNumber() ?? 0,
-      filling: baseUnit.hydrogenStorageUnit ? HydrogenStorageUnitEntity.mapFilling(baseUnit.hydrogenStorageUnit) : [],
-      type: baseUnit.hydrogenStorageUnit?.type,
+      capacity: baseUnit.specification?.capacity.toNumber() ?? 0,
+      filling: baseUnit.specification ? HydrogenStorageUnitEntity.mapFilling(processStepsOfStorageUnit) : [],
+      type: baseUnit.specification?.storageType,
     };
   }
 
   static fromNestedHydrogenStorageUnit(
-    nestedHydrogenStorageUnit: HydrogenStorageUnitNestedDbType,
+    storageUnit: UnitNestedDbType,
+    processStepsOfStorageUnit: ProcessStepEntity[],
   ): HydrogenStorageUnitEntity {
-    assertValidEnum(nestedHydrogenStorageUnit.type, HydrogenStorageType, 'HydrogenStorageType');
+    assertValidEnum(storageUnit.type, HydrogenStorageType, 'HydrogenStorageType');
 
     return {
-      ...BaseUnitEntity.fromFlatBaseUnit(nestedHydrogenStorageUnit.generalInfo),
+      ...BaseUnitEntity.fromFlatBaseUnit(storageUnit),
       unitType: UnitType.HYDROGEN_STORAGE,
 
-      capacity: nestedHydrogenStorageUnit.capacity.toNumber() ?? 0,
-      pressure: nestedHydrogenStorageUnit.pressure.toNumber() ?? 0,
-      filling: HydrogenStorageUnitEntity.mapFilling(nestedHydrogenStorageUnit),
-      type: nestedHydrogenStorageUnit.type,
+      capacity: storageUnit.specification.capacity.toNumber() ?? 0,
+      filling: HydrogenStorageUnitEntity.mapFilling(processStepsOfStorageUnit),
+      type: storageUnit.type,
     };
   }
 
-  private static mapFilling(
-    unit: HydrogenStorageUnitDeepDbType | HydrogenStorageUnitNestedDbType,
-  ): HydrogenComponentEntity[] {
+  private static mapFilling(processSteps: ProcessStepEntity[]): HydrogenComponentEntity[] {
     return (
-      unit?.filling?.map((batch) => {
-        assertValidEnum(batch.batchDetails?.qualityDetails?.rfnboType, RfnboType, 'RfnboType');
+      processSteps.map((processStep) => {
+        assertValidEnum(processStep?.batch?.qualityDetails?.rfnboType, RfnboType, 'RfnboType');
 
         return new HydrogenComponentEntity(
-          batch?.processStep?.id ?? null,
-          batch.amount?.toNumber() ?? 0,
-          batch.batchDetails?.qualityDetails?.rfnboType,
+          processStep?.id ?? null,
+          processStep?.batch?.amount ?? 0,
+          processStep.batch?.qualityDetails?.rfnboType,
         );
       }) ?? []
     );

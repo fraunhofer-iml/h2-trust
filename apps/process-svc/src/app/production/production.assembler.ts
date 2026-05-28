@@ -12,7 +12,6 @@ import {
   CompanyEntity,
   ConcreteUnitEntity,
   CreateProductionEntity,
-  HydrogenStorageUnitEntity,
   ProcessStepEntity,
   QualityDetailsEntity,
   UserEntity,
@@ -125,14 +124,11 @@ function createProcessStep(accountingPeriod: AccountingPeriod, params: ProcessSt
 
   const { batchParams } = params;
 
-  const hydrogenStorageUnit = batchParams.hydrogenStorageUnitId
-    ? ({ id: batchParams.hydrogenStorageUnitId } as HydrogenStorageUnitEntity)
-    : null;
-
   const qualityDetails: QualityDetailsEntity = new QualityDetailsEntity(
     null,
     RfnboType.NOT_SPECIFIED,
     batchParams.powerType,
+    0,
   );
 
   const batch = new BatchEntity(
@@ -143,7 +139,6 @@ function createProcessStep(accountingPeriod: AccountingPeriod, params: ProcessSt
     accountingPeriod.predecessors,
     [],
     { id: batchParams.owner } as CompanyEntity,
-    hydrogenStorageUnit,
     qualityDetails,
   );
 
