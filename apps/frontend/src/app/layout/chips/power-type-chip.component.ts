@@ -21,11 +21,11 @@ export class PowerTypeChipComponent {
   powerType = input.required<PowerType>();
 
   private readonly chipClassByPowerType = {
-    [PowerType.NOT_SPECIFIED]: 'border-neutral-300 bg-neutral-100 text-neutral-600',
-    [PowerType.NON_RENEWABLE]: 'border-neutral-300 bg-neutral-100 text-neutral-600',
+    [PowerType.NOT_SPECIFIED]: 'border-neutral-200 bg-white text-neutral-600',
+    [PowerType.NON_RENEWABLE]: 'border-neutral-200 bg-neutral-100 text-neutral-700',
     [PowerType.PARTLY_RENEWABLE]:
       'bg-gradient-to-r from-neutral-100 to-secondary-100 text-neutral-700 border-r-secondary-100 border-neutral-200',
-    [PowerType.RENEWABLE]: 'border-secondary-100 bg-secondary-100/60 text-secondary-700',
+    [PowerType.RENEWABLE]: 'border-secondary-200 bg-secondary-100/60 text-secondary-700',
   };
 
   icon = computed(() => {

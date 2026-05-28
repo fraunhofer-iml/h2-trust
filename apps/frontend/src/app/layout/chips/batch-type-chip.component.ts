@@ -18,7 +18,7 @@ import { StatusChipComponent } from './status-chip.component';
   template: `<app-status-chip
     [icon]="icon()"
     [label]="type() | enum: 'processType'"
-    chipClass="border-primary-100 bg-primary-100/60 text-primary-700"
+    chipClass="border-primary-200 bg-primary-100/60 text-primary-700"
     iconClass="text-primary-700"
   />`,
 })
