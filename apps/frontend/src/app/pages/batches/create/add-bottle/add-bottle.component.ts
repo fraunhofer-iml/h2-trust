@@ -28,22 +28,21 @@ import {
   UserDto,
 } from '@h2-trust/contracts/dtos';
 import { FuelType, MeasurementUnit, RfnboType, TransportMode } from '@h2-trust/domain';
-import { FileDragAndDropComponent } from '../../../layout/drag-and-drop/file-drag-and-drop.component';
-import { FileCardComponent } from '../../../layout/file-card/file-card.component';
-import { TypeSelectionComponent } from '../../../layout/type-selection/type-selection.component';
-import { FileTypes } from '../../../shared/constants/file-types';
-import { H2TrustRoutes } from '../../../shared/constants/routes';
-import { EnumPipe } from '../../../shared/pipes/enum.pipe';
-import { UnitPipe } from '../../../shared/pipes/unit.pipe';
-import { companiesQueryOptions } from '../../../shared/queries/companies.query';
-import { QueryKeyPrefix } from '../../../shared/queries/shared-query-keys';
-import { hydrogenStorageUnitsQueryOptions } from '../../../shared/queries/units.query';
-import { BottlingService } from '../../../shared/services/bottling/bottling.service';
-import { CompaniesService } from '../../../shared/services/companies/companies.service';
-import { UnitsService } from '../../../shared/services/units/units.service';
-import { handleMutationWithPromiseToast } from '../../../shared/util/query-error-handler';
+import { FileDragAndDropComponent } from '../../../../layout/drag-and-drop/file-drag-and-drop.component';
+import { FileCardComponent } from '../../../../layout/file-card/file-card.component';
+import { TypeSelectionComponent } from '../../../../layout/type-selection/type-selection.component';
+import { FileTypes } from '../../../../shared/constants/file-types';
+import { H2TrustRoutes } from '../../../../shared/constants/routes';
+import { EnumPipe } from '../../../../shared/pipes/enum.pipe';
+import { UnitPipe } from '../../../../shared/pipes/unit.pipe';
+import { companiesQueryOptions } from '../../../../shared/queries/companies.query';
+import { QueryKeyPrefix } from '../../../../shared/queries/shared-query-keys';
+import { hydrogenStorageUnitsQueryOptions } from '../../../../shared/queries/units.query';
+import { BottlingService } from '../../../../shared/services/bottling/bottling.service';
+import { CompaniesService } from '../../../../shared/services/companies/companies.service';
+import { UnitsService } from '../../../../shared/services/units/units.service';
+import { handleMutationWithPromiseToast } from '../../../../shared/util/query-error-handler';
 import { BottlingForm } from './form';
-import { StorageFillingLevelsComponent } from './storage-filling-levels/storage-filling-levels.component';
 
 @Component({
   selector: 'app-add-bottle',
@@ -64,7 +63,6 @@ import { StorageFillingLevelsComponent } from './storage-filling-levels/storage-
     RouterModule,
     UnitPipe,
     TypeSelectionComponent,
-    StorageFillingLevelsComponent,
     FileDragAndDropComponent,
     FileCardComponent,
   ],

@@ -53,14 +53,14 @@ export class BatchController {
         new PaginatedDataDto<BatchDto>(
           [
             new BatchDto(
-              'Hydrogen Electrolyzer Dortmund 001',
+              'process-step-hydrogen-transportation-2',
               1000,
               new Date(),
               ProcessType.HYDROGEN_BOTTLING,
               RfnboType.RFNBO_READY,
             ),
             new BatchDto(
-              'Hydrogen Electrolyzer Dortmund 002',
+              'process-step-hydrogen-transportation-1',
               2000,
               new Date(),
               ProcessType.HYDROGEN_PRODUCTION,

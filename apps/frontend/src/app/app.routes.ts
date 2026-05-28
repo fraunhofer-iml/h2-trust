@@ -22,10 +22,6 @@ export const appRoutes: Route[] = [
     loadChildren: () => import('./pages/units/routes').then((m) => m.HYDROGEN_ASSETS_ROUTES),
   },
   {
-    path: H2TrustRoutes.BOTTLING,
-    loadChildren: () => import('./pages/bottling/routes').then((m) => m.BOTTLING_ROUTES),
-  },
-  {
     path: H2TrustRoutes.PRODUCTION,
     canActivate: [canActivateAuth],
     loadChildren: () => import('./pages/production/routes').then((m) => m.PRODUCTION_ROUTES),

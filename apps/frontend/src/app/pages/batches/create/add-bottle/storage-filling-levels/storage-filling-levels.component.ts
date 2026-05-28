@@ -13,11 +13,11 @@ import { EChartsOption, TooltipComponentFormatterCallbackParams } from 'echarts'
 import { NgxEchartsDirective, provideEchartsCore } from 'ngx-echarts';
 import { HydrogenStorageOverviewDto } from '@h2-trust/contracts/dtos';
 import { MeasurementUnit, RfnboType } from '@h2-trust/domain';
-import { CHART_COLORS } from '../../../../shared/constants/chart-colors';
-import { Warnings } from '../../../../shared/constants/warnings';
-import { formatNumberForChart } from '../../../../shared/formatting/chart-number-format';
-import { EnumPipe } from '../../../../shared/pipes/enum.pipe';
-import { UnitPipe } from '../../../../shared/pipes/unit.pipe';
+import { CHART_COLORS } from '../../../../../shared/constants/chart-colors';
+import { Warnings } from '../../../../../shared/constants/warnings';
+import { formatNumberForChart } from '../../../../../shared/formatting/chart-number-format';
+import { EnumPipe } from '../../../../../shared/pipes/enum.pipe';
+import { UnitPipe } from '../../../../../shared/pipes/unit.pipe';
 
 @Component({
   selector: 'app-storage-filling-levels',

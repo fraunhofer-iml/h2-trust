@@ -8,17 +8,19 @@ import { MatInputModule } from '@angular/material/input';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { RouterLink } from '@angular/router';
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { BatchDto } from '@h2-trust/contracts/dtos';
 import { MeasurementUnit, ProcessType } from '@h2-trust/domain';
-import { BatchTypeChipComponent } from '../../layout/chips/batch-type-chip.component';
-import { RfnboChipComponent } from '../../layout/chips/rfnbo-chip.component';
-import { BatchFilterModel } from '../../shared/model/batch-filter.model';
-import { PaginationModel } from '../../shared/model/pagination.model';
-import { EnumPipe } from '../../shared/pipes/enum.pipe';
-import { UnitPipe } from '../../shared/pipes/unit.pipe';
-import { QueryKeyPrefix } from '../../shared/queries/shared-query-keys';
-import { BatchService } from '../../shared/services/batch/batch.service';
+import { BatchTypeChipComponent } from '../../../layout/chips/batch-type-chip.component';
+import { RfnboChipComponent } from '../../../layout/chips/rfnbo-chip.component';
+import { BatchFilterModel } from '../../../shared/model/batch-filter.model';
+import { PaginationModel } from '../../../shared/model/pagination.model';
+import { EnumPipe } from '../../../shared/pipes/enum.pipe';
+import { UnitPipe } from '../../../shared/pipes/unit.pipe';
+import { QueryKeyPrefix } from '../../../shared/queries/shared-query-keys';
+import { BatchService } from '../../../shared/services/batch/batch.service';
 
 @Component({
   selector: 'app-batch-page',
@@ -41,6 +43,8 @@ import { BatchService } from '../../shared/services/batch/batch.service';
     EnumPipe,
     MatButtonModule,
     BatchTypeChipComponent,
+    RouterLink,
+    MatTooltipModule,
   ],
   templateUrl: './batch-page.component.html',
 })
@@ -52,7 +56,7 @@ export class BatchPageComponent {
 
   batchService = inject(BatchService);
 
-  displayedColumns = ['id', 'amount', 'createdAt', 'batchType', 'rfnboType'] as const;
+  displayedColumns = ['id', 'amount', 'createdAt', 'batchType', 'rfnboType', 'dpp'] as const;
 
   dataSource: MatTableDataSource<BatchDto> = new MatTableDataSource<BatchDto>();
   totalItems = 0;

@@ -101,12 +101,6 @@ export class SidebarComponent implements OnInit {
       route: H2TrustRoutes.BATCHES,
       visible: signal(true),
     },
-    {
-      title: 'Bottling',
-      icon: 'propane_tank',
-      route: H2TrustRoutes.BOTTLING,
-      visible: this.roles.isHydrogenProducer,
-    },
   ];
 
   authenticated = false;
