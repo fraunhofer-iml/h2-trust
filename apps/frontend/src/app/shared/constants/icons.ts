@@ -12,6 +12,7 @@ import {
   CsvContentType,
   PowerPurchaseAgreementStatus,
   PowerType,
+  ProcessType,
   RfnboType,
   UnitType,
 } from '@h2-trust/domain';
@@ -110,6 +111,17 @@ const CALCULATION_TOPIC_ICON_BY_TYPE: Record<CalculationTopic, string> = {
   [CalculationTopic.HYDROGEN_BOTTLING]: ICONS.PROCESS_STEPS.HYDROGEN_BOTTLING,
 };
 
+const PROCESS_STEP_ICON_BY_TYPE: Record<ProcessType, string> = {
+  [ProcessType.POWER_PRODUCTION]: ICONS.PROCESS_STEPS.POWER_SUPPLY,
+  [ProcessType.WATER_CONSUMPTION]: ICONS.PROCESS_STEPS.WATER_SUPPLY,
+  [ProcessType.HYDROGEN_PRODUCTION]: ICONS.PROCESS_STEPS.HYDROGEN_PRODUCTION,
+  [ProcessType.HYDROGEN_BOTTLING]: ICONS.PROCESS_STEPS.HYDROGEN_BOTTLING,
+  [ProcessType.HYDROGEN_TRANSPORTATION]: ICONS.PROCESS_STEPS.TRANSPORTATION,
+  [ProcessType.COMPRESSION]: ICONS.UNITS.COMPRESSION,
+  [ProcessType.HYDROGEN_STORAGE]: ICONS.UNITS.HYDROGEN_STORAGE,
+  [ProcessType.END_USE]: ICONS.UNITS.END_USE,
+};
+
 type PowerStatisticsIconKey = 'BASE' | Exclude<PowerType, PowerType.NOT_SPECIFIED>;
 
 const POWER_STATISTICS_ICON_BY_KEY: Record<PowerStatisticsIconKey, string> = {
@@ -119,8 +131,10 @@ const POWER_STATISTICS_ICON_BY_KEY: Record<PowerStatisticsIconKey, string> = {
   [PowerType.NON_RENEWABLE]: ICONS.POWER.NON_RENEWABLE,
 };
 
-const HYDROGEN_STATISTICS_ICON_BY_TYPE: Record<RfnboType, string> = {
-  [RfnboType.NOT_SPECIFIED]: ICONS.HYDROGEN.BASE,
+type HydrogenStatisticsIconKey = 'BASE' | Exclude<RfnboType, RfnboType.NOT_SPECIFIED>;
+
+const HYDROGEN_STATISTICS_ICON_BY_TYPE: Record<HydrogenStatisticsIconKey, string> = {
+  BASE: ICONS.HYDROGEN.BASE,
   [RfnboType.RFNBO_READY]: ICONS.HYDROGEN.RFNBO_READY,
   [RfnboType.NON_CERTIFIABLE]: ICONS.HYDROGEN.NON_CERTIFIABLE,
 };
@@ -161,6 +175,10 @@ export function getPowerStatisticsIcon(key: PowerStatisticsIconKey): string {
   return POWER_STATISTICS_ICON_BY_KEY[key];
 }
 
-export function getHydrogenStatisticsIcon(type: RfnboType): string {
+export function getHydrogenStatisticsIcon(type: HydrogenStatisticsIconKey): string {
   return HYDROGEN_STATISTICS_ICON_BY_TYPE[type];
+}
+
+export function getProcessTypeIcon(type: ProcessType): string {
+  return PROCESS_STEP_ICON_BY_TYPE[type];
 }

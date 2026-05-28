@@ -26,8 +26,8 @@ export class RfnboChipComponent {
 
   private readonly chipClassByType = {
     [RfnboType.NOT_SPECIFIED]: 'border-neutral-300 bg-neutral-100 text-neutral-600',
-    [RfnboType.RFNBO_READY]: 'border-secondary-100 bg-secondary-100/60 text-secondary-700',
-    [RfnboType.NON_CERTIFIABLE]: 'border-neutral-300 bg-neutral-100 text-neutral-600',
+    [RfnboType.RFNBO_READY]: 'border-secondary-200 bg-secondary-100/60 text-secondary-700',
+    [RfnboType.NON_CERTIFIABLE]: 'border-neutral-200 bg-neutral-100 text-neutral-600',
   };
 
   normalizedStatus = computed((): RfnboType => {

@@ -10,7 +10,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { BatchDto } from '@h2-trust/contracts/dtos';
-import { MeasurementUnit, UnitType } from '@h2-trust/domain';
+import { MeasurementUnit, ProcessType } from '@h2-trust/domain';
+import { BatchTypeChipComponent } from '../../layout/chips/batch-type-chip.component';
 import { RfnboChipComponent } from '../../layout/chips/rfnbo-chip.component';
 import { BatchFilterModel } from '../../shared/model/batch-filter.model';
 import { PaginationModel } from '../../shared/model/pagination.model';
@@ -39,12 +40,15 @@ import { BatchService } from '../../shared/services/batch/batch.service';
     UnitPipe,
     EnumPipe,
     MatButtonModule,
+    BatchTypeChipComponent,
   ],
   templateUrl: './batch-page.component.html',
 })
 export class BatchPageComponent {
   protected readonly MeasurementUnit = MeasurementUnit;
-  protected readonly availableBatchTypes = Object.values(UnitType);
+  protected readonly availableBatchTypes = Object.values(ProcessType).filter(
+    (type) => type !== ProcessType.WATER_CONSUMPTION,
+  );
 
   batchService = inject(BatchService);
 

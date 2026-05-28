@@ -7,25 +7,25 @@
  */
 
 import { Component, computed, input } from '@angular/core';
-import { UnitType } from '@h2-trust/domain';
-import { getUnitIcon } from '../../shared/constants/icons';
+import { ProcessType } from '@h2-trust/domain';
+import { getProcessTypeIcon } from '../../shared/constants/icons';
 import { EnumPipe } from '../../shared/pipes/enum.pipe';
 import { StatusChipComponent } from './status-chip.component';
 
 @Component({
-  selector: 'app-ppa-status-chip',
+  selector: 'app-batch-type-chip',
   imports: [StatusChipComponent, EnumPipe],
   template: `<app-status-chip
     [icon]="icon()"
-    [label]="type() | enum: 'unitType'"
+    [label]="type() | enum: 'processType'"
     chipClass="border-primary-100 bg-primary-100/60 text-primary-700"
     iconClass="text-primary-700"
   />`,
 })
 export class BatchTypeChipComponent {
-  type = input.required<UnitType>();
+  type = input.required<ProcessType>();
 
   icon = computed(() => {
-    return getUnitIcon(this.type());
+    return getProcessTypeIcon(this.type());
   });
 }

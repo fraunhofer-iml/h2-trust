@@ -1,8 +1,8 @@
-import { Controller, Get, NotImplementedException, Query } from '@nestjs/common';
+import { Controller, Get, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiQuery } from '@nestjs/swagger';
 import { KeycloakUser } from 'nest-keycloak-connect';
 import { BatchDto, PaginatedDataDto, type AuthenticatedKCUser } from '@h2-trust/contracts/dtos';
-import { UnitType } from '@h2-trust/domain';
+import { ProcessType, RfnboType, UnitType } from '@h2-trust/domain';
 
 @Controller('batches')
 export class BatchController {
@@ -48,6 +48,29 @@ export class BatchController {
     @Query('batchType') _to: UnitType,
     @KeycloakUser() _authenticatedUser: AuthenticatedKCUser,
   ): Promise<PaginatedDataDto<BatchDto>> {
-    throw new NotImplementedException();
+    return new Promise((resolve) => {
+      resolve(
+        new PaginatedDataDto<BatchDto>(
+          [
+            new BatchDto(
+              'Hydrogen Electrolyzer Dortmund 001',
+              1000,
+              new Date(),
+              ProcessType.HYDROGEN_BOTTLING,
+              RfnboType.RFNBO_READY,
+            ),
+            new BatchDto(
+              'Hydrogen Electrolyzer Dortmund 002',
+              2000,
+              new Date(),
+              ProcessType.HYDROGEN_PRODUCTION,
+              RfnboType.NON_CERTIFIABLE,
+            ),
+          ],
+          2,
+          1,
+        ),
+      );
+    });
   }
 }
