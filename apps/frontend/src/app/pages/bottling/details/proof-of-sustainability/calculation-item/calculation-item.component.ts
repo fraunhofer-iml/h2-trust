@@ -12,7 +12,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { EmissionCalculationDto } from '@h2-trust/contracts/dtos';
 import { CalculationTopic, MeasurementUnit } from '@h2-trust/domain';
 import { BaseSheetComponent } from '../../../../../layout/sheet/sheet.component';
-import { ICONS } from '../../../../../shared/constants/icons';
+import { getCalculationTopicIcon } from '../../../../../shared/constants/icons';
 import { EnumPipe } from '../../../../../shared/pipes/enum.pipe';
 import { UnitPipe } from '../../../../../shared/pipes/unit.pipe';
 
@@ -31,16 +31,9 @@ export class CalculationItemComponent {
   MeasurementUnit = MeasurementUnit;
 
   getIcon(topic: string) {
-    const map = new Map<string, string>([
-      [CalculationTopic.HYDROGEN_STORAGE, ICONS.PROCESS_STEPS.HYDROGEN_STORAGE],
-      [CalculationTopic.WATER_SUPPLY, ICONS.PROCESS_STEPS.WATER_SUPPLY],
-      [CalculationTopic.HYDROGEN_TRANSPORTATION, ICONS.PROCESS_STEPS.TRANSPORTATION],
-      [CalculationTopic.POWER_SUPPLY, ICONS.PROCESS_STEPS.POWER_SUPPLY],
-      [CalculationTopic.HYDROGEN_BOTTLING, ICONS.PROCESS_STEPS.HYDROGEN_BOTTLING],
-    ]);
-
-    return map.get(topic);
+    return getCalculationTopicIcon(topic as CalculationTopic);
   }
+
   reduceAmount(items: EmissionCalculationDto[]): number {
     return items.reduce((acc, curr) => acc + curr.result, 0);
   }

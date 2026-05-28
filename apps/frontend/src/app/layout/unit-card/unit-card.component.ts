@@ -14,7 +14,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltip } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
 import { UnitOverviewDto } from '@h2-trust/contracts/dtos';
-import { ICONS } from '../../shared/constants/icons';
+import { getUnitIcon } from '../../shared/constants/icons';
 import { EnumPipe } from '../../shared/pipes/enum.pipe';
 
 type PartialUnitOverviewDto = Pick<UnitOverviewDto, 'id' | 'name' | 'unitType' | 'active'>;
@@ -27,10 +27,9 @@ type PartialUnitOverviewDto = Pick<UnitOverviewDto, 'id' | 'name' | 'unitType' |
 export class UnitCardComponent {
   unit = input.required<PartialUnitOverviewDto>();
   showActions = input<boolean>(true);
-  protected readonly ICONS = ICONS;
 
   icon$ = computed(() => {
     const type = this.unit().unitType;
-    return ICONS.UNITS[type];
+    return getUnitIcon(type);
   });
 }

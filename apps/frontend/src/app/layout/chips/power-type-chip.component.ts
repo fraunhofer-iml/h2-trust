@@ -8,7 +8,7 @@
 
 import { Component, computed, input } from '@angular/core';
 import { PowerType } from '@h2-trust/domain';
-import { ICONS } from '../../shared/constants/icons';
+import { getPowerTypeIcon } from '../../shared/constants/icons';
 import { EnumPipe } from '../../shared/pipes/enum.pipe';
 import { StatusChipComponent } from './status-chip.component';
 
@@ -29,18 +29,7 @@ export class PowerTypeChipComponent {
   };
 
   icon = computed(() => {
-    const type = this.powerType();
-
-    switch (type) {
-      case PowerType.NOT_SPECIFIED:
-        return ICONS.POWER.NON_RENEWABLE;
-      case PowerType.NON_RENEWABLE:
-        return ICONS.POWER.NON_RENEWABLE;
-      case PowerType.PARTLY_RENEWABLE:
-        return ICONS.POWER.PARTLY_RENEWABLE;
-      case PowerType.RENEWABLE:
-        return ICONS.POWER.RENEWABLE;
-    }
+    return getPowerTypeIcon(this.powerType());
   });
 
   chipClass = computed(() => {

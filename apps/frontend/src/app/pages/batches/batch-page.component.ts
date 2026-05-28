@@ -12,7 +12,6 @@ import { injectQuery } from '@tanstack/angular-query-experimental';
 import { BatchDto } from '@h2-trust/contracts/dtos';
 import { MeasurementUnit, UnitType } from '@h2-trust/domain';
 import { RfnboChipComponent } from '../../layout/chips/rfnbo-chip.component';
-import { ICONS } from '../../shared/constants/icons';
 import { BatchFilterModel } from '../../shared/model/batch-filter.model';
 import { PaginationModel } from '../../shared/model/pagination.model';
 import { EnumPipe } from '../../shared/pipes/enum.pipe';
@@ -46,7 +45,6 @@ import { BatchService } from '../../shared/services/batch/batch.service';
 export class BatchPageComponent {
   protected readonly MeasurementUnit = MeasurementUnit;
   protected readonly availableBatchTypes = Object.values(UnitType);
-  protected readonly ICONS = ICONS.UNITS;
 
   batchService = inject(BatchService);
 

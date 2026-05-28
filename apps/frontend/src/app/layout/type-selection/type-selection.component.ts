@@ -11,7 +11,7 @@ import { Component, inject, input } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { CsvContentType, RfnboType, UnitType } from '@h2-trust/domain';
 import { EnumLabelKey } from '../../shared/constants/eum-label-resolvers';
-import { ICONS } from '../../shared/constants/icons';
+import { getSelectableTypeIcon } from '../../shared/constants/icons';
 import { EnumPipe } from '../../shared/pipes/enum.pipe';
 
 type SelectableType = UnitType | CsvContentType | RfnboType;
@@ -29,19 +29,6 @@ export class TypeSelectionComponent {
   disabledTypes = input<readonly SelectableType[]>([]);
   private readonly enumPipe = inject(EnumPipe);
 
-  private readonly iconMap: Record<string, string> = {
-    [UnitType.HYDROGEN_PRODUCTION]: ICONS.UNITS.HYDROGEN_PRODUCTION,
-    [UnitType.POWER_PRODUCTION]: ICONS.UNITS.POWER_PRODUCTION,
-    [UnitType.HYDROGEN_STORAGE]: ICONS.UNITS.HYDROGEN_STORAGE,
-    [UnitType.BOTTLING]: ICONS.UNITS.BOTTLING,
-    [UnitType.END_USE]: ICONS.UNITS.END_USE,
-    [UnitType.TRANSPORTATION]: ICONS.UNITS.TRANSPORTATION,
-    [UnitType.COMPRESSION]: ICONS.UNITS.COMPRESSION,
-    [CsvContentType.HYDROGEN]: ICONS.UNITS.HYDROGEN_PRODUCTION,
-    [CsvContentType.POWER]: ICONS.UNITS.POWER_PRODUCTION,
-    [RfnboType.RFNBO_READY]: ICONS.HYDROGEN.RFNBO_READY,
-    [RfnboType.NON_CERTIFIABLE]: ICONS.HYDROGEN.NON_CERTIFIABLE,
-  };
   selectType(type: SelectableType) {
     if (this.isDisabled(type)) return;
 
@@ -50,7 +37,7 @@ export class TypeSelectionComponent {
   }
 
   getIcon(type: SelectableType) {
-    return this.iconMap[type] ?? '';
+    return getSelectableTypeIcon(type);
   }
 
   getLabel(type: SelectableType) {

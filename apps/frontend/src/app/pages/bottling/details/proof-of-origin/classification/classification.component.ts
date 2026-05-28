@@ -11,7 +11,7 @@ import { Component, input } from '@angular/core';
 import { ClassificationDto } from '@h2-trust/contracts/dtos';
 import { BatchType, MeasurementUnit } from '@h2-trust/domain';
 import { ProofOfOriginCardComponent } from '../../../../../layout/proof-of-origin-card/proof-of-origin-card.component';
-import { ICONS } from '../../../../../shared/constants/icons';
+import { getBatchTypeIcon } from '../../../../../shared/constants/icons';
 import { PrettyStringPipe } from '../../../../../shared/pipes/pretty-string.pipe';
 import { UnitPipe } from '../../../../../shared/pipes/unit.pipe';
 
@@ -26,15 +26,10 @@ export class ClassificationComponent {
   protected readonly MeasurementUnit = MeasurementUnit;
 
   getIcon(key: string): string {
-    switch (key) {
-      case BatchType.HYDROGEN:
-        return ICONS.PROCESS_STEPS.HYDROGEN_STORAGE;
-      case BatchType.POWER:
-        return ICONS.PROCESS_STEPS.POWER_SUPPLY;
-      case BatchType.WATER:
-        return ICONS.PROCESS_STEPS.WATER_SUPPLY;
-      default:
-        return '';
+    if (!Object.values(BatchType).includes(key as BatchType)) {
+      return '';
     }
+
+    return getBatchTypeIcon(key as BatchType);
   }
 }

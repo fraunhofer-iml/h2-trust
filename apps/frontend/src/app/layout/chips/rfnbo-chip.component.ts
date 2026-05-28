@@ -8,7 +8,7 @@
 
 import { Component, computed, input } from '@angular/core';
 import { RfnboType } from '@h2-trust/domain';
-import { ICONS } from '../../shared/constants/icons';
+import { getRfnboIcon } from '../../shared/constants/icons';
 import { EnumPipe } from '../../shared/pipes/enum.pipe';
 import { StatusChipComponent } from './status-chip.component';
 
@@ -41,9 +41,7 @@ export class RfnboChipComponent {
   });
 
   icon = computed(() => {
-    return this.normalizedStatus() === RfnboType.NON_CERTIFIABLE
-      ? ICONS.HYDROGEN.NON_CERTIFIABLE
-      : ICONS.HYDROGEN.RFNBO_READY;
+    return getRfnboIcon(this.normalizedStatus());
   });
 
   chipClass = computed(() => {

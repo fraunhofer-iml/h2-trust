@@ -8,7 +8,7 @@
 
 import { Component, computed, input } from '@angular/core';
 import { PowerPurchaseAgreementStatus } from '@h2-trust/domain';
-import { ICONS } from '../../shared/constants/icons';
+import { getPpaStatusIcon } from '../../shared/constants/icons';
 import { EnumPipe } from '../../shared/pipes/enum.pipe';
 import { StatusChipComponent } from './status-chip.component';
 
@@ -40,14 +40,8 @@ export class PpaStatusChipComponent {
     },
   };
 
-  private readonly statusIcons = {
-    [PowerPurchaseAgreementStatus.APPROVED]: ICONS.PPA_STATUS.APPROVED,
-    [PowerPurchaseAgreementStatus.REJECTED]: ICONS.PPA_STATUS.REJECTED,
-    [PowerPurchaseAgreementStatus.PENDING]: ICONS.PPA_STATUS.PENDING,
-  };
-
   icon = computed(() => {
-    return this.statusIcons[this.status()];
+    return getPpaStatusIcon(this.status());
   });
 
   chipClass = computed(() => {

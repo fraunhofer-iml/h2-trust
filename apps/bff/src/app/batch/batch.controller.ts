@@ -42,15 +42,12 @@ export class BatchController {
     required: false,
   })
   readAllHydrogenBatches(
-    @Query('pageNumber') pageNumber: number,
-    @Query('pageSize') pageSize: number,
-    @Query('id') from: string,
-    @Query('batchType') to: UnitType,
-    @KeycloakUser() authenticatedUser: AuthenticatedKCUser,
+    @Query('pageNumber') _pageNumber: number,
+    @Query('pageSize') _pageSize: number,
+    @Query('id') _from: string,
+    @Query('batchType') _to: UnitType,
+    @KeycloakUser() _authenticatedUser: AuthenticatedKCUser,
   ): Promise<PaginatedDataDto<BatchDto>> {
-    console.log(
-      `Retrieving batches for user ${authenticatedUser.sub} with filters - pageNumber: ${pageNumber}, pageSize: ${pageSize}, id: ${from}, batchType: ${to}`,
-    );
     throw new NotImplementedException();
   }
 }

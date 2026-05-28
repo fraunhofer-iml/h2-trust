@@ -9,9 +9,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, computed, input } from '@angular/core';
 import { GridEnergyRfnboDto, RenewableEnergyRfnboDto, RfnboBaseDto } from '@h2-trust/contracts/dtos';
-import { RfnboType } from '@h2-trust/domain';
 import { RfnboChipComponent } from '../../../../layout/chips/rfnbo-chip.component';
-import { ICONS } from '../../../../shared/constants/icons';
+import { getRfnboComplianceStatus } from '../../../../shared/constants/icons';
 import { RFNBO_CRITERIA } from '../../../../shared/constants/rfnbo-criteria';
 import { EnumPipe } from '../../../../shared/pipes/enum.pipe';
 import { RfnboCheckCardComponent } from './rfnbo-check-card/rfnbo-check-card.component';
@@ -35,9 +34,5 @@ export class RfnboComplianceComponent {
     return dto.gridPowerUsed === false;
   }
 
-  rfnboStatus = computed(() =>
-    this.redCompliance()?.rfnboType
-      ? { text: RfnboType.RFNBO_READY, icon: ICONS.HYDROGEN.RFNBO_READY }
-      : { text: RfnboType.NON_CERTIFIABLE, icon: ICONS.HYDROGEN.NON_CERTIFIABLE },
-  );
+  rfnboStatus = computed(() => getRfnboComplianceStatus(Boolean(this.redCompliance()?.rfnboType)));
 }
