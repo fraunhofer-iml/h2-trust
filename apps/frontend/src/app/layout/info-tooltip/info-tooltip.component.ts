@@ -17,6 +17,5 @@ import { MatTooltipModule, TooltipPosition } from '@angular/material/tooltip';
 })
 export class InfoTooltipComponent {
   tooltip = input.required<string>();
-  style = input<'primary' | 'neutral'>('neutral');
   position = input<TooltipPosition>('below');
 }

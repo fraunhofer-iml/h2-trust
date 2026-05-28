@@ -17,9 +17,7 @@
 
   @for (section of data$().sections; track $index; let sIndex = $index) {
     <div class="flex flex-row items-center gap-2">
-      <div
-        class="border-primary-200/30 bg-primary-100 flex h-12 w-12 items-center justify-center rounded-full border-2"
-      >
+      <div class="border-primary-200/30 bg-primary-50 flex h-12 w-12 items-center justify-center rounded-full border-2">
         <span class="material-symbols-outlined text-primary-400"> arrow_downward </span>
       </div>
       <span class="py-2 text-neutral-500">{{ section.name | pretty | titlecase }}</span>
