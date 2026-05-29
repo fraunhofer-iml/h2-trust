@@ -16,7 +16,6 @@ import { injectQuery } from '@tanstack/angular-query-experimental';
 import { MeasurementUnit, UnitType } from '@h2-trust/domain';
 import { UnitCardComponent } from '../../../layout/unit-card/unit-card.component';
 import { EnumPipe } from '../../../shared/pipes/enum.pipe';
-import { UnitPipe } from '../../../shared/pipes/unit.pipe';
 import { unitsQueryOptions } from '../../../shared/queries/units.query';
 import { UnitsService } from '../../../shared/services/units/units.service';
 import {
@@ -27,16 +26,7 @@ import {
 
 @Component({
   selector: 'app-hydrogen-assets',
-  imports: [
-    CommonModule,
-    RouterModule,
-    MatButtonModule,
-    UnitPipe,
-    MatChipsModule,
-    EnumPipe,
-    MatDividerModule,
-    UnitCardComponent,
-  ],
+  imports: [CommonModule, RouterModule, MatButtonModule, MatChipsModule, EnumPipe, MatDividerModule, UnitCardComponent],
   providers: [],
   templateUrl: './hydrogen-assets.component.html',
 })

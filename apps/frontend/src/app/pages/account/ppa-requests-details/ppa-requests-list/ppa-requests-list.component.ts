@@ -7,7 +7,7 @@
  */
 
 import { Component, computed, input } from '@angular/core';
-import { MatDividerModule } from '@angular/material/divider';
+import { MatExpansionModule } from '@angular/material/expansion';
 import { PpaRequestDto } from '@h2-trust/contracts/dtos';
 import { PpaRequestRole } from '@h2-trust/domain';
 import { EmptyStateComponent } from '../../../../layout/empty-state/empty-state.component';
@@ -21,7 +21,7 @@ interface PpaRequestsData {
 @Component({
   selector: 'app-ppa-requests-list',
   standalone: true,
-  imports: [MatDividerModule, PpaRequestCardComponent, EmptyStateComponent],
+  imports: [MatExpansionModule, PpaRequestCardComponent, EmptyStateComponent],
   templateUrl: './ppa-requests-list.component.html',
 })
 export class PpaRequestsListComponent {

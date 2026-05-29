@@ -8,36 +8,26 @@
 
 import { CommonModule } from '@angular/common';
 import { Component, computed, input } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatTooltip } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
 import { UnitOverviewDto } from '@h2-trust/contracts/dtos';
-import { UnitType } from '@h2-trust/domain';
 import { ICONS } from '../../shared/constants/icons';
 import { EnumPipe } from '../../shared/pipes/enum.pipe';
-import { UnitStatusChipComponent } from '../chips/unit-status-chip.component';
+
+type PartialUnitOverviewDto = Pick<UnitOverviewDto, 'id' | 'name' | 'unitType' | 'active'>;
 
 @Component({
   selector: 'app-unit-card',
-  imports: [EnumPipe, MatChipsModule, UnitStatusChipComponent, CommonModule, RouterModule],
+  imports: [EnumPipe, MatChipsModule, CommonModule, RouterModule, MatButtonModule, MatMenuModule, MatTooltip],
   templateUrl: './unit-card.component.html',
 })
 export class UnitCardComponent {
-  unit = input.required<UnitOverviewDto>();
-
-  private styles: Record<UnitType, string> = {
-    [UnitType.HYDROGEN_PRODUCTION]: 'text-secondary-700 group-hover:bg-secondary-200/80 bg-secondary-100',
-    [UnitType.HYDROGEN_STORAGE]: 'text-tertiary-700 group-hover:bg-tertiary-200/80 bg-tertiary-100',
-    [UnitType.POWER_PRODUCTION]: 'text-primary-700 group-hover:bg-primary-200/80 bg-primary-100',
-    [UnitType.COMPRESSION]: 'text-primary-700 group-hover:bg-primary-200/80 bg-primary-100',
-    [UnitType.BOTTLING]: 'text-primary-700 group-hover:bg-primary-200/80 bg-primary-100',
-    [UnitType.TRANSPORT]: 'text-primary-700 group-hover:bg-primary-200/80 bg-primary-100',
-    [UnitType.CONSUME]: 'text-primary-700 group-hover:bg-primary-200/80 bg-primary-100',
-  };
-
-  styles$ = computed(() => {
-    const type = this.unit().unitType;
-    return this.styles[type];
-  });
+  unit = input.required<PartialUnitOverviewDto>();
+  showActions = input<boolean>(true);
+  protected readonly ICONS = ICONS;
 
   icon$ = computed(() => {
     const type = this.unit().unitType;

@@ -26,8 +26,9 @@ import { MatTooltip } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { ProcessedCsvDto } from '@h2-trust/contracts/dtos';
-import { BatchType, CsvContentType, CsvDocumentIntegrityStatus, MeasurementUnit } from '@h2-trust/domain';
-import { ICONS } from '../../../shared/constants/icons';
+import { BatchType, CsvContentType, MeasurementUnit } from '@h2-trust/domain';
+import { CsvContentTypeChipComponent } from '../../../layout/chips/csv-content-type-chip.component';
+import { VerificationStatusChipComponent } from '../../../layout/chips/verification-status-chip.component';
 import { UnitPipe } from '../../../shared/pipes/unit.pipe';
 import { QueryKeyPrefix } from '../../../shared/queries/shared-query-keys';
 import { ProductionService } from '../../../shared/services/production/production.service';
@@ -64,16 +65,16 @@ interface FilterModel {
     MatTooltip,
     MatBottomSheetModule,
     VerifyComponent,
+    CsvContentTypeChipComponent,
+    VerificationStatusChipComponent,
     RouterModule,
   ],
   providers: [ProductionService, provideNativeDateAdapter()],
   templateUrl: './production-files.component.html',
 })
 export class ProductionFilesComponent implements AfterViewInit {
-  protected readonly ICONS = ICONS.UNITS;
   protected readonly MeasurementUnit = MeasurementUnit;
   protected readonly CsvContentType = BatchType;
-  protected readonly CsvDocumentIntegrityStatus = CsvDocumentIntegrityStatus;
   private displayedColumns = [
     'select',
     'name',
@@ -116,19 +117,6 @@ export class ProductionFilesComponent implements AfterViewInit {
 
   dataSource: MatTableDataSource<ProcessedCsvDto> = new MatTableDataSource<ProcessedCsvDto>();
   selection = new SelectionModel<ProcessedCsvDto>(true, []);
-
-  getIcon(status: CsvDocumentIntegrityStatus | undefined) {
-    switch (status) {
-      case CsvDocumentIntegrityStatus.MISMATCH:
-        return 'cancel';
-      case CsvDocumentIntegrityStatus.FAILED:
-        return 'warning';
-      case CsvDocumentIntegrityStatus.VERIFIED:
-        return 'check_circle';
-      default:
-        return 'circle';
-    }
-  }
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;

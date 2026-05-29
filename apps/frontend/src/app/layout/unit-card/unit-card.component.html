@@ -1,18 +1,36 @@
-<a [routerLink]="[unit().id]" class="group flex h-full flex-col rounded-lg hover:shadow-lg">
-  <div class="flex justify-between rounded-t-lg p-4" [class]="styles$()">
-    <div class="flex flex-row gap-4">
-      <span class="flex items-center gap-4 rounded-xl bg-white p-2">
-        <span class="material-symbols-outlined"> {{ icon$() }}</span>
-      </span>
-      <div class="flex flex-col justify-center text-sm">
-        <span class="font-semibold text-neutral-800"> {{ unit().name }}</span>
-        <span class="">{{ unit().unitType | enum: 'unitType' }} Unit</span>
-      </div>
+<div class="flex h-full flex-row bg-white">
+  <div class="flex grow flex-col gap-2">
+    <span class="bg-primary-50 border-primary-200 flex w-fit items-center gap-4 rounded-full border p-2">
+      <span class="material-symbols-outlined"> {{ icon$() }}</span>
+    </span>
+    <div class="flex flex-col justify-center text-sm">
+      <span class="font-semibold text-neutral-800"> {{ unit().name }}</span>
+      <span class="">{{ unit().unitType | enum: 'unitType' }} Unit</span>
     </div>
+    <div class="flex flex-row items-center gap-2">
+      <div
+        class="rounded-full"
+        [ngClass]="unit().active ? 'size-1 animate-ping bg-green-700/80' : 'size-2 bg-neutral-400'"
+      ></div>
+      {{ unit().active ? 'Active' : 'Inactive' }}
+    </div>
+  </div>
+  @if (showActions()) {
+    <div class="flex flex-col items-end" [ngClass]="unit().active ? 'justify-between' : 'justify-end'">
+      @if (unit().active) {
+        <a
+          [routerLink]="[unit().id, 'edit']"
+          class="material-symbols-outlined hover:text-primary-600 text-2xl! text-neutral-400"
+          matTooltip="Edit unit"
+        >
+          edit
+        </a>
+      }
 
-    <app-unit-status-chip [unit]="{ active: unit().active, unitType: unit().unitType }"></app-unit-status-chip>
-  </div>
-  <div class="h-full rounded-b-lg bg-white p-4">
-    <mat-chip-set><ng-content></ng-content></mat-chip-set>
-  </div>
-</a>
+      <a [routerLink]="[unit().id]" class="text-primary-500 flex items-center text-sm">
+        <span class="hover:underline">Details</span>
+        <span class="material-symbols-outlined text-base!">chevron_right</span>
+      </a>
+    </div>
+  }
+</div>

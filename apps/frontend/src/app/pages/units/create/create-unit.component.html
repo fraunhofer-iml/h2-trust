@@ -9,8 +9,13 @@
     <span>Unit Type</span>
     <app-type-selection [types]="unitTypes" [typeControl]="selectedType"></app-type-selection>
   </div>
-
-  <app-base-unit-form [unitForm]="unitForm"></app-base-unit-form>
+  @if (
+    [UnitType.HYDROGEN_PRODUCTION, UnitType.POWER_PRODUCTION, UnitType.HYDROGEN_STORAGE].includes(selectedType.value)
+  ) {
+    <app-base-unit-form [unitForm]="unitForm"></app-base-unit-form>
+  } @else if (selectedType.value) {
+    <div class="rounded-lg bg-white p-4">This unit type is currently not available.</div>
+  }
 
   @if (selectedType.value === UnitType.HYDROGEN_PRODUCTION) {
     <app-hydrogen-production-unit-form
@@ -28,7 +33,7 @@
   @if (!selectedType.value) {
     <div class="flex flex-col gap-2 rounded-lg bg-white p-4">
       <span>Additional Information</span>
-      <span class="tetx-sm text-neutral-500"> Please select a unit type first. </span>
+      <span class="text-sm text-neutral-500"> Please select a unit type first. </span>
     </div>
   }
 
