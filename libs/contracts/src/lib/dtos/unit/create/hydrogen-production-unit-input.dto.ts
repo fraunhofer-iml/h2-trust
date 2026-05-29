@@ -8,14 +8,14 @@
 
 import { IsEnum, IsNotEmpty, IsNumber, IsPositive } from 'class-validator';
 import { AddressPayload, CreateHydrogenProductionUnitPayload } from '@h2-trust/contracts/payloads';
-import { BiddingZone, HydrogenProductionMethod, HydrogenProductionTechnology, UnitType } from '@h2-trust/domain';
+import { BiddingZone, HydrogenProductionTechnology, HydrogenProductionType, UnitType } from '@h2-trust/domain';
 import { AddressDto } from '../../address';
 import { UnitInputDto } from './unit-input.dto';
 
 export class HydrogenProductionUnitInputDto extends UnitInputDto {
-  @IsEnum(HydrogenProductionMethod)
+  @IsEnum(HydrogenProductionType)
   @IsNotEmpty()
-  method: HydrogenProductionMethod;
+  method: HydrogenProductionType;
 
   @IsEnum(HydrogenProductionTechnology)
   @IsNotEmpty()
@@ -54,7 +54,7 @@ export class HydrogenProductionUnitInputDto extends UnitInputDto {
     commissionedOn: Date,
     address: AddressDto,
     technology: HydrogenProductionTechnology,
-    method: HydrogenProductionMethod,
+    method: HydrogenProductionType,
     biddingZone: BiddingZone,
     ratedPower: number,
     pressure: number,
@@ -89,7 +89,6 @@ export class HydrogenProductionUnitInputDto extends UnitInputDto {
   ): CreateHydrogenProductionUnitPayload {
     const payload = new CreateHydrogenProductionUnitPayload(
       dto.name,
-      dto.mastrNumber,
       dto.commissionedOn,
       new AddressPayload(
         dto.address.street,

@@ -62,7 +62,7 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
     baseUnit: UnitDeepDbType,
     processStepsOfStorageUnit: ProcessStepEntity[],
   ): HydrogenStorageUnitEntity {
-    assertValidEnum(baseUnit.specification?.storageType, HydrogenStorageType, 'HydrogenStorageType');
+    assertValidEnum(baseUnit.specification?.type, HydrogenStorageType, 'HydrogenStorageType');
 
     return {
       ...BaseUnitEntity.fromDeepBaseUnit(baseUnit),
@@ -70,7 +70,7 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
 
       capacity: baseUnit.specification?.capacity?.toNumber() ?? 0,
       filling: baseUnit.specification ? HydrogenStorageUnitEntity.mapFilling(processStepsOfStorageUnit) : [],
-      type: baseUnit.specification?.storageType,
+      type: baseUnit.specification?.type,
     };
   }
 
@@ -78,7 +78,7 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
     baseUnit: UnitNestedDbType,
     processStepsOfStorageUnit: ProcessStepEntity[],
   ): HydrogenStorageUnitEntity {
-    assertValidEnum(baseUnit.specification?.storageType, HydrogenStorageType, 'HydrogenStorageType');
+    assertValidEnum(baseUnit.specification?.type, HydrogenStorageType, 'HydrogenStorageType');
 
     return {
       ...BaseUnitEntity.fromNestedBaseUnit(baseUnit),
@@ -86,7 +86,7 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
 
       capacity: baseUnit.specification?.capacity?.toNumber() ?? 0,
       filling: baseUnit.specification ? HydrogenStorageUnitEntity.mapFilling(processStepsOfStorageUnit) : [],
-      type: baseUnit.specification?.storageType,
+      type: baseUnit.specification?.type,
     };
   }
 
@@ -94,7 +94,7 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
     storageUnit: UnitNestedDbType,
     processStepsOfStorageUnit: ProcessStepEntity[],
   ): HydrogenStorageUnitEntity {
-    assertValidEnum(storageUnit.type, HydrogenStorageType, 'HydrogenStorageType');
+    assertValidEnum(storageUnit.specification?.type, HydrogenStorageType, 'HydrogenStorageType');
 
     return {
       ...BaseUnitEntity.fromFlatBaseUnit(storageUnit),
@@ -102,7 +102,7 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
 
       capacity: storageUnit.specification?.capacity?.toNumber() ?? 0,
       filling: HydrogenStorageUnitEntity.mapFilling(processStepsOfStorageUnit),
-      type: storageUnit.type,
+      type: storageUnit.specification?.type,
     };
   }
 

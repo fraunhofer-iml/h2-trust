@@ -10,8 +10,8 @@ import { FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms'
 import {
   BiddingZone,
   GridLevel,
-  HydrogenProductionMethod,
   HydrogenProductionTechnology,
+  HydrogenProductionType,
   HydrogenStorageType,
   PowerProductionType,
   UnitType,
@@ -42,7 +42,7 @@ export type UnitFormGroup = {
 export type HydrogenProductionFormGroup = {
   biddingZone: FormControl<BiddingZone | null>;
   ratedPower: FormControl<number | null>;
-  method: FormControl<HydrogenProductionMethod | null>;
+  method: FormControl<HydrogenProductionType | null>;
   technology: FormControl<HydrogenProductionTechnology | null>;
   pressure: FormControl<number | null>;
   waterConsumptionLitersPerHour: FormControl<number | null>;
@@ -125,7 +125,7 @@ export const newHydrogenProductionForm = () =>
     ratedPower: new FormControl<number | null>(null, {
       validators: [positiveNumberValidator],
     }),
-    method: new FormControl<HydrogenProductionMethod | null>(null, Validators.required),
+    method: new FormControl<HydrogenProductionType | null>(null, Validators.required),
     technology: new FormControl<HydrogenProductionTechnology | null>(null, Validators.required),
     pressure: new FormControl<number | null>(null, {
       validators: [positiveNumberValidator],

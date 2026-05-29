@@ -7,9 +7,9 @@
  */
 
 import { Type } from 'class-transformer';
-import { IsBoolean, IsDate, IsEnum, IsNotEmpty, IsNumber, IsPositive, IsString } from 'class-validator';
+import { IsBoolean, IsDate, IsEnum, IsNotEmpty, IsNumber, IsPositive } from 'class-validator';
 import { AddressPayload, CreatePowerProductionUnitPayload } from '@h2-trust/contracts/payloads';
-import { BiddingZone, GridLevel, PowerProductionType, UnitType } from '@h2-trust/domain';
+import { BiddingZone, PowerProductionType, UnitType } from '@h2-trust/domain';
 import { AddressDto } from '../../address';
 import { UnitInputDto } from './unit-input.dto';
 
@@ -27,26 +27,10 @@ export class PowerProductionUnitInputDto extends UnitInputDto {
   @IsNotEmpty()
   biddingZone: BiddingZone;
 
-  @IsString()
-  @IsNotEmpty()
-  gridOperator: string;
-
-  @IsEnum(GridLevel)
-  @IsNotEmpty()
-  gridLevel: GridLevel;
-
-  @IsString()
-  @IsNotEmpty()
-  gridConnectionNumber: string;
-
   @IsNumber()
   @IsPositive()
   @IsNotEmpty()
   ratedPower: number;
-
-  @IsString()
-  @IsNotEmpty()
-  electricityMeterNumber: string;
 
   @IsBoolean()
   @IsNotEmpty()
@@ -67,12 +51,8 @@ export class PowerProductionUnitInputDto extends UnitInputDto {
     address: AddressDto,
     powerProductionType: PowerProductionType,
     biddingZone: BiddingZone,
-    gridLevel: GridLevel,
     ratedPower: number,
-    electricityMeterNumber: string,
     financialSupportReceived: boolean,
-    gridOperator: string,
-    gridConnectionNumber: string,
     decommissioningPlannedOn: Date,
   ) {
     super(
@@ -91,11 +71,7 @@ export class PowerProductionUnitInputDto extends UnitInputDto {
     );
     this.powerProductionType = powerProductionType;
     this.biddingZone = biddingZone;
-    this.gridLevel = gridLevel;
     this.ratedPower = ratedPower;
-    this.electricityMeterNumber = electricityMeterNumber;
-    this.gridOperator = gridOperator;
-    this.gridConnectionNumber = gridConnectionNumber;
     this.financialSupportReceived = financialSupportReceived;
     this.decommissioningPlannedOn = decommissioningPlannedOn;
   }
@@ -107,7 +83,6 @@ export class PowerProductionUnitInputDto extends UnitInputDto {
   ): CreatePowerProductionUnitPayload {
     const payload = new CreatePowerProductionUnitPayload(
       dto.name,
-      dto.mastrNumber,
       dto.commissionedOn,
       new AddressPayload(
         dto.address.street,
@@ -117,9 +92,7 @@ export class PowerProductionUnitInputDto extends UnitInputDto {
         dto.address.country,
       ),
       dto.owner,
-      dto.electricityMeterNumber,
       dto.ratedPower,
-      dto.gridLevel,
       dto.biddingZone,
       dto.financialSupportReceived,
       dto.powerProductionType,
@@ -130,8 +103,6 @@ export class PowerProductionUnitInputDto extends UnitInputDto {
       dto.certifiedBy,
       dto.operator,
       dto.decommissioningPlannedOn,
-      dto.gridOperator,
-      dto.gridConnectionNumber,
       id,
     );
     payload.requesterCompanyId = requesterCompanyId;

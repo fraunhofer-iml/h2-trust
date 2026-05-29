@@ -26,7 +26,7 @@ import {
   PowerProductionUnitInputDto,
   UnitInputDto,
 } from '@h2-trust/contracts/dtos';
-import { HydrogenProductionMethod, HydrogenStorageType, UnitType } from '@h2-trust/domain';
+import { HydrogenProductionType, HydrogenStorageType, UnitType } from '@h2-trust/domain';
 import { TypeSelectionComponent } from '../../../layout/type-selection/type-selection.component';
 import { H2TrustRoutes } from '../../../shared/constants/routes';
 import { QueryKeyPrefix } from '../../../shared/queries/shared-query-keys';
@@ -74,7 +74,7 @@ import { PowerProductionUnitFormComponent } from '../forms/power-production/powe
 })
 export class CreateUnitComponent {
   protected readonly UnitType = UnitType;
-  protected readonly HydrogenProductionMethod = HydrogenProductionMethod;
+  protected readonly HydrogenProductionType = HydrogenProductionType;
   protected readonly HydrogenStorageType = HydrogenStorageType;
   protected readonly unitTypes = Object.values(UnitType);
 

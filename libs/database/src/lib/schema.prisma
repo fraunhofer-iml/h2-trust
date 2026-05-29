@@ -150,27 +150,27 @@ model UnitSpecification {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  // Shared
+  // combines power production type, hydrogen production method, storageType and transport mode
+  type        String?
+  biddingZone String?
+
   // Power Production
-  powerProductionType      String?
-  biddingZone              String?
   ratedPower               Decimal?  @db.Decimal(18, 6)
   decommissioningPlannedOn DateTime?
   financialSupportReceived Boolean?
   energySource             String?
 
   // Hydrogen Production
-  method                        String?
   technology                    String?
   waterConsumptionLitersPerHour Decimal? @db.Decimal(7, 3)
 
   // Transport
-  transportMode String?
-  fuelType      String?
+  fuelType String?
 
   // Storage
-  storageType String?
-  capacity    Decimal? @db.Decimal(18, 6)
-  unit        Unit?
+  capacity Decimal? @db.Decimal(18, 6)
+  unit     Unit?
 }
 
 model Batch {

@@ -54,7 +54,7 @@ export function buildPowerProductionUnitCreateInput(payload: CreatePowerProducti
         decommissioningPlannedOn: payload.decommissioningPlannedOn,
         ratedPower: new Prisma.Decimal(payload.ratedPower),
         financialSupportReceived: payload.financialSupportReceived,
-        powerProductionType: payload.powerProductionType,
+        type: payload.powerProductionType,
         biddingZone: payload.biddingZone,
       },
     },
@@ -68,7 +68,7 @@ export function buildHydrogenProductionUnitCreateInput(
     ...buildBaseUnitCreateInput(payload, UnitType.HYDROGEN_PRODUCTION),
     specification: {
       create: {
-        method: payload.method,
+        type: payload.hydrogenProductionType,
         technology: payload.technology,
         biddingZone: payload.biddingZone,
         ratedPower: new Prisma.Decimal(payload.ratedPower),
@@ -83,7 +83,7 @@ export function buildHydrogenStorageUnitCreateInput(payload: CreateHydrogenStora
     specification: {
       create: {
         capacity: new Prisma.Decimal(payload.capacity),
-        storageType: payload.storageType,
+        type: payload.type,
       },
     },
   });

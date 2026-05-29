@@ -21,8 +21,8 @@ import {
 } from '@h2-trust/contracts/dtos';
 import {
   BiddingZone,
-  HydrogenProductionMethod,
   HydrogenProductionTechnology,
+  HydrogenProductionType,
   HydrogenStorageType,
 } from '@h2-trust/domain';
 import { ErrorCardComponent } from '../../../layout/error-card/error-card.component';
@@ -163,7 +163,7 @@ export class UnitUpdatePageComponent {
       this.hydrogenProductionForm.patchValue({
         ...unit,
         biddingZone: unit.biddingZone as BiddingZone,
-        method: unit.method as HydrogenProductionMethod,
+        method: unit.method as HydrogenProductionType,
         technology: unit.technology as HydrogenProductionTechnology,
       });
       addValidatorsToFormGroup(this.hydrogenProductionForm);

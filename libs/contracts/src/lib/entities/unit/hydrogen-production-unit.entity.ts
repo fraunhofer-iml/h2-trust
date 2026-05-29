@@ -7,7 +7,7 @@
  */
 
 import { UnitDeepDbType, UnitNestedDbType } from '@h2-trust/database';
-import { BiddingZone, HydrogenProductionMethod, HydrogenProductionTechnology, UnitType } from '@h2-trust/domain';
+import { BiddingZone, HydrogenProductionTechnology, HydrogenProductionType, UnitType } from '@h2-trust/domain';
 import { assertDefined, assertValidEnum } from '@h2-trust/utils';
 import { AddressEntity } from '../address';
 import { CompanyEntity } from '../company';
@@ -15,7 +15,7 @@ import { BaseUnitEntity } from './base-unit.entity';
 
 export class HydrogenProductionUnitEntity extends BaseUnitEntity {
   ratedPower: number;
-  method: HydrogenProductionMethod;
+  type: HydrogenProductionType;
   technology: HydrogenProductionTechnology;
   biddingZone: BiddingZone;
   waterConsumptionLitersPerHour: number;
@@ -34,7 +34,7 @@ export class HydrogenProductionUnitEntity extends BaseUnitEntity {
     operator: CompanyEntity,
     unitType: UnitType,
     ratedPower: number,
-    method: HydrogenProductionMethod,
+    type: HydrogenProductionType,
     technology: HydrogenProductionTechnology,
     biddingZone: BiddingZone,
     waterConsumptionLitersPerHour: number,
@@ -55,7 +55,7 @@ export class HydrogenProductionUnitEntity extends BaseUnitEntity {
       unitType,
       active,
     );
-    this.method = method;
+    this.type = type;
     this.technology = technology;
     this.ratedPower = ratedPower;
     this.biddingZone = biddingZone;
@@ -64,7 +64,7 @@ export class HydrogenProductionUnitEntity extends BaseUnitEntity {
 
   static fromDeepDatabase(unit: UnitDeepDbType): HydrogenProductionUnitEntity {
     assertDefined(unit.specification, 'hydrogenProductionUnit');
-    assertValidEnum(unit.specification.method, HydrogenProductionMethod, 'HydrogenProductionMethod');
+    assertValidEnum(unit.specification.type, HydrogenProductionType, 'HydrogenProductionType');
     assertValidEnum(unit.specification.technology, HydrogenProductionTechnology, 'HydrogenProductionTechnology');
     assertValidEnum(unit.specification.biddingZone, BiddingZone, 'BiddingZone');
 
@@ -73,7 +73,7 @@ export class HydrogenProductionUnitEntity extends BaseUnitEntity {
       unitType: UnitType.HYDROGEN_PRODUCTION,
 
       ratedPower: unit.specification?.ratedPower?.toNumber(),
-      method: unit.specification.method,
+      type: unit.specification.type,
       technology: unit.specification.technology,
       biddingZone: unit.specification.biddingZone,
       waterConsumptionLitersPerHour: unit.specification?.waterConsumptionLitersPerHour?.toNumber(),
@@ -82,7 +82,7 @@ export class HydrogenProductionUnitEntity extends BaseUnitEntity {
 
   static fromNestedDatabase(baseUnit: UnitNestedDbType): HydrogenProductionUnitEntity {
     assertDefined(baseUnit.specification, 'hydrogenProductionUnit');
-    assertValidEnum(baseUnit.specification.method, HydrogenProductionMethod, 'HydrogenProductionMethod');
+    assertValidEnum(baseUnit.specification.type, HydrogenProductionType, 'HydrogenProductionType');
     assertValidEnum(baseUnit.specification.technology, HydrogenProductionTechnology, 'HydrogenProductionTechnology');
     assertValidEnum(baseUnit.specification.biddingZone, BiddingZone, 'BiddingZone');
 
@@ -91,7 +91,7 @@ export class HydrogenProductionUnitEntity extends BaseUnitEntity {
       unitType: UnitType.HYDROGEN_PRODUCTION,
 
       ratedPower: baseUnit.specification?.ratedPower?.toNumber(),
-      method: baseUnit.specification.method,
+      type: baseUnit.specification.type,
       technology: baseUnit.specification.technology,
       biddingZone: baseUnit.specification.biddingZone,
       waterConsumptionLitersPerHour: baseUnit.specification?.waterConsumptionLitersPerHour?.toNumber(),

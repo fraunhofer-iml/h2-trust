@@ -7,7 +7,7 @@
  */
 
 import { HydrogenProductionUnitEntity } from '@h2-trust/contracts/entities';
-import { BiddingZone, HydrogenProductionMethod, HydrogenProductionTechnology, UnitType } from '@h2-trust/domain';
+import { BiddingZone, HydrogenProductionTechnology, HydrogenProductionType, UnitType } from '@h2-trust/domain';
 import { AddressEntityFixture } from '../../address/fixtures/address.fixture';
 import { CompanyEntityFixture } from '../../company/fixtures/company.fixture';
 
@@ -29,7 +29,7 @@ export const HydrogenProductionUnitEntityFixture = {
       unitType: overrides.unitType ?? UnitType.HYDROGEN_PRODUCTION,
       ratedPower: overrides.ratedPower ?? 500,
       pressure: overrides.pressure ?? 30,
-      method: overrides.method ?? HydrogenProductionMethod.ELECTROLYSIS,
+      type: overrides.type ?? HydrogenProductionType.ELECTROLYSIS,
       technology: overrides.technology ?? HydrogenProductionTechnology.PEM,
       biddingZone: overrides.biddingZone ?? BiddingZone.DE_LU,
       waterConsumptionLitersPerHour: overrides.waterConsumptionLitersPerHour ?? 10,

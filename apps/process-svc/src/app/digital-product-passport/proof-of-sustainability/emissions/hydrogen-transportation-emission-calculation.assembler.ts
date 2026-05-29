@@ -20,7 +20,7 @@ import {
   FuelType,
   MeasurementUnit,
   ProcessType,
-  TransportMode,
+  TransportType,
   UnitType,
 } from '@h2-trust/domain';
 import { InternalException } from '@h2-trust/exceptions';
@@ -108,12 +108,12 @@ export function assembleHydrogenTransportationEmissionCalculation(
 
   const transportUnit: TransportUnitEntity = hydrogenTransportation.executedBy as TransportUnitEntity;
 
-  const transportMode: string = transportUnit?.transportMode;
+  const transportMode: string = transportUnit?.type;
 
   switch (transportMode) {
-    case TransportMode.PIPELINE:
+    case TransportType.PIPELINE:
       return assemblePipelineEmissionCalculation();
-    case TransportMode.TRAILER:
+    case TransportType.TRAILER:
       return assembleTrailerEmissionCalculation(
         hydrogenTransportation.batch.amount,
         transportUnit.fuelType,

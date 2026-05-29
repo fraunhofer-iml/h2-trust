@@ -7,21 +7,21 @@
  */
 
 import { TransportationDetailsEntity } from '@h2-trust/contracts/entities';
-import { FuelType, TransportMode } from '@h2-trust/domain';
+import { FuelType, TransportType } from '@h2-trust/domain';
 
 export const TransportationDetailsEntityFixture = {
   createPipeline: (overrides: Partial<TransportationDetailsEntity> = {}): TransportationDetailsEntity =>
     new TransportationDetailsEntity(
       overrides.id ?? 'transport-details-1',
       overrides.distance ?? 0,
-      overrides.transportMode ?? TransportMode.PIPELINE,
+      overrides.transportMode ?? TransportType.PIPELINE,
       overrides.fuelType ?? null,
     ),
   createTrailer: (overrides: Partial<TransportationDetailsEntity> = {}): TransportationDetailsEntity =>
     new TransportationDetailsEntity(
       overrides.id ?? 'transport-details-2',
       overrides.distance ?? 100,
-      overrides.transportMode ?? TransportMode.TRAILER,
+      overrides.transportMode ?? TransportType.TRAILER,
       overrides.fuelType ?? FuelType.DIESEL,
     ),
 } as const;

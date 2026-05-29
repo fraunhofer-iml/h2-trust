@@ -17,10 +17,6 @@ export abstract class BaseCreateUnitPayload {
 
   @IsString()
   @IsNotEmpty()
-  mastrNumber: string;
-
-  @IsString()
-  @IsNotEmpty()
   manufacturer: string;
 
   @IsString()
@@ -67,7 +63,6 @@ export abstract class BaseCreateUnitPayload {
 
   protected constructor(
     name: string,
-    mastrNumber: string,
     commissionedOn: Date,
     address: AddressPayload,
     ownerId: string,
@@ -80,7 +75,6 @@ export abstract class BaseCreateUnitPayload {
     id?: string,
   ) {
     this.name = name;
-    this.mastrNumber = mastrNumber;
     this.commissionedOn = commissionedOn;
     this.address = address;
     this.ownerId = ownerId;

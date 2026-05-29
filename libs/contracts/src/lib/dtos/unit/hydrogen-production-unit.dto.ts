@@ -7,14 +7,14 @@
  */
 
 import { HydrogenProductionUnitEntity } from '@h2-trust/contracts/entities';
-import { BiddingZone, HydrogenProductionMethod, HydrogenProductionTechnology, UnitType } from '@h2-trust/domain';
+import { BiddingZone, HydrogenProductionTechnology, HydrogenProductionType, UnitType } from '@h2-trust/domain';
 import { AddressDto } from '../address';
 import { CompanyBaseDto } from '../company';
 import { BaseUnitDto } from './base-unit.dto';
 import { UnitOwnerDto } from './unit-owner.dto';
 
 export class HydrogenProductionUnitDto extends BaseUnitDto {
-  method: HydrogenProductionMethod;
+  method: HydrogenProductionType;
   technology: HydrogenProductionTechnology;
   biddingZone: BiddingZone;
   ratedPower: number;
@@ -35,7 +35,7 @@ export class HydrogenProductionUnitDto extends BaseUnitDto {
     operator: CompanyBaseDto,
     unitType: UnitType,
     biddingZone: BiddingZone,
-    method: HydrogenProductionMethod,
+    method: HydrogenProductionType,
     technology: HydrogenProductionTechnology,
     waterConsumptionLitersPerHour: number,
     active: boolean,
@@ -65,7 +65,7 @@ export class HydrogenProductionUnitDto extends BaseUnitDto {
   static override fromEntity(unit: HydrogenProductionUnitEntity): HydrogenProductionUnitDto {
     return {
       ...BaseUnitDto.fromEntity(unit),
-      method: unit.method,
+      method: unit.type,
       technology: unit.technology,
       biddingZone: unit.biddingZone,
       ratedPower: unit.ratedPower,

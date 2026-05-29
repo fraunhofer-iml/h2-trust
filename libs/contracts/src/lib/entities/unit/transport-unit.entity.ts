@@ -7,14 +7,14 @@
  */
 
 import { UnitDeepDbType, UnitNestedDbType } from '@h2-trust/database';
-import { FuelType, TransportMode, UnitType } from '@h2-trust/domain';
+import { FuelType, TransportType, UnitType } from '@h2-trust/domain';
 import { assertDefined } from '@h2-trust/utils';
 import { AddressEntity } from '../address';
 import { CompanyEntity } from '../company';
 import { BaseUnitEntity } from './base-unit.entity';
 
 export class TransportUnitEntity extends BaseUnitEntity {
-  transportMode: TransportMode;
+  type: TransportType;
   fuelType: FuelType;
 
   constructor(
@@ -30,7 +30,7 @@ export class TransportUnitEntity extends BaseUnitEntity {
     owner: CompanyEntity,
     operator: CompanyEntity,
     unitType: UnitType,
-    transportMode: TransportMode,
+    transportMode: TransportType,
     fuelType: FuelType,
     active: boolean,
   ) {
@@ -49,7 +49,7 @@ export class TransportUnitEntity extends BaseUnitEntity {
       unitType,
       active,
     );
-    this.transportMode = transportMode;
+    this.type = transportMode;
     this.fuelType = fuelType;
   }
 
@@ -59,7 +59,7 @@ export class TransportUnitEntity extends BaseUnitEntity {
     return <TransportUnitEntity>{
       ...BaseUnitEntity.fromDeepBaseUnit(unit),
       unitType: UnitType.TRANSPORTATION,
-      transportMode: unit.specification.transportMode,
+      type: unit.specification.type,
       fuelType: unit.specification.fuelType,
     };
   }
@@ -70,7 +70,7 @@ export class TransportUnitEntity extends BaseUnitEntity {
     return <TransportUnitEntity>{
       ...BaseUnitEntity.fromNestedBaseUnit(unit),
       unitType: UnitType.TRANSPORTATION,
-      transportMode: unit.specification.transportMode,
+      type: unit.specification.type,
       fuelType: unit.specification.fuelType,
     };
   }

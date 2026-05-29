@@ -73,7 +73,7 @@ export class PowerProductionUnitEntity extends BaseUnitEntity {
       ratedPower: baseUnit.specification.ratedPower?.toNumber() ?? 0,
       biddingZone: baseUnit.specification.biddingZone,
       financialSupportReceived: baseUnit.specification.financialSupportReceived,
-      type: baseUnit.specification.powerProductionType,
+      type: baseUnit.specification.type,
     };
   }
 
@@ -89,7 +89,7 @@ export class PowerProductionUnitEntity extends BaseUnitEntity {
       ratedPower: unit.specification.ratedPower?.toNumber() ?? 0,
       biddingZone: unit.specification.biddingZone,
       financialSupportReceived: unit.specification.financialSupportReceived,
-      type: unit.specification.powerProductionType,
+      type: unit.specification.type,
     };
   }
 }
