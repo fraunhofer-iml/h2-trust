@@ -7,14 +7,14 @@
  */
 
 export * from './address';
+export * from './batch';
 export * from './company';
 export * from './digital-product-passport';
 export * from './file';
+export * from './pagination';
 export * from './power-purchase-agreement';
 export * from './problem-detail';
 export * from './process-step';
 export * from './production';
 export * from './unit';
 export * from './user';
-export * from './pagination';
-export * from './batch';

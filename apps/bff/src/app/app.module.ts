@@ -36,6 +36,6 @@ import { UserModule } from './user/user.module';
     BatchModule,
   ],
   controllers: [],
-  providers: [{ provide: APP_GUARD, useClass: AuthGuard }, BatchService],
+  providers: [{ provide: APP_GUARD, useClass: AuthGuard }],
 })
 export class AppModule {}

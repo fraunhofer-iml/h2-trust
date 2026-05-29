@@ -8,10 +8,10 @@
 
 import { CommonModule } from '@angular/common';
 import { Component, computed, input } from '@angular/core';
-import { getRfnboIcon } from 'apps/frontend/src/app/shared/constants/icons';
 import { GridEnergyRfnboDto, RenewableEnergyRfnboDto, RfnboBaseDto } from '@h2-trust/contracts/dtos';
 import { RfnboType } from '@h2-trust/domain';
 import { RfnboChipComponent } from '../../../../layout/chips/rfnbo-chip.component';
+import { getRfnboIcon } from '../../../../shared/constants/icons';
 import { RFNBO_CRITERIA } from '../../../../shared/constants/rfnbo-criteria';
 import { EnumPipe } from '../../../../shared/pipes/enum.pipe';
 import { RfnboCheckCardComponent } from './rfnbo-check-card/rfnbo-check-card.component';
