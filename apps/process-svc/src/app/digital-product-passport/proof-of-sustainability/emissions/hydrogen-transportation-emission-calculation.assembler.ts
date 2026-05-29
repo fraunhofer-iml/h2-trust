@@ -100,7 +100,7 @@ export function assembleHydrogenTransportationEmissionCalculation(
     );
   }
 
-  if (hydrogenTransportation?.executedBy.unitType !== UnitType.TRANSPORT) {
+  if (hydrogenTransportation?.executedBy.unitType !== UnitType.TRANSPORTATION) {
     throw new InternalException(
       `Invalid unit type [${hydrogenTransportation?.executedBy.unitType}] for hydrogen transportation emission calculation`,
     );

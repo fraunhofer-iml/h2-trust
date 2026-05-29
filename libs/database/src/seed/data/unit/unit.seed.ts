@@ -125,7 +125,7 @@ export const UnitSeed: readonly Unit[] = Object.freeze([
     id: 'hydrogen-transport-unit-0',
     createdAt: auditTimestamp,
     updatedAt: auditTimestamp,
-    type: UnitType.TRANSPORT,
+    type: UnitType.TRANSPORTATION,
     name: 'Hydrogen Transport Unit 001',
     manufacturer: 'Transport Unit Manufacturer',
     modelType: 'Transport Unit Model Type',

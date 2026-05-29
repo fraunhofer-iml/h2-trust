@@ -58,7 +58,7 @@ export class TransportUnitEntity extends BaseUnitEntity {
 
     return <TransportUnitEntity>{
       ...BaseUnitEntity.fromDeepBaseUnit(unit),
-      unitType: UnitType.TRANSPORT,
+      unitType: UnitType.TRANSPORTATION,
       transportMode: unit.specification.transportMode,
       fuelType: unit.specification.fuelType,
     };
@@ -69,7 +69,7 @@ export class TransportUnitEntity extends BaseUnitEntity {
 
     return <TransportUnitEntity>{
       ...BaseUnitEntity.fromNestedBaseUnit(unit),
-      unitType: UnitType.TRANSPORT,
+      unitType: UnitType.TRANSPORTATION,
       transportMode: unit.specification.transportMode,
       fuelType: unit.specification.fuelType,
     };
