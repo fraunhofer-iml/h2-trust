@@ -72,11 +72,11 @@ export class HydrogenProductionUnitEntity extends BaseUnitEntity {
       ...BaseUnitEntity.fromDeepBaseUnit(unit),
       unitType: UnitType.HYDROGEN_PRODUCTION,
 
-      ratedPower: unit.specification.ratedPower.toNumber(),
+      ratedPower: unit.specification?.ratedPower?.toNumber(),
       method: unit.specification.method,
       technology: unit.specification.technology,
       biddingZone: unit.specification.biddingZone,
-      waterConsumptionLitersPerHour: unit.specification.waterConsumptionLitersPerHour.toNumber(),
+      waterConsumptionLitersPerHour: unit.specification?.waterConsumptionLitersPerHour?.toNumber(),
     };
   }
 
@@ -90,11 +90,11 @@ export class HydrogenProductionUnitEntity extends BaseUnitEntity {
       ...BaseUnitEntity.fromNestedBaseUnit(baseUnit),
       unitType: UnitType.HYDROGEN_PRODUCTION,
 
-      ratedPower: baseUnit.specification.ratedPower.toNumber(),
+      ratedPower: baseUnit.specification?.ratedPower?.toNumber(),
       method: baseUnit.specification.method,
       technology: baseUnit.specification.technology,
       biddingZone: baseUnit.specification.biddingZone,
-      waterConsumptionLitersPerHour: baseUnit.specification.waterConsumptionLitersPerHour.toNumber(),
+      waterConsumptionLitersPerHour: baseUnit.specification?.waterConsumptionLitersPerHour?.toNumber(),
     };
   }
 }

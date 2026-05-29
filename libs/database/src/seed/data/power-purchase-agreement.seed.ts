@@ -10,7 +10,7 @@ import { PowerPurchaseAgreement } from '@prisma/client';
 import { PowerProductionType, PowerPurchaseAgreementStatus } from '@h2-trust/domain';
 import { auditTimestamp } from './audit-timestamp.constant';
 import { CompanySeed } from './company.seed';
-import { UnitSpecificationSeed } from './unit';
+import { UnitSeed } from './unit';
 import { UserSeed } from './user.seed';
 
 export const PowerPurchaseAgreementSeed: readonly PowerPurchaseAgreement[] = Object.freeze([
@@ -24,7 +24,7 @@ export const PowerPurchaseAgreementSeed: readonly PowerPurchaseAgreement[] = Obj
     requestingUserId: UserSeed[0].id,
     suggestedPowerTypeName: PowerProductionType.PHOTOVOLTAIC_SYSTEM,
     requestedCompanyId: CompanySeed[0].id,
-    powerProductionUnitId: UnitSpecificationSeed[0].id,
+    powerProductionUnitId: UnitSeed[0].id,
     hydrogenProducerId: CompanySeed[2].id,
   },
   {
@@ -37,7 +37,7 @@ export const PowerPurchaseAgreementSeed: readonly PowerPurchaseAgreement[] = Obj
     requestingUserId: UserSeed[0].id,
     suggestedPowerTypeName: PowerProductionType.WIND_TURBINE,
     requestedCompanyId: CompanySeed[2].id,
-    powerProductionUnitId: UnitSpecificationSeed[1].id,
+    powerProductionUnitId: UnitSeed[1].id,
     hydrogenProducerId: CompanySeed[2].id,
   },
   {
@@ -50,7 +50,7 @@ export const PowerPurchaseAgreementSeed: readonly PowerPurchaseAgreement[] = Obj
     requestingUserId: UserSeed[0].id,
     suggestedPowerTypeName: PowerProductionType.HYDRO_POWER_PLANT,
     requestedCompanyId: CompanySeed[2].id,
-    powerProductionUnitId: UnitSpecificationSeed[2].id,
+    powerProductionUnitId: UnitSeed[2].id,
     hydrogenProducerId: CompanySeed[2].id,
   },
   {
@@ -63,7 +63,7 @@ export const PowerPurchaseAgreementSeed: readonly PowerPurchaseAgreement[] = Obj
     requestingUserId: UserSeed[0].id,
     suggestedPowerTypeName: PowerProductionType.HYDRO_POWER_PLANT,
     requestedCompanyId: CompanySeed[1].id,
-    powerProductionUnitId: UnitSpecificationSeed[3].id,
+    powerProductionUnitId: UnitSeed[3].id,
     hydrogenProducerId: CompanySeed[2].id,
   },
 ]);

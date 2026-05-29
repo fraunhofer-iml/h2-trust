@@ -68,7 +68,7 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
       ...BaseUnitEntity.fromDeepBaseUnit(baseUnit),
       unitType: UnitType.HYDROGEN_STORAGE,
 
-      capacity: baseUnit.specification?.capacity.toNumber() ?? 0,
+      capacity: baseUnit.specification?.capacity?.toNumber() ?? 0,
       filling: baseUnit.specification ? HydrogenStorageUnitEntity.mapFilling(processStepsOfStorageUnit) : [],
       type: baseUnit.specification?.storageType,
     };
@@ -84,7 +84,7 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
       ...BaseUnitEntity.fromNestedBaseUnit(baseUnit),
       unitType: UnitType.HYDROGEN_STORAGE,
 
-      capacity: baseUnit.specification?.capacity.toNumber() ?? 0,
+      capacity: baseUnit.specification?.capacity?.toNumber() ?? 0,
       filling: baseUnit.specification ? HydrogenStorageUnitEntity.mapFilling(processStepsOfStorageUnit) : [],
       type: baseUnit.specification?.storageType,
     };
@@ -100,7 +100,7 @@ export class HydrogenStorageUnitEntity extends BaseUnitEntity {
       ...BaseUnitEntity.fromFlatBaseUnit(storageUnit),
       unitType: UnitType.HYDROGEN_STORAGE,
 
-      capacity: storageUnit.specification.capacity.toNumber() ?? 0,
+      capacity: storageUnit.specification?.capacity?.toNumber() ?? 0,
       filling: HydrogenStorageUnitEntity.mapFilling(processStepsOfStorageUnit),
       type: storageUnit.type,
     };

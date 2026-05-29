@@ -34,5 +34,10 @@ export const UnitDeepDbTypeMock = <UnitDeepDbType[]>[
       batches: [],
     },
     specification: UnitSpecificationSeed[0],
+    decisions: [],
+    powerPurchaseAgreements: [],
+    stagedProductions: [],
+    documents: [],
+    processSteps: [],
   },
 ];

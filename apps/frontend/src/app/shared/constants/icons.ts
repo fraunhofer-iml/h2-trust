@@ -11,6 +11,10 @@ export const ICONS = {
     POWER_PRODUCTION: 'electric_bolt',
     HYDROGEN_PRODUCTION: 'water_ec',
     HYDROGEN_STORAGE: 'propane',
+    COMPRESSION: 'propane',
+    BOTTLING: 'propane',
+    TRANSPORT: 'propane',
+    CONSUME: 'propane',
   },
   PROCESS_STEPS: {
     WATER_SUPPLY: 'water_drop',

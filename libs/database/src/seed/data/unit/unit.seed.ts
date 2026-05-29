@@ -11,7 +11,6 @@ import { UnitType } from '@h2-trust/domain';
 import { AddressSeed } from '../address.seed';
 import { auditTimestamp } from '../audit-timestamp.constant';
 import { CompanySeed } from '../company.seed';
-import { UnitSpecificationSeed } from './unit-specification.seed';
 
 export const UnitSeed: readonly Unit[] = Object.freeze([
   {
@@ -30,7 +29,7 @@ export const UnitSeed: readonly Unit[] = Object.freeze([
     ownerId: CompanySeed[2].id,
     operatorId: CompanySeed[2].id,
     active: false,
-    specificationId: UnitSpecificationSeed[0].id,
+    specificationId: 'power-production-unit-0',
   },
   {
     id: 'power-production-unit-1',
@@ -48,7 +47,7 @@ export const UnitSeed: readonly Unit[] = Object.freeze([
     ownerId: CompanySeed[2].id,
     operatorId: CompanySeed[2].id,
     active: true,
-    specificationId: UnitSpecificationSeed[1].id,
+    specificationId: 'power-production-unit-1',
   },
   {
     id: 'power-production-unit-2',
@@ -66,7 +65,7 @@ export const UnitSeed: readonly Unit[] = Object.freeze([
     ownerId: CompanySeed[0].id,
     operatorId: CompanySeed[0].id,
     active: true,
-    specificationId: UnitSpecificationSeed[2].id,
+    specificationId: 'power-production-unit-2',
   },
   {
     id: 'power-production-unit-3',
@@ -84,7 +83,7 @@ export const UnitSeed: readonly Unit[] = Object.freeze([
     ownerId: CompanySeed[1].id,
     operatorId: CompanySeed[1].id,
     active: true,
-    specificationId: UnitSpecificationSeed[3].id,
+    specificationId: 'power-production-unit-3',
   },
   {
     id: 'hydrogen-production-unit-0',
@@ -102,7 +101,7 @@ export const UnitSeed: readonly Unit[] = Object.freeze([
     ownerId: CompanySeed[2].id,
     operatorId: CompanySeed[2].id,
     active: true,
-    specificationId: UnitSpecificationSeed[4].id,
+    specificationId: 'hydrogen-production-unit-0',
   },
   {
     id: 'hydrogen-storage-unit-0',
@@ -120,7 +119,7 @@ export const UnitSeed: readonly Unit[] = Object.freeze([
     ownerId: CompanySeed[2].id,
     operatorId: CompanySeed[2].id,
     active: true,
-    specificationId: UnitSpecificationSeed[5].id,
+    specificationId: 'hydrogen-storage-unit-0',
   },
   {
     id: 'hydrogen-transport-unit-0',
@@ -138,6 +137,6 @@ export const UnitSeed: readonly Unit[] = Object.freeze([
     ownerId: CompanySeed[2].id,
     operatorId: CompanySeed[2].id,
     active: true,
-    specificationId: UnitSpecificationSeed[6].id,
+    specificationId: 'hydrogen-transport-unit-0',
   },
 ]);

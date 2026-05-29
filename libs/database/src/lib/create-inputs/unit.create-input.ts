@@ -15,8 +15,11 @@ import {
 } from '@h2-trust/contracts/payloads';
 import { UnitType } from '@h2-trust/domain';
 
-export function buildBaseUnitCreateInput(payload: BaseCreateUnitPayload, type: UnitType): Prisma.UnitCreateInput {
-  return Prisma.validator<Prisma.UnitCreateInput>()({
+export function buildBaseUnitCreateInput(
+  payload: BaseCreateUnitPayload,
+  type: UnitType,
+): Omit<Prisma.UnitCreateInput, 'specification'> {
+  return Prisma.validator<Omit<Prisma.UnitCreateInput, 'specification'>>()({
     name: payload.name,
     manufacturer: payload.manufacturer,
     modelType: payload.modelType,
@@ -40,7 +43,6 @@ export function buildBaseUnitCreateInput(payload: BaseCreateUnitPayload, type: U
       connect: { id: payload.operatorId },
     },
     type: type,
-    specification: undefined,
   });
 }
 

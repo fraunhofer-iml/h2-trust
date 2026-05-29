@@ -31,7 +31,7 @@ export class QualityDetailsEntity {
       qualityDetails.id,
       qualityDetails.rfnboType,
       qualityDetails.powerType,
-      qualityDetails.distance.toNumber(),
+      qualityDetails.distance?.toNumber() ?? 0,
     );
   }
 }

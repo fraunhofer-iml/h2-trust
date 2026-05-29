@@ -183,7 +183,7 @@ export class UnitUpdatePageComponent {
       this.powerProductionForm.patchValue({
         ...unit,
         biddingZone: unit.biddingZone,
-        powerProductionType: unit.type.name,
+        powerProductionType: unit.type,
       });
     }
   }
