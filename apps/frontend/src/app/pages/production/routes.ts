@@ -16,17 +16,21 @@ export const PRODUCTION_ROUTES: Route[] = [
   {
     path: 'data',
     component: ProductionViewComponent,
+    data: { breadcrumb: 'Data' },
   },
   {
     path: 'data/select',
     component: FileSelectionComponent,
+    data: { breadcrumb: 'Select File' },
   },
   {
     path: 'files',
     component: ProductionFilesComponent,
+    data: { breadcrumb: 'Uploads' },
   },
   {
     path: 'add',
     component: AddProductionDataComponent,
+    data: { breadcrumb: 'Add Data' },
   },
 ];

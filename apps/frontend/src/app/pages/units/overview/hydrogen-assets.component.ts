@@ -14,6 +14,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { RouterModule } from '@angular/router';
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { MeasurementUnit, UnitType } from '@h2-trust/domain';
+import { EmptyStateComponent } from '../../../layout/empty-state/empty-state.component';
 import { UnitCardComponent } from '../../../layout/unit-card/unit-card.component';
 import { EnumPipe } from '../../../shared/pipes/enum.pipe';
 import { unitsQueryOptions } from '../../../shared/queries/units.query';
@@ -26,7 +27,16 @@ import {
 
 @Component({
   selector: 'app-hydrogen-assets',
-  imports: [CommonModule, RouterModule, MatButtonModule, MatChipsModule, EnumPipe, MatDividerModule, UnitCardComponent],
+  imports: [
+    CommonModule,
+    RouterModule,
+    MatButtonModule,
+    MatChipsModule,
+    EnumPipe,
+    MatDividerModule,
+    UnitCardComponent,
+    EmptyStateComponent,
+  ],
   providers: [],
   templateUrl: './hydrogen-assets.component.html',
 })

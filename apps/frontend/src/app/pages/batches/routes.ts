@@ -14,10 +14,12 @@ export const BATCH_ROUTES: Route[] = [
     path: 'create',
     canActivate: [canActivateAuth],
     component: CreateBatchPageComponent,
+    data: { breadcrumb: 'Create' },
   },
   {
     path: ':id',
     canActivate: [canActivateAuth],
     component: ProductPassComponent,
+    data: { breadcrumb: 'DPP' },
   },
 ];

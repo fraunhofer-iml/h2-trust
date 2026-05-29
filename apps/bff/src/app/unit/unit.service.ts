@@ -66,6 +66,10 @@ export class UnitService {
       return this.readHydrogenStorageUnits(userId);
     }
 
+    if (type) {
+      return [];
+    }
+
     const [powerProduction, hydrogenProduction, hydrogenStorage] = await Promise.all([
       this.readPowerProductionUnits(userId),
       this.readHydrogenProductionUnits(userId),
