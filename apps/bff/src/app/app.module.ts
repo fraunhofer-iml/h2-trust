@@ -11,7 +11,6 @@ import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard, KeycloakConnectModule } from 'nest-keycloak-connect';
 import { ConfigurationModule, KeycloakConfigurationService } from '@h2-trust/configuration';
 import { BatchModule } from './batch/batch.module';
-import { BatchService } from './batch/batch.service';
 import { BottlingModule } from './bottling/bottling.module';
 import { CompanyModule } from './company/company.module';
 import { FileDownloadModule } from './file-download/file-download.module';
