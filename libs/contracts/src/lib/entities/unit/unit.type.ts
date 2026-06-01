@@ -7,6 +7,7 @@
  */
 
 import {
+  BaseUnitEntity,
   HydrogenProductionUnitEntity,
   HydrogenStorageUnitEntity,
   PowerProductionUnitEntity,
@@ -17,4 +18,5 @@ export type ConcreteUnitEntity =
   | PowerProductionUnitEntity
   | HydrogenProductionUnitEntity
   | HydrogenStorageUnitEntity
-  | TransportUnitEntity;
+  | TransportUnitEntity
+  | BaseUnitEntity;

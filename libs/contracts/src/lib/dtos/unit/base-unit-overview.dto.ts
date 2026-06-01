@@ -8,11 +8,10 @@
 
 import { BaseUnitEntity } from '@h2-trust/contracts/entities';
 import { UnitType } from '@h2-trust/domain';
-import { AddressDto } from '../address';
 import { CompanyBaseDto } from '../company';
 import { UnitOwnerDto } from './unit-owner.dto';
 
-export class BaseUnitDto {
+export class BaseUnitOverviewDto {
   id: string;
   name: string;
   manufacturer: string;
@@ -21,8 +20,7 @@ export class BaseUnitDto {
   serialNumber: string;
   certifiedBy: string;
   commissionedOn: Date;
-  address: AddressDto;
-  owner: UnitOwnerDto;
+  ownerName: string;
   operator: CompanyBaseDto;
   unitType: UnitType;
   active: boolean;
@@ -35,7 +33,6 @@ export class BaseUnitDto {
     serialNumber: string,
     certifiedBy: string,
     commissionedOn: Date,
-    address: AddressDto,
     modelNumber: string,
     owner: UnitOwnerDto,
     operator: CompanyBaseDto,
@@ -50,14 +47,13 @@ export class BaseUnitDto {
     this.serialNumber = serialNumber;
     this.certifiedBy = certifiedBy;
     this.commissionedOn = commissionedOn;
-    this.address = address;
-    this.owner = owner;
+    this.ownerName = owner.name;
     this.operator = operator;
     this.unitType = unitType;
     this.active = active;
   }
 
-  static fromEntity(unit: BaseUnitEntity): BaseUnitDto {
+  static fromEntity(unit: BaseUnitEntity): BaseUnitOverviewDto {
     return {
       id: unit.id,
       name: unit.name,
@@ -67,22 +63,7 @@ export class BaseUnitDto {
       serialNumber: unit.serialNumber,
       certifiedBy: unit.certifiedBy,
       commissionedOn: unit.commissionedOn,
-      address: {
-        street: unit.address.street,
-        postalCode: unit.address.postalCode,
-        city: unit.address.city,
-        state: unit.address.state,
-        country: unit.address.country,
-      },
-      owner: {
-        id: unit.owner?.id,
-        name: unit.owner?.name,
-        hydrogenAgreements:
-          unit.owner?.hydrogenAgreements?.map((agreement) => ({
-            powerPurchaseAgreementStatus: agreement.status,
-            powerProducerId: agreement.requestedCompany.id,
-          })) ?? [],
-      },
+      ownerName: unit.owner?.name,
       operator: new CompanyBaseDto(unit.operator.id, unit.operator.name),
       unitType: unit.unitType,
       active: unit.active,

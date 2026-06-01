@@ -7,12 +7,15 @@
  */
 
 export * from './base-unit.dto';
+export * from './base-unit-overview.dto';
 export * from './create';
 export * from './filling.dto';
 export * from './hydrogen-production-overview.dto';
 export * from './hydrogen-production-unit.dto';
 export * from './hydrogen-storage-overview.dto';
 export * from './hydrogen-storage-unit.dto';
+export * from './hydrogen-transport-unit.dto';
+export * from './hydrogen-transport-overview.dto';
 export * from './power-production-overview.dto';
 export * from './power-production-type.dto';
 export * from './power-production-unit.dto';

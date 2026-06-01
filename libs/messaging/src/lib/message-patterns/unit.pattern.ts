@@ -9,17 +9,19 @@
 export enum UnitMessagePatterns {
   READ_BY_ID = 'unit.read-by-id',
   READ_MANY_BY_IDS = 'unit.read-many-by-ids',
-  READ_POWER_PRODUCTION = 'unit.read-power-production',
-  READ_POWER_PRODUCTION_BY_IDS = 'unit.read-power-production-by-ids',
-  READ_HYDROGEN_PRODUCTION = 'unit.read-hydrogen-production',
-  READ_HYDROGEN_PRODUCTION_BY_IDS = 'unit.read-hydrogen-production-by-ids',
-  READ_HYDROGEN_STORAGE = 'unit.read-hydrogen-storage',
-  READ_POWER_PRODUCTION_TYPES = 'unit.read-power-production-types',
+  READ_BY_OWNER_ID_AND_TYPE = 'unit.read-by-owner-id-and-type',
+
   CREATE_POWER_PRODUCTION = 'unit.create-power-production',
   CREATE_HYDROGEN_PRODUCTION = 'unit.create-hydrogen-production',
   CREATE_HYDROGEN_STORAGE = 'unit.create-hydrogen-storage',
+  CREATE_HYDROGEN_TRANSPORT = 'unit.create-hydrogen-transport',
+  CREATE_BASE_UNIT = 'unit.create-base-unit',
+
   UPDATE_HYDROGEN_PRODUCTION = 'unit.update-hydrogen-production',
   UPDATE_POWER_PRODUCTION = 'unit.update-power-production',
   UPDATE_HYDROGEN_STORAGE = 'unit.update-hydrogen-storage',
+  UPDATE_HYDROGEN_TRANSPORT = 'unit.update-hydrogen-transport',
+  UPDATE_BASE_UNIT = 'unit.update-base-unit',
+
   UPDATE_STATUS = 'unit.update-status',
 }

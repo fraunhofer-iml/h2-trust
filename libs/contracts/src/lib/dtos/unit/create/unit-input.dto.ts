@@ -11,7 +11,7 @@ import { IsDate, IsEnum, IsNotEmpty, IsString, ValidateNested } from 'class-vali
 import { UnitType } from '@h2-trust/domain';
 import { AddressDto } from '../../address';
 
-export abstract class UnitInputDto {
+export class UnitInputDto {
   @IsEnum(UnitType)
   @IsNotEmpty()
   unitType: UnitType;

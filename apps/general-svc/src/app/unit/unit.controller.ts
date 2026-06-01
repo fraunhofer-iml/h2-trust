@@ -14,13 +14,17 @@ import {
   HydrogenProductionUnitEntity,
   HydrogenStorageUnitEntity,
   PowerProductionUnitEntity,
+  TransportUnitEntity,
 } from '@h2-trust/contracts/entities';
 import {
+  BaseCreateUnitPayload,
   CreateHydrogenProductionUnitPayload,
   CreateHydrogenStorageUnitPayload,
+  CreateHydrogenTransportUnitPayload,
   CreatePowerProductionUnitPayload,
   ReadByIdPayload,
   ReadByIdsPayload,
+  ReadByOwnerIdAndTypePayload,
   UpdateUnitStatusPayload,
 } from '@h2-trust/contracts/payloads';
 import { UnitMessagePatterns } from '@h2-trust/messaging';
@@ -40,29 +44,9 @@ export class UnitController {
     return this.service.readUnitsByIds(payload.ids);
   }
 
-  @MessagePattern(UnitMessagePatterns.READ_POWER_PRODUCTION)
-  readPowerProductionUnitsByOwnerId(payload: ReadByIdPayload): Promise<PowerProductionUnitEntity[]> {
-    return this.service.readPowerProductionUnitsByOwnerId(payload);
-  }
-
-  @MessagePattern(UnitMessagePatterns.READ_POWER_PRODUCTION_BY_IDS)
-  readPowerProductionUnitsByIds(payload: ReadByIdsPayload): Promise<PowerProductionUnitEntity[]> {
-    return this.service.readPowerProductionUnitsByIds(payload);
-  }
-
-  @MessagePattern(UnitMessagePatterns.READ_HYDROGEN_PRODUCTION)
-  readHydrogenProductionUnits(payload: ReadByIdPayload): Promise<HydrogenProductionUnitEntity[]> {
-    return this.service.readHydrogenProductionUnitsByOwnerId(payload);
-  }
-
-  @MessagePattern(UnitMessagePatterns.READ_HYDROGEN_PRODUCTION_BY_IDS)
-  readHydrogenProductionUnitsByIds(payload: ReadByIdsPayload): Promise<HydrogenProductionUnitEntity[]> {
-    return this.service.readHydrogenProductionUnitsByIds(payload);
-  }
-
-  @MessagePattern(UnitMessagePatterns.READ_HYDROGEN_STORAGE)
-  readHydrogenStorageUnits(payload: ReadByIdPayload): Promise<HydrogenStorageUnitEntity[]> {
-    return this.service.readHydrogenStorageUnitsByOwnerId(payload);
+  @MessagePattern(UnitMessagePatterns.READ_BY_OWNER_ID_AND_TYPE)
+  readUnitsByOwnerIdAndType(payload: ReadByOwnerIdAndTypePayload): Promise<ConcreteUnitEntity[]> {
+    return this.service.readUnitsByOwnerIdAndType(payload.id, payload.type);
   }
 
   @MessagePattern(UnitMessagePatterns.CREATE_POWER_PRODUCTION)
@@ -80,6 +64,16 @@ export class UnitController {
     return this.service.updateOrCreateHydrogenStorageUnit(payload);
   }
 
+  @MessagePattern(UnitMessagePatterns.CREATE_HYDROGEN_TRANSPORT)
+  createHydrogenTransportUnit(payload: CreateHydrogenTransportUnitPayload): Promise<TransportUnitEntity> {
+    return this.service.updateOrCreateHydrogenTransportUnit(payload);
+  }
+
+  @MessagePattern(UnitMessagePatterns.CREATE_BASE_UNIT)
+  createBaseUnit(payload: BaseCreateUnitPayload): Promise<BaseUnitEntity> {
+    return this.service.updateOrCreateBaseUnit(payload);
+  }
+
   @MessagePattern(UnitMessagePatterns.UPDATE_HYDROGEN_PRODUCTION)
   updateHydrogenProductionUnit(payload: CreateHydrogenProductionUnitPayload): Promise<HydrogenProductionUnitEntity> {
     return this.service.updateOrCreateHydrogenProductionUnit(payload);
@@ -93,6 +87,16 @@ export class UnitController {
   @MessagePattern(UnitMessagePatterns.UPDATE_HYDROGEN_STORAGE)
   updateHydrogenStorageUnit(payload: CreateHydrogenStorageUnitPayload): Promise<HydrogenStorageUnitEntity> {
     return this.service.updateOrCreateHydrogenStorageUnit(payload);
+  }
+
+  @MessagePattern(UnitMessagePatterns.UPDATE_HYDROGEN_TRANSPORT)
+  updateHydrogenTransportUnit(payload: CreateHydrogenTransportUnitPayload): Promise<TransportUnitEntity> {
+    return this.service.updateOrCreateHydrogenTransportUnit(payload);
+  }
+
+  @MessagePattern(UnitMessagePatterns.UPDATE_BASE_UNIT)
+  updateBaseUnit(payload: BaseCreateUnitPayload): Promise<BaseUnitEntity> {
+    return this.service.updateOrCreateBaseUnit(payload);
   }
 
   @MessagePattern(UnitMessagePatterns.UPDATE_STATUS)

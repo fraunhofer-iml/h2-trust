@@ -10,7 +10,7 @@ import { Type } from 'class-transformer';
 import { IsDate, IsNotEmpty, IsOptional, IsString, ValidateNested } from 'class-validator';
 import { AddressPayload } from '../common';
 
-export abstract class BaseCreateUnitPayload {
+export class BaseCreateUnitPayload {
   @IsString()
   @IsNotEmpty()
   name: string;
@@ -61,7 +61,7 @@ export abstract class BaseCreateUnitPayload {
   @IsOptional()
   requesterCompanyId?: string;
 
-  protected constructor(
+  constructor(
     name: string,
     commissionedOn: Date,
     address: AddressPayload,

@@ -10,3 +10,4 @@ export * from './hydrogen-production-unit-input.dto';
 export * from './hydrogen-storage-input.dto';
 export * from './power-production-unit-input.dto';
 export * from './unit-input.dto';
+export * from './hydrogen-transport-input.dto';

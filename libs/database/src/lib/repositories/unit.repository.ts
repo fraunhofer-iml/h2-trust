@@ -70,7 +70,7 @@ export class UnitRepository {
       return HydrogenStorageUnitEntity.fromDeepDatabase(baseUnit, []);
     }
 
-    throw new DomainException(ErrorCode.DOMAIN_INCOMPATIBLE_DATA, 'Incompatible unit: no matching unit type found');
+    return BaseUnitEntity.fromDeepBaseUnit(baseUnit);
   }
 
   async findPowerProductionUnitsByOwnerId(ownerId: string): Promise<PowerProductionUnitEntity[]> {

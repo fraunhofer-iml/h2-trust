@@ -11,7 +11,7 @@ import { UnitType } from '@h2-trust/domain';
 import { AddressEntity } from '../address';
 import { CompanyEntity } from '../company';
 
-export abstract class BaseUnitEntity {
+export class BaseUnitEntity {
   id: string;
   name: string;
   manufacturer: string;
@@ -26,7 +26,7 @@ export abstract class BaseUnitEntity {
   unitType: UnitType;
   active: boolean;
 
-  protected constructor(
+  constructor(
     id: string,
     name: string,
     manufacturer: string,

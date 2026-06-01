@@ -30,7 +30,7 @@ export class TransportUnitEntity extends BaseUnitEntity {
     owner: CompanyEntity,
     operator: CompanyEntity,
     unitType: UnitType,
-    transportMode: TransportType,
+    type: TransportType,
     fuelType: FuelType,
     active: boolean,
   ) {
@@ -49,7 +49,7 @@ export class TransportUnitEntity extends BaseUnitEntity {
       unitType,
       active,
     );
-    this.type = transportMode;
+    this.type = type;
     this.fuelType = fuelType;
   }
 

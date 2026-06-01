@@ -14,6 +14,8 @@ import {
   HydrogenProductionUnitInputDto,
   HydrogenStorageUnitDto,
   HydrogenStorageUnitInputDto,
+  HydrogenTransportUnitDto,
+  HydrogenTransportUnitInputDto,
   PowerProductionUnitDto,
   PowerProductionUnitInputDto,
   UnitDto,
@@ -99,6 +101,21 @@ export class UnitController {
     return this.unitService.readUnitById(id);
   }
 
+  @Post('hydrogen-transport')
+  @ApiBearerAuth()
+  @ApiOperation({
+    description: 'Create new Unit.',
+  })
+  @ApiOkResponse({
+    description: 'Returns the created unit.',
+  })
+  createHydrogenTransportUnit(
+    @KeycloakUser() authenticatedUser: AuthenticatedKCUser,
+    @Body() dto: HydrogenTransportUnitInputDto,
+  ): Promise<HydrogenTransportUnitDto> {
+    return this.unitService.createHydrogenTransportUnit(dto, authenticatedUser.sub);
+  }
+
   @Post('hydrogen-production')
   @ApiBearerAuth()
   @ApiOperation({
@@ -174,5 +191,21 @@ export class UnitController {
     @Body() dto: HydrogenStorageUnitInputDto,
   ): Promise<void> {
     return this.unitService.updateHydrogenStorageUnit(unitId, dto, authenticatedUser.sub);
+  }
+
+  @Put('hydrogen-transport/:id')
+  @ApiBearerAuth()
+  @ApiOperation({
+    description: 'Update a Unit.',
+  })
+  @ApiOkResponse({
+    description: 'Returns the hydrogen transport updated unit.',
+  })
+  updateHydrogenTransportUnit(
+    @KeycloakUser() authenticatedUser: AuthenticatedKCUser,
+    @Param('id') unitId: string,
+    @Body() dto: HydrogenTransportUnitInputDto,
+  ): Promise<void> {
+    return this.unitService.updateHydrogenTransportUnit(unitId, dto, authenticatedUser.sub);
   }
 }
