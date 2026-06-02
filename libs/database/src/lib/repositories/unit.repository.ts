@@ -126,7 +126,6 @@ export class UnitRepository {
           },
           specification: {
             update: {
-              where: { id: payload.id },
               data: {
                 type: payload.hydrogenProductionType,
                 technology: payload.technology,
@@ -228,7 +227,6 @@ export class UnitRepository {
           },
           specification: {
             update: {
-              where: { id: payload.id },
               data: {
                 type: payload.type,
                 capacity: new Prisma.Decimal(payload.capacity),
