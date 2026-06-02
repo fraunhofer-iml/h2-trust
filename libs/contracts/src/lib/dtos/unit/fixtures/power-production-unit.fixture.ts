@@ -7,16 +7,14 @@
  */
 
 import { PowerProductionUnitDto } from '@h2-trust/contracts/dtos';
-import { BiddingZone, GridLevel, UnitType } from '@h2-trust/domain';
+import { BiddingZone, PowerProductionType, UnitType } from '@h2-trust/domain';
 import { BaseUnitDtoFixture } from './base-unit.fixture';
-import { PowerProductionTypeDtoFixture } from './power-production-type.fixture';
 
 export const PowerProductionUnitDtoFixture = {
   create: (overrides: Partial<PowerProductionUnitDto> = {}): PowerProductionUnitDto => ({
     ...BaseUnitDtoFixture.create({
       id: overrides.id,
       name: overrides.name,
-      mastrNumber: overrides.mastrNumber,
       manufacturer: overrides.manufacturer,
       modelType: overrides.modelType,
       modelNumber: overrides.modelNumber,
@@ -29,14 +27,10 @@ export const PowerProductionUnitDtoFixture = {
       unitType: overrides.unitType ?? UnitType.POWER_PRODUCTION,
       active: overrides.active,
     }),
-    electricityMeterNumber: overrides.electricityMeterNumber ?? 'EM-001',
-    gridOperator: overrides.gridOperator ?? 'Grid Operator AG',
-    gridConnectionNumber: overrides.gridConnectionNumber ?? 'GCN-001',
-    gridLevel: overrides.gridLevel ?? GridLevel.MEDIUM_VOLTAGE,
     biddingZone: overrides.biddingZone ?? BiddingZone.DE_LU,
     ratedPower: overrides.ratedPower ?? 25,
     decommissioningPlannedOn: overrides.decommissioningPlannedOn ?? new Date('2040-01-01T00:00:00.000Z'),
-    type: overrides.type ?? PowerProductionTypeDtoFixture.create(),
+    type: overrides.type ?? PowerProductionType.GRID,
     financialSupportReceived: overrides.financialSupportReceived ?? false,
   }),
 } as const;

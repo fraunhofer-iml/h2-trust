@@ -15,7 +15,6 @@ export const HydrogenProductionUnitDtoFixture = {
     ...BaseUnitDtoFixture.create({
       id: overrides.id,
       name: overrides.name,
-      mastrNumber: overrides.mastrNumber,
       manufacturer: overrides.manufacturer,
       modelType: overrides.modelType,
       modelNumber: overrides.modelNumber,
@@ -32,7 +31,6 @@ export const HydrogenProductionUnitDtoFixture = {
     technology: overrides.technology ?? HydrogenProductionTechnology.PEM,
     biddingZone: overrides.biddingZone ?? BiddingZone.DE_LU,
     ratedPower: overrides.ratedPower ?? 50,
-    pressure: overrides.pressure ?? 30,
     waterConsumptionLitersPerHour: overrides.waterConsumptionLitersPerHour ?? 100,
   }),
 } as const;

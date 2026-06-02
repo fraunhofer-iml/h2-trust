@@ -17,7 +17,6 @@ export const HydrogenStorageUnitEntityFixture = {
     ({
       id: overrides.id ?? 'hydrogen-storage-unit-1',
       name: overrides.name ?? 'Hydrogen Storage Unit',
-      mastrNumber: overrides.mastrNumber ?? 'MASTR-HYDROGEN-003',
       manufacturer: overrides.manufacturer ?? 'Hydrogen Manufacturer',
       modelType: overrides.modelType ?? 'MT-HYDROGEN-003',
       modelNumber: overrides.modelNumber ?? 'MN-HYDROGEN-003',
@@ -29,7 +28,6 @@ export const HydrogenStorageUnitEntityFixture = {
       operator: overrides.operator ?? CompanyEntityFixture.createHydrogenProducer(),
       unitType: overrides.unitType ?? UnitType.HYDROGEN_STORAGE,
       capacity: overrides.capacity ?? 1000,
-      pressure: overrides.pressure ?? 2,
       type: overrides.type ?? HydrogenStorageType.LIQUID_HYDROGEN,
       filling: overrides.filling ?? [HydrogenComponentEntityFixture.createRfnboReady()],
     }) as HydrogenStorageUnitEntity,

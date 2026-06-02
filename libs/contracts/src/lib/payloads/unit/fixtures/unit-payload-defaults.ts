@@ -12,7 +12,6 @@ import { AddressPayloadFixture } from '../../common/fixtures/address.fixture';
 type BaseCreateUnitPayloadValues = Pick<
   BaseCreateUnitPayload,
   | 'name'
-  | 'mastrNumber'
   | 'commissionedOn'
   | 'address'
   | 'ownerId'
@@ -29,7 +28,6 @@ export const createBaseCreateUnitPayloadValues = (
   overrides: Partial<BaseCreateUnitPayloadValues> = {},
 ): BaseCreateUnitPayloadValues => ({
   name: overrides.name ?? 'Unit 1',
-  mastrNumber: overrides.mastrNumber ?? 'MASTR-UNIT-001',
   commissionedOn: overrides.commissionedOn ?? new Date('2026-01-01T00:00:00Z'),
   address: overrides.address ?? AddressPayloadFixture.create(),
   ownerId: overrides.ownerId ?? 'company-1',

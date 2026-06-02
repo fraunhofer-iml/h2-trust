@@ -14,7 +14,6 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import {
   BiddingZone,
-  GridLevel,
   HydrogenProductionTechnology,
   HydrogenProductionType,
   PowerProductionType,
@@ -39,7 +38,6 @@ export class HydrogenProductionUnitFormComponent {
   protected readonly HydrogenProductionMethod = HydrogenProductionType;
 
   availableBiddingZones = Object.values(BiddingZone);
-  availableGridLevels = Object.entries(GridLevel);
   availablePowerProductionType = Object.entries(PowerProductionType);
 
   hydrogenProductionForm = input.required<FormGroup<HydrogenProductionFormGroup>>();

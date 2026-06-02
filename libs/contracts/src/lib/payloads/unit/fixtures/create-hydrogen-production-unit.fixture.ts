@@ -16,7 +16,6 @@ export const CreateHydrogenProductionUnitPayloadFixture = {
 
     return new CreateHydrogenProductionUnitPayload(
       defaults.name,
-      defaults.mastrNumber,
       defaults.commissionedOn,
       defaults.address,
       defaults.ownerId,

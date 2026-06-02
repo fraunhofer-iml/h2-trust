@@ -16,7 +16,6 @@ export const HydrogenProductionUnitEntityFixture = {
     ({
       id: overrides.id ?? 'hydrogen-production-unit-1',
       name: overrides.name ?? 'Hydrogen Production Unit',
-      mastrNumber: overrides.mastrNumber ?? 'MASTR-HYDROGEN-002',
       manufacturer: overrides.manufacturer ?? 'Hydrogen Manufacturer',
       modelType: overrides.modelType ?? 'MT-HYDROGEN-002',
       modelNumber: overrides.modelNumber ?? 'MN-HYDROGEN-002',
@@ -28,7 +27,6 @@ export const HydrogenProductionUnitEntityFixture = {
       operator: overrides.operator ?? CompanyEntityFixture.createHydrogenProducer(),
       unitType: overrides.unitType ?? UnitType.HYDROGEN_PRODUCTION,
       ratedPower: overrides.ratedPower ?? 500,
-      pressure: overrides.pressure ?? 30,
       type: overrides.type ?? HydrogenProductionType.ELECTROLYSIS,
       technology: overrides.technology ?? HydrogenProductionTechnology.PEM,
       biddingZone: overrides.biddingZone ?? BiddingZone.DE_LU,

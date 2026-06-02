@@ -16,13 +16,11 @@ export const CreateHydrogenStorageUnitPayloadFixture = {
 
     return new CreateHydrogenStorageUnitPayload(
       defaults.name,
-      defaults.mastrNumber,
       defaults.commissionedOn,
       defaults.address,
       defaults.ownerId,
       overrides.type ?? HydrogenStorageType.COMPRESSED_GASEOUS_HYDROGEN,
       overrides.capacity ?? 1000,
-      overrides.pressure ?? 200,
       defaults.manufacturer,
       defaults.modelType,
       defaults.modelNumber,
