@@ -18,6 +18,5 @@ export const HydrogenStorageUnitInputDtoFixture = {
     }),
     storageType: overrides.storageType ?? HydrogenStorageType.COMPRESSED_GASEOUS_HYDROGEN,
     capacity: overrides.capacity ?? 100,
-    pressure: overrides.pressure ?? 30,
   }),
 } as const;

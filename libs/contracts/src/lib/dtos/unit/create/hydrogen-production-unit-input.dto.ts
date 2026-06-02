@@ -33,11 +33,6 @@ export class HydrogenProductionUnitInputDto extends UnitInputDto {
   @IsNumber()
   @IsPositive()
   @IsNotEmpty()
-  pressure: number;
-
-  @IsNumber()
-  @IsPositive()
-  @IsNotEmpty()
   waterConsumptionLitersPerHour: number;
 
   constructor(
@@ -56,7 +51,6 @@ export class HydrogenProductionUnitInputDto extends UnitInputDto {
     method: HydrogenProductionType,
     biddingZone: BiddingZone,
     ratedPower: number,
-    pressure: number,
     waterConsumptionLitersPerHour: number,
   ) {
     super(
@@ -76,7 +70,6 @@ export class HydrogenProductionUnitInputDto extends UnitInputDto {
     this.technology = technology;
     this.biddingZone = biddingZone;
     this.ratedPower = ratedPower;
-    this.pressure = pressure;
     this.waterConsumptionLitersPerHour = waterConsumptionLitersPerHour;
   }
 
@@ -100,7 +93,6 @@ export class HydrogenProductionUnitInputDto extends UnitInputDto {
       dto.technology,
       dto.biddingZone,
       dto.ratedPower,
-      dto.pressure,
       dto.waterConsumptionLitersPerHour,
       dto.manufacturer,
       dto.modelType,

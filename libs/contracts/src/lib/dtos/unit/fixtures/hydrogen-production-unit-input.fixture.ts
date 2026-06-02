@@ -20,7 +20,6 @@ export const HydrogenProductionUnitInputDtoFixture = {
     technology: overrides.technology ?? HydrogenProductionTechnology.PEM,
     biddingZone: overrides.biddingZone ?? BiddingZone.DE_LU,
     ratedPower: overrides.ratedPower ?? 50,
-    pressure: overrides.pressure ?? 30,
     waterConsumptionLitersPerHour: overrides.waterConsumptionLitersPerHour ?? 100,
   }),
 } as const;

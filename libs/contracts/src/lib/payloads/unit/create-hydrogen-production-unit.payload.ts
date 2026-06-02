@@ -32,11 +32,6 @@ export class CreateHydrogenProductionUnitPayload extends BaseCreateUnitPayload {
   @IsNumber()
   @IsPositive()
   @IsNotEmpty()
-  pressure: number;
-
-  @IsNumber()
-  @IsPositive()
-  @IsNotEmpty()
   waterConsumptionLitersPerHour: number;
 
   constructor(
@@ -48,7 +43,6 @@ export class CreateHydrogenProductionUnitPayload extends BaseCreateUnitPayload {
     technology: HydrogenProductionTechnology,
     biddingZone: BiddingZone,
     ratedPower: number,
-    pressure: number,
     waterConsumptionLitersPerHour: number,
     manufacturer: string,
     modelType: string,
@@ -75,7 +69,6 @@ export class CreateHydrogenProductionUnitPayload extends BaseCreateUnitPayload {
     this.technology = technology;
     this.biddingZone = biddingZone;
     this.ratedPower = ratedPower;
-    this.pressure = pressure;
     this.waterConsumptionLitersPerHour = waterConsumptionLitersPerHour;
   }
 }

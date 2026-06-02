@@ -177,7 +177,6 @@ export class UnitRepository {
           },
           specification: {
             update: {
-              where: { id: payload.id },
               data: {
                 biddingZone: payload.biddingZone,
                 ratedPower: new Prisma.Decimal(payload.ratedPower),

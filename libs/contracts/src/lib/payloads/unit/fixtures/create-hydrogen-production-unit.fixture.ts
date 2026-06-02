@@ -23,7 +23,6 @@ export const CreateHydrogenProductionUnitPayloadFixture = {
       overrides.technology ?? HydrogenProductionTechnology.PEM,
       overrides.biddingZone ?? BiddingZone.DE_LU,
       overrides.ratedPower ?? 500,
-      overrides.pressure ?? 35,
       overrides.waterConsumptionLitersPerHour ?? 1200,
       defaults.manufacturer,
       defaults.modelType,
