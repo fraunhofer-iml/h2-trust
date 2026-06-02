@@ -7,10 +7,9 @@
  */
 
 import { PowerProductionUnitEntity } from '@h2-trust/contracts/entities';
-import { BiddingZone, UnitType } from '@h2-trust/domain';
+import { BiddingZone, PowerProductionType, UnitType } from '@h2-trust/domain';
 import { AddressEntityFixture } from '../../address/fixtures/address.fixture';
 import { CompanyEntityFixture } from '../../company/fixtures/company.fixture';
-import { PowerProductionTypeEntityFixture } from './power-production-type.fixture';
 
 export const PowerProductionUnitEntityFixture = {
   create: (overrides: Partial<PowerProductionUnitEntity> = {}): PowerProductionUnitEntity =>
@@ -31,6 +30,6 @@ export const PowerProductionUnitEntityFixture = {
       ratedPower: overrides.ratedPower ?? 1000,
       biddingZone: overrides.biddingZone ?? BiddingZone.DE_LU,
       financialSupportReceived: overrides.financialSupportReceived ?? false,
-      type: overrides.type ?? PowerProductionTypeEntityFixture.createSolarEnergy(),
+      type: overrides.type ?? PowerProductionType.PHOTOVOLTAIC_SYSTEM,
     }) as PowerProductionUnitEntity,
 } as const;
