@@ -10,6 +10,7 @@ import { Body, Controller, Get, Param, Patch, Post, Put, Query } from '@nestjs/c
 import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiQuery } from '@nestjs/swagger';
 import { KeycloakUser } from 'nest-keycloak-connect';
 import {
+  BaseUnitDto,
   HydrogenProductionUnitDto,
   HydrogenProductionUnitInputDto,
   HydrogenStorageUnitDto,
@@ -19,6 +20,7 @@ import {
   PowerProductionUnitDto,
   PowerProductionUnitInputDto,
   UnitDto,
+  UnitInputDto,
   UnitOverviewDto,
   UnitUpdateActiveDto,
   type AuthenticatedKCUser,
@@ -131,6 +133,21 @@ export class UnitController {
     return this.unitService.createHydrogenProductionUnit(dto, authenticatedUser.sub);
   }
 
+  @Post('base')
+  @ApiBearerAuth()
+  @ApiOperation({
+    description: 'Create new Unit.',
+  })
+  @ApiOkResponse({
+    description: 'Returns the created unit.',
+  })
+  createBaseUnit(
+    @KeycloakUser() authenticatedUser: AuthenticatedKCUser,
+    @Body() dto: UnitInputDto,
+  ): Promise<BaseUnitDto> {
+    return this.unitService.createBaseUnit(dto, authenticatedUser.sub);
+  }
+
   @Patch(':id/active')
   @ApiBearerAuth()
   @ApiOperation({ description: 'Update the property active' })
@@ -207,5 +224,21 @@ export class UnitController {
     @Body() dto: HydrogenTransportUnitInputDto,
   ): Promise<void> {
     return this.unitService.updateHydrogenTransportUnit(unitId, dto, authenticatedUser.sub);
+  }
+
+  @Put('base/:id')
+  @ApiBearerAuth()
+  @ApiOperation({
+    description: 'Update a Unit.',
+  })
+  @ApiOkResponse({
+    description: 'Returns the updated base unit.',
+  })
+  updateBaseUnit(
+    @KeycloakUser() authenticatedUser: AuthenticatedKCUser,
+    @Param('id') unitId: string,
+    @Body() dto: UnitInputDto,
+  ): Promise<void> {
+    return this.unitService.updateBaseUnit(unitId, dto, authenticatedUser.sub);
   }
 }

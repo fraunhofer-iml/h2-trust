@@ -8,6 +8,7 @@
 
 import { Type } from 'class-transformer';
 import { IsDate, IsEnum, IsNotEmpty, IsString, ValidateNested } from 'class-validator';
+import { AddressPayload, BaseCreateUnitPayload } from '@h2-trust/contracts/payloads';
 import { UnitType } from '@h2-trust/domain';
 import { AddressDto } from '../../address';
 
@@ -82,5 +83,29 @@ export class UnitInputDto {
     this.certifiedBy = certifiedBy;
     this.commissionedOn = commissionedOn;
     this.address = address;
+  }
+
+  static toBasePayload(dto: UnitInputDto, id?: string, requesterCompanyId?: string): BaseCreateUnitPayload {
+    const payload = new BaseCreateUnitPayload(
+      dto.name,
+      dto.commissionedOn,
+      new AddressPayload(
+        dto.address.street,
+        dto.address.postalCode,
+        dto.address.city,
+        dto.address.state,
+        dto.address.country,
+      ),
+      dto.owner,
+      dto.manufacturer,
+      dto.modelType,
+      dto.modelNumber,
+      dto.serialNumber,
+      dto.certifiedBy,
+      dto.operator,
+      id,
+    );
+    payload.requesterCompanyId = requesterCompanyId;
+    return payload;
   }
 }

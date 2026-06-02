@@ -25,6 +25,7 @@ import {
   PowerProductionUnitDto,
   PowerProductionUnitInputDto,
   UnitDto,
+  UnitInputDto,
   UnitOverviewDto,
   UnitUpdateActiveDto,
 } from '@h2-trust/contracts/dtos';
@@ -146,6 +147,17 @@ export class UnitService {
     return HydrogenTransportUnitDto.fromEntity(unit);
   }
 
+  async createBaseUnit(dto: UnitInputDto, userId: string): Promise<BaseUnitDto> {
+    const requesterCompanyId = await this.getCompanyIdFromUserId(userId);
+    const unit = await firstValueFrom(
+      this.generalService.send(
+        UnitMessagePatterns.CREATE_BASE_UNIT,
+        UnitInputDto.toBasePayload(dto, undefined, requesterCompanyId),
+      ),
+    );
+    return HydrogenTransportUnitDto.fromEntity(unit);
+  }
+
   async updateUnitStatus(id: string, active: boolean, userId: string): Promise<void> {
     const requesterCompanyId = await this.getCompanyIdFromUserId(userId);
     return firstValueFrom(
@@ -195,6 +207,17 @@ export class UnitService {
       ),
     );
   }
+
+  async updateBaseUnit(id: string, dto: UnitInputDto, userId: string): Promise<void> {
+    const requesterCompanyId = await this.getCompanyIdFromUserId(userId);
+    return firstValueFrom(
+      this.generalService.send(
+        UnitMessagePatterns.UPDATE_BASE_UNIT,
+        UnitInputDto.toBasePayload(dto, id, requesterCompanyId),
+      ),
+    );
+  }
+
   private async getCompanyIdFromUserId(id: string): Promise<string> {
     const userWithCompany = await this.userService.readUserWithCompany(id);
     return userWithCompany.company.id;
