@@ -67,10 +67,12 @@ export class UnitService {
   }
 
   async readUnits(userId: string, type?: UnitType): Promise<UnitOverviewDto[]> {
+    const requesterCompanyId = await this.getCompanyIdFromUserId(userId);
+
     const units: ConcreteUnitEntity[] = await firstValueFrom(
       this.generalService.send(
         UnitMessagePatterns.READ_BY_OWNER_ID_AND_TYPE,
-        new ReadByOwnerIdAndTypePayload(userId, type),
+        new ReadByOwnerIdAndTypePayload(requesterCompanyId, type),
       ),
     );
 

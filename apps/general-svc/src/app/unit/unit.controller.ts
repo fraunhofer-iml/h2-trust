@@ -46,7 +46,7 @@ export class UnitController {
 
   @MessagePattern(UnitMessagePatterns.READ_BY_OWNER_ID_AND_TYPE)
   readUnitsByOwnerIdAndType(payload: ReadByOwnerIdAndTypePayload): Promise<ConcreteUnitEntity[]> {
-    return this.service.readUnitsByOwnerIdAndType(payload.id, payload.type);
+    return this.service.readUnitsByOwnerIdAndType(payload.id, payload.unitType);
   }
 
   @MessagePattern(UnitMessagePatterns.CREATE_POWER_PRODUCTION)

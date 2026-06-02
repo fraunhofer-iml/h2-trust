@@ -14,6 +14,7 @@ import {
   HydrogenProductionUnitEntity,
   HydrogenStorageUnitEntity,
   PowerProductionUnitEntity,
+  TransportUnitEntity,
   UserEntity,
 } from '@h2-trust/contracts/entities';
 import {
@@ -70,15 +71,18 @@ export class UnitRepository {
       return HydrogenStorageUnitEntity.fromDeepDatabase(baseUnit, []);
     }
 
+    if (baseUnit.type === UnitType.TRANSPORTATION) {
+      return TransportUnitEntity.fromDeepUnitDatabase(baseUnit);
+    }
+
     return BaseUnitEntity.fromDeepBaseUnit(baseUnit);
   }
 
-  async findUnitsByOwnerIdAndType(ownerId: string, unitType: UnitType): Promise<PowerProductionUnitEntity[]> {
+  async findUnitsByOwnerIdAndType(ownerId: string, unitType: UnitType): Promise<ConcreteUnitEntity[]> {
     const units = await this.prismaService.unit
       .findMany({ where: { ownerId, type: unitType }, ...unitDeepQueryArgs })
       .catch(wrapPrismaError);
-
-    return units.map(PowerProductionUnitEntity.fromDeepUnitDatabase);
+    return units.map(this.mapToActualUnitEntity);
   }
 
   async updateUnitStatus(payload: UpdateUnitStatusPayload): Promise<BaseUnitEntity> {

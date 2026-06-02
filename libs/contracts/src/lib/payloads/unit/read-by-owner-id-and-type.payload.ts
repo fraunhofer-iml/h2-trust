@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { UnitType } from '@h2-trust/domain';
 
 export class ReadByOwnerIdAndTypePayload {
@@ -14,10 +14,12 @@ export class ReadByOwnerIdAndTypePayload {
   @IsNotEmpty()
   id: string;
 
-  type?: UnitType;
+  @IsEnum(UnitType)
+  @IsOptional()
+  unitType?: UnitType;
 
-  constructor(id: string, type: UnitType) {
+  constructor(id: string, unitType: UnitType) {
     this.id = id;
-    this.type = type;
+    this.unitType = unitType;
   }
 }
