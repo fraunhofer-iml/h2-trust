@@ -73,46 +73,12 @@ export class UnitRepository {
     return BaseUnitEntity.fromDeepBaseUnit(baseUnit);
   }
 
-  async findPowerProductionUnitsByOwnerId(ownerId: string): Promise<PowerProductionUnitEntity[]> {
+  async findUnitsByOwnerIdAndType(ownerId: string, unitType: UnitType): Promise<PowerProductionUnitEntity[]> {
     const units = await this.prismaService.unit
-      .findMany({ where: { ownerId, type: UnitType.POWER_PRODUCTION }, ...unitDeepQueryArgs })
+      .findMany({ where: { ownerId, type: unitType }, ...unitDeepQueryArgs })
       .catch(wrapPrismaError);
 
     return units.map(PowerProductionUnitEntity.fromDeepUnitDatabase);
-  }
-
-  async findPowerProductionUnitsByIds(ids: string[]): Promise<PowerProductionUnitEntity[]> {
-    const units = await this.prismaService.unit
-      .findMany({ where: { id: { in: ids }, type: UnitType.POWER_PRODUCTION }, ...unitDeepQueryArgs })
-      .catch(wrapPrismaError);
-
-    assertAllIdsFound(units, ids);
-    return units.map(PowerProductionUnitEntity.fromDeepUnitDatabase);
-  }
-
-  async findHydrogenProductionUnitsByOwnerId(ownerId: string): Promise<HydrogenProductionUnitEntity[]> {
-    const units = await this.prismaService.unit
-      .findMany({ where: { ownerId, type: UnitType.HYDROGEN_PRODUCTION }, ...unitDeepQueryArgs })
-      .catch(wrapPrismaError);
-
-    return units.map(HydrogenProductionUnitEntity.fromDeepDatabase);
-  }
-
-  async findHydrogenProductionUnitsByIds(ids: string[]): Promise<HydrogenProductionUnitEntity[]> {
-    const units = await this.prismaService.unit
-      .findMany({ where: { id: { in: ids }, type: UnitType.HYDROGEN_PRODUCTION }, ...unitDeepQueryArgs })
-      .catch(wrapPrismaError);
-
-    assertAllIdsFound(units, ids);
-    return units.map(HydrogenProductionUnitEntity.fromDeepDatabase);
-  }
-
-  async findHydrogenStorageUnitsByOwnerId(ownerId: string): Promise<HydrogenStorageUnitEntity[]> {
-    const units = await this.prismaService.unit
-      .findMany({ where: { ownerId, type: UnitType.HYDROGEN_STORAGE }, ...unitDeepQueryArgs })
-      .catch(wrapPrismaError);
-    //TODO-LG: add process steps of storage unit here
-    return units.map((unit) => HydrogenStorageUnitEntity.fromDeepDatabase(unit, []));
   }
 
   async updateUnitStatus(payload: UpdateUnitStatusPayload): Promise<BaseUnitEntity> {
@@ -286,7 +252,7 @@ export class UnitRepository {
   }
 
   async ownsPowerProductionUnit(user: UserEntity, powerProductionUnitId: string): Promise<boolean> {
-    const ownedUnits = await this.findPowerProductionUnitsByOwnerId(user.company.id);
+    const ownedUnits = await this.findUnitsByOwnerIdAndType(user.company.id, UnitType.POWER_PRODUCTION);
     return ownedUnits.some((unit) => unit.id === powerProductionUnitId);
   }
 }

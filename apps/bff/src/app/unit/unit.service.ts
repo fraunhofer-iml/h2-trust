@@ -25,7 +25,6 @@ import {
   PowerProductionUnitDto,
   PowerProductionUnitInputDto,
   UnitDto,
-  UnitInputDto,
   UnitOverviewDto,
   UnitUpdateActiveDto,
 } from '@h2-trust/contracts/dtos';

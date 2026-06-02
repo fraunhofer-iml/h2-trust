@@ -21,8 +21,6 @@ import {
   CreateHydrogenStorageUnitPayload,
   CreateHydrogenTransportUnitPayload,
   CreatePowerProductionUnitPayload,
-  ReadByIdPayload,
-  ReadByIdsPayload,
   UpdateUnitStatusPayload,
 } from '@h2-trust/contracts/payloads';
 import { UnitRepository } from '@h2-trust/database';
@@ -42,9 +40,8 @@ export class UnitService {
     return this.unitRepository.findUnitsByIds(ids);
   }
 
-  readUnitsByOwnerIdAndType(id: string, type: UnitType): Promise<ConcreteUnitEntity[]> {
-    //TODO-LG: Implement the correct functionality
-    return Promise.resolve([]);
+  readUnitsByOwnerIdAndType(ownerId: string, unitType: UnitType): Promise<ConcreteUnitEntity[]> {
+    return this.unitRepository.findUnitsByOwnerIdAndType(ownerId, unitType);
   }
 
   async updateOrCreateHydrogenProductionUnit(

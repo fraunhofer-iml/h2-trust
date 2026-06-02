@@ -7,16 +7,20 @@
  */
 
 import { TransportUnitEntity } from '@h2-trust/contracts/entities';
-import { FuelType, TransportType } from '@h2-trust/domain';
+import { FuelType, TransportType, UnitType } from '@h2-trust/domain';
 
 export class HydrogenTransportOverviewDto {
   id: string;
+  name: string;
+  unitType: UnitType;
   type: TransportType;
   fuelType: FuelType;
   active: boolean;
 
-  constructor(id: string, type: TransportType, fuelType: FuelType, active: boolean) {
+  constructor(id: string, name: string, unitType: UnitType, type: TransportType, fuelType: FuelType, active: boolean) {
     this.id = id;
+    this.name = name;
+    this.unitType = unitType;
     this.type = type;
     this.fuelType = fuelType;
     this.active = active;
@@ -25,6 +29,8 @@ export class HydrogenTransportOverviewDto {
   static fromEntity(unit: TransportUnitEntity): HydrogenTransportOverviewDto {
     return {
       id: unit.id,
+      name: unit.name,
+      unitType: unit.unitType,
       type: unit.type,
       fuelType: unit.fuelType,
       active: unit.active,
