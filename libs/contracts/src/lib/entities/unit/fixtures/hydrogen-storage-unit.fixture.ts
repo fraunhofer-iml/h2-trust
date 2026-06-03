@@ -6,14 +6,14 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { HydrogenStorageUnitEntity } from '@h2-trust/contracts/entities';
 import { HydrogenStorageType, UnitType } from '@h2-trust/domain';
 import { AddressEntityFixture } from '../../address/fixtures/address.fixture';
 import { HydrogenComponentEntityFixture } from '../../bottling/fixtures/hydrogen-component.fixture';
 import { CompanyEntityFixture } from '../../company/fixtures/company.fixture';
+import { UnitEntity } from '../unit.entity';
 
 export const HydrogenStorageUnitEntityFixture = {
-  create: (overrides: Partial<HydrogenStorageUnitEntity> = {}): HydrogenStorageUnitEntity =>
+  create: (overrides: Partial<UnitEntity> = {}): UnitEntity =>
     ({
       id: overrides.id ?? 'hydrogen-storage-unit-1',
       name: overrides.name ?? 'Hydrogen Storage Unit',
@@ -27,8 +27,12 @@ export const HydrogenStorageUnitEntityFixture = {
       owner: overrides.owner ?? { id: 'company-1' },
       operator: overrides.operator ?? CompanyEntityFixture.createHydrogenProducer(),
       unitType: overrides.unitType ?? UnitType.HYDROGEN_STORAGE,
-      capacity: overrides.capacity ?? 1000,
-      type: overrides.type ?? HydrogenStorageType.LIQUID_HYDROGEN,
-      filling: overrides.filling ?? [HydrogenComponentEntityFixture.createRfnboReady()],
-    }) as HydrogenStorageUnitEntity,
+      capacity: overrides.specification?.capacity ?? 1000,
+      type: overrides.specification?.type ?? HydrogenStorageType.LIQUID_HYDROGEN,
+      filling: overrides.specification?.filling ?? [HydrogenComponentEntityFixture.createRfnboReady()],
+      active: true,
+      specification: overrides.specification ?? {
+        id: 'specification-1',
+      },
+    }) as UnitEntity,
 } as const;

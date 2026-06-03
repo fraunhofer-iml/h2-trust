@@ -10,7 +10,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { DocumentEntity } from '@h2-trust/contracts/entities';
 import {
   BatchEntityFixture,
-  HydrogenStorageUnitEntityFixture,
   ProcessStepEntityFixture,
   QualityDetailsEntityFixture,
 } from '@h2-trust/contracts/entities/fixtures';
@@ -211,7 +210,6 @@ describe('BottlingService', () => {
           processStepId: 'storage-process-step-1',
           amount: 50,
           qualityDetails: QualityDetailsEntityFixture.create({ rfnboType: RfnboType.RFNBO_READY }),
-          hydrogenStorageUnit: HydrogenStorageUnitEntityFixture.create({ id: givenPayload.hydrogenStorageUnitId }),
         }),
       });
       const givenNonCertifiableStorageProcessStep = ProcessStepEntityFixture.createHydrogenProduction({
@@ -221,7 +219,6 @@ describe('BottlingService', () => {
           processStepId: 'storage-process-step-2',
           amount: 50,
           qualityDetails: QualityDetailsEntityFixture.create({ rfnboType: RfnboType.NON_CERTIFIABLE }),
-          hydrogenStorageUnit: HydrogenStorageUnitEntityFixture.create({ id: givenPayload.hydrogenStorageUnitId }),
         }),
       });
       const givenConsumedSplitReadyProcessStep = ProcessStepEntityFixture.createHydrogenProduction({
