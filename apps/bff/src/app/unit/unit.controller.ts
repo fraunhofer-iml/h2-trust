@@ -276,7 +276,7 @@ export class UnitController {
     return this.unitService.updateHydrogenCompressorUnit(unitId, dto, authenticatedUser.sub);
   }
 
-  @Put('hydrogen-compressor/:id')
+  @Put('hydrogen-bottling/:id')
   @ApiBearerAuth()
   @ApiOperation({
     description: 'Update a Unit.',

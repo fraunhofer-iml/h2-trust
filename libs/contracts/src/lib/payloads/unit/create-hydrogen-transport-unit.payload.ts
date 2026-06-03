@@ -16,7 +16,7 @@ export class CreateHydrogenTransportUnitPayload extends BaseCreateUnitPayload {
   @IsNotEmpty()
   transportType: TransportType;
 
-  @IsEnum(TransportType)
+  @IsEnum(FuelType)
   @IsNotEmpty()
   fuelType: FuelType;
 
