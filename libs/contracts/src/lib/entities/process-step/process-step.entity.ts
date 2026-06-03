@@ -11,8 +11,7 @@ import { ProcessType } from '@h2-trust/domain';
 import { assertValidEnum } from '@h2-trust/utils';
 import { BatchEntity } from '../batch';
 import { DocumentEntity } from '../document';
-import { ConcreteUnitEntity } from '../unit';
-import { getSpecificUnit } from '../unit/unit.factory';
+import { UnitEntity } from '../unit';
 import { UserEntity } from '../user';
 
 export class ProcessStepEntity {
@@ -22,7 +21,7 @@ export class ProcessStepEntity {
   type: ProcessType;
   batch: BatchEntity;
   recordedBy: UserEntity;
-  executedBy: ConcreteUnitEntity;
+  executedBy: UnitEntity;
   documents?: DocumentEntity[];
 
   constructor(
@@ -32,7 +31,7 @@ export class ProcessStepEntity {
     type: ProcessType,
     batch: BatchEntity,
     recordedBy: UserEntity,
-    executedBy: ConcreteUnitEntity,
+    executedBy: UnitEntity,
     documents?: DocumentEntity[],
   ) {
     this.id = id;
@@ -54,7 +53,7 @@ export class ProcessStepEntity {
       processStep.type,
       BatchEntity.fromNestedDatabase(processStep.batch),
       UserEntity.fromNestedDatabase(processStep.recordedBy),
-      getSpecificUnit(processStep.executedBy),
+      UnitEntity.fromNestedBaseUnit(processStep.executedBy),
       processStep.documents.map((doc) => DocumentEntity.fromDatabase(doc)),
     );
   }

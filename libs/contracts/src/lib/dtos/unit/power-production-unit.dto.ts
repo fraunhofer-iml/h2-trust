@@ -6,8 +6,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { PowerProductionUnitEntity } from '@h2-trust/contracts/entities';
+import { UnitEntity } from '@h2-trust/contracts/entities';
 import { BiddingZone, PowerProductionType, UnitType } from '@h2-trust/domain';
+import { assertDefined, assertValidEnum } from '@h2-trust/utils';
 import { AddressDto } from '../address';
 import { CompanyBaseDto } from '../company';
 import { BaseUnitDto } from './base-unit.dto';
@@ -62,14 +63,18 @@ export class PowerProductionUnitDto extends BaseUnitDto {
     this.financialSupportReceived = financialSupportReceived;
   }
 
-  static override fromEntity(unit: PowerProductionUnitEntity): PowerProductionUnitDto {
+  static override fromEntity(unit: UnitEntity): PowerProductionUnitDto {
+    assertValidEnum(unit.specification.type, PowerProductionType, 'PowerProductionType');
+    assertDefined(unit.specification.decommissioningPlannedOn, 'decommissioningPlannedOn');
+    assertValidEnum(unit.specification.biddingZone, BiddingZone, 'BiddingZone');
+
     return {
       ...BaseUnitDto.fromEntity(unit),
-      biddingZone: unit.biddingZone,
-      ratedPower: unit.ratedPower,
-      decommissioningPlannedOn: unit.decommissioningPlannedOn,
-      type: unit.type,
-      financialSupportReceived: unit.financialSupportReceived,
+      biddingZone: unit.specification.biddingZone,
+      ratedPower: unit.specification.ratedPower ?? 0,
+      decommissioningPlannedOn: unit.specification.decommissioningPlannedOn,
+      type: unit.specification.type,
+      financialSupportReceived: unit.specification.financialSupportReceived ?? false,
     };
   }
 }

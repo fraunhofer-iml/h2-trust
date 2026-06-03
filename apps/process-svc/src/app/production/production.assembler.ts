@@ -10,10 +10,10 @@ import { Logger } from '@nestjs/common';
 import {
   BatchEntity,
   CompanyEntity,
-  ConcreteUnitEntity,
   CreateProductionEntity,
   ProcessStepEntity,
   QualityDetailsEntity,
+  UnitEntity,
   UserEntity,
 } from '@h2-trust/contracts/entities';
 import { BatchType, PowerType, ProcessType, RfnboType } from '@h2-trust/domain';
@@ -25,7 +25,7 @@ const logger = new Logger('ProductionAssembler');
 
 export function assemblePowerProductions(
   entity: CreateProductionEntity,
-  productionUnitsForId: Map<string, ConcreteUnitEntity>,
+  productionUnitsForId: Map<string, UnitEntity>,
 ): ProcessStepEntity[] {
   const powerProductionUnit = productionUnitsForId.get(entity.powerProductionUnitId);
   assertDefined(powerProductionUnit, 'powerProductionUnit');
@@ -48,7 +48,7 @@ export function assemblePowerProductions(
 
 export function assembleWaterConsumptions(
   entity: CreateProductionEntity,
-  productionUnitsForId: Map<string, ConcreteUnitEntity>,
+  productionUnitsForId: Map<string, UnitEntity>,
 ): ProcessStepEntity[] {
   const hydrogenProductionUnit = productionUnitsForId.get(entity.hydrogenProductionUnitId);
   assertDefined(hydrogenProductionUnit, 'hydrogenProductionUnit');
@@ -76,7 +76,7 @@ export function assembleHydrogenProductions(
   entity: CreateProductionEntity,
   powerProductions: ProcessStepEntity[],
   waterConsumptions: ProcessStepEntity[],
-  productionUnitsForId: Map<string, ConcreteUnitEntity>,
+  productionUnitsForId: Map<string, UnitEntity>,
 ): ProcessStepEntity[] {
   const hydrogenProductionUnit = productionUnitsForId.get(entity.hydrogenProductionUnitId);
   assertDefined(hydrogenProductionUnit, 'hydrogenProductionUnit');

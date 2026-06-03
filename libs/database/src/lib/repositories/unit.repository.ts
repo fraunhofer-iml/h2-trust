@@ -8,15 +8,7 @@
 
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-import {
-  BaseUnitEntity,
-  ConcreteUnitEntity,
-  HydrogenProductionUnitEntity,
-  HydrogenStorageUnitEntity,
-  PowerProductionUnitEntity,
-  TransportUnitEntity,
-  UserEntity,
-} from '@h2-trust/contracts/entities';
+import { UnitEntity, UserEntity } from '@h2-trust/contracts/entities';
 import {
   CreateHydrogenProductionUnitPayload,
   CreateHydrogenStorageUnitPayload,
@@ -39,63 +31,40 @@ import { assertAllIdsFound, assertRecordFound } from './repository-assertions';
 export class UnitRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async findUnitById(id: string): Promise<ConcreteUnitEntity> {
+  async findUnitById(id: string): Promise<UnitEntity> {
     const unit = await this.prismaService.unit
       .findUnique({ where: { id }, ...unitDeepQueryArgs })
       .catch(wrapPrismaError);
 
     assertRecordFound(unit, id);
-    return this.mapToActualUnitEntity(unit);
+    return UnitEntity.fromDeepBaseUnit(unit);
   }
 
-  async findUnitsByIds(ids: string[]): Promise<ConcreteUnitEntity[]> {
+  async findUnitsByIds(ids: string[]): Promise<UnitEntity[]> {
     const units = await this.prismaService.unit
       .findMany({ where: { id: { in: ids } }, ...unitDeepQueryArgs })
       .catch(wrapPrismaError);
 
     assertAllIdsFound(units, ids);
-    return units.map(this.mapToActualUnitEntity);
+    return units.map(UnitEntity.fromDeepBaseUnit);
   }
 
-  mapToActualUnitEntity(baseUnit: Prisma.UnitGetPayload<typeof unitDeepQueryArgs>): ConcreteUnitEntity {
-    if (baseUnit.type === UnitType.POWER_PRODUCTION) {
-      return PowerProductionUnitEntity.fromDeepUnitDatabase(baseUnit);
-    }
-
-    if (baseUnit.type === UnitType.HYDROGEN_PRODUCTION) {
-      return HydrogenProductionUnitEntity.fromDeepDatabase(baseUnit);
-    }
-
-    if (baseUnit.type === UnitType.HYDROGEN_STORAGE) {
-      //TODO-LG: add process steps of hydrogen storage here
-      return HydrogenStorageUnitEntity.fromDeepDatabase(baseUnit, []);
-    }
-
-    if (baseUnit.type === UnitType.TRANSPORTATION) {
-      return TransportUnitEntity.fromDeepUnitDatabase(baseUnit);
-    }
-
-    return BaseUnitEntity.fromDeepBaseUnit(baseUnit);
-  }
-
-  async findUnitsByOwnerIdAndType(ownerId: string, unitType: UnitType): Promise<ConcreteUnitEntity[]> {
+  async findUnitsByOwnerIdAndType(ownerId: string, unitType: UnitType): Promise<UnitEntity[]> {
     const units = await this.prismaService.unit
       .findMany({ where: { ownerId, type: unitType }, ...unitDeepQueryArgs })
       .catch(wrapPrismaError);
-    return units.map(this.mapToActualUnitEntity);
+    return units.map(UnitEntity.fromDeepBaseUnit);
   }
 
-  async updateUnitStatus(payload: UpdateUnitStatusPayload): Promise<BaseUnitEntity> {
+  async updateUnitStatus(payload: UpdateUnitStatusPayload): Promise<UnitEntity> {
     const unit = await this.prismaService.unit
       .update({ where: { id: payload.id }, data: { active: payload.active }, include: unitDeepQueryArgs.include })
       .catch(wrapPrismaError);
 
-    return BaseUnitEntity.fromDeepBaseUnit(unit);
+    return UnitEntity.fromDeepBaseUnit(unit);
   }
 
-  async updateOrCreateHydrogenProductionUnit(
-    payload: CreateHydrogenProductionUnitPayload,
-  ): Promise<HydrogenProductionUnitEntity> {
+  async updateOrCreateHydrogenProductionUnit(payload: CreateHydrogenProductionUnitPayload): Promise<UnitEntity> {
     if (payload.id) {
       await this.validateUnitIsActive(payload.id);
     }
@@ -140,12 +109,10 @@ export class UnitRepository {
       })
       .catch(wrapPrismaError);
 
-    return HydrogenProductionUnitEntity.fromDeepDatabase(unit);
+    return UnitEntity.fromDeepBaseUnit(unit);
   }
 
-  async updateOrCreatePowerProductionUnit(
-    payload: CreatePowerProductionUnitPayload,
-  ): Promise<PowerProductionUnitEntity> {
+  async updateOrCreatePowerProductionUnit(payload: CreatePowerProductionUnitPayload): Promise<UnitEntity> {
     if (payload.id) {
       await this.validateUnitIsActive(payload.id);
     }
@@ -191,12 +158,10 @@ export class UnitRepository {
       })
       .catch(wrapPrismaError);
 
-    return PowerProductionUnitEntity.fromDeepUnitDatabase(unit);
+    return UnitEntity.fromDeepBaseUnit(unit);
   }
 
-  async updateOrCreateHydrogenStorageUnit(
-    payload: CreateHydrogenStorageUnitPayload,
-  ): Promise<HydrogenStorageUnitEntity> {
+  async updateOrCreateHydrogenStorageUnit(payload: CreateHydrogenStorageUnitPayload): Promise<UnitEntity> {
     if (payload.id) {
       await this.validateUnitIsActive(payload.id);
     }
@@ -239,7 +204,7 @@ export class UnitRepository {
       })
       .catch(wrapPrismaError);
 
-    return HydrogenStorageUnitEntity.fromDeepDatabase(unit, []);
+    return UnitEntity.fromDeepBaseUnit(unit);
   }
 
   private async validateUnitIsActive(id: string): Promise<void> {

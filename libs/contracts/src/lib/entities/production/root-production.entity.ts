@@ -7,7 +7,7 @@
  */
 
 import { ProcessStepEntity } from '../process-step';
-import { HydrogenProductionUnitEntity, PowerProductionUnitEntity } from '../unit';
+import { UnitEntity } from '../unit';
 
 /**
  * This entity holds the process steps and the units of a hydrogen production.
@@ -20,16 +20,16 @@ export class ProductionChainEntity {
   hydrogenRootProduction: ProcessStepEntity;
   powerProduction: ProcessStepEntity;
   waterConsumption: ProcessStepEntity;
-  powerProductionUnit: PowerProductionUnitEntity;
-  hydrogenProductionUnit: HydrogenProductionUnitEntity;
+  powerProductionUnit: UnitEntity;
+  hydrogenProductionUnit: UnitEntity;
 
   constructor(
     hydrogenLeafProduction: ProcessStepEntity,
     hydrogenRootProduction: ProcessStepEntity,
     powerProduction: ProcessStepEntity,
     waterConsumption: ProcessStepEntity,
-    powerProductionUnit: PowerProductionUnitEntity,
-    hydrogenProductionUnit: HydrogenProductionUnitEntity,
+    powerProductionUnit: UnitEntity,
+    hydrogenProductionUnit: UnitEntity,
   ) {
     this.hydrogenLeafProduction = hydrogenLeafProduction;
     this.hydrogenRootProduction = hydrogenRootProduction;

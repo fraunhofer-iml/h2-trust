@@ -6,8 +6,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { TransportUnitEntity } from '@h2-trust/contracts/entities';
+import { UnitEntity } from '@h2-trust/contracts/entities';
 import { FuelType, TransportType, UnitType } from '@h2-trust/domain';
+import { assertValidEnum } from '@h2-trust/utils';
 
 export class HydrogenTransportOverviewDto {
   id: string;
@@ -26,13 +27,15 @@ export class HydrogenTransportOverviewDto {
     this.active = active;
   }
 
-  static fromEntity(unit: TransportUnitEntity): HydrogenTransportOverviewDto {
+  static fromEntity(unit: UnitEntity): HydrogenTransportOverviewDto {
+    assertValidEnum(unit.specification.type, TransportType, 'TransportType');
+    assertValidEnum(unit.specification.fuelType, FuelType, 'FuelType');
     return {
       id: unit.id,
       name: unit.name,
       unitType: unit.unitType,
-      type: unit.type,
-      fuelType: unit.fuelType,
+      type: unit.specification.type,
+      fuelType: unit.specification.fuelType,
       active: unit.active,
     };
   }

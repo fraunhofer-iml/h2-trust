@@ -6,13 +6,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { BaseUnitEntity } from '@h2-trust/contracts/entities';
+import { UnitEntity } from '@h2-trust/contracts/entities';
 import { UnitType } from '@h2-trust/domain';
 import { AddressDto } from '../address';
 import { CompanyBaseDto } from '../company';
 import { UnitOwnerDto } from './unit-owner.dto';
 
-export class BaseUnitDto {
+export abstract class BaseUnitDto {
   id: string;
   name: string;
   manufacturer: string;
@@ -27,7 +27,7 @@ export class BaseUnitDto {
   unitType: UnitType;
   active: boolean;
 
-  constructor(
+  protected constructor(
     id: string,
     name: string,
     manufacturer: string,
@@ -57,7 +57,7 @@ export class BaseUnitDto {
     this.active = active;
   }
 
-  static fromEntity(unit: BaseUnitEntity): BaseUnitDto {
+  static fromEntity(unit: UnitEntity): BaseUnitDto {
     return {
       id: unit.id,
       name: unit.name,

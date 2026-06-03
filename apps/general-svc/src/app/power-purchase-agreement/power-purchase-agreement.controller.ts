@@ -8,7 +8,7 @@
 
 import { Controller } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
-import { PowerProductionUnitEntity, PowerPurchaseAgreementEntity } from '@h2-trust/contracts/entities';
+import { PowerPurchaseAgreementEntity, UnitEntity } from '@h2-trust/contracts/entities';
 import {
   CreatePowerPurchaseAgreementsPayload,
   ReadByIdPayload,
@@ -38,7 +38,7 @@ export class PowerPurchaseAgreementController {
   }
 
   @MessagePattern(PowerPurchaseAgreementPatterns.READ_APPROVED_GRID_POWER_PRODUCTION_UNIT_BY_USER_ID)
-  readApprovedGridPowerProductionUnitByUserId(payload: ReadByIdPayload): Promise<PowerProductionUnitEntity> {
+  readApprovedGridPowerProductionUnitByUserId(payload: ReadByIdPayload): Promise<UnitEntity> {
     return this.service.findApprovedGridPowerProductionUnitByUserId(payload);
   }
 }

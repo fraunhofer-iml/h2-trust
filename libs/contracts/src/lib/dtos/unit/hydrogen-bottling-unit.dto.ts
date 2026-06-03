@@ -6,6 +6,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export * from './unit.entity';
-export * from './unit-specification.entity';
-export * from './unit-specification.type';
+import { BaseUnitDto } from './base-unit.dto';
+
+export class HydrogenBottlingUnitDto extends BaseUnitDto {}

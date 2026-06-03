@@ -23,3 +23,4 @@ export * from './power-purchase-agreement-connection.dto';
 export * from './unit-overview.type';
 export * from './unit-owner.dto';
 export * from './update';
+export * from './unit.factory';

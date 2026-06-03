@@ -6,8 +6,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { HydrogenComponentEntity, HydrogenStorageUnitEntity } from '@h2-trust/contracts/entities';
+import { HydrogenComponentEntity, UnitEntity } from '@h2-trust/contracts/entities';
 import { HydrogenStorageType, RfnboType, UnitType } from '@h2-trust/domain';
+import { assertValidEnum } from '@h2-trust/utils';
 import { HydrogenComponentDto } from '../digital-product-passport';
 
 export class HydrogenStorageOverviewDto {
@@ -40,21 +41,24 @@ export class HydrogenStorageOverviewDto {
     this.active = active;
   }
 
-  static fromEntity(unit: HydrogenStorageUnitEntity): HydrogenStorageOverviewDto {
+  //TODO-LG: the process steps of the hydrogen storage unit are missing here
+  //they have to be readded to calculate the filling of the storage
+  static fromEntity(unit: UnitEntity): HydrogenStorageOverviewDto {
+    assertValidEnum(unit.specification.type, HydrogenStorageType, 'HydrogenStorageType');
     return <HydrogenStorageOverviewDto>{
       id: unit.id,
       name: unit.name,
       unitType: UnitType.HYDROGEN_STORAGE,
-      capacity: unit.capacity,
-      storageType: unit.type,
+      capacity: unit.specification.capacity,
+      storageType: unit.specification.type,
       filling: HydrogenStorageOverviewDto.addUpFillingAmounts(unit),
       hydrogenComposition: HydrogenStorageOverviewDto.mapHydrogenComposition(unit),
       active: unit.active,
     };
   }
 
-  private static addUpFillingAmounts(unit: HydrogenStorageUnitEntity): number {
-    return unit.filling?.reduce((sum, filling) => sum + filling.amount, 0) ?? 0;
+  private static addUpFillingAmounts(unit: UnitEntity): number {
+    return unit.specification.filling?.reduce((sum, filling) => sum + filling.amount, 0) ?? 0;
   }
 
   /**
@@ -62,10 +66,10 @@ export class HydrogenStorageOverviewDto {
    * @param unit The unit whose fillings are to be merged.
    * @returns A list of fillings in which no RFNBO type occurs twice and in which the amounts of the fillings with the same RFNBO type have been added together.
    */
-  private static mapHydrogenComposition(unit: HydrogenStorageUnitEntity): HydrogenComponentDto[] {
+  private static mapHydrogenComposition(unit: UnitEntity): HydrogenComponentDto[] {
     const compositionMap = new Map<RfnboType, number>();
 
-    unit.filling?.forEach((filling: HydrogenComponentEntity) => {
+    unit.specification?.filling?.forEach((filling: HydrogenComponentEntity) => {
       compositionMap.set(filling.rfnboType, (compositionMap.get(filling.rfnboType) ?? 0) + filling.amount);
     });
 

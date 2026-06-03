@@ -9,12 +9,10 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigurationService } from '@h2-trust/configuration';
 import {
-  ConcreteUnitEntity,
   CreateProductionEntity,
-  HydrogenProductionUnitEntity,
-  PowerProductionUnitEntity,
   ProcessStepEntity,
   ProductionChainEntity,
+  UnitEntity,
 } from '@h2-trust/contracts/entities';
 import { CreateManyProcessStepsPayload } from '@h2-trust/contracts/payloads';
 import { BatchType, RfnboType } from '@h2-trust/domain';
@@ -43,7 +41,7 @@ export class ProductionCreationService {
 
   public async createAndPersistProductions(
     createProductions: CreateProductionEntity[],
-    productionUnitsForId: Map<string, ConcreteUnitEntity>,
+    productionUnitsForId: Map<string, UnitEntity>,
   ): Promise<ProcessStepEntity[]> {
     const persistedProcessSteps: ProcessStepEntity[] = [];
 
@@ -107,8 +105,8 @@ export class ProductionCreationService {
           hydrogen,
           powerProduction,
           waterConsumption,
-          powerProduction.executedBy as PowerProductionUnitEntity,
-          waterConsumption.executedBy as HydrogenProductionUnitEntity,
+          powerProduction.executedBy,
+          waterConsumption.executedBy,
         );
         const rfnboType: RfnboType = this.digitalProductPassportService.getRfnboType(productionChain);
         hydrogen.batch.qualityDetails.rfnboType = rfnboType;

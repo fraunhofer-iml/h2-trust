@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { BatchEntity, ConcreteUnitEntity, UnitAccountingPeriods } from '@h2-trust/contracts/entities';
+import { BatchEntity, UnitAccountingPeriods, UnitEntity } from '@h2-trust/contracts/entities';
 import { BatchType, CsvContentType, PowerType, ProcessType } from '@h2-trust/domain';
 
 export interface AccountingPeriod {
@@ -26,7 +26,7 @@ export interface BatchParams {
 
 export interface ProcessStepParams {
   type: ProcessType;
-  executedBy: ConcreteUnitEntity;
+  executedBy: UnitEntity;
   recordedBy: string;
   batchParams: BatchParams;
 }

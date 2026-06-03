@@ -11,7 +11,7 @@ import {
   ProofOfSustainabilityEmissionCalculationEntity,
   ProofOfSustainabilityEmissionEntity,
   ProvenanceEntity,
-  TransportUnitEntity,
+  UnitEntity,
 } from '@h2-trust/contracts/entities';
 import {
   CalculationTopic,
@@ -25,7 +25,7 @@ import {
 } from '@h2-trust/domain';
 import { InternalException } from '@h2-trust/exceptions';
 import { getFuelType } from '@h2-trust/strings';
-import { assertDefined } from '@h2-trust/utils';
+import { assertDefined, assertValidEnum } from '@h2-trust/utils';
 import { ProofOfSustainabilityEmissionAssembler } from '../proof-of-sustainability-assembler.interface';
 
 function assemblePipelineEmissionCalculation(): ProofOfSustainabilityEmissionCalculationEntity {
@@ -106,9 +106,12 @@ export function assembleHydrogenTransportationEmissionCalculation(
     );
   }
 
-  const transportUnit: TransportUnitEntity = hydrogenTransportation.executedBy as TransportUnitEntity;
+  const transportUnit: UnitEntity = hydrogenTransportation.executedBy;
 
-  const transportMode: string = transportUnit?.type;
+  assertValidEnum(transportUnit.specification.type, TransportType, 'TransportType');
+  assertValidEnum(transportUnit.specification.fuelType, FuelType, 'FuelType');
+
+  const transportMode: string = transportUnit?.specification?.type;
 
   switch (transportMode) {
     case TransportType.PIPELINE:
@@ -116,7 +119,7 @@ export function assembleHydrogenTransportationEmissionCalculation(
     case TransportType.TRAILER:
       return assembleTrailerEmissionCalculation(
         hydrogenTransportation.batch.amount,
-        transportUnit.fuelType,
+        transportUnit.specification?.fuelType,
         hydrogenTransportation.batch?.qualityDetails?.distance,
       );
     default:

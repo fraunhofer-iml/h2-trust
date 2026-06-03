@@ -6,6 +6,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export * from './unit.entity';
-export * from './unit-specification.entity';
-export * from './unit-specification.type';
+import { HydrogenProductionType, HydrogenStorageType, PowerProductionType, TransportType } from '@h2-trust/domain';
+
+export type UnitSpecificationType = PowerProductionType | HydrogenProductionType | HydrogenStorageType | TransportType;

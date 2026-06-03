@@ -6,8 +6,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { HydrogenStorageUnitEntity } from '@h2-trust/contracts/entities';
+import { UnitEntity } from '@h2-trust/contracts/entities';
 import { HydrogenStorageType, UnitType } from '@h2-trust/domain';
+import { assertValidEnum } from '@h2-trust/utils';
 import { AddressDto } from '../address';
 import { CompanyBaseDto } from '../company';
 import { BaseUnitDto } from './base-unit.dto';
@@ -57,13 +58,15 @@ export class HydrogenStorageUnitDto extends BaseUnitDto {
     this.storageType = storageType;
   }
 
-  static override fromEntity(unit: HydrogenStorageUnitEntity): HydrogenStorageUnitDto {
+  static override fromEntity(unit: UnitEntity): HydrogenStorageUnitDto {
+    assertValidEnum(unit.specification.type, HydrogenStorageType, 'HydrogenStorageType');
+
     return {
       ...BaseUnitDto.fromEntity(unit),
-      storageType: unit.type,
-      capacity: unit.capacity,
+      storageType: unit.specification.type,
+      capacity: unit.specification.capacity ?? 0,
       filling:
-        unit.filling?.map((filling) => ({
+        unit.specification.filling?.map((filling) => ({
           id: '',
           amount: filling.amount,
         })) ?? [],

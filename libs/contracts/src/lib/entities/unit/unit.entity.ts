@@ -6,12 +6,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { UnitDeepDbType, UnitFlatDbType, UnitNestedDbType } from '@h2-trust/database';
+import { UnitDeepDbType, UnitNestedDbType } from '@h2-trust/database';
 import { UnitType } from '@h2-trust/domain';
 import { AddressEntity } from '../address';
 import { CompanyEntity } from '../company';
+import { UnitSpecificationEntity } from './unit-specification.entity';
 
-export class BaseUnitEntity {
+export class UnitEntity {
   id: string;
   name: string;
   manufacturer: string;
@@ -25,6 +26,7 @@ export class BaseUnitEntity {
   operator: CompanyEntity;
   unitType: UnitType;
   active: boolean;
+  specification: UnitSpecificationEntity;
 
   constructor(
     id: string,
@@ -40,6 +42,7 @@ export class BaseUnitEntity {
     operator: CompanyEntity,
     unitType: UnitType,
     active: boolean,
+    specification: UnitSpecificationEntity,
   ) {
     this.id = id;
     this.name = name;
@@ -54,10 +57,11 @@ export class BaseUnitEntity {
     this.operator = operator;
     this.unitType = unitType;
     this.active = active;
+    this.specification = specification;
   }
 
-  static fromDeepBaseUnit(unit: UnitDeepDbType): BaseUnitEntity {
-    return <BaseUnitEntity>{
+  static fromDeepBaseUnit(unit: UnitDeepDbType): UnitEntity {
+    return <UnitEntity>{
       id: unit.id,
       name: unit.name,
       manufacturer: unit.manufacturer,
@@ -70,11 +74,12 @@ export class BaseUnitEntity {
       owner: CompanyEntity.fromNestedDatabase(unit.owner),
       operator: CompanyEntity.fromNestedDatabase(unit.operator),
       active: unit.active,
+      specification: UnitSpecificationEntity.fromDatabase(unit),
     };
   }
 
-  static fromNestedBaseUnit(unit: UnitNestedDbType): BaseUnitEntity {
-    return <BaseUnitEntity>{
+  static fromNestedBaseUnit(unit: UnitNestedDbType): UnitEntity {
+    return <UnitEntity>{
       id: unit.id,
       name: unit.name,
       manufacturer: unit.manufacturer,
@@ -87,23 +92,7 @@ export class BaseUnitEntity {
       owner: CompanyEntity.fromFlatDatabase(unit.owner),
       operator: CompanyEntity.fromFlatDatabase(unit.operator),
       active: unit.active,
-    };
-  }
-
-  static fromFlatBaseUnit(unit: UnitFlatDbType): BaseUnitEntity {
-    return <BaseUnitEntity>{
-      id: unit.id,
-      name: unit.name,
-      manufacturer: unit.manufacturer,
-      modelType: unit.modelType,
-      modelNumber: unit.modelNumber,
-      serialNumber: unit.serialNumber,
-      certifiedBy: unit.certifiedBy,
-      commissionedOn: unit.commissionedOn,
-      address: AddressEntity.fromDatabase(unit.address),
-      owner: CompanyEntity.fromBaseType(unit.owner),
-      operator: CompanyEntity.fromBaseType(unit.operator),
-      active: unit.active,
+      specification: UnitSpecificationEntity.fromDatabase(unit),
     };
   }
 
@@ -111,7 +100,7 @@ export class BaseUnitEntity {
     return unit.owner
       ? {
           id: unit.ownerId,
-          hydrogenAgreements: BaseUnitEntity.mapHydrogenAgreements(unit),
+          hydrogenAgreements: UnitEntity.mapHydrogenAgreements(unit),
         }
       : undefined;
   }

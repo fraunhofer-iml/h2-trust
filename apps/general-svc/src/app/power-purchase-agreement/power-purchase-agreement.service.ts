@@ -7,7 +7,7 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import { PowerProductionUnitEntity, PowerPurchaseAgreementEntity, UserEntity } from '@h2-trust/contracts/entities';
+import { PowerPurchaseAgreementEntity, UnitEntity, UserEntity } from '@h2-trust/contracts/entities';
 import {
   CreatePowerPurchaseAgreementsPayload,
   ReadByIdPayload,
@@ -57,13 +57,13 @@ export class PowerPurchaseAgreementService {
     return this.powerPurchaseAgreementRepository.updatePpaStatus(payload);
   }
 
-  async findApprovedGridPowerProductionUnitByUserId(payload: ReadByIdPayload): Promise<PowerProductionUnitEntity> {
+  async findApprovedGridPowerProductionUnitByUserId(payload: ReadByIdPayload): Promise<UnitEntity> {
     const agreements = await this.findAll(
       new ReadPowerPurchaseAgreementsPayload(payload.id, undefined, PowerPurchaseAgreementStatus.APPROVED),
     );
 
     const agreementForGrid = agreements.find(
-      (agreement) => agreement.powerProductionUnit.type === PowerProductionType.GRID,
+      (agreement) => agreement.powerProductionUnit.specification.type === PowerProductionType.GRID,
     );
 
     if (!agreementForGrid) {

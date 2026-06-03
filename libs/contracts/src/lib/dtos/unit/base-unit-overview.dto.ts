@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { BaseUnitEntity } from '@h2-trust/contracts/entities';
+import { UnitEntity } from '@h2-trust/contracts/entities';
 import { UnitType } from '@h2-trust/domain';
 import { CompanyBaseDto } from '../company';
 import { UnitOwnerDto } from './unit-owner.dto';
@@ -53,7 +53,7 @@ export class BaseUnitOverviewDto {
     this.active = active;
   }
 
-  static fromEntity(unit: BaseUnitEntity): BaseUnitOverviewDto {
+  static fromEntity(unit: UnitEntity): BaseUnitOverviewDto {
     return {
       id: unit.id,
       name: unit.name,

@@ -7,7 +7,6 @@
  */
 
 import {
-  PowerProductionUnitEntity,
   ProcessStepEntity,
   ProofOfOriginBatchEntity,
   ProofOfOriginEmissionEntity,
@@ -16,6 +15,7 @@ import {
   ProofOfSustainabilityEmissionCalculationEntity,
 } from '@h2-trust/contracts/entities';
 import { BatchType, PowerProductionType, PowerType, ProcessType } from '@h2-trust/domain';
+import { assertValidEnum } from '@h2-trust/utils';
 import { computePowerSupplyEmissionCalculations } from '../../proof-of-sustainability/emissions/power-production-emission-calculation.assembler';
 import { assembleSubClassification } from '../../util';
 
@@ -51,8 +51,9 @@ function getPowerBatchEntities(
 }
 
 function getPowerProductionType(powerProduction: ProcessStepEntity): PowerProductionType {
-  const unit = powerProduction.executedBy as PowerProductionUnitEntity;
-  return unit.type;
+  const unit = powerProduction.executedBy;
+  assertValidEnum(unit.specification.type, PowerProductionType, 'PowerProductionType');
+  return unit.specification.type;
 }
 
 function onlyPowerProduction(processSteps: ProcessStepEntity[]) {

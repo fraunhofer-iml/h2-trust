@@ -7,7 +7,6 @@
  */
 
 import {
-  PowerProductionUnitEntity,
   ProcessStepEntity,
   ProofOfSustainabilityEmissionCalculationEntity,
   ProofOfSustainabilityEmissionEntity,
@@ -24,6 +23,7 @@ import {
 } from '@h2-trust/domain';
 import { InternalException } from '@h2-trust/exceptions';
 import { getPowerProductionType } from '@h2-trust/strings';
+import { assertValidEnum } from '@h2-trust/utils';
 import { ProofOfSustainabilityEmissionAssembler } from '../proof-of-sustainability-assembler.interface';
 
 export function assemblePowerSupplyEmissionCalculation(
@@ -70,8 +70,11 @@ export function computePowerSupplyEmissionCalculations(
       throw new InternalException(`PowerProductionUnit for process step ${powerProduction} not found.`);
     }
 
-    const unit = powerProduction.executedBy as PowerProductionUnitEntity;
-    return assemblePowerSupplyEmissionCalculation(powerProduction, unit.type);
+    const unit = powerProduction.executedBy;
+
+    assertValidEnum(unit.specification.type, PowerProductionType, 'PowerProductionType');
+
+    return assemblePowerSupplyEmissionCalculation(powerProduction, unit.specification.type);
   });
 }
 

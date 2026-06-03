@@ -45,7 +45,7 @@ export class PpaDto {
         : undefined,
       status: powerPurchaseAgreement.status,
       energySource: powerPurchaseAgreement.powerProductionUnit
-        ? powerPurchaseAgreement.powerProductionUnit.type
+        ? powerPurchaseAgreement.powerProductionUnit.specification.type
         : undefined,
     };
   }
