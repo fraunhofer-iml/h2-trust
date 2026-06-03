@@ -10,7 +10,9 @@ import { Controller } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 import { UnitEntity } from '@h2-trust/contracts/entities';
 import {
-  BaseCreateUnitPayload,
+  CreateHydrogenBottlingUnitPayload,
+  CreateHydrogenCompressorUnitPayload,
+  CreateHydrogenEndUseUnitPayload,
   CreateHydrogenProductionUnitPayload,
   CreateHydrogenStorageUnitPayload,
   CreateHydrogenTransportUnitPayload,
@@ -62,9 +64,19 @@ export class UnitController {
     return this.service.updateOrCreateHydrogenTransportUnit(payload);
   }
 
-  @MessagePattern(UnitMessagePatterns.CREATE_BASE_UNIT)
-  createBaseUnit(payload: BaseCreateUnitPayload): Promise<UnitEntity> {
-    return this.service.updateOrCreateBaseUnit(payload);
+  @MessagePattern(UnitMessagePatterns.CREATE_HYDROGEN_COMPRESSOR)
+  createHydrogenCompressorUnit(payload: CreateHydrogenCompressorUnitPayload): Promise<UnitEntity> {
+    return this.service.updateOrCreateHydrogenCompressionUnit(payload);
+  }
+
+  @MessagePattern(UnitMessagePatterns.CREATE_HYDROGEN_BOTTLING)
+  createHydrogenBottlingUnit(payload: CreateHydrogenBottlingUnitPayload): Promise<UnitEntity> {
+    return this.service.updateOrCreateHydrogenBottlingUnit(payload);
+  }
+
+  @MessagePattern(UnitMessagePatterns.CREATE_HYDROGEN_END_USE)
+  createHydrogenEndUseUnit(payload: CreateHydrogenEndUseUnitPayload): Promise<UnitEntity> {
+    return this.service.updateOrCreateHydrogenEndUseUnit(payload);
   }
 
   @MessagePattern(UnitMessagePatterns.UPDATE_HYDROGEN_PRODUCTION)
@@ -87,9 +99,19 @@ export class UnitController {
     return this.service.updateOrCreateHydrogenTransportUnit(payload);
   }
 
-  @MessagePattern(UnitMessagePatterns.UPDATE_BASE_UNIT)
-  updateBaseUnit(payload: BaseCreateUnitPayload): Promise<UnitEntity> {
-    return this.service.updateOrCreateBaseUnit(payload);
+  @MessagePattern(UnitMessagePatterns.UPDATE_HYDROGEN_COMPRESSOR)
+  updateHydrogenCompressorUnit(payload: CreateHydrogenCompressorUnitPayload): Promise<UnitEntity> {
+    return this.service.updateOrCreateHydrogenCompressionUnit(payload);
+  }
+
+  @MessagePattern(UnitMessagePatterns.UPDATE_HYDROGEN_BOTTLING)
+  updateHydrogenBottlingUnit(payload: CreateHydrogenBottlingUnitPayload): Promise<UnitEntity> {
+    return this.service.updateOrCreateHydrogenBottlingUnit(payload);
+  }
+
+  @MessagePattern(UnitMessagePatterns.UPDATE_HYDROGEN_END_USE)
+  updateHydrogenEndUseUnit(payload: CreateHydrogenEndUseUnitPayload): Promise<UnitEntity> {
+    return this.service.updateOrCreateHydrogenEndUseUnit(payload);
   }
 
   @MessagePattern(UnitMessagePatterns.UPDATE_STATUS)

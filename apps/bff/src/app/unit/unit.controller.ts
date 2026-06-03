@@ -11,6 +11,9 @@ import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiQuery } from '@nestjs/sw
 import { KeycloakUser } from 'nest-keycloak-connect';
 import {
   BaseUnitDto,
+  HydrogenBottlingUnitInputDto,
+  HydrogenCompressorUnitInputDto,
+  HydrogenEndUseUnitInputDto,
   HydrogenProductionUnitDto,
   HydrogenProductionUnitInputDto,
   HydrogenStorageUnitDto,
@@ -20,7 +23,6 @@ import {
   PowerProductionUnitDto,
   PowerProductionUnitInputDto,
   UnitDto,
-  UnitInputDto,
   UnitOverviewDto,
   UnitUpdateActiveDto,
   type AuthenticatedKCUser,
@@ -133,7 +135,7 @@ export class UnitController {
     return this.unitService.createHydrogenProductionUnit(dto, authenticatedUser.sub);
   }
 
-  @Post('base')
+  @Post('hydrogen-compressor')
   @ApiBearerAuth()
   @ApiOperation({
     description: 'Create new Unit.',
@@ -141,11 +143,41 @@ export class UnitController {
   @ApiOkResponse({
     description: 'Returns the created unit.',
   })
-  createBaseUnit(
+  createHydrogenCompressorUnit(
     @KeycloakUser() authenticatedUser: AuthenticatedKCUser,
-    @Body() dto: UnitInputDto,
+    @Body() dto: HydrogenCompressorUnitInputDto,
   ): Promise<BaseUnitDto> {
-    return this.unitService.createBaseUnit(dto, authenticatedUser.sub);
+    return this.unitService.createHydrogenCompressorUnit(dto, authenticatedUser.sub);
+  }
+
+  @Post('hydrogen-bottling')
+  @ApiBearerAuth()
+  @ApiOperation({
+    description: 'Create new Unit.',
+  })
+  @ApiOkResponse({
+    description: 'Returns the created unit.',
+  })
+  createHydrogenBottlingUnit(
+    @KeycloakUser() authenticatedUser: AuthenticatedKCUser,
+    @Body() dto: HydrogenBottlingUnitInputDto,
+  ): Promise<BaseUnitDto> {
+    return this.unitService.createHydrogenBottlingUnit(dto, authenticatedUser.sub);
+  }
+
+  @Post('hydrogen-end-use')
+  @ApiBearerAuth()
+  @ApiOperation({
+    description: 'Create new Unit.',
+  })
+  @ApiOkResponse({
+    description: 'Returns the created unit.',
+  })
+  createHydrogenEndUseUnit(
+    @KeycloakUser() authenticatedUser: AuthenticatedKCUser,
+    @Body() dto: HydrogenEndUseUnitInputDto,
+  ): Promise<BaseUnitDto> {
+    return this.unitService.createHydrogenEndUseUnit(dto, authenticatedUser.sub);
   }
 
   @Patch(':id/active')
@@ -226,19 +258,51 @@ export class UnitController {
     return this.unitService.updateHydrogenTransportUnit(unitId, dto, authenticatedUser.sub);
   }
 
-  @Put('base/:id')
+  @Put('hydrogen-compressor/:id')
   @ApiBearerAuth()
   @ApiOperation({
     description: 'Update a Unit.',
   })
   @ApiOkResponse({
-    description: 'Returns the updated base unit.',
+    description: 'Returns the hydrogen compressor updated unit.',
   })
-  updateBaseUnit(
+  updateHydrogenCompressorUnit(
     @KeycloakUser() authenticatedUser: AuthenticatedKCUser,
     @Param('id') unitId: string,
-    @Body() dto: UnitInputDto,
+    @Body() dto: HydrogenCompressorUnitInputDto,
   ): Promise<void> {
-    return this.unitService.updateBaseUnit(unitId, dto, authenticatedUser.sub);
+    return this.unitService.updateHydrogenCompressorUnit(unitId, dto, authenticatedUser.sub);
+  }
+
+  @Put('hydrogen-compressor/:id')
+  @ApiBearerAuth()
+  @ApiOperation({
+    description: 'Update a Unit.',
+  })
+  @ApiOkResponse({
+    description: 'Returns the hydrogen bottling updated unit.',
+  })
+  updateHydrogenBottlingUnit(
+    @KeycloakUser() authenticatedUser: AuthenticatedKCUser,
+    @Param('id') unitId: string,
+    @Body() dto: HydrogenBottlingUnitInputDto,
+  ): Promise<void> {
+    return this.unitService.updateHydrogenBottlingUnit(unitId, dto, authenticatedUser.sub);
+  }
+
+  @Put('hydrogen-end-use/:id')
+  @ApiBearerAuth()
+  @ApiOperation({
+    description: 'Update a Unit.',
+  })
+  @ApiOkResponse({
+    description: 'Returns the hydrogen end use updated unit.',
+  })
+  updateHydrogenEndUseUnit(
+    @KeycloakUser() authenticatedUser: AuthenticatedKCUser,
+    @Param('id') unitId: string,
+    @Body() dto: HydrogenEndUseUnitInputDto,
+  ): Promise<void> {
+    return this.unitService.updateHydrogenEndUseUnit(unitId, dto, authenticatedUser.sub);
   }
 }

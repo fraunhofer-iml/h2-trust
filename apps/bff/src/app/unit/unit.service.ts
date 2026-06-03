@@ -8,11 +8,17 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
+import { HydrogenBottlingUnitDto } from 'libs/contracts/src/lib/dtos/unit/hydrogen-bottling-unit.dto';
+import { HydrogenCompressorUnitDto } from 'libs/contracts/src/lib/dtos/unit/hydrogen-compressor-unit.dto';
+import { HydrogenEndUseUnitDto } from 'libs/contracts/src/lib/dtos/unit/hydrogen-end-use-unit.dto';
 import { firstValueFrom } from 'rxjs';
 import {
   BaseUnitDto,
   getSpecificUnit,
   getSpecificUnitOverview,
+  HydrogenBottlingUnitInputDto,
+  HydrogenCompressorUnitInputDto,
+  HydrogenEndUseUnitInputDto,
   HydrogenProductionUnitDto,
   HydrogenProductionUnitInputDto,
   HydrogenStorageUnitDto,
@@ -22,7 +28,6 @@ import {
   PowerProductionUnitDto,
   PowerProductionUnitInputDto,
   UnitDto,
-  UnitInputDto,
   UnitOverviewDto,
   UnitUpdateActiveDto,
 } from '@h2-trust/contracts/dtos';
@@ -110,15 +115,37 @@ export class UnitService {
     return HydrogenTransportUnitDto.fromEntity(unit);
   }
 
-  async createBaseUnit(dto: UnitInputDto, userId: string): Promise<BaseUnitDto> {
+  async createHydrogenCompressorUnit(dto: HydrogenCompressorUnitInputDto, userId: string): Promise<BaseUnitDto> {
     const requesterCompanyId = await this.getCompanyIdFromUserId(userId);
     const unit = await firstValueFrom(
       this.generalService.send(
-        UnitMessagePatterns.CREATE_BASE_UNIT,
-        UnitInputDto.toBasePayload(dto, undefined, requesterCompanyId),
+        UnitMessagePatterns.CREATE_HYDROGEN_COMPRESSOR,
+        HydrogenCompressorUnitInputDto.toPayload(dto, undefined, requesterCompanyId),
       ),
     );
-    return HydrogenTransportUnitDto.fromEntity(unit);
+    return HydrogenCompressorUnitDto.fromEntity(unit);
+  }
+
+  async createHydrogenBottlingUnit(dto: HydrogenBottlingUnitInputDto, userId: string): Promise<BaseUnitDto> {
+    const requesterCompanyId = await this.getCompanyIdFromUserId(userId);
+    const unit = await firstValueFrom(
+      this.generalService.send(
+        UnitMessagePatterns.CREATE_HYDROGEN_BOTTLING,
+        HydrogenBottlingUnitInputDto.toPayload(dto, undefined, requesterCompanyId),
+      ),
+    );
+    return HydrogenBottlingUnitDto.fromEntity(unit);
+  }
+
+  async createHydrogenEndUseUnit(dto: HydrogenEndUseUnitInputDto, userId: string): Promise<BaseUnitDto> {
+    const requesterCompanyId = await this.getCompanyIdFromUserId(userId);
+    const unit = await firstValueFrom(
+      this.generalService.send(
+        UnitMessagePatterns.CREATE_HYDROGEN_END_USE,
+        HydrogenEndUseUnitInputDto.toPayload(dto, undefined, requesterCompanyId),
+      ),
+    );
+    return HydrogenEndUseUnitDto.fromEntity(unit);
   }
 
   async updateUnitStatus(id: string, active: boolean, userId: string): Promise<void> {
@@ -171,12 +198,32 @@ export class UnitService {
     );
   }
 
-  async updateBaseUnit(id: string, dto: UnitInputDto, userId: string): Promise<void> {
+  async updateHydrogenCompressorUnit(id: string, dto: HydrogenCompressorUnitInputDto, userId: string): Promise<void> {
     const requesterCompanyId = await this.getCompanyIdFromUserId(userId);
     return firstValueFrom(
       this.generalService.send(
-        UnitMessagePatterns.UPDATE_BASE_UNIT,
-        UnitInputDto.toBasePayload(dto, id, requesterCompanyId),
+        UnitMessagePatterns.UPDATE_HYDROGEN_COMPRESSOR,
+        HydrogenCompressorUnitInputDto.toPayload(dto, id, requesterCompanyId),
+      ),
+    );
+  }
+
+  async updateHydrogenBottlingUnit(id: string, dto: HydrogenBottlingUnitInputDto, userId: string): Promise<void> {
+    const requesterCompanyId = await this.getCompanyIdFromUserId(userId);
+    return firstValueFrom(
+      this.generalService.send(
+        UnitMessagePatterns.UPDATE_HYDROGEN_BOTTLING,
+        HydrogenBottlingUnitInputDto.toPayload(dto, id, requesterCompanyId),
+      ),
+    );
+  }
+
+  async updateHydrogenEndUseUnit(id: string, dto: HydrogenEndUseUnitInputDto, userId: string): Promise<void> {
+    const requesterCompanyId = await this.getCompanyIdFromUserId(userId);
+    return firstValueFrom(
+      this.generalService.send(
+        UnitMessagePatterns.UPDATE_HYDROGEN_END_USE,
+        HydrogenEndUseUnitInputDto.toPayload(dto, id, requesterCompanyId),
       ),
     );
   }

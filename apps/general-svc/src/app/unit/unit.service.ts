@@ -9,7 +9,9 @@
 import { Injectable } from '@nestjs/common';
 import { UnitEntity } from '@h2-trust/contracts/entities';
 import {
-  BaseCreateUnitPayload,
+  CreateHydrogenBottlingUnitPayload,
+  CreateHydrogenCompressorUnitPayload,
+  CreateHydrogenEndUseUnitPayload,
   CreateHydrogenProductionUnitPayload,
   CreateHydrogenStorageUnitPayload,
   CreateHydrogenTransportUnitPayload,
@@ -62,16 +64,28 @@ export class UnitService {
     if (payload.id) {
       await this.assertOwnership(payload.id, payload.requesterCompanyId);
     }
-    //TODO-LG: implement functionality
-    return undefined;
+    return this.unitRepository.updateOrCreateHydrogenTransportUnit(payload);
   }
 
-  async updateOrCreateBaseUnit(payload: BaseCreateUnitPayload): Promise<UnitEntity> {
+  async updateOrCreateHydrogenBottlingUnit(payload: CreateHydrogenBottlingUnitPayload): Promise<UnitEntity> {
     if (payload.id) {
       await this.assertOwnership(payload.id, payload.requesterCompanyId);
     }
-    //TODO-LG: implement functionality
-    return null;
+    return this.unitRepository.updateOrCreateHydrogenBottlingUnit(payload);
+  }
+
+  async updateOrCreateHydrogenCompressionUnit(payload: CreateHydrogenCompressorUnitPayload): Promise<UnitEntity> {
+    if (payload.id) {
+      await this.assertOwnership(payload.id, payload.requesterCompanyId);
+    }
+    return this.unitRepository.updateOrCreateHydrogenCompressorUnit(payload);
+  }
+
+  async updateOrCreateHydrogenEndUseUnit(payload: CreateHydrogenEndUseUnitPayload): Promise<UnitEntity> {
+    if (payload.id) {
+      await this.assertOwnership(payload.id, payload.requesterCompanyId);
+    }
+    return this.unitRepository.updateOrCreateHydrogenEndUseUnit(payload);
   }
 
   async updateUnitStatus(payload: UpdateUnitStatusPayload): Promise<UnitEntity> {

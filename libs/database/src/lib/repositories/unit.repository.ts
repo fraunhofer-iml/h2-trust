@@ -10,8 +10,12 @@ import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { UnitEntity, UserEntity } from '@h2-trust/contracts/entities';
 import {
+  CreateHydrogenBottlingUnitPayload,
+  CreateHydrogenCompressorUnitPayload,
+  CreateHydrogenEndUseUnitPayload,
   CreateHydrogenProductionUnitPayload,
   CreateHydrogenStorageUnitPayload,
+  CreateHydrogenTransportUnitPayload,
   CreatePowerProductionUnitPayload,
   UpdateUnitStatusPayload,
 } from '@h2-trust/contracts/payloads';
@@ -20,7 +24,9 @@ import { DomainException, ErrorCode } from '@h2-trust/exceptions';
 import {
   buildHydrogenProductionUnitCreateInput,
   buildHydrogenStorageUnitCreateInput,
+  buildHydrogenTransportUnitCreateInput,
   buildPowerProductionUnitCreateInput,
+  buildUnitCreateInputWitEmptySpecification,
 } from '../create-inputs';
 import { PrismaService } from '../prisma.service';
 import { unitDeepQueryArgs } from '../query-args';
@@ -200,6 +206,169 @@ export class UnitRepository {
           },
         },
         create: buildHydrogenStorageUnitCreateInput(payload),
+        include: unitDeepQueryArgs.include,
+      })
+      .catch(wrapPrismaError);
+
+    return UnitEntity.fromDeepBaseUnit(unit);
+  }
+
+  async updateOrCreateHydrogenTransportUnit(payload: CreateHydrogenTransportUnitPayload): Promise<UnitEntity> {
+    if (payload.id) {
+      await this.validateUnitIsActive(payload.id);
+    }
+
+    const unit = await this.prismaService.unit
+      .upsert({
+        where: { id: payload.id ?? '' },
+        update: {
+          name: payload.name,
+          commissionedOn: payload.commissionedOn,
+          owner: { connect: { id: payload.ownerId } },
+          manufacturer: payload.manufacturer,
+          modelType: payload.modelType,
+          modelNumber: payload.modelNumber,
+          serialNumber: payload.serialNumber,
+          certifiedBy: payload.certifiedBy,
+          operator: { connect: { id: payload.operatorId } },
+          address: {
+            update: {
+              data: {
+                street: payload.address.street,
+                state: payload.address.state,
+                postalCode: payload.address.postalCode,
+                country: payload.address.country,
+                city: payload.address.city,
+              },
+            },
+          },
+          specification: {
+            update: {
+              data: {
+                fuelType: payload.fuelType,
+                type: payload.transportType,
+              },
+            },
+          },
+        },
+        create: buildHydrogenTransportUnitCreateInput(payload),
+        include: unitDeepQueryArgs.include,
+      })
+      .catch(wrapPrismaError);
+
+    return UnitEntity.fromDeepBaseUnit(unit);
+  }
+
+  async updateOrCreateHydrogenCompressorUnit(payload: CreateHydrogenCompressorUnitPayload): Promise<UnitEntity> {
+    if (payload.id) {
+      await this.validateUnitIsActive(payload.id);
+    }
+
+    const unit = await this.prismaService.unit
+      .upsert({
+        where: { id: payload.id ?? '' },
+        update: {
+          name: payload.name,
+          commissionedOn: payload.commissionedOn,
+          owner: { connect: { id: payload.ownerId } },
+          manufacturer: payload.manufacturer,
+          modelType: payload.modelType,
+          modelNumber: payload.modelNumber,
+          serialNumber: payload.serialNumber,
+          certifiedBy: payload.certifiedBy,
+          operator: { connect: { id: payload.operatorId } },
+          address: {
+            update: {
+              data: {
+                street: payload.address.street,
+                state: payload.address.state,
+                postalCode: payload.address.postalCode,
+                country: payload.address.country,
+                city: payload.address.city,
+              },
+            },
+          },
+        },
+        create: buildUnitCreateInputWitEmptySpecification(payload, UnitType.COMPRESSION),
+
+        include: unitDeepQueryArgs.include,
+      })
+      .catch(wrapPrismaError);
+
+    return UnitEntity.fromDeepBaseUnit(unit);
+  }
+
+  async updateOrCreateHydrogenEndUseUnit(payload: CreateHydrogenEndUseUnitPayload): Promise<UnitEntity> {
+    if (payload.id) {
+      await this.validateUnitIsActive(payload.id);
+    }
+
+    const unit = await this.prismaService.unit
+      .upsert({
+        where: { id: payload.id ?? '' },
+        update: {
+          name: payload.name,
+          commissionedOn: payload.commissionedOn,
+          owner: { connect: { id: payload.ownerId } },
+          manufacturer: payload.manufacturer,
+          modelType: payload.modelType,
+          modelNumber: payload.modelNumber,
+          serialNumber: payload.serialNumber,
+          certifiedBy: payload.certifiedBy,
+          operator: { connect: { id: payload.operatorId } },
+          address: {
+            update: {
+              data: {
+                street: payload.address.street,
+                state: payload.address.state,
+                postalCode: payload.address.postalCode,
+                country: payload.address.country,
+                city: payload.address.city,
+              },
+            },
+          },
+        },
+        create: buildUnitCreateInputWitEmptySpecification(payload, UnitType.END_USE),
+
+        include: unitDeepQueryArgs.include,
+      })
+      .catch(wrapPrismaError);
+
+    return UnitEntity.fromDeepBaseUnit(unit);
+  }
+
+  async updateOrCreateHydrogenBottlingUnit(payload: CreateHydrogenBottlingUnitPayload): Promise<UnitEntity> {
+    if (payload.id) {
+      await this.validateUnitIsActive(payload.id);
+    }
+
+    const unit = await this.prismaService.unit
+      .upsert({
+        where: { id: payload.id ?? '' },
+        update: {
+          name: payload.name,
+          commissionedOn: payload.commissionedOn,
+          owner: { connect: { id: payload.ownerId } },
+          manufacturer: payload.manufacturer,
+          modelType: payload.modelType,
+          modelNumber: payload.modelNumber,
+          serialNumber: payload.serialNumber,
+          certifiedBy: payload.certifiedBy,
+          operator: { connect: { id: payload.operatorId } },
+          address: {
+            update: {
+              data: {
+                street: payload.address.street,
+                state: payload.address.state,
+                postalCode: payload.address.postalCode,
+                country: payload.address.country,
+                city: payload.address.city,
+              },
+            },
+          },
+        },
+        create: buildUnitCreateInputWitEmptySpecification(payload, UnitType.BOTTLING),
+
         include: unitDeepQueryArgs.include,
       })
       .catch(wrapPrismaError);

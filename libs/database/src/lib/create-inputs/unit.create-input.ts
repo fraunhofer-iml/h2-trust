@@ -9,8 +9,12 @@
 import { Prisma } from '@prisma/client';
 import {
   BaseCreateUnitPayload,
+  CreateHydrogenBottlingUnitPayload,
+  CreateHydrogenCompressorUnitPayload,
+  CreateHydrogenEndUseUnitPayload,
   CreateHydrogenProductionUnitPayload,
   CreateHydrogenStorageUnitPayload,
+  CreateHydrogenTransportUnitPayload,
   CreatePowerProductionUnitPayload,
 } from '@h2-trust/contracts/payloads';
 import { UnitType } from '@h2-trust/domain';
@@ -85,6 +89,32 @@ export function buildHydrogenStorageUnitCreateInput(payload: CreateHydrogenStora
         capacity: new Prisma.Decimal(payload.capacity),
         type: payload.type,
       },
+    },
+  });
+}
+
+export function buildHydrogenTransportUnitCreateInput(
+  payload: CreateHydrogenTransportUnitPayload,
+): Prisma.UnitCreateInput {
+  return Prisma.validator<Prisma.UnitCreateInput>()({
+    ...buildBaseUnitCreateInput(payload, UnitType.TRANSPORTATION),
+    specification: {
+      create: {
+        fuelType: payload.fuelType,
+        type: payload.transportType,
+      },
+    },
+  });
+}
+
+export function buildUnitCreateInputWitEmptySpecification(
+  payload: CreateHydrogenCompressorUnitPayload | CreateHydrogenEndUseUnitPayload | CreateHydrogenBottlingUnitPayload,
+  unitType: UnitType,
+): Prisma.UnitCreateInput {
+  return Prisma.validator<Prisma.UnitCreateInput>()({
+    ...buildBaseUnitCreateInput(payload, unitType),
+    specification: {
+      create: {},
     },
   });
 }
