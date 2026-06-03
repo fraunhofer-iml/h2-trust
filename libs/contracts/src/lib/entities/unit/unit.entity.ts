@@ -74,6 +74,7 @@ export class UnitEntity {
       owner: CompanyEntity.fromNestedDatabase(unit.owner),
       operator: CompanyEntity.fromNestedDatabase(unit.operator),
       active: unit.active,
+      unitType: unit.type,
       specification: UnitSpecificationEntity.fromDatabase(unit),
     };
   }
@@ -92,6 +93,7 @@ export class UnitEntity {
       owner: CompanyEntity.fromFlatDatabase(unit.owner),
       operator: CompanyEntity.fromFlatDatabase(unit.operator),
       active: unit.active,
+      unitType: unit.type,
       specification: UnitSpecificationEntity.fromDatabase(unit),
     };
   }
