@@ -8,7 +8,6 @@
 
 import { UnitEntity } from '@h2-trust/contracts/entities';
 import { FuelType, TransportType, UnitType } from '@h2-trust/domain';
-import { assertValidEnum } from '@h2-trust/utils';
 
 export class HydrogenTransportOverviewDto {
   id: string;
@@ -28,14 +27,12 @@ export class HydrogenTransportOverviewDto {
   }
 
   static fromEntity(unit: UnitEntity): HydrogenTransportOverviewDto {
-    assertValidEnum(unit.specification.type, TransportType, 'TransportType');
-    assertValidEnum(unit.specification.fuelType, FuelType, 'FuelType');
     return {
       id: unit.id,
       name: unit.name,
       unitType: unit.unitType,
-      type: unit.specification.type,
-      fuelType: unit.specification.fuelType,
+      type: unit.specification.type as TransportType,
+      fuelType: unit.specification.fuelType as FuelType,
       active: unit.active,
     };
   }

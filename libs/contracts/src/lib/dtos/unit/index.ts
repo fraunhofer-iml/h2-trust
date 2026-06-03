@@ -17,7 +17,6 @@ export * from './hydrogen-storage-unit.dto';
 export * from './hydrogen-transport-unit.dto';
 export * from './hydrogen-transport-overview.dto';
 export * from './power-production-overview.dto';
-export * from './power-production-type.dto';
 export * from './power-production-unit.dto';
 export * from './power-purchase-agreement-connection.dto';
 export * from './unit-overview.type';

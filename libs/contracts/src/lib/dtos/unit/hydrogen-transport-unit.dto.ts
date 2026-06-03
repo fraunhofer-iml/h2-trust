@@ -8,7 +8,6 @@
 
 import { UnitEntity } from '@h2-trust/contracts/entities';
 import { FuelType, TransportType, UnitType } from '@h2-trust/domain';
-import { assertValidEnum } from '@h2-trust/utils';
 import { AddressDto } from '../address';
 import { CompanyBaseDto } from '../company';
 import { BaseUnitDto } from './base-unit.dto';
@@ -55,12 +54,10 @@ export class HydrogenTransportUnitDto extends BaseUnitDto {
   }
 
   static override fromEntity(unit: UnitEntity): HydrogenTransportUnitDto {
-    assertValidEnum(unit.specification.type, TransportType, 'TransportType');
-    assertValidEnum(unit.specification.fuelType, FuelType, 'FuelType');
     return {
       ...BaseUnitDto.fromEntity(unit),
-      type: unit.specification.type,
-      fuelType: unit.specification.fuelType,
+      type: unit.specification.type as TransportType,
+      fuelType: unit.specification.fuelType as FuelType,
     };
   }
 }

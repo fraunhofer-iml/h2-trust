@@ -8,7 +8,6 @@
 
 import { HydrogenComponentEntity, UnitEntity } from '@h2-trust/contracts/entities';
 import { HydrogenStorageType, RfnboType, UnitType } from '@h2-trust/domain';
-import { assertValidEnum } from '@h2-trust/utils';
 import { HydrogenComponentDto } from '../digital-product-passport';
 
 export class HydrogenStorageOverviewDto {
@@ -44,7 +43,6 @@ export class HydrogenStorageOverviewDto {
   //TODO-LG: the process steps of the hydrogen storage unit are missing here
   //they have to be readded to calculate the filling of the storage
   static fromEntity(unit: UnitEntity): HydrogenStorageOverviewDto {
-    assertValidEnum(unit.specification.type, HydrogenStorageType, 'HydrogenStorageType');
     return <HydrogenStorageOverviewDto>{
       id: unit.id,
       name: unit.name,

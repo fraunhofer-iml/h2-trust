@@ -7,8 +7,7 @@
  */
 
 import { UnitEntity } from '@h2-trust/contracts/entities';
-import { HydrogenProductionTechnology, HydrogenProductionType, UnitType } from '@h2-trust/domain';
-import { assertValidEnum } from '@h2-trust/utils';
+import { HydrogenProductionTechnology, UnitType } from '@h2-trust/domain';
 
 export class HydrogenProductionOverviewDto {
   id: string;
@@ -44,8 +43,6 @@ export class HydrogenProductionOverviewDto {
   }
 
   static fromEntity(unit: UnitEntity): HydrogenProductionOverviewDto {
-    assertValidEnum(unit, HydrogenProductionType, 'HydrogenProductionType');
-    assertValidEnum(unit.specification.technology, HydrogenProductionTechnology, 'HydrogenProductionTechnology');
     const firstAgreement = unit.owner?.hydrogenAgreements?.[0];
 
     return {
@@ -53,7 +50,7 @@ export class HydrogenProductionOverviewDto {
       name: unit.name,
       unitType: UnitType.HYDROGEN_PRODUCTION,
       ratedPower: unit.specification.ratedPower ?? 0,
-      technology: unit.specification.technology,
+      technology: unit.specification.technology!,
       powerPurchaseAgreementStatus: HydrogenProductionOverviewDto.existsPowerProducer(unit),
       powerProducerId: firstAgreement?.requestedCompany.id ?? '',
       powerProducerName: firstAgreement?.requestedCompany.name ?? '',

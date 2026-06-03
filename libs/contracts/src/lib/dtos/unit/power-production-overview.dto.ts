@@ -7,8 +7,7 @@
  */
 
 import { UnitEntity } from '@h2-trust/contracts/entities';
-import { BiddingZone, PowerProductionType, UnitType } from '@h2-trust/domain';
-import { assertDefined, assertValidEnum } from '@h2-trust/utils';
+import { PowerProductionType, UnitType } from '@h2-trust/domain';
 
 export class PowerProductionOverviewDto {
   id: string;
@@ -35,15 +34,12 @@ export class PowerProductionOverviewDto {
   }
 
   static fromEntity(unit: UnitEntity): PowerProductionOverviewDto {
-    assertValidEnum(unit.specification.type, PowerProductionType, 'PowerProductionType');
-    assertDefined(unit.specification.decommissioningPlannedOn, 'decommissioningPlannedOn');
-    assertValidEnum(unit.specification.biddingZone, BiddingZone, 'BiddingZone');
     return {
       id: unit.id,
       name: unit.name,
       unitType: UnitType.POWER_PRODUCTION,
       ratedPower: unit.specification.ratedPower ?? 0,
-      typeName: unit.specification.type,
+      typeName: unit.specification.type as PowerProductionType,
       active: unit.active,
     };
   }

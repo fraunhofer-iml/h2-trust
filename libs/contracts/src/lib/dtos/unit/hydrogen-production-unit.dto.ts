@@ -8,7 +8,6 @@
 
 import { UnitEntity } from '@h2-trust/contracts/entities';
 import { BiddingZone, HydrogenProductionTechnology, HydrogenProductionType, UnitType } from '@h2-trust/domain';
-import { assertValidEnum } from '@h2-trust/utils';
 import { AddressDto } from '../address';
 import { CompanyBaseDto } from '../company';
 import { BaseUnitDto } from './base-unit.dto';
@@ -64,14 +63,11 @@ export class HydrogenProductionUnitDto extends BaseUnitDto {
   }
 
   static override fromEntity(unit: UnitEntity): HydrogenProductionUnitDto {
-    assertValidEnum(unit.specification.type, HydrogenProductionType, 'HydrogenProductionType');
-    assertValidEnum(unit.specification.biddingZone, BiddingZone, 'BiddingZone');
-    assertValidEnum(unit.specification.technology, HydrogenProductionTechnology, 'HydrogenProductionTechnology');
     return {
       ...BaseUnitDto.fromEntity(unit),
-      method: unit.specification.type,
-      technology: unit.specification.technology,
-      biddingZone: unit.specification.biddingZone,
+      method: unit.specification.type as HydrogenProductionType,
+      technology: unit.specification.technology!,
+      biddingZone: unit.specification.biddingZone!,
       ratedPower: unit.specification.ratedPower ?? 0,
       waterConsumptionLitersPerHour: unit.specification.waterConsumptionLitersPerHour ?? 0,
     };

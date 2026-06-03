@@ -8,7 +8,6 @@
 
 import { UnitEntity } from '@h2-trust/contracts/entities';
 import { HydrogenStorageType, UnitType } from '@h2-trust/domain';
-import { assertValidEnum } from '@h2-trust/utils';
 import { AddressDto } from '../address';
 import { CompanyBaseDto } from '../company';
 import { BaseUnitDto } from './base-unit.dto';
@@ -59,11 +58,9 @@ export class HydrogenStorageUnitDto extends BaseUnitDto {
   }
 
   static override fromEntity(unit: UnitEntity): HydrogenStorageUnitDto {
-    assertValidEnum(unit.specification.type, HydrogenStorageType, 'HydrogenStorageType');
-
     return {
       ...BaseUnitDto.fromEntity(unit),
-      storageType: unit.specification.type,
+      storageType: unit.specification.type as HydrogenStorageType,
       capacity: unit.specification.capacity ?? 0,
       filling:
         unit.specification.filling?.map((filling) => ({
