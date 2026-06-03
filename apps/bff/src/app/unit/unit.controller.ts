@@ -8,9 +8,11 @@
 
 import { Body, Controller, Get, Param, Patch, Post, Put, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiQuery } from '@nestjs/swagger';
+import { HydrogenBottlingUnitDto } from 'libs/contracts/src/lib/dtos/unit/hydrogen-bottling-unit.dto';
+import { HydrogenCompressorUnitDto } from 'libs/contracts/src/lib/dtos/unit/hydrogen-compressor-unit.dto';
+import { HydrogenEndUseUnitDto } from 'libs/contracts/src/lib/dtos/unit/hydrogen-end-use-unit.dto';
 import { KeycloakUser } from 'nest-keycloak-connect';
 import {
-  BaseUnitDto,
   HydrogenBottlingUnitInputDto,
   HydrogenCompressorUnitInputDto,
   HydrogenEndUseUnitInputDto,
@@ -146,7 +148,7 @@ export class UnitController {
   createHydrogenCompressorUnit(
     @KeycloakUser() authenticatedUser: AuthenticatedKCUser,
     @Body() dto: HydrogenCompressorUnitInputDto,
-  ): Promise<BaseUnitDto> {
+  ): Promise<HydrogenCompressorUnitDto> {
     return this.unitService.createHydrogenCompressorUnit(dto, authenticatedUser.sub);
   }
 
@@ -161,7 +163,7 @@ export class UnitController {
   createHydrogenBottlingUnit(
     @KeycloakUser() authenticatedUser: AuthenticatedKCUser,
     @Body() dto: HydrogenBottlingUnitInputDto,
-  ): Promise<BaseUnitDto> {
+  ): Promise<HydrogenBottlingUnitDto> {
     return this.unitService.createHydrogenBottlingUnit(dto, authenticatedUser.sub);
   }
 
@@ -176,7 +178,7 @@ export class UnitController {
   createHydrogenEndUseUnit(
     @KeycloakUser() authenticatedUser: AuthenticatedKCUser,
     @Body() dto: HydrogenEndUseUnitInputDto,
-  ): Promise<BaseUnitDto> {
+  ): Promise<HydrogenEndUseUnitDto> {
     return this.unitService.createHydrogenEndUseUnit(dto, authenticatedUser.sub);
   }
 

@@ -13,7 +13,6 @@ import { HydrogenCompressorUnitDto } from 'libs/contracts/src/lib/dtos/unit/hydr
 import { HydrogenEndUseUnitDto } from 'libs/contracts/src/lib/dtos/unit/hydrogen-end-use-unit.dto';
 import { firstValueFrom } from 'rxjs';
 import {
-  BaseUnitDto,
   getSpecificUnit,
   getSpecificUnitOverview,
   HydrogenBottlingUnitInputDto,
@@ -115,7 +114,10 @@ export class UnitService {
     return HydrogenTransportUnitDto.fromEntity(unit);
   }
 
-  async createHydrogenCompressorUnit(dto: HydrogenCompressorUnitInputDto, userId: string): Promise<BaseUnitDto> {
+  async createHydrogenCompressorUnit(
+    dto: HydrogenCompressorUnitInputDto,
+    userId: string,
+  ): Promise<HydrogenCompressorUnitDto> {
     const requesterCompanyId = await this.getCompanyIdFromUserId(userId);
     const unit = await firstValueFrom(
       this.generalService.send(
@@ -126,7 +128,10 @@ export class UnitService {
     return HydrogenCompressorUnitDto.fromEntity(unit);
   }
 
-  async createHydrogenBottlingUnit(dto: HydrogenBottlingUnitInputDto, userId: string): Promise<BaseUnitDto> {
+  async createHydrogenBottlingUnit(
+    dto: HydrogenBottlingUnitInputDto,
+    userId: string,
+  ): Promise<HydrogenBottlingUnitDto> {
     const requesterCompanyId = await this.getCompanyIdFromUserId(userId);
     const unit = await firstValueFrom(
       this.generalService.send(
@@ -137,7 +142,7 @@ export class UnitService {
     return HydrogenBottlingUnitDto.fromEntity(unit);
   }
 
-  async createHydrogenEndUseUnit(dto: HydrogenEndUseUnitInputDto, userId: string): Promise<BaseUnitDto> {
+  async createHydrogenEndUseUnit(dto: HydrogenEndUseUnitInputDto, userId: string): Promise<HydrogenEndUseUnitDto> {
     const requesterCompanyId = await this.getCompanyIdFromUserId(userId);
     const unit = await firstValueFrom(
       this.generalService.send(
