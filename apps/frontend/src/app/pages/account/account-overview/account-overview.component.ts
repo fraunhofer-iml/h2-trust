@@ -20,6 +20,7 @@ import { injectQuery } from '@tanstack/angular-query-experimental';
 import { PpaRequestRole } from '@h2-trust/domain';
 import { ErrorCardComponent } from '../../../layout/error-card/error-card.component';
 import { LoadingCardComponent } from '../../../layout/loading-card/loading-card.component';
+import { H2TrustRoutes } from '../../../shared/constants/routes';
 import { QueryKeyPrefix } from '../../../shared/queries/shared-query-keys';
 import { AuthService } from '../../../shared/services/auth/auth.service';
 import { UnitsService } from '../../../shared/services/units/units.service';
@@ -27,7 +28,6 @@ import { UsersService } from '../../../shared/services/users/users.service';
 import { UserRolesStore } from '../../../shared/store/user-role.store';
 import { CreatePpaRequestComponent } from '../create-ppa-request/create-ppa-request.component';
 import { PpaRequestsOverviewComponent } from '../ppa-requests-overview/ppa-requests-overview.component';
-import { H2TrustRoutes } from '../../../shared/constants/routes';
 
 @Component({
   selector: 'app-account-overview',

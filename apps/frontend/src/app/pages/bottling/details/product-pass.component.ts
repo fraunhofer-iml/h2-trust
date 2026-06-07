@@ -15,6 +15,7 @@ import { MeasurementUnit } from '@h2-trust/domain';
 import { EmptyStateComponent } from '../../../layout/empty-state/empty-state.component';
 import { ErrorCardComponent } from '../../../layout/error-card/error-card.component';
 import { LoadingCardComponent } from '../../../layout/loading-card/loading-card.component';
+import { H2TrustRoutes } from '../../../shared/constants/routes';
 import { EnumPipe } from '../../../shared/pipes/enum.pipe';
 import { UnitPipe } from '../../../shared/pipes/unit.pipe';
 import { QueryKeyPrefix } from '../../../shared/queries/shared-query-keys';
@@ -24,7 +25,6 @@ import { H2CompositionChartComponent } from './chart/h2-composition-chart.compon
 import { ProofOfOriginComponent } from './proof-of-origin/proof-of-origin.component';
 import { ProofOfSustainabilityComponent } from './proof-of-sustainability/proof-of-sustainability.component';
 import { RfnboComplianceComponent } from './rfnbo-compliance/rfnbo-compliance.component';
-import { H2TrustRoutes } from '../../../shared/constants/routes';
 
 @Component({
   selector: 'app-product-pass',

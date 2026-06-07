@@ -17,6 +17,7 @@ import { InfoTooltipComponent } from '../../../layout/info-tooltip/info-tooltip.
 import { LoadingCardComponent } from '../../../layout/loading-card/loading-card.component';
 import { UnitCardComponent } from '../../../layout/unit-card/unit-card.component';
 import { RFNBO_CRITERIA } from '../../../shared/constants/rfnbo-criteria';
+import { H2TrustRoutes } from '../../../shared/constants/routes';
 import { BoolPipe } from '../../../shared/pipes/bool-pipe';
 import { EnumPipe } from '../../../shared/pipes/enum.pipe';
 import { UnitPipe } from '../../../shared/pipes/unit.pipe';
@@ -29,7 +30,6 @@ import {
 } from '../../../shared/util/unit-type-guards';
 import { UnitActionsComponent } from './shared/unit-actions/unit-actions.component';
 import { UnitDetailsComponent } from './shared/unit-details/unit-details.component';
-import { H2TrustRoutes } from '../../../shared/constants/routes';
 
 @Component({
   selector: 'app-unit-details-page',

@@ -11,9 +11,9 @@ import { Component, inject, input, output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { RouterModule } from '@angular/router';
 import { injectMutation } from '@tanstack/angular-query-experimental';
+import { H2TrustRoutes } from '../../../../../shared/constants/routes';
 import { UnitsService } from '../../../../../shared/services/units/units.service';
 import { toastQueryError } from '../../../../../shared/util/query-error-handler';
-import { H2TrustRoutes } from '../../../../../shared/constants/routes';
 
 @Component({
   selector: 'app-unit-actions',

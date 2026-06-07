@@ -29,6 +29,7 @@ import { ProcessedCsvDto } from '@h2-trust/contracts/dtos';
 import { BatchType, CsvContentType, MeasurementUnit } from '@h2-trust/domain';
 import { CsvContentTypeChipComponent } from '../../../layout/chips/csv-content-type-chip.component';
 import { VerificationStatusChipComponent } from '../../../layout/chips/verification-status-chip.component';
+import { H2TrustRoutes } from '../../../shared/constants/routes';
 import { UnitPipe } from '../../../shared/pipes/unit.pipe';
 import { QueryKeyPrefix } from '../../../shared/queries/shared-query-keys';
 import { ProductionService } from '../../../shared/services/production/production.service';
@@ -36,7 +37,6 @@ import { UserRolesStore } from '../../../shared/store/user-role.store';
 import { VerificationResultStore } from '../../../shared/store/verification-result.store';
 import { DownloadButtonComponent } from './download-button/download-button.component';
 import { VerifyComponent } from './verification/verify.component';
-import { H2TrustRoutes } from '../../../shared/constants/routes';
 
 interface FilterModel {
   input: string;
