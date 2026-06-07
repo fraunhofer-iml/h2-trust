@@ -29,6 +29,7 @@ import {
 } from '../../../shared/util/unit-type-guards';
 import { UnitActionsComponent } from './shared/unit-actions/unit-actions.component';
 import { UnitDetailsComponent } from './shared/unit-details/unit-details.component';
+import { H2TrustRoutes } from '../../../shared/constants/routes';
 
 @Component({
   selector: 'app-unit-details-page',
@@ -54,7 +55,7 @@ export class UnitDetailsPageComponent {
   protected readonly isHydrogenProductionUnitDetails = isHydrogenProductionUnitDetails;
   protected readonly isHydrogenStorageUnitDetails = isHydrogenStorageUnitDetails;
   protected readonly isPowerProductionUnitDetails = isPowerProductionUnitDetails;
-
+  protected readonly H2TrustRoutes = H2TrustRoutes;
   readonly id = input<string>('');
 
   private readonly unitsService = inject(UnitsService);

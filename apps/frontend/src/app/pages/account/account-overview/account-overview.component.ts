@@ -27,6 +27,7 @@ import { UsersService } from '../../../shared/services/users/users.service';
 import { UserRolesStore } from '../../../shared/store/user-role.store';
 import { CreatePpaRequestComponent } from '../create-ppa-request/create-ppa-request.component';
 import { PpaRequestsOverviewComponent } from '../ppa-requests-overview/ppa-requests-overview.component';
+import { H2TrustRoutes } from '../../../shared/constants/routes';
 
 @Component({
   selector: 'app-account-overview',
@@ -48,8 +49,8 @@ import { PpaRequestsOverviewComponent } from '../ppa-requests-overview/ppa-reque
   templateUrl: './account-overview.component.html',
 })
 export class AccountOverviewComponent implements OnInit {
+  protected readonly H2TrustRoutes = H2TrustRoutes;
   protected readonly PpaRequestRole = PpaRequestRole;
-
   protected readonly unitsService = inject(UnitsService);
   protected readonly authService = inject(AuthService);
   protected readonly accountService = inject(UsersService);

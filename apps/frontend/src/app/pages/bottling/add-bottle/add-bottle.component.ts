@@ -84,6 +84,7 @@ export class AddBottleComponent {
   protected readonly MeasurementUnit = MeasurementUnit;
   protected readonly RfnboType = RfnboType;
   protected readonly bottleTypes = [RfnboType.RFNBO_READY, RfnboType.NON_CERTIFIABLE] as const;
+  protected readonly H2TrustRoutes = H2TrustRoutes;
 
   dateDelimiter: Date = new Date();
   uploadedFiles: File[] = [];

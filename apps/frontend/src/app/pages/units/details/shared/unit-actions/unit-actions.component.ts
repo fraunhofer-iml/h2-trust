@@ -13,6 +13,7 @@ import { RouterModule } from '@angular/router';
 import { injectMutation } from '@tanstack/angular-query-experimental';
 import { UnitsService } from '../../../../../shared/services/units/units.service';
 import { toastQueryError } from '../../../../../shared/util/query-error-handler';
+import { H2TrustRoutes } from '../../../../../shared/constants/routes';
 
 @Component({
   selector: 'app-unit-actions',
@@ -20,6 +21,7 @@ import { toastQueryError } from '../../../../../shared/util/query-error-handler'
   templateUrl: './unit-actions.component.html',
 })
 export class UnitActionsComponent {
+  protected readonly H2TrustRoutes = H2TrustRoutes;
   unit = input.required<{ id: string; active: boolean }>();
 
   statusChange = output<void>();

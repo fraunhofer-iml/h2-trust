@@ -24,6 +24,7 @@ import { H2CompositionChartComponent } from './chart/h2-composition-chart.compon
 import { ProofOfOriginComponent } from './proof-of-origin/proof-of-origin.component';
 import { ProofOfSustainabilityComponent } from './proof-of-sustainability/proof-of-sustainability.component';
 import { RfnboComplianceComponent } from './rfnbo-compliance/rfnbo-compliance.component';
+import { H2TrustRoutes } from '../../../shared/constants/routes';
 
 @Component({
   selector: 'app-product-pass',
@@ -44,6 +45,7 @@ import { RfnboComplianceComponent } from './rfnbo-compliance/rfnbo-compliance.co
   templateUrl: './product-pass.component.html',
 })
 export class ProductPassComponent {
+  protected readonly H2TrustRoutes = H2TrustRoutes;
   bottlingService = inject(BottlingService);
   authService = inject(AuthService);
 

@@ -45,6 +45,7 @@ import { minFormArrayLength } from '../../../../shared/util/form-array-length.va
 import { FileForm } from './file-upload.form';
 import { LoadingModalComponent } from './loading-modal/loading-modal.component';
 import { ModalData } from './loading-modal/modal-data.model';
+import { H2TrustRoutes } from '../../../../shared/constants/routes';
 
 @Component({
   selector: 'app-add-production-data',
@@ -70,6 +71,7 @@ import { ModalData } from './loading-modal/modal-data.model';
   templateUrl: './add-production-data.component.html',
 })
 export class AddProductionDataComponent {
+  protected readonly H2TrustRoutes = H2TrustRoutes;
   protected readonly FileTypes = FileTypes;
   protected readonly CsvContentType = CsvContentType;
 

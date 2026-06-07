@@ -77,6 +77,7 @@ export class CreateUnitComponent {
   protected readonly HydrogenProductionMethod = HydrogenProductionMethod;
   protected readonly HydrogenStorageType = HydrogenStorageType;
   protected readonly unitTypes = Object.values(UnitType);
+  protected readonly H2TrustRoutes = H2TrustRoutes;
 
   unitsService = inject(UnitsService);
   companiesService = inject(CompaniesService);

@@ -36,6 +36,7 @@ import { UserRolesStore } from '../../../shared/store/user-role.store';
 import { VerificationResultStore } from '../../../shared/store/verification-result.store';
 import { DownloadButtonComponent } from './download-button/download-button.component';
 import { VerifyComponent } from './verification/verify.component';
+import { H2TrustRoutes } from '../../../shared/constants/routes';
 
 interface FilterModel {
   input: string;
@@ -73,6 +74,7 @@ interface FilterModel {
   templateUrl: './production-files.component.html',
 })
 export class ProductionFilesComponent implements AfterViewInit {
+  protected readonly H2TrustRoutes = H2TrustRoutes;
   protected readonly MeasurementUnit = MeasurementUnit;
   protected readonly CsvContentType = BatchType;
   private displayedColumns = [

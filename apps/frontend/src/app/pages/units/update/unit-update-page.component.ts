@@ -77,6 +77,7 @@ export class UnitUpdatePageComponent {
   protected isHydrogenProductionUnit = isHydrogenProductionUnitDetails;
   protected isHydrogenStorageUnit = isHydrogenStorageUnitDetails;
   protected isPowerProductionUnit = isPowerProductionUnitDetails;
+  protected readonly H2TrustRoutes = H2TrustRoutes;
 
   unitForm: FormGroup<UnitFormGroup> = newUnitForm();
   hydrogenProductionForm: FormGroup<HydrogenProductionFormGroup> = newHydrogenProductionForm();

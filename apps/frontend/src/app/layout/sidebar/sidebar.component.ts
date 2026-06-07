@@ -54,6 +54,7 @@ interface SidebarOption {
 })
 export class SidebarComponent implements OnInit {
   protected readonly router = inject(Router);
+  protected readonly H2TrustRoutes = H2TrustRoutes;
   protected readonly unitsService = inject(UnitsService);
   protected readonly ppaService = inject(PowerPurchaseAgreementService);
   protected readonly authService = inject(AuthService);

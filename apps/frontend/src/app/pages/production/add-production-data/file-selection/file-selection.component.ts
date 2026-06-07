@@ -58,6 +58,7 @@ import { handleMutationWithPromiseToast } from '../../../../shared/util/query-er
   templateUrl: './file-selection.component.html',
 })
 export class FileSelectionComponent {
+  protected readonly H2TrustRoutes = H2TrustRoutes;
   protected readonly productionService = inject(ProductionService);
   protected readonly powerPurchaseAgreementService = inject(PowerPurchaseAgreementService);
   protected readonly unitsService = inject(UnitsService);
