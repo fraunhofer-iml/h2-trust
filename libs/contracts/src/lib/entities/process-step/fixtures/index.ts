@@ -7,4 +7,3 @@
  */
 
 export * from './process-step.fixture';
-export * from './transportation-details.fixture';

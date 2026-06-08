@@ -14,7 +14,6 @@ import { HydrogenProductionUnitEntityFixture } from '../../unit/fixtures/hydroge
 import { HydrogenStorageUnitEntityFixture } from '../../unit/fixtures/hydrogen-storage-unit.fixture';
 import { PowerProductionUnitEntityFixture } from '../../unit/fixtures/power-production-unit.fixture';
 import { UserEntityFixture } from '../../user/fixtures/user.fixture';
-import { TransportationDetailsEntityFixture } from './transportation-details.fixture';
 
 export const ProcessStepEntityFixture = {
   createPowerProduction: (overrides: Partial<ProcessStepEntity> = {}): ProcessStepEntity =>
@@ -27,7 +26,6 @@ export const ProcessStepEntityFixture = {
       overrides.recordedBy ?? UserEntityFixture.createPowerUser(),
       overrides.executedBy ?? PowerProductionUnitEntityFixture.create(),
       overrides.documents ?? [DocumentEntityFixture.create()],
-      overrides.transportationDetails ?? undefined,
     ),
   createWaterConsumption: (overrides: Partial<ProcessStepEntity> = {}): ProcessStepEntity =>
     new ProcessStepEntity(
@@ -39,7 +37,6 @@ export const ProcessStepEntityFixture = {
       overrides.recordedBy ?? UserEntityFixture.createHydrogenUser(),
       overrides.executedBy ?? PowerProductionUnitEntityFixture.create(),
       overrides.documents ?? [DocumentEntityFixture.create()],
-      overrides.transportationDetails ?? undefined,
     ),
   createHydrogenProduction: (overrides: Partial<ProcessStepEntity> = {}): ProcessStepEntity =>
     new ProcessStepEntity(
@@ -57,7 +54,6 @@ export const ProcessStepEntityFixture = {
       overrides.recordedBy ?? UserEntityFixture.createHydrogenUser(),
       overrides.executedBy ?? HydrogenProductionUnitEntityFixture.create(),
       overrides.documents ?? [DocumentEntityFixture.create()],
-      overrides.transportationDetails ?? undefined,
     ),
   createHydrogenBottling: (overrides: Partial<ProcessStepEntity> = {}): ProcessStepEntity =>
     new ProcessStepEntity(
@@ -81,7 +77,6 @@ export const ProcessStepEntityFixture = {
       overrides.recordedBy ?? UserEntityFixture.createHydrogenUser(),
       overrides.executedBy ?? HydrogenStorageUnitEntityFixture.create(),
       overrides.documents ?? [DocumentEntityFixture.create()],
-      overrides.transportationDetails ?? undefined,
     ),
   createHydrogenTransportation: (overrides: Partial<ProcessStepEntity> = {}): ProcessStepEntity =>
     new ProcessStepEntity(
@@ -105,6 +100,5 @@ export const ProcessStepEntityFixture = {
       overrides.recordedBy ?? UserEntityFixture.createHydrogenUser(),
       overrides.executedBy ?? HydrogenStorageUnitEntityFixture.create(),
       overrides.documents ?? [DocumentEntityFixture.create()],
-      overrides.transportationDetails ?? TransportationDetailsEntityFixture.createPipeline(),
     ),
 } as const;

@@ -14,7 +14,7 @@ import { CsvDocumentEntity, ProofEntity } from '@h2-trust/contracts/entities';
 import { CsvDocumentEntityFixture, ProofEntityFixture } from '@h2-trust/contracts/entities/fixtures';
 import { ReadByIdPayload } from '@h2-trust/contracts/payloads';
 import { CsvImportRepository } from '@h2-trust/database';
-import { BatchType, CsvDocumentIntegrityStatus } from '@h2-trust/domain';
+import { CsvContentType, CsvDocumentIntegrityStatus } from '@h2-trust/domain';
 import { CentralizedStorageService, DecentralizedStorageService } from '@h2-trust/storage';
 import { CsvDocumentService } from './csv-document.service';
 
@@ -94,7 +94,7 @@ describe('CsvDocumentService', () => {
         CsvDocumentEntityFixture.create({
           id: 'doc-1',
           fileName: 'file-1.csv',
-          type: BatchType.POWER,
+          type: CsvContentType.POWER,
           startedAt: new Date(),
           endedAt: new Date(),
           amount: 10,
@@ -102,7 +102,7 @@ describe('CsvDocumentService', () => {
         CsvDocumentEntityFixture.create({
           id: 'doc-2',
           fileName: 'file-2.csv',
-          type: BatchType.HYDROGEN,
+          type: CsvContentType.HYDROGEN,
           startedAt: new Date(),
           endedAt: new Date(),
           amount: 5,
@@ -127,7 +127,7 @@ describe('CsvDocumentService', () => {
       const givenDocument = CsvDocumentEntityFixture.create({
         id: givenPayload.id,
         fileName: 'production.csv',
-        type: BatchType.POWER,
+        type: CsvContentType.POWER,
         amount: 42,
         transactionHash: 'tx-hash',
       });
@@ -177,7 +177,7 @@ describe('CsvDocumentService', () => {
       const givenDocument = CsvDocumentEntityFixture.create({
         id: givenPayload.id,
         fileName: 'hydrogen.csv',
-        type: BatchType.HYDROGEN,
+        type: CsvContentType.HYDROGEN,
         amount: 7,
         transactionHash: 'tx-hash-2',
       });
@@ -223,7 +223,7 @@ describe('CsvDocumentService', () => {
       const givenDocument = CsvDocumentEntityFixture.create({
         id: givenPayload.id,
         fileName: 'production.csv',
-        type: BatchType.POWER,
+        type: CsvContentType.POWER,
         amount: 42,
         transactionHash: 'tx-hash',
       });
@@ -286,7 +286,7 @@ describe('CsvDocumentService', () => {
       const givenDocument = new CsvDocumentEntity(
         givenPayload.id,
         'production.csv',
-        BatchType.POWER,
+        CsvContentType.POWER,
         new Date(),
         new Date(),
         1,
@@ -323,7 +323,7 @@ describe('CsvDocumentService', () => {
       const givenDocument = CsvDocumentEntityFixture.create({
         id: givenPayload.id,
         fileName: 'missing-file.csv',
-        type: BatchType.POWER,
+        type: CsvContentType.POWER,
         amount: 3,
         transactionHash: 'tx-hash-3',
       });

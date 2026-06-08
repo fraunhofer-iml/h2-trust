@@ -7,8 +7,6 @@
  */
 
 import {
-  HydrogenProductionUnitEntity,
-  PowerProductionUnitEntity,
   ProductionChainEntity,
   ProofOfOriginHydrogenBatchEntity,
   ProvenanceEntity,
@@ -26,8 +24,8 @@ describe('HydrogenTransportationProofOfOriginAssembler', () => {
         ProcessStepEntityFixture.createHydrogenProduction(),
         ProcessStepEntityFixture.createPowerProduction(),
         ProcessStepEntityFixture.createWaterConsumption(),
-        ProcessStepEntityFixture.createPowerProduction().executedBy as PowerProductionUnitEntity,
-        ProcessStepEntityFixture.createWaterConsumption().executedBy as HydrogenProductionUnitEntity,
+        ProcessStepEntityFixture.createPowerProduction().executedBy,
+        ProcessStepEntityFixture.createWaterConsumption().executedBy,
       );
 
       const givenProvenance = new ProvenanceEntity(
@@ -61,8 +59,8 @@ describe('HydrogenTransportationProofOfOriginAssembler', () => {
         ProcessStepEntityFixture.createHydrogenProduction(),
         ProcessStepEntityFixture.createPowerProduction(),
         ProcessStepEntityFixture.createWaterConsumption(),
-        ProcessStepEntityFixture.createPowerProduction().executedBy as PowerProductionUnitEntity,
-        ProcessStepEntityFixture.createWaterConsumption().executedBy as HydrogenProductionUnitEntity,
+        ProcessStepEntityFixture.createPowerProduction().executedBy,
+        ProcessStepEntityFixture.createWaterConsumption().executedBy,
       );
 
       const givenProvenance = new ProvenanceEntity(
