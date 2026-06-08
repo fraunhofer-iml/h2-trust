@@ -56,6 +56,7 @@ export class BatchController {
     @Query('batchType') _batchType: ProcessType,
     @KeycloakUser() _authenticatedUser: AuthenticatedKCUser,
   ): Promise<PaginatedDataDto<BatchDto>> {
+    // TODO: Implement actual logic to retrieve batches for the authenticated user's company, with pagination and filtering based on the provided query parameters. (DUHGW-470)
     return new Promise((resolve) => {
       resolve(
         new PaginatedDataDto<BatchDto>(
