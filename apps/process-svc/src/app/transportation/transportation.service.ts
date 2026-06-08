@@ -9,7 +9,8 @@
 import { Injectable } from '@nestjs/common';
 import { ProcessStepEntity } from '@h2-trust/contracts/entities';
 import { CreateHydrogenTransportationPayload } from '@h2-trust/contracts/payloads';
-import { BatchType, ProcessType } from '@h2-trust/domain';
+import { BatchType, PowerType, ProcessType, RfnboType, TransportType } from '@h2-trust/domain';
+import { ValidationException } from '@h2-trust/exceptions';
 import { ProcessStepService } from '../process-step/process-step.service';
 
 @Injectable()
@@ -19,18 +20,44 @@ export class TransportationService {
   async createHydrogenTransportationProcessStep(
     payload: CreateHydrogenTransportationPayload,
   ): Promise<ProcessStepEntity> {
-    //TODO-LG: add transport emission data here (distance)
-    const transportation: ProcessStepEntity = {
+    this.validateTransportMode(payload.transportMode, payload);
+    const transportation = this.buildTransportationEntity(payload);
+
+    await this.processStepService.setBatchesInactive([payload.predecessorBatch.id]);
+    return this.processStepService.createProcessStep(transportation);
+  }
+
+  private buildTransportationEntity(payload: CreateHydrogenTransportationPayload): ProcessStepEntity {
+    return {
       ...payload.processStep,
       type: ProcessType.HYDROGEN_TRANSPORTATION,
       batch: {
         ...payload.processStep.batch,
         type: BatchType.HYDROGEN,
         predecessors: [payload.predecessorBatch],
+        qualityDetails: {
+          rfnboType: RfnboType.NOT_SPECIFIED,
+          powerType: PowerType.NOT_SPECIFIED,
+          distance: payload.distance ?? 0,
+        },
       },
     };
+  }
 
-    await this.processStepService.setBatchesInactive([payload.predecessorBatch.id]);
-    return this.processStepService.createProcessStep(transportation);
+  private validateTransportMode(transportMode: TransportType, payload: CreateHydrogenTransportationPayload): void {
+    const validModes = [TransportType.TRAILER, TransportType.PIPELINE];
+
+    if (!validModes.includes(transportMode)) {
+      throw new ValidationException(`Invalid transport mode: ${transportMode}`);
+    }
+
+    if (transportMode === TransportType.TRAILER) {
+      if (!payload.distance) {
+        throw new ValidationException(`Distance is required for transport mode [${TransportType.TRAILER}].`);
+      }
+      if (!payload.fuelType) {
+        throw new ValidationException(`Fuel type is required for transport mode [${TransportType.TRAILER}].`);
+      }
+    }
   }
 }

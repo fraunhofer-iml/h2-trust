@@ -73,11 +73,9 @@ describe('TransportationService', () => {
             ...givenProcessStep.batch,
             type: BatchType.HYDROGEN,
             predecessors: [givenPredecessorBatch],
-          }),
-          transportationDetails: expect.objectContaining({
-            distance: givenPayload.distance,
-            transportMode: givenPayload.transportMode,
-            fuelType: givenPayload.fuelType,
+            qualityDetails: expect.objectContaining({
+              distance: givenPayload.distance,
+            }),
           }),
         }),
       );
@@ -92,7 +90,7 @@ describe('TransportationService', () => {
         givenProcessStep,
         givenPredecessorBatch,
         TransportType.PIPELINE,
-        undefined,
+        10,
         undefined,
       );
 
@@ -113,11 +111,9 @@ describe('TransportationService', () => {
             ...givenProcessStep.batch,
             type: BatchType.HYDROGEN,
             predecessors: [givenPredecessorBatch],
-          }),
-          transportationDetails: expect.objectContaining({
-            distance: 0,
-            transportMode: givenPayload.transportMode,
-            fuelType: undefined,
+            qualityDetails: expect.objectContaining({
+              distance: givenPayload.distance,
+            }),
           }),
         }),
       );
@@ -238,11 +234,9 @@ describe('TransportationService', () => {
             ...givenProcessStep.batch,
             type: BatchType.HYDROGEN,
             predecessors: [givenPredecessorBatch],
-          }),
-          transportationDetails: expect.objectContaining({
-            distance: givenPayload.distance,
-            transportMode: givenPayload.transportMode,
-            fuelType: givenPayload.fuelType,
+            qualityDetails: expect.objectContaining({
+              distance: givenPayload.distance,
+            }),
           }),
         }),
       );
