@@ -18,7 +18,7 @@ export class ReadByOwnerIdAndTypePayload {
   @IsOptional()
   unitType?: UnitType;
 
-  constructor(id: string, unitType: UnitType) {
+  constructor(id: string, unitType?: UnitType) {
     this.id = id;
     this.unitType = unitType;
   }

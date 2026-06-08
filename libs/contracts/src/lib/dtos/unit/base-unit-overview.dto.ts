@@ -63,7 +63,7 @@ export class BaseUnitOverviewDto {
       serialNumber: unit.serialNumber,
       certifiedBy: unit.certifiedBy,
       commissionedOn: unit.commissionedOn,
-      ownerName: unit.owner?.name,
+      ownerName: unit.owner.name,
       operator: new CompanyBaseDto(unit.operator.id, unit.operator.name),
       unitType: unit.unitType,
       active: unit.active,
