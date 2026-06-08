@@ -21,6 +21,9 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTimepickerModule } from '@angular/material/timepicker';
 import { Router, RouterModule } from '@angular/router';
 import { injectMutation, injectQuery, QueryClient } from '@tanstack/angular-query-experimental';
+import { FileDragAndDropComponent } from 'apps/frontend/src/app/layout/drag-and-drop/file-drag-and-drop.component';
+import { FileCardComponent } from 'apps/frontend/src/app/layout/file-card/file-card.component';
+import { TypeSelectionComponent } from 'apps/frontend/src/app/layout/type-selection/type-selection.component';
 import {
   BottlingOverviewDto,
   HydrogenComponentDto,
@@ -31,6 +34,7 @@ import { FuelType, MeasurementUnit, RfnboType, TransportMode, UnitType } from '@
 import { FileTypes } from '../../../../shared/constants/file-types';
 import { H2TrustRoutes } from '../../../../shared/constants/routes';
 import { EnumPipe } from '../../../../shared/pipes/enum.pipe';
+import { UnitPipe } from '../../../../shared/pipes/unit.pipe';
 import { companiesQueryOptions } from '../../../../shared/queries/companies.query';
 import { QueryKeyPrefix } from '../../../../shared/queries/shared-query-keys';
 import { hydrogenStorageUnitsQueryOptions } from '../../../../shared/queries/units.query';
@@ -57,6 +61,10 @@ import { BottlingForm } from './form';
     MatIconModule,
     MatRadioModule,
     RouterModule,
+    FileDragAndDropComponent,
+    FileCardComponent,
+    TypeSelectionComponent,
+    UnitPipe,
   ],
   templateUrl: './add-bottle.component.html',
 })
