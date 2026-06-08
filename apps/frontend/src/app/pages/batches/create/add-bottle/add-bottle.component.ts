@@ -21,9 +21,6 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTimepickerModule } from '@angular/material/timepicker';
 import { Router, RouterModule } from '@angular/router';
 import { injectMutation, injectQuery, QueryClient } from '@tanstack/angular-query-experimental';
-import { FileDragAndDropComponent } from 'apps/frontend/src/app/layout/drag-and-drop/file-drag-and-drop.component';
-import { FileCardComponent } from 'apps/frontend/src/app/layout/file-card/file-card.component';
-import { TypeSelectionComponent } from 'apps/frontend/src/app/layout/type-selection/type-selection.component';
 import {
   BottlingOverviewDto,
   HydrogenComponentDto,
@@ -31,6 +28,9 @@ import {
   UserDto,
 } from '@h2-trust/contracts/dtos';
 import { FuelType, MeasurementUnit, RfnboType, TransportMode, UnitType } from '@h2-trust/domain';
+import { FileDragAndDropComponent } from '../../../../layout/drag-and-drop/file-drag-and-drop.component';
+import { FileCardComponent } from '../../../../layout/file-card/file-card.component';
+import { TypeSelectionComponent } from '../../../../layout/type-selection/type-selection.component';
 import { FileTypes } from '../../../../shared/constants/file-types';
 import { H2TrustRoutes } from '../../../../shared/constants/routes';
 import { EnumPipe } from '../../../../shared/pipes/enum.pipe';
