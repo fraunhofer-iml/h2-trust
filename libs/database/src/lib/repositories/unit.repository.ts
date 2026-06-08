@@ -154,7 +154,7 @@ export class UnitRepository {
                 ratedPower: new Prisma.Decimal(payload.ratedPower),
                 decommissioningPlannedOn: payload.decommissioningPlannedOn,
                 financialSupportReceived: payload.financialSupportReceived,
-                energySource: payload.powerProductionType,
+                type: payload.powerProductionType,
               },
             },
           },

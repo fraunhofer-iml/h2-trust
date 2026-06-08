@@ -16,7 +16,7 @@ export class PpaDto {
   hydrogenProducer: CompanyDto;
   powerProducer: CompanyDto;
   status: PowerPurchaseAgreementStatus;
-  energySource: PowerProductionType;
+  powerProductionType: PowerProductionType;
   powerProductionUnit?: PowerProductionOverviewDto;
 
   constructor(
@@ -24,7 +24,7 @@ export class PpaDto {
     hydrogenProducer: CompanyDto,
     powerProducer: CompanyDto,
     status: PowerPurchaseAgreementStatus,
-    energySource: PowerProductionType,
+    powerProductionType: PowerProductionType,
     powerProductionUnit?: PowerProductionOverviewDto,
   ) {
     this.id = id;
@@ -32,7 +32,7 @@ export class PpaDto {
     this.powerProducer = powerProducer;
     this.powerProductionUnit = powerProductionUnit;
     this.status = status;
-    this.energySource = energySource;
+    this.powerProductionType = powerProductionType;
   }
 
   static fromEntity(powerPurchaseAgreement: PowerPurchaseAgreementEntity): PpaDto {
@@ -44,7 +44,7 @@ export class PpaDto {
         ? PowerProductionOverviewDto.fromEntity(powerPurchaseAgreement.powerProductionUnit)
         : undefined,
       status: powerPurchaseAgreement.status,
-      energySource: powerPurchaseAgreement.powerProductionUnit
+      powerProductionType: powerPurchaseAgreement.powerProductionUnit
         ? powerPurchaseAgreement.powerProductionUnit.specification.type
         : undefined,
     };

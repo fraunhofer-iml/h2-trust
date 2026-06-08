@@ -197,9 +197,9 @@ export function calculatePartialAmountRelativeToPowerProduction(
  */
 export function splitGridPowerProduction(
   createProduction: CreateProductionEntity,
-  powerProductionUnitEnergySource: PowerProductionType,
+  powerProductionType: PowerProductionType,
 ): CreateProductionEntity[] {
-  if (powerProductionUnitEnergySource != PowerProductionType.GRID) {
+  if (powerProductionType != PowerProductionType.GRID) {
     return [createProduction];
   }
 

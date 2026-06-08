@@ -7,7 +7,7 @@
  */
 
 import { PpaDto } from '@h2-trust/contracts/dtos';
-import { EnergySource, PowerPurchaseAgreementStatus } from '@h2-trust/domain';
+import { PowerProductionType, PowerPurchaseAgreementStatus } from '@h2-trust/domain';
 import { CompanyDtoFixture } from '../../company/fixtures';
 import { PowerProductionOverviewDtoFixture } from '../../unit/fixtures';
 
@@ -17,7 +17,7 @@ export const PpaDtoFixture = {
     hydrogenProducer: overrides.hydrogenProducer ?? CompanyDtoFixture.createHydrogenProducer(),
     powerProducer: overrides.powerProducer ?? CompanyDtoFixture.create(),
     status: overrides.status ?? PowerPurchaseAgreementStatus.PENDING,
-    energySource: overrides.energySource ?? EnergySource.WIND_ENERGY,
+    powerProductionType: overrides.powerProductionType ?? PowerProductionType.WIND_TURBINE,
     powerProductionUnit: overrides.powerProductionUnit ?? PowerProductionOverviewDtoFixture.create(),
   }),
   createApproved: (overrides: Partial<PpaDto> = {}): PpaDto =>
