@@ -28,6 +28,6 @@ export const BATCH_ROUTES: Route[] = [
     path: ':id',
     canActivate: [canActivateAuth],
     component: ProductPassComponent,
-    data: { breadcrumb: 'DPP' },
+    data: { breadcrumb: 'Digital Product Passport' },
   },
 ];

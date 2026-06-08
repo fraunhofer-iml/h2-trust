@@ -18,6 +18,19 @@ export const HYDROGEN_ASSETS_ROUTES: Route[] = [
     component: HydrogenAssetsComponent,
   },
   { path: 'create', component: CreateUnitComponent, data: { breadcrumb: 'Create' } },
-  { path: ':id', component: UnitDetailsPageComponent, data: { breadcrumb: 'Details' } },
-  { path: ':id/edit', component: UnitUpdatePageComponent, data: { breadcrumb: 'Edit' } },
+  {
+    path: ':id',
+    data: { breadcrumb: 'Details' },
+    children: [
+      {
+        path: '',
+        component: UnitDetailsPageComponent,
+      },
+      {
+        path: 'edit',
+        component: UnitUpdatePageComponent,
+        data: { breadcrumb: 'Edit' },
+      },
+    ],
+  },
 ];

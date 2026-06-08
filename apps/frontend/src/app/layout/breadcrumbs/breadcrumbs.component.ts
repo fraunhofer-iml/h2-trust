@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Component, computed, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, NavigationEnd, Router, RouterLink } from '@angular/router';
 import { filter } from 'rxjs/operators';
@@ -26,12 +26,7 @@ export class BreadcrumbsComponent implements OnInit {
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly destroyRef = inject(DestroyRef);
 
-  private readonly navigationTick = signal(0);
-
-  protected readonly breadcrumbs = computed(() => {
-    this.navigationTick();
-    return this.collectBreadcrumbs();
-  });
+  protected readonly breadcrumbs = signal<BreadcrumbItem[]>(this.collectBreadcrumbs());
 
   ngOnInit(): void {
     this.router.events
@@ -40,7 +35,7 @@ export class BreadcrumbsComponent implements OnInit {
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe(() => {
-        this.navigationTick.update((value) => value + 1);
+        this.breadcrumbs.set(this.collectBreadcrumbs());
       });
   }
 
@@ -61,21 +56,6 @@ export class BreadcrumbsComponent implements OnInit {
       if (typeof breadcrumb === 'string' && breadcrumb.trim().length > 0) {
         const normalizedLabel = breadcrumb.trim();
         const previousBreadcrumb = breadcrumbs.at(-1);
-
-        const routePath = currentRoute.routeConfig?.path ?? '';
-        if (
-          normalizedLabel.toLowerCase() === 'edit' &&
-          routePath.includes(':id/edit') &&
-          currentUrl.endsWith('/edit')
-        ) {
-          const detailsUrl = currentUrl.slice(0, -'/edit'.length);
-          if (detailsUrl && previousBreadcrumb?.url !== detailsUrl) {
-            breadcrumbs.push({
-              label: 'Details',
-              url: detailsUrl,
-            });
-          }
-        }
 
         if (previousBreadcrumb?.label.toLowerCase() === normalizedLabel.toLowerCase()) {
           continue;
