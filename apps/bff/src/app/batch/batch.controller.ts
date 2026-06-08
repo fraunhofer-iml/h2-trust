@@ -10,7 +10,7 @@ import { Controller, Get, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiQuery } from '@nestjs/swagger';
 import { KeycloakUser } from 'nest-keycloak-connect';
 import { BatchDto, PaginatedDataDto, type AuthenticatedKCUser } from '@h2-trust/contracts/dtos';
-import { ProcessType, RfnboType, UnitType } from '@h2-trust/domain';
+import { ProcessType, RfnboType } from '@h2-trust/domain';
 
 @Controller('batches')
 export class BatchController {
@@ -44,9 +44,9 @@ export class BatchController {
   })
   @ApiQuery({
     name: 'batchType',
-    enum: UnitType,
-    example: UnitType.BOTTLING,
-    description: 'Used to filter for a specific batch type',
+    enum: ProcessType,
+    example: ProcessType.HYDROGEN_PRODUCTION,
+    description: 'Used to filter for a specific process type (batch type)',
     required: false,
   })
   readAllHydrogenBatches(
