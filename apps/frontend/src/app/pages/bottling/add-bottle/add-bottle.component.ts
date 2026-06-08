@@ -27,7 +27,7 @@ import {
   HydrogenStorageOverviewDto,
   UserDto,
 } from '@h2-trust/contracts/dtos';
-import { FuelType, MeasurementUnit, RfnboType, TransportType } from '@h2-trust/domain';
+import { FuelType, MeasurementUnit, RfnboType, TransportType, UnitType } from '@h2-trust/domain';
 import { FileDragAndDropComponent } from '../../../layout/drag-and-drop/file-drag-and-drop.component';
 import { FileCardComponent } from '../../../layout/file-card/file-card.component';
 import { TypeSelectionComponent } from '../../../layout/type-selection/type-selection.component';
@@ -110,7 +110,12 @@ export class AddBottleComponent {
         this.processService.createBottleBatch(dto),
         'Successfully created',
       );
-      await this.queryClient.invalidateQueries({ queryKey: [QueryKeyPrefix.BOTTLING] });
+      await this.queryClient.invalidateQueries({
+        queryKey: [QueryKeyPrefix.UNITS, UnitType.HYDROGEN_STORAGE],
+      });
+      await this.queryClient.invalidateQueries({
+        queryKey: [QueryKeyPrefix.BOTTLING],
+      });
       this.router.navigateByUrl(H2TrustRoutes.BOTTLING);
     },
   }));
