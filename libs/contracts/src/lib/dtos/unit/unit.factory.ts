@@ -66,6 +66,6 @@ export function getSpecificUnitOverview(unit: UnitEntity): UnitOverviewDto {
         throw new Error(`Unknown unit type: ${unit.unitType}`);
     }
   } catch (e) {
-    throw new Error(`Unknown unit type: ${unit.unitType}`, e);
+    throw new Error(`Unknown unit type: ${unit.unitType}`);
   }
 }
