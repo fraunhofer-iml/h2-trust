@@ -133,6 +133,7 @@ const PROCESS_TYPE_LABELS: Record<ProcessType, string> = {
   [ProcessType.HYDROGEN_TRANSPORTATION]: 'Hydrogen Transportation',
   [ProcessType.POWER_PRODUCTION]: 'Power Production',
   [ProcessType.WATER_CONSUMPTION]: 'Water Consumption',
+  [ProcessType.HYDROGEN_STORAGE]: 'Hydrogen Storage',
 };
 
 export function getPowerProductionType(value: PowerProductionType): string {

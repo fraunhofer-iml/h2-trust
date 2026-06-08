@@ -329,14 +329,14 @@ describe('RedCompliance', () => {
 
   describe('areUnitsInSameBiddingZone', () => {
     it('should return true when both units are in the same zone', () => {
-      const givenPowerUnit = { biddingZone: BiddingZone.DE_LU } as unknown as UnitEntity;
-      const givenHydrogenUnit = { biddingZone: BiddingZone.DE_LU } as unknown as UnitEntity;
+      const givenPowerUnit = { specification: { biddingZone: BiddingZone.DE_LU } } as unknown as UnitEntity;
+      const givenHydrogenUnit = { specification: { biddingZone: BiddingZone.DE_LU } } as unknown as UnitEntity;
       expect(areUnitsInSameBiddingZone(givenPowerUnit, givenHydrogenUnit)).toBe(true);
     });
 
     it('should return false when units are in different zones', () => {
-      const givenPowerUnit = { biddingZone: BiddingZone.DE_LU } as unknown as UnitEntity;
-      const givenHydrogenUnit = { biddingZone: BiddingZone.AT } as unknown as UnitEntity;
+      const givenPowerUnit = { specification: { biddingZone: BiddingZone.DE_LU } } as unknown as UnitEntity;
+      const givenHydrogenUnit = { specification: { biddingZone: BiddingZone.AT } } as unknown as UnitEntity;
       expect(areUnitsInSameBiddingZone(givenPowerUnit, givenHydrogenUnit)).toBe(false);
     });
 
@@ -389,8 +389,12 @@ describe('RedCompliance', () => {
 
   describe('hasFinancialSupport', () => {
     it('should reflect financialSupportReceived field when called', () => {
-      expect(hasFinancialSupport({ financialSupportReceived: true } as unknown as UnitEntity)).toBe(false);
-      expect(hasFinancialSupport({ financialSupportReceived: false } as unknown as UnitEntity)).toBe(true);
+      expect(hasFinancialSupport({ specification: { financialSupportReceived: true } } as unknown as UnitEntity)).toBe(
+        false,
+      );
+      expect(hasFinancialSupport({ specification: { financialSupportReceived: false } } as unknown as UnitEntity)).toBe(
+        true,
+      );
     });
   });
 });

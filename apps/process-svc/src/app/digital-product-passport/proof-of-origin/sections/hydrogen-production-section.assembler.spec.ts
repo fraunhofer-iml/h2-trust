@@ -6,13 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import {
-  HydrogenProductionUnitEntity,
-  PowerProductionUnitEntity,
-  ProductionChainEntity,
-  ProofOfOriginBatchEntity,
-  ProvenanceEntity,
-} from '@h2-trust/contracts/entities';
+import { ProductionChainEntity, ProofOfOriginBatchEntity, ProvenanceEntity } from '@h2-trust/contracts/entities';
 import {
   ProcessStepEntityFixture,
   ProductionChainEntityFixture,
@@ -66,8 +60,8 @@ describe('HydrogenProductionProofOfOriginAssembler', () => {
         ProcessStepEntityFixture.createHydrogenBottling(),
         ProcessStepEntityFixture.createPowerProduction(),
         ProcessStepEntityFixture.createWaterConsumption(),
-        ProcessStepEntityFixture.createPowerProduction().executedBy as PowerProductionUnitEntity,
-        ProcessStepEntityFixture.createWaterConsumption().executedBy as HydrogenProductionUnitEntity,
+        ProcessStepEntityFixture.createPowerProduction().executedBy,
+        ProcessStepEntityFixture.createWaterConsumption().executedBy,
       );
 
       const givenProvenance = new ProvenanceEntity(
@@ -92,8 +86,8 @@ describe('HydrogenProductionProofOfOriginAssembler', () => {
         ProcessStepEntityFixture.createHydrogenBottling(),
         ProcessStepEntityFixture.createPowerProduction(),
         ProcessStepEntityFixture.createWaterConsumption(),
-        ProcessStepEntityFixture.createPowerProduction().executedBy as PowerProductionUnitEntity,
-        ProcessStepEntityFixture.createWaterConsumption().executedBy as HydrogenProductionUnitEntity,
+        ProcessStepEntityFixture.createPowerProduction().executedBy,
+        ProcessStepEntityFixture.createWaterConsumption().executedBy,
       );
 
       const givenProvenance = new ProvenanceEntity(
@@ -115,10 +109,10 @@ describe('HydrogenProductionProofOfOriginAssembler', () => {
       const givenProductionChain: ProductionChainEntity = new ProductionChainEntity(
         ProcessStepEntityFixture.createHydrogenBottling(),
         ProcessStepEntityFixture.createHydrogenBottling(),
-        ProcessStepEntityFixture.createPowerProduction(),
-        ProcessStepEntityFixture.createWaterConsumption(),
-        ProcessStepEntityFixture.createPowerProduction().executedBy as PowerProductionUnitEntity,
-        ProcessStepEntityFixture.createWaterConsumption().executedBy as HydrogenProductionUnitEntity,
+        undefined,
+        undefined,
+        ProcessStepEntityFixture.createPowerProduction().executedBy,
+        ProcessStepEntityFixture.createWaterConsumption().executedBy,
       );
 
       const givenProvenance = new ProvenanceEntity(
@@ -128,11 +122,10 @@ describe('HydrogenProductionProofOfOriginAssembler', () => {
       );
 
       // act
-      const actualResult = assembleHydrogenProductionSection(givenProvenance)[0];
+      const actualResult = assembleHydrogenProductionSection(givenProvenance);
 
       // assert
-      expect(actualResult.name).toBe(ProofOfOrigin.HYDROGEN_PRODUCTION_SECTION);
-      expect(actualResult.batches).toEqual([]);
+      expect(actualResult).toEqual([]);
     });
   });
 });

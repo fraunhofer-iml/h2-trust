@@ -10,6 +10,7 @@ import { ProcessStepEntity } from '@h2-trust/contracts/entities';
 import { BatchType, PowerType, ProcessType, RfnboType } from '@h2-trust/domain';
 import { BatchEntityFixture } from '../../batch/fixtures/batch.fixture';
 import { DocumentEntityFixture } from '../../document/fixtures/document.fixture';
+import { HydrogenTransportUnitEntityFixture } from '../../fixtures';
 import { HydrogenProductionUnitEntityFixture } from '../../unit/fixtures/hydrogen-production-unit.fixture';
 import { HydrogenStorageUnitEntityFixture } from '../../unit/fixtures/hydrogen-storage-unit.fixture';
 import { PowerProductionUnitEntityFixture } from '../../unit/fixtures/power-production-unit.fixture';
@@ -103,7 +104,7 @@ export const ProcessStepEntityFixture = {
           },
         }),
       overrides.recordedBy ?? UserEntityFixture.createHydrogenUser(),
-      overrides.executedBy ?? HydrogenStorageUnitEntityFixture.create(),
+      overrides.executedBy ?? HydrogenTransportUnitEntityFixture.create(),
       overrides.documents ?? [DocumentEntityFixture.create()],
     ),
 } as const;

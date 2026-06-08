@@ -30,10 +30,10 @@ export const PowerProductionUnitEntityFixture = {
       ratedPower: overrides.specification?.ratedPower ?? 1000,
       biddingZone: overrides.specification?.biddingZone ?? BiddingZone.DE_LU,
       financialSupportReceived: overrides.specification?.financialSupportReceived ?? false,
-      type: overrides.specification?.type ?? PowerProductionType.PHOTOVOLTAIC_SYSTEM,
       active: true,
       specification: overrides.specification ?? {
         id: 'specification-1',
+        type: PowerProductionType.PHOTOVOLTAIC_SYSTEM,
       },
     }) as UnitEntity,
 } as const;
