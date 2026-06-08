@@ -50,11 +50,11 @@ export class BatchController {
     required: false,
   })
   readAllHydrogenBatches(
-    @Query('pageNumber') pageNumber: number,
-    @Query('pageSize') pageSize: number,
-    @Query('id') id: string,
-    @Query('batchType') batchType: ProcessType,
-    @KeycloakUser() authenticatedUser: AuthenticatedKCUser,
+    @Query('pageNumber') _pageNumber: number,
+    @Query('pageSize') _pageSize: number,
+    @Query('id') _id: string,
+    @Query('batchType') _batchType: ProcessType,
+    @KeycloakUser() _authenticatedUser: AuthenticatedKCUser,
   ): Promise<PaginatedDataDto<BatchDto>> {
     return new Promise((resolve) => {
       resolve(
