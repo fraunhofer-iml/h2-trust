@@ -46,26 +46,22 @@ export function getSpecificUnit(unit: UnitEntity): UnitDto {
 }
 
 export function getSpecificUnitOverview(unit: UnitEntity): UnitOverviewDto {
-  try {
-    switch (unit.unitType) {
-      case UnitType.HYDROGEN_PRODUCTION:
-        return HydrogenProductionOverviewDto.fromEntity(unit);
-      case UnitType.POWER_PRODUCTION:
-        return PowerProductionOverviewDto.fromEntity(unit);
-      case UnitType.HYDROGEN_STORAGE:
-        return HydrogenStorageOverviewDto.fromEntity(unit);
-      case UnitType.TRANSPORTATION:
-        return HydrogenTransportOverviewDto.fromEntity(unit);
-      case UnitType.BOTTLING:
-        return HydrogenBottlingOverviewDto.fromEntity(unit);
-      case UnitType.COMPRESSION:
-        return HydrogenCompressorOverviewDto.fromEntity(unit);
-      case UnitType.END_USE:
-        return HydrogenEndUseOverviewDto.fromEntity(unit);
-      default:
-        throw new Error(`Unknown unit type: ${unit.unitType}`);
-    }
-  } catch (e) {
-    throw new Error(`Unknown unit type: ${unit.unitType}`);
+  switch (unit.unitType) {
+    case UnitType.HYDROGEN_PRODUCTION:
+      return HydrogenProductionOverviewDto.fromEntity(unit);
+    case UnitType.POWER_PRODUCTION:
+      return PowerProductionOverviewDto.fromEntity(unit);
+    case UnitType.HYDROGEN_STORAGE:
+      return HydrogenStorageOverviewDto.fromEntity(unit);
+    case UnitType.TRANSPORTATION:
+      return HydrogenTransportOverviewDto.fromEntity(unit);
+    case UnitType.BOTTLING:
+      return HydrogenBottlingOverviewDto.fromEntity(unit);
+    case UnitType.COMPRESSION:
+      return HydrogenCompressorOverviewDto.fromEntity(unit);
+    case UnitType.END_USE:
+      return HydrogenEndUseOverviewDto.fromEntity(unit);
+    default:
+      throw new Error(`Unknown unit type: ${unit.unitType}`);
   }
 }
