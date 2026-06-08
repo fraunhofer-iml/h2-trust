@@ -7,7 +7,6 @@
  */
 
 export * from './address.db.type';
-export * from './unit.db.type';
 export * from './batch.db.type';
 export * from './company.db.type';
 export * from './csv-document.db.type';
@@ -18,4 +17,5 @@ export * from './power-purchase-agreement-decision.db.type';
 export * from './process-step.db.type';
 export * from './quality-details.db.type';
 export * from './staged-production.db.type';
+export * from './unit.db.type';
 export * from './user.db.type';

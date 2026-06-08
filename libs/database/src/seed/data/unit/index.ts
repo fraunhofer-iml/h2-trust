@@ -6,5 +6,5 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export * from './unit-specification.seed';
 export * from './unit.seed';
+export * from './unit-specification.seed';

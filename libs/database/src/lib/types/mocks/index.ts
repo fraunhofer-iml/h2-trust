@@ -6,8 +6,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export * from './unit-db-type.mock';
 export * from './company-db-type.mock';
 export * from './document-db-type.mock';
 export * from './power-purchase-agreement-db-type.mock';
+export * from './unit-db-type.mock';
 export * from './user-db-type.mock';

@@ -8,15 +8,15 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { HydrogenBottlingUnitDto } from 'libs/contracts/src/lib/dtos/unit/hydrogen-bottling-unit.dto';
-import { HydrogenCompressorUnitDto } from 'libs/contracts/src/lib/dtos/unit/hydrogen-compressor-unit.dto';
-import { HydrogenEndUseUnitDto } from 'libs/contracts/src/lib/dtos/unit/hydrogen-end-use-unit.dto';
 import { firstValueFrom } from 'rxjs';
 import {
   getSpecificUnit,
   getSpecificUnitOverview,
+  HydrogenBottlingUnitDto,
   HydrogenBottlingUnitInputDto,
+  HydrogenCompressorUnitDto,
   HydrogenCompressorUnitInputDto,
+  HydrogenEndUseUnitDto,
   HydrogenEndUseUnitInputDto,
   HydrogenProductionUnitDto,
   HydrogenProductionUnitInputDto,
