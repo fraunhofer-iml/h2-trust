@@ -27,6 +27,7 @@ import { PowerPurchaseAgreementService } from '../../shared/services/power-purch
 import { UnitsService } from '../../shared/services/units/units.service';
 import { UsersService } from '../../shared/services/users/users.service';
 import { UserRolesStore } from '../../shared/store/user-role.store';
+import { BreadcrumbsComponent } from '../breadcrumbs/breadcrumbs.component';
 
 interface SidebarOption {
   title: string;
@@ -48,6 +49,7 @@ interface SidebarOption {
     MatSelectModule,
     MatBadgeModule,
     MatMenuModule,
+    BreadcrumbsComponent,
   ],
   providers: [UsersService],
   templateUrl: './sidebar.component.html',

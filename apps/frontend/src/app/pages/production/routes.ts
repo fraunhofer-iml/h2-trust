@@ -14,6 +14,11 @@ import { ProductionFilesComponent } from './uploaded-production-files/production
 
 export const PRODUCTION_ROUTES: Route[] = [
   {
+    path: '',
+    pathMatch: 'full',
+    redirectTo: 'data',
+  },
+  {
     path: 'data',
     component: ProductionViewComponent,
     data: { breadcrumb: 'Data' },
