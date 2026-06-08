@@ -44,9 +44,9 @@ export class BatchController {
   })
   @ApiQuery({
     name: 'batchType',
-    enum: UnitType,
-    example: UnitType.BOTTLING,
-    description: 'Used to filter for a specific batch type',
+    enum: ProcessType,
+    example: ProcessType.HYDROGEN_PRODUCTION,
+    description: 'Used to filter for a specific process type (batch type)',
     required: false,
   })
   readAllHydrogenBatches(
