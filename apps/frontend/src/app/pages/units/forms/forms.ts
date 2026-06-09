@@ -123,14 +123,19 @@ export const newHydrogenProductionForm = () =>
     }),
   });
 
-export const newHydrogenTransportForm = () =>
-  new FormGroup<HydrogenTransportFormGroup>({
+export const newHydrogenTransportForm = () => {
+  const form = new FormGroup<HydrogenTransportFormGroup>({
     transportType: new FormControl<TransportType | null>(null, Validators.required),
-    fuelType: new FormControl<FuelType | null>(null, Validators.required),
+    fuelType: new FormControl<FuelType | null>(null),
   });
 
+  form.controls.fuelType.disable();
+
+  return form;
+};
+
 export const addValidatorsToFormGroup = (formGroup: FormGroup): void => {
-  const excludeKeys = ['decommissioningPlannedOn', 'gridConnectionNumber', 'gridOperator'];
+  const excludeKeys = ['decommissioningPlannedOn', 'gridConnectionNumber', 'gridOperator', 'fuelType'];
   Object.keys(formGroup.controls).forEach((key) => {
     if (excludeKeys.includes(key)) return;
     const control = formGroup.get(key);
