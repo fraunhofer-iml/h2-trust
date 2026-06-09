@@ -10,25 +10,17 @@ import {
   PrismaClient,
   type Address,
   type Batch,
-  type BatchDetails,
   type Company,
   type Document,
-  type HydrogenProductionUnit,
-  type HydrogenStorageUnit,
-  type PowerProductionType,
-  type PowerProductionUnit,
   type PowerPurchaseAgreement,
   type PowerPurchaseAgreementDecision,
   type ProcessStep,
-  type ProcessStepDetails,
   type QualityDetails,
-  type TransportationDetails,
   type Unit,
   type User,
 } from '@prisma/client';
 import {
   AddressSeed,
-  BatchDetailsSeed,
   BatchRelationBottlingProductionSeed,
   BatchRelationPowerHydrogenSeed,
   BatchRelationTransportationBottlingSeed,
@@ -36,17 +28,12 @@ import {
   BatchSeed,
   CompanySeed,
   DocumentSeed,
-  HydrogenProductionUnitSeed,
-  HydrogenStorageUnitSeed,
-  PowerProductionTypeSeed,
-  PowerProductionUnitSeed,
   PowerPurchaseAgreementDecisionSeed,
   PowerPurchaseAgreementSeed,
-  ProcessStepDetailsSeed,
   ProcessStepSeed,
   QualityDetailsSeed,
-  TransportationDetailsSeed,
   UnitSeed,
+  UnitSpecificationSeed,
   UserSeed,
 } from './data';
 import { Data, importData } from './data-importer';
@@ -71,29 +58,14 @@ export async function seedDatabase() {
       createRecord: (data) => prisma.user.create({ data: data as User }),
     },
     {
+      name: 'unitSpecifications',
+      records: UnitSpecificationSeed,
+      createRecord: (data: any) => prisma.unitSpecification.create({ data }),
+    },
+    {
       name: 'unit',
       records: UnitSeed,
       createRecord: (data) => prisma.unit.create({ data: data as Unit }),
-    },
-    {
-      name: 'powerProductionType',
-      records: PowerProductionTypeSeed,
-      createRecord: (data) => prisma.powerProductionType.create({ data: data as PowerProductionType }),
-    },
-    {
-      name: 'powerProductionUnit',
-      records: PowerProductionUnitSeed,
-      createRecord: (data) => prisma.powerProductionUnit.create({ data: data as PowerProductionUnit }),
-    },
-    {
-      name: 'hydrogenStorageUnit',
-      records: HydrogenStorageUnitSeed,
-      createRecord: (data) => prisma.hydrogenStorageUnit.create({ data: data as HydrogenStorageUnit }),
-    },
-    {
-      name: 'hydrogenProductionUnit',
-      records: HydrogenProductionUnitSeed,
-      createRecord: (data) => prisma.hydrogenProductionUnit.create({ data: data as HydrogenProductionUnit }),
     },
     {
       name: 'batch',
@@ -145,11 +117,6 @@ export async function seedDatabase() {
       },
     },
     {
-      name: 'batchDetails',
-      records: BatchDetailsSeed,
-      createRecord: (data) => prisma.batchDetails.create({ data: data as BatchDetails }),
-    },
-    {
       name: 'qualityDetails',
       records: QualityDetailsSeed,
       createRecord: (data) => prisma.qualityDetails.create({ data: data as QualityDetails }),
@@ -158,16 +125,6 @@ export async function seedDatabase() {
       name: 'processStep',
       records: ProcessStepSeed,
       createRecord: (data) => prisma.processStep.create({ data: data as ProcessStep }),
-    },
-    {
-      name: 'processStepDetails',
-      records: ProcessStepDetailsSeed,
-      createRecord: (data) => prisma.processStepDetails.create({ data: data as ProcessStepDetails }),
-    },
-    {
-      name: 'transportationDetails',
-      records: TransportationDetailsSeed,
-      createRecord: (data) => prisma.transportationDetails.create({ data: data as TransportationDetails }),
     },
     {
       name: 'document',

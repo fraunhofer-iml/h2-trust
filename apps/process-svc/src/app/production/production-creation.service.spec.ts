@@ -8,7 +8,7 @@
 
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigurationService } from '@h2-trust/configuration';
-import { ConcreteUnitEntity, CreateProductionEntity } from '@h2-trust/contracts/entities';
+import { CreateProductionEntity, UnitEntity } from '@h2-trust/contracts/entities';
 import {
   BatchEntityFixture,
   HydrogenProductionUnitEntityFixture,
@@ -120,7 +120,7 @@ describe('ProductionCreationService', () => {
         'hydrogen-owner-1',
         24,
       );
-      const givenProductionUnitsForId = new Map<string, ConcreteUnitEntity>([
+      const givenProductionUnitsForId = new Map<string, UnitEntity>([
         ['power-unit-1', PowerProductionUnitEntityFixture.create({ id: 'power-unit-1' })],
         ['hydrogen-unit-1', HydrogenProductionUnitEntityFixture.create({ id: 'hydrogen-unit-1' })],
       ]);
@@ -284,7 +284,7 @@ describe('ProductionCreationService', () => {
         ownerIdOfHydrogenProductionUnit: 'hydrogen-owner-1',
         waterConsumptionLitersPerHour: 20,
       };
-      const givenProductionUnitsForId = new Map<string, ConcreteUnitEntity>([
+      const givenProductionUnitsForId = new Map<string, UnitEntity>([
         ['power-unit-1', PowerProductionUnitEntityFixture.create({ id: 'power-unit-1' })],
         ['hydrogen-unit-1', HydrogenProductionUnitEntityFixture.create({ id: 'hydrogen-unit-1' })],
       ]);

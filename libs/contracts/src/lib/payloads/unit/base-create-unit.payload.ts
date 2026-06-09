@@ -10,14 +10,10 @@ import { Type } from 'class-transformer';
 import { IsDate, IsNotEmpty, IsOptional, IsString, ValidateNested } from 'class-validator';
 import { AddressPayload } from '../common';
 
-export abstract class BaseCreateUnitPayload {
+export class BaseCreateUnitPayload {
   @IsString()
   @IsNotEmpty()
   name: string;
-
-  @IsString()
-  @IsNotEmpty()
-  mastrNumber: string;
 
   @IsString()
   @IsNotEmpty()
@@ -65,9 +61,8 @@ export abstract class BaseCreateUnitPayload {
   @IsOptional()
   requesterCompanyId?: string;
 
-  protected constructor(
+  constructor(
     name: string,
-    mastrNumber: string,
     commissionedOn: Date,
     address: AddressPayload,
     ownerId: string,
@@ -80,7 +75,6 @@ export abstract class BaseCreateUnitPayload {
     id?: string,
   ) {
     this.name = name;
-    this.mastrNumber = mastrNumber;
     this.commissionedOn = commissionedOn;
     this.address = address;
     this.ownerId = ownerId;

@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { HydrogenStorageUnitEntity } from '@h2-trust/contracts/entities';
+import { UnitEntity } from '@h2-trust/contracts/entities';
 import { HydrogenStorageType, UnitType } from '@h2-trust/domain';
 import { AddressDto } from '../address';
 import { CompanyBaseDto } from '../company';
@@ -17,13 +17,11 @@ import { UnitOwnerDto } from './unit-owner.dto';
 export class HydrogenStorageUnitDto extends BaseUnitDto {
   storageType: HydrogenStorageType;
   capacity: number;
-  pressure: number;
   filling: FillingDto[];
 
   constructor(
     id: string,
     name: string,
-    mastrNumber: string,
     manufacturer: string,
     modelType: string,
     serialNumber: string,
@@ -32,7 +30,6 @@ export class HydrogenStorageUnitDto extends BaseUnitDto {
     address: AddressDto,
     capacity: number,
     filling: FillingDto[],
-    pressure: number,
     storageType: HydrogenStorageType,
     unitType: UnitType,
     modelNumber: string,
@@ -43,7 +40,6 @@ export class HydrogenStorageUnitDto extends BaseUnitDto {
     super(
       id,
       name,
-      mastrNumber,
       manufacturer,
       modelType,
       serialNumber,
@@ -58,18 +54,16 @@ export class HydrogenStorageUnitDto extends BaseUnitDto {
     );
     this.capacity = capacity;
     this.filling = filling;
-    this.pressure = pressure;
     this.storageType = storageType;
   }
 
-  static override fromEntity(unit: HydrogenStorageUnitEntity): HydrogenStorageUnitDto {
+  static override fromEntity(unit: UnitEntity): HydrogenStorageUnitDto {
     return {
       ...BaseUnitDto.fromEntity(unit),
-      storageType: unit.type,
-      capacity: unit.capacity,
-      pressure: unit.pressure,
+      storageType: unit.specification.type as HydrogenStorageType,
+      capacity: unit.specification.capacity ?? 0,
       filling:
-        unit.filling?.map((filling) => ({
+        unit.specification.filling?.map((filling) => ({
           id: '',
           amount: filling.amount,
         })) ?? [],

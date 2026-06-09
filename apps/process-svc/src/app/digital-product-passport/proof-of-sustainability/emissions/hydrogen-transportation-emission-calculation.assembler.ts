@@ -11,6 +11,7 @@ import {
   ProofOfSustainabilityEmissionCalculationEntity,
   ProofOfSustainabilityEmissionEntity,
   ProvenanceEntity,
+  UnitEntity,
 } from '@h2-trust/contracts/entities';
 import {
   CalculationTopic,
@@ -19,11 +20,12 @@ import {
   FuelType,
   MeasurementUnit,
   ProcessType,
-  TransportMode,
+  TransportType,
+  UnitType,
 } from '@h2-trust/domain';
 import { InternalException } from '@h2-trust/exceptions';
 import { getFuelType } from '@h2-trust/strings';
-import { assertDefined } from '@h2-trust/utils';
+import { assertDefined, assertValidEnum } from '@h2-trust/utils';
 import { ProofOfSustainabilityEmissionAssembler } from '../proof-of-sustainability-assembler.interface';
 
 function assemblePipelineEmissionCalculation(): ProofOfSustainabilityEmissionCalculationEntity {
@@ -98,16 +100,27 @@ export function assembleHydrogenTransportationEmissionCalculation(
     );
   }
 
-  const transportMode: string = hydrogenTransportation.transportationDetails?.transportMode;
+  if (hydrogenTransportation?.executedBy.unitType !== UnitType.TRANSPORTATION) {
+    throw new InternalException(
+      `Invalid unit type [${hydrogenTransportation?.executedBy.unitType}] for hydrogen transportation emission calculation`,
+    );
+  }
+
+  const transportUnit: UnitEntity = hydrogenTransportation.executedBy;
+
+  assertValidEnum(transportUnit.specification.type, TransportType, 'TransportType');
+  assertValidEnum(transportUnit.specification.fuelType, FuelType, 'FuelType');
+
+  const transportMode: string = transportUnit?.specification?.type;
 
   switch (transportMode) {
-    case TransportMode.PIPELINE:
+    case TransportType.PIPELINE:
       return assemblePipelineEmissionCalculation();
-    case TransportMode.TRAILER:
+    case TransportType.TRAILER:
       return assembleTrailerEmissionCalculation(
         hydrogenTransportation.batch.amount,
-        hydrogenTransportation.transportationDetails.fuelType,
-        hydrogenTransportation.transportationDetails.distance,
+        transportUnit.specification?.fuelType,
+        hydrogenTransportation.batch?.qualityDetails?.distance,
       );
     default:
       throw new InternalException(

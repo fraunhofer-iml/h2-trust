@@ -7,7 +7,6 @@
  */
 
 export * from './batch.seed';
-export * from './batch-details.seed';
 export * from './batch-relation.seed';
 export * from './hydrogen-bottling-batch.seed';
 export * from './hydrogen-production-batch.seed';

@@ -8,19 +8,14 @@
 
 import { Prisma } from '@prisma/client';
 import { batchFlatQueryArgs } from '../batch/batch.flat.query-args';
-import { baseUnitFlatQueryArgs } from '../unit/unit.flat.query-args';
+import { unitFlatQueryArgs } from '../unit/unit.flat.query-args';
 import { userFlatQueryArgs } from '../user/user.flat.query-args';
 
 export const processStepNestedQueryArgs = Prisma.validator<Prisma.ProcessStepDefaultArgs>()({
   include: {
     batch: batchFlatQueryArgs,
-    executedBy: baseUnitFlatQueryArgs,
+    executedBy: unitFlatQueryArgs,
     recordedBy: userFlatQueryArgs,
     documents: true,
-    processStepDetails: {
-      include: {
-        transportationDetails: true,
-      },
-    },
   },
 });

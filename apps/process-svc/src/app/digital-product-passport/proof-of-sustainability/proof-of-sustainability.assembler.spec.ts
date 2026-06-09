@@ -6,13 +6,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import {
-  HydrogenProductionUnitEntity,
-  PowerProductionUnitEntity,
-  ProductionChainEntity,
-  ProvenanceEntity,
-} from '@h2-trust/contracts/entities';
-import { ProcessStepEntityFixture, TransportationDetailsEntityFixture } from '@h2-trust/contracts/entities/fixtures';
+import { ProductionChainEntity, ProvenanceEntity } from '@h2-trust/contracts/entities';
+import { ProcessStepEntityFixture } from '@h2-trust/contracts/entities/fixtures';
 import { CalculationTopic } from '@h2-trust/domain';
 import { assembleProofOfSustainability } from './proof-of-sustainability.assembler';
 
@@ -23,9 +18,8 @@ describe('ProofOfSustainabilityAssembler', () => {
     const givenWaterConsumption = ProcessStepEntityFixture.createWaterConsumption();
     const givenHydrogenProduction = ProcessStepEntityFixture.createHydrogenProduction();
     const givenHydrogenBottling = ProcessStepEntityFixture.createHydrogenBottling();
-    const givenHydrogenTransportation = ProcessStepEntityFixture.createHydrogenTransportation({
-      transportationDetails: TransportationDetailsEntityFixture.createTrailer(),
-    });
+    const givenHydrogenTransportation = ProcessStepEntityFixture.createHydrogenTransportation();
+
     const givenProvenance = new ProvenanceEntity(
       givenHydrogenTransportation,
       [
@@ -34,8 +28,8 @@ describe('ProofOfSustainabilityAssembler', () => {
           givenHydrogenProduction,
           givenPowerProduction,
           givenWaterConsumption,
-          givenPowerProduction.executedBy as PowerProductionUnitEntity,
-          givenWaterConsumption.executedBy as HydrogenProductionUnitEntity,
+          givenPowerProduction.executedBy,
+          givenWaterConsumption.executedBy,
         ),
       ],
       givenHydrogenBottling,

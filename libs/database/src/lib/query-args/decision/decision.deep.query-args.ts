@@ -7,13 +7,13 @@
  */
 
 import { Prisma } from '@prisma/client';
-import { powerProductionUnitDeepQueryArgs } from '../unit';
+import { unitDeepQueryArgs } from '../unit';
 import { userDeepQueryArgs } from '../user';
 
 export const powerPurchaseAgreementDecisionDeepQueryArgs =
   Prisma.validator<Prisma.PowerPurchaseAgreementDecisionDefaultArgs>()({
     include: {
       decidingUser: userDeepQueryArgs,
-      grantedPowerProductionUnit: powerProductionUnitDeepQueryArgs,
+      grantedPowerProductionUnit: unitDeepQueryArgs,
     },
   });

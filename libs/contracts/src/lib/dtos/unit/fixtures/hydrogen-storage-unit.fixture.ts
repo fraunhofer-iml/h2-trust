@@ -16,7 +16,6 @@ export const HydrogenStorageUnitDtoFixture = {
     ...BaseUnitDtoFixture.create({
       id: overrides.id,
       name: overrides.name,
-      mastrNumber: overrides.mastrNumber,
       manufacturer: overrides.manufacturer,
       modelType: overrides.modelType,
       modelNumber: overrides.modelNumber,
@@ -31,7 +30,6 @@ export const HydrogenStorageUnitDtoFixture = {
     }),
     storageType: overrides.storageType ?? HydrogenStorageType.COMPRESSED_GASEOUS_HYDROGEN,
     capacity: overrides.capacity ?? 100,
-    pressure: overrides.pressure ?? 30,
     filling: overrides.filling ?? [FillingDtoFixture.create()],
   }),
 } as const;

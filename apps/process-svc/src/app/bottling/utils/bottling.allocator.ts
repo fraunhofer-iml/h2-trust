@@ -167,9 +167,6 @@ function assembleHydrogenProductionProcessStepForRemainingAmount(
       owner: {
         id: predecessorProcessStep.batch.owner.id,
       },
-      hydrogenStorageUnit: {
-        id: predecessorProcessStep.batch.hydrogenStorageUnit.id,
-      },
     } as BatchEntity,
   } as ProcessStepEntity;
 }

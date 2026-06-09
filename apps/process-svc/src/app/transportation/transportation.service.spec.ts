@@ -9,7 +9,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { BatchEntityFixture, ProcessStepEntityFixture } from '@h2-trust/contracts/entities/fixtures';
 import { CreateHydrogenTransportationPayload } from '@h2-trust/contracts/payloads';
-import { BatchType, FuelType, ProcessType, TransportMode } from '@h2-trust/domain';
+import { BatchType, FuelType, ProcessType, TransportType } from '@h2-trust/domain';
 import { ProcessStepService } from '../process-step/process-step.service';
 import { TransportationService } from './transportation.service';
 
@@ -51,7 +51,7 @@ describe('TransportationService', () => {
       const givenPayload = new CreateHydrogenTransportationPayload(
         givenProcessStep,
         givenPredecessorBatch,
-        TransportMode.TRAILER,
+        TransportType.TRAILER,
         100,
         FuelType.DIESEL,
       );
@@ -73,11 +73,9 @@ describe('TransportationService', () => {
             ...givenProcessStep.batch,
             type: BatchType.HYDROGEN,
             predecessors: [givenPredecessorBatch],
-          }),
-          transportationDetails: expect.objectContaining({
-            distance: givenPayload.distance,
-            transportMode: givenPayload.transportMode,
-            fuelType: givenPayload.fuelType,
+            qualityDetails: expect.objectContaining({
+              distance: givenPayload.distance,
+            }),
           }),
         }),
       );
@@ -91,8 +89,8 @@ describe('TransportationService', () => {
       const givenPayload = new CreateHydrogenTransportationPayload(
         givenProcessStep,
         givenPredecessorBatch,
-        TransportMode.PIPELINE,
-        undefined,
+        TransportType.PIPELINE,
+        10,
         undefined,
       );
 
@@ -113,11 +111,9 @@ describe('TransportationService', () => {
             ...givenProcessStep.batch,
             type: BatchType.HYDROGEN,
             predecessors: [givenPredecessorBatch],
-          }),
-          transportationDetails: expect.objectContaining({
-            distance: 0,
-            transportMode: givenPayload.transportMode,
-            fuelType: undefined,
+            qualityDetails: expect.objectContaining({
+              distance: givenPayload.distance,
+            }),
           }),
         }),
       );
@@ -131,7 +127,7 @@ describe('TransportationService', () => {
       const givenPayload = new CreateHydrogenTransportationPayload(
         givenProcessStep,
         givenPredecessorBatch,
-        TransportMode.TRAILER,
+        TransportType.TRAILER,
         undefined,
         FuelType.DIESEL,
       );
@@ -139,7 +135,7 @@ describe('TransportationService', () => {
       // act & assert
       const actualResult = service.createHydrogenTransportationProcessStep(givenPayload);
 
-      await expect(actualResult).rejects.toThrow(`Distance is required for transport mode [${TransportMode.TRAILER}].`);
+      await expect(actualResult).rejects.toThrow(`Distance is required for transport mode [${TransportType.TRAILER}].`);
       expect(processStepServiceMock.setBatchesInactive).not.toHaveBeenCalled();
       expect(processStepServiceMock.createProcessStep).not.toHaveBeenCalled();
     });
@@ -151,7 +147,7 @@ describe('TransportationService', () => {
       const givenPayload = new CreateHydrogenTransportationPayload(
         givenProcessStep,
         givenPredecessorBatch,
-        TransportMode.TRAILER,
+        TransportType.TRAILER,
         100,
         undefined,
       );
@@ -160,7 +156,7 @@ describe('TransportationService', () => {
       const actualResult = service.createHydrogenTransportationProcessStep(givenPayload);
 
       await expect(actualResult).rejects.toThrow(
-        `Fuel type is required for transport mode [${TransportMode.TRAILER}].`,
+        `Fuel type is required for transport mode [${TransportType.TRAILER}].`,
       );
       expect(processStepServiceMock.setBatchesInactive).not.toHaveBeenCalled();
       expect(processStepServiceMock.createProcessStep).not.toHaveBeenCalled();
@@ -173,7 +169,7 @@ describe('TransportationService', () => {
       const givenPayload = new CreateHydrogenTransportationPayload(
         givenProcessStep,
         givenPredecessorBatch,
-        'INVALID' as TransportMode,
+        'INVALID' as TransportType,
         100,
         FuelType.DIESEL,
       );
@@ -193,7 +189,7 @@ describe('TransportationService', () => {
       const givenPayload = new CreateHydrogenTransportationPayload(
         givenProcessStep,
         givenPredecessorBatch,
-        TransportMode.TRAILER,
+        TransportType.TRAILER,
         100,
         FuelType.DIESEL,
       );
@@ -216,7 +212,7 @@ describe('TransportationService', () => {
       const givenPayload = new CreateHydrogenTransportationPayload(
         givenProcessStep,
         givenPredecessorBatch,
-        TransportMode.TRAILER,
+        TransportType.TRAILER,
         100,
         FuelType.DIESEL,
       );
@@ -238,11 +234,9 @@ describe('TransportationService', () => {
             ...givenProcessStep.batch,
             type: BatchType.HYDROGEN,
             predecessors: [givenPredecessorBatch],
-          }),
-          transportationDetails: expect.objectContaining({
-            distance: givenPayload.distance,
-            transportMode: givenPayload.transportMode,
-            fuelType: givenPayload.fuelType,
+            qualityDetails: expect.objectContaining({
+              distance: givenPayload.distance,
+            }),
           }),
         }),
       );

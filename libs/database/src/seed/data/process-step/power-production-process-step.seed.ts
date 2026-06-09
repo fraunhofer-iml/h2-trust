@@ -10,7 +10,7 @@ import { ProcessStep } from '@prisma/client';
 import { ProcessType } from '@h2-trust/domain';
 import { auditTimestamp } from '../audit-timestamp.constant';
 import { PowerProductionBatchSeed } from '../batch';
-import { PowerProductionUnitSeed } from '../unit';
+import { UnitSeed } from '../unit';
 import { UserSeed } from '../user.seed';
 
 export const PowerProductionProcessStepSeed: readonly ProcessStep[] = Object.freeze([
@@ -23,7 +23,7 @@ export const PowerProductionProcessStepSeed: readonly ProcessStep[] = Object.fre
     endedAt: new Date('2025-10-01T01:06:09.000Z'),
     batchId: PowerProductionBatchSeed[0].id,
     userId: UserSeed[1].id,
-    unitId: PowerProductionUnitSeed[0].id,
+    unitId: UnitSeed[0].id,
   },
   {
     id: 'process-step-power-production-1',
@@ -34,7 +34,7 @@ export const PowerProductionProcessStepSeed: readonly ProcessStep[] = Object.fre
     endedAt: new Date('2025-10-01T01:33:08.000Z'),
     batchId: PowerProductionBatchSeed[1].id,
     userId: UserSeed[1].id,
-    unitId: PowerProductionUnitSeed[0].id,
+    unitId: UnitSeed[0].id,
   },
   {
     id: 'process-step-power-production-2',
@@ -45,7 +45,7 @@ export const PowerProductionProcessStepSeed: readonly ProcessStep[] = Object.fre
     endedAt: new Date('2025-10-01T08:59:01.000Z'),
     batchId: PowerProductionBatchSeed[2].id,
     userId: UserSeed[1].id,
-    unitId: PowerProductionUnitSeed[1].id,
+    unitId: UnitSeed[1].id,
   },
   {
     id: 'process-step-power-production-3',
@@ -56,7 +56,7 @@ export const PowerProductionProcessStepSeed: readonly ProcessStep[] = Object.fre
     endedAt: new Date('2025-10-01T11:12:00.000Z'),
     batchId: PowerProductionBatchSeed[3].id,
     userId: UserSeed[1].id,
-    unitId: PowerProductionUnitSeed[1].id,
+    unitId: UnitSeed[1].id,
   },
   {
     id: 'process-step-power-production-4',
@@ -67,7 +67,7 @@ export const PowerProductionProcessStepSeed: readonly ProcessStep[] = Object.fre
     endedAt: new Date('2025-10-01T19:56:33.000Z'),
     batchId: PowerProductionBatchSeed[4].id,
     userId: UserSeed[1].id,
-    unitId: PowerProductionUnitSeed[2].id,
+    unitId: UnitSeed[2].id,
   },
   {
     id: 'process-step-power-production-5',
@@ -78,7 +78,7 @@ export const PowerProductionProcessStepSeed: readonly ProcessStep[] = Object.fre
     endedAt: new Date('2025-10-02T10:14:59.000Z'),
     batchId: PowerProductionBatchSeed[5].id,
     userId: UserSeed[1].id,
-    unitId: PowerProductionUnitSeed[2].id,
+    unitId: UnitSeed[2].id,
   },
   {
     id: 'process-step-power-production-6',
@@ -89,7 +89,7 @@ export const PowerProductionProcessStepSeed: readonly ProcessStep[] = Object.fre
     endedAt: new Date('2025-10-02T15:02:03.000Z'),
     batchId: PowerProductionBatchSeed[6].id,
     userId: UserSeed[1].id,
-    unitId: PowerProductionUnitSeed[3].id,
+    unitId: UnitSeed[3].id,
   },
   {
     id: 'process-step-power-production-7',
@@ -100,7 +100,7 @@ export const PowerProductionProcessStepSeed: readonly ProcessStep[] = Object.fre
     endedAt: new Date('2025-10-03T13:09:42.000Z'),
     batchId: PowerProductionBatchSeed[7].id,
     userId: UserSeed[1].id,
-    unitId: PowerProductionUnitSeed[3].id,
+    unitId: UnitSeed[3].id,
   },
   {
     id: 'process-step-power-production-8',
@@ -111,7 +111,7 @@ export const PowerProductionProcessStepSeed: readonly ProcessStep[] = Object.fre
     endedAt: new Date('2025-10-03T13:13:49.000Z'),
     batchId: PowerProductionBatchSeed[8].id,
     userId: UserSeed[1].id,
-    unitId: PowerProductionUnitSeed[3].id,
+    unitId: UnitSeed[3].id,
   },
   {
     id: 'process-step-power-production-9',
@@ -122,6 +122,6 @@ export const PowerProductionProcessStepSeed: readonly ProcessStep[] = Object.fre
     endedAt: new Date('2025-10-03T17:09:48.000Z'),
     batchId: PowerProductionBatchSeed[9].id,
     userId: UserSeed[1].id,
-    unitId: PowerProductionUnitSeed[2].id,
+    unitId: UnitSeed[2].id,
   },
 ]);

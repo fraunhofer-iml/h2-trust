@@ -6,6 +6,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { PowerProductionType } from '@prisma/client';
+import { BaseCreateUnitPayload } from './base-create-unit.payload';
 
-export type PowerProductionTypeDbType = PowerProductionType;
+export class CreateHydrogenCompressorUnitPayload extends BaseCreateUnitPayload {}

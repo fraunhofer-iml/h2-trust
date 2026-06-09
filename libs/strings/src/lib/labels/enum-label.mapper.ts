@@ -14,8 +14,8 @@ import {
   EnergySource,
   FuelType,
   GridLevel,
-  HydrogenProductionMethod,
   HydrogenProductionTechnology,
+  HydrogenProductionType,
   HydrogenStorageType,
   MeasurementUnit,
   PowerProductionType,
@@ -40,8 +40,8 @@ const GRID_LEVEL_LABELS: Record<GridLevel, string> = {
   [GridLevel.LOW_VOLTAGE]: 'Low Voltage',
 };
 
-const HYDROGEN_PRODUCTION_METHOD_LABELS: Record<HydrogenProductionMethod, string> = {
-  [HydrogenProductionMethod.ELECTROLYSIS]: 'Electrolysis',
+const HYDROGEN_PRODUCTION_METHOD_LABELS: Record<HydrogenProductionType, string> = {
+  [HydrogenProductionType.ELECTROLYSIS]: 'Electrolysis',
 };
 
 const HYDROGEN_PRODUCTION_TECHNOLOGY_LABELS: Record<HydrogenProductionTechnology, string> = {
@@ -133,6 +133,7 @@ const PROCESS_TYPE_LABELS: Record<ProcessType, string> = {
   [ProcessType.HYDROGEN_TRANSPORTATION]: 'Hydrogen Transportation',
   [ProcessType.POWER_PRODUCTION]: 'Power Production',
   [ProcessType.WATER_CONSUMPTION]: 'Water Consumption',
+  [ProcessType.HYDROGEN_STORAGE]: 'Hydrogen Storage',
 };
 
 export function getPowerProductionType(value: PowerProductionType): string {
@@ -143,7 +144,7 @@ export function getGridLevel(value: GridLevel): string {
   return getLabel(value, GRID_LEVEL_LABELS);
 }
 
-export function getHydrogenProductionMethod(value: HydrogenProductionMethod): string {
+export function getHydrogenProductionType(value: HydrogenProductionType): string {
   return getLabel(value, HYDROGEN_PRODUCTION_METHOD_LABELS);
 }
 

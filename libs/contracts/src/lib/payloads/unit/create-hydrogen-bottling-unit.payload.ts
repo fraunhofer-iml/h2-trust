@@ -6,6 +6,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { HydrogenProductionUnitEntity, HydrogenStorageUnitEntity, PowerProductionUnitEntity } from '..';
+import { BaseCreateUnitPayload } from './base-create-unit.payload';
 
-export type ConcreteUnitEntity = PowerProductionUnitEntity | HydrogenProductionUnitEntity | HydrogenStorageUnitEntity;
+export class CreateHydrogenBottlingUnitPayload extends BaseCreateUnitPayload {}

@@ -14,6 +14,5 @@ export const processStepFlatQueryArgs = Prisma.validator<Prisma.ProcessStepDefau
     executedBy: true,
     recordedBy: true,
     documents: true,
-    processStepDetails: true,
   },
 });

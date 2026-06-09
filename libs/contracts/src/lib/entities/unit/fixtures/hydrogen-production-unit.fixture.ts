@@ -6,17 +6,16 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { HydrogenProductionUnitEntity } from '@h2-trust/contracts/entities';
-import { BiddingZone, HydrogenProductionMethod, HydrogenProductionTechnology, UnitType } from '@h2-trust/domain';
+import { BiddingZone, HydrogenProductionTechnology, HydrogenProductionType, UnitType } from '@h2-trust/domain';
 import { AddressEntityFixture } from '../../address/fixtures/address.fixture';
 import { CompanyEntityFixture } from '../../company/fixtures/company.fixture';
+import { UnitEntity } from '../unit.entity';
 
 export const HydrogenProductionUnitEntityFixture = {
-  create: (overrides: Partial<HydrogenProductionUnitEntity> = {}): HydrogenProductionUnitEntity =>
+  create: (overrides: Partial<UnitEntity> = {}): UnitEntity =>
     ({
       id: overrides.id ?? 'hydrogen-production-unit-1',
       name: overrides.name ?? 'Hydrogen Production Unit',
-      mastrNumber: overrides.mastrNumber ?? 'MASTR-HYDROGEN-002',
       manufacturer: overrides.manufacturer ?? 'Hydrogen Manufacturer',
       modelType: overrides.modelType ?? 'MT-HYDROGEN-002',
       modelNumber: overrides.modelNumber ?? 'MN-HYDROGEN-002',
@@ -27,11 +26,14 @@ export const HydrogenProductionUnitEntityFixture = {
       owner: overrides.owner ?? { id: 'company-1' },
       operator: overrides.operator ?? CompanyEntityFixture.createHydrogenProducer(),
       unitType: overrides.unitType ?? UnitType.HYDROGEN_PRODUCTION,
-      ratedPower: overrides.ratedPower ?? 500,
-      pressure: overrides.pressure ?? 30,
-      method: overrides.method ?? HydrogenProductionMethod.ELECTROLYSIS,
-      technology: overrides.technology ?? HydrogenProductionTechnology.PEM,
-      biddingZone: overrides.biddingZone ?? BiddingZone.DE_LU,
-      waterConsumptionLitersPerHour: overrides.waterConsumptionLitersPerHour ?? 10,
-    }) as HydrogenProductionUnitEntity,
+      ratedPower: overrides.specification?.ratedPower ?? 500,
+      type: overrides.specification?.type ?? HydrogenProductionType.ELECTROLYSIS,
+      technology: overrides.specification?.technology ?? HydrogenProductionTechnology.PEM,
+      biddingZone: overrides.specification?.biddingZone ?? BiddingZone.DE_LU,
+      waterConsumptionLitersPerHour: overrides.specification?.waterConsumptionLitersPerHour ?? 10,
+      active: true,
+      specification: overrides.specification ?? {
+        id: 'specification-1',
+      },
+    }) as UnitEntity,
 } as const;

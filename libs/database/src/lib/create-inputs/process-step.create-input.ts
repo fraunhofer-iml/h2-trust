@@ -8,30 +8,9 @@
 
 import { Prisma } from '@prisma/client';
 import { ProcessStepEntity } from '@h2-trust/contracts/entities';
-import { BatchType, ProcessType } from '@h2-trust/domain';
-import { InternalException } from '@h2-trust/exceptions';
+import { BatchType } from '@h2-trust/domain';
 
 export function buildProcessStepCreateInput(processStep: ProcessStepEntity): Prisma.ProcessStepCreateInput {
-  const hydrogenStorageUnitId = processStep.batch.hydrogenStorageUnit?.id;
-
-  if (processStep.type === ProcessType.POWER_PRODUCTION && hydrogenStorageUnitId) {
-    throw new InternalException(
-      `Power production batch with amount [${processStep.batch.amount}] has a hydrogen storage unit [${hydrogenStorageUnitId}]`,
-    );
-  }
-
-  if (processStep.type === ProcessType.HYDROGEN_PRODUCTION && !hydrogenStorageUnitId) {
-    throw new InternalException(
-      `Hydrogen production batch with amount [${processStep.batch.amount}] has no hydrogen storage unit`,
-    );
-  }
-
-  if (processStep.type === ProcessType.HYDROGEN_BOTTLING && hydrogenStorageUnitId) {
-    throw new InternalException(
-      `Hydrogen bottling batch with amount [${processStep.batch.amount}] has a hydrogen storage unit [${hydrogenStorageUnitId}]`,
-    );
-  }
-
   const predecessors = processStep.batch.predecessors ?? [];
 
   return Prisma.validator<Prisma.ProcessStepCreateInput>()({
@@ -49,6 +28,7 @@ export function buildProcessStepCreateInput(processStep: ProcessStepEntity): Pri
                 create: {
                   rfnboType: processStep.batch.qualityDetails.rfnboType,
                   powerType: processStep.batch.qualityDetails.powerType,
+                  distance: processStep.batch.qualityDetails.distance,
                 },
               },
             },
@@ -66,13 +46,6 @@ export function buildProcessStepCreateInput(processStep: ProcessStepEntity): Pri
             return { id: batch.id };
           }),
         },
-        ...(hydrogenStorageUnitId && {
-          hydrogenStorageUnit: {
-            connect: {
-              id: hydrogenStorageUnitId,
-            },
-          },
-        }),
       },
     },
     recordedBy: {
@@ -85,18 +58,5 @@ export function buildProcessStepCreateInput(processStep: ProcessStepEntity): Pri
         id: processStep.executedBy?.id,
       },
     },
-    ...(processStep.transportationDetails && {
-      processStepDetails: {
-        create: {
-          transportationDetails: {
-            create: {
-              distance: processStep.transportationDetails.distance,
-              transportMode: processStep.transportationDetails.transportMode,
-              fuelType: processStep.transportationDetails.fuelType ?? null,
-            },
-          },
-        },
-      },
-    }),
   });
 }

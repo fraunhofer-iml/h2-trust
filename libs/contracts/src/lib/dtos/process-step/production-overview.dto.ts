@@ -54,7 +54,6 @@ export class ProductionOverviewDto {
       rfnboType: processStep.batch?.qualityDetails?.rfnboType,
       powerProducer: processStep.batch?.predecessors?.[0]?.owner?.name,
       powerConsumed: ProductionOverviewDto.determinePowerConsumed(processStep),
-      storageUnit: processStep.batch?.hydrogenStorageUnit?.name,
       // TODO: replace powerProductionUnit & powerType with actual values (DUHGW-271)
       powerProductionUnit: 'power-production-unit',
       powerType: processStep.batch?.qualityDetails?.powerType ?? PowerType.NOT_SPECIFIED,

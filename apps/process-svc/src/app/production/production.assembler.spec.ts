@@ -7,10 +7,10 @@
  */
 
 import {
-  ConcreteUnitEntity,
   CreateProductionEntity,
   ProcessStepEntity,
   QualityDetailsEntity,
+  UnitEntity,
 } from '@h2-trust/contracts/entities';
 import {
   BatchEntityFixture,
@@ -42,7 +42,7 @@ describe('ProductionAssembler', () => {
     60,
   );
 
-  const productionUnitsForId = new Map<string, ConcreteUnitEntity>([
+  const productionUnitsForId = new Map<string, UnitEntity>([
     ['power-unit-1', PowerProductionUnitEntityFixture.create({ id: 'power-unit-1' })],
     ['hydrogen-unit-1', HydrogenProductionUnitEntityFixture.create({ id: 'hydrogen-unit-1' })],
     ['storage-unit-1', HydrogenStorageUnitEntityFixture.create({ id: 'storage-unit-1' })],
@@ -82,7 +82,7 @@ describe('ProductionAssembler', () => {
     });
 
     it('should throw when the power production unit is missing', () => {
-      const givenUnitsWithoutPower = new Map<string, ConcreteUnitEntity>([
+      const givenUnitsWithoutPower = new Map<string, UnitEntity>([
         ['hydrogen-unit-1', HydrogenProductionUnitEntityFixture.create({ id: 'hydrogen-unit-1' })],
       ]);
 
@@ -117,7 +117,7 @@ describe('ProductionAssembler', () => {
             id: 'power-batch-1',
             processStepId: 'power-1',
             amount: 45,
-            qualityDetails: new QualityDetailsEntity('quality-1', undefined as never, PowerType.PARTLY_RENEWABLE),
+            qualityDetails: new QualityDetailsEntity('quality-1', undefined as never, PowerType.PARTLY_RENEWABLE, 0),
           }),
         }),
         ProcessStepEntityFixture.createPowerProduction({
@@ -128,7 +128,7 @@ describe('ProductionAssembler', () => {
             id: 'power-batch-2',
             processStepId: 'power-2',
             amount: 45,
-            qualityDetails: new QualityDetailsEntity('quality-2', undefined as never, PowerType.PARTLY_RENEWABLE),
+            qualityDetails: new QualityDetailsEntity('quality-2', undefined as never, PowerType.PARTLY_RENEWABLE, 0),
           }),
         }),
       ];
@@ -169,9 +169,7 @@ describe('ProductionAssembler', () => {
       expect(actualResult.every((processStep) => processStep.type === ProcessType.HYDROGEN_PRODUCTION)).toBe(true);
       expect(actualResult.every((processStep) => processStep.batch.type === BatchType.HYDROGEN)).toBe(true);
       expect(actualResult.every((processStep) => processStep.batch.active === true)).toBe(true);
-      expect(actualResult.every((processStep) => processStep.batch.hydrogenStorageUnit?.id === 'storage-unit-1')).toBe(
-        true,
-      );
+
       expect(actualResult.map((processStep) => processStep.batch.qualityDetails?.powerType)).toEqual([
         PowerType.PARTLY_RENEWABLE,
         PowerType.PARTLY_RENEWABLE,

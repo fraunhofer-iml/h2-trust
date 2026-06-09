@@ -12,14 +12,13 @@ import { firstValueFrom } from 'rxjs';
 import { BlockchainService, ProofEntry } from '@h2-trust/blockchain';
 import { FeatureFlagService } from '@h2-trust/configuration';
 import {
-  ConcreteUnitEntity,
   CreateProductionEntity,
   CsvDocumentEntity,
-  HydrogenProductionUnitEntity,
   PowerPurchaseAgreementEntity,
   ProcessStepEntity,
   ProductionStagingResultEntity,
   StagedProductionEntity,
+  UnitEntity,
 } from '@h2-trust/contracts/entities';
 import {
   FinalizeProductionsPayload,
@@ -37,7 +36,7 @@ import {
 import {
   CsvContentType,
   DefaultGridProvider,
-  EnergySource,
+  PowerProductionType,
   PowerPurchaseAgreementStatus,
   PowerType,
   StagingScope,
@@ -76,15 +75,13 @@ export class ProductionStagingService {
   private async getProductionUnits(
     productionUnitIds: string[],
     hydrogenStorageUnitId: string,
-  ): Promise<Map<string, ConcreteUnitEntity>> {
+  ): Promise<Map<string, UnitEntity>> {
     const unitIds: string[] = [...productionUnitIds, hydrogenStorageUnitId, this.defaultGridPowerUnitId];
-    const productionUnits: ConcreteUnitEntity[] = await firstValueFrom(
+    const productionUnits: UnitEntity[] = await firstValueFrom(
       this.generalSvc.send(UnitMessagePatterns.READ_MANY_BY_IDS, new ReadByIdsPayload(unitIds)),
     );
 
-    return new Map<string, ConcreteUnitEntity>(
-      productionUnits.map((productionUnit) => [productionUnit.id, productionUnit]),
-    );
+    return new Map<string, UnitEntity>(productionUnits.map((productionUnit) => [productionUnit.id, productionUnit]));
   }
 
   /**
@@ -114,21 +111,19 @@ export class ProductionStagingService {
 
     //get a map with all relevant units, that can be used without requesting it from the general-svc
     const stagedProductionUnitIds: string[] = stagedProductions.map((stagedProduction) => stagedProduction.unitId);
-    const productionUnitForId: Map<string, ConcreteUnitEntity> = await this.getProductionUnits(
+    const productionUnitForId: Map<string, UnitEntity> = await this.getProductionUnits(
       stagedProductionUnitIds,
       payload.storageUnitId,
     );
 
-    const hydrogenProductionUnit: HydrogenProductionUnitEntity = productionUnitForId.get(
-      stagedHydrogenProduction.unitId,
-    ) as HydrogenProductionUnitEntity;
+    const hydrogenProductionUnit: UnitEntity = productionUnitForId.get(stagedHydrogenProduction.unitId);
 
     //create and save the new process steps from the staged productions
     const createProductionEntity: CreateProductionEntity[] = this.getStagedProductionDistribution(
       stagedHydrogenProduction,
       stagedPowerProductions,
       payload.storageUnitId,
-      hydrogenProductionUnit.waterConsumptionLitersPerHour,
+      hydrogenProductionUnit.specification.waterConsumptionLitersPerHour,
       payload.recordedBy,
     );
 
@@ -298,7 +293,7 @@ export class ProductionStagingService {
       stagedHydrogenProduction.ownerId,
       partialWaterConsumption,
     );
-    return splitGridPowerProduction(gridPowerCreateEntity, EnergySource.GRID);
+    return splitGridPowerProduction(gridPowerCreateEntity, PowerProductionType.GRID);
   }
 
   /**

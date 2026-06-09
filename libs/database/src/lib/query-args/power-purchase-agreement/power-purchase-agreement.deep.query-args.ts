@@ -9,14 +9,14 @@
 import { Prisma } from '@prisma/client';
 import { companyNestedQueryArgs } from '../company/company.nested.query-args';
 import { powerPurchaseAgreementDecisionDeepQueryArgs } from '../decision';
-import { powerProductionUnitNestedQueryArgs } from '../unit/unit.nested.query-args';
+import { unitNestedQueryArgs } from '../unit';
 import { userDeepQueryArgs } from '../user';
 
 export const powerPurchaseAgreementDeepQueryArgs = Prisma.validator<Prisma.PowerPurchaseAgreementDefaultArgs>()({
   include: {
     requestedCompany: companyNestedQueryArgs,
     hydrogenProducer: companyNestedQueryArgs,
-    powerProductionUnit: powerProductionUnitNestedQueryArgs,
+    powerProductionUnit: unitNestedQueryArgs,
     requestingUser: userDeepQueryArgs,
     decision: powerPurchaseAgreementDecisionDeepQueryArgs,
   },

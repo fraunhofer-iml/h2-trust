@@ -9,9 +9,8 @@
 import { FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 import {
   BiddingZone,
-  GridLevel,
-  HydrogenProductionMethod,
   HydrogenProductionTechnology,
+  HydrogenProductionType,
   HydrogenStorageType,
   PowerProductionType,
   UnitType,
@@ -29,7 +28,6 @@ export type UnitFormGroup = {
   modelNumber: FormControl<string | null>;
   serialNumber: FormControl<string | null>;
   commissionedOn: FormControl<Date | null>;
-  mastrNumber: FormControl<string | null>;
   address: FormGroup<{
     street: FormControl<string | null>;
     postalCode: FormControl<string | null>;
@@ -42,24 +40,18 @@ export type UnitFormGroup = {
 export type HydrogenProductionFormGroup = {
   biddingZone: FormControl<BiddingZone | null>;
   ratedPower: FormControl<number | null>;
-  method: FormControl<HydrogenProductionMethod | null>;
+  method: FormControl<HydrogenProductionType | null>;
   technology: FormControl<HydrogenProductionTechnology | null>;
-  pressure: FormControl<number | null>;
   waterConsumptionLitersPerHour: FormControl<number | null>;
 };
 export type HydrogenStorageFormGroup = {
   capacity: FormControl<number | null>;
-  pressure: FormControl<number | null>;
   storageType: FormControl<HydrogenStorageType | null>;
 };
 
 export type PowerProductionFormGroup = {
   biddingZone: FormControl<BiddingZone | null>;
-  gridOperator: FormControl<string | null>;
-  gridLevel: FormControl<GridLevel | null>;
-  gridConnectionNumber: FormControl<string | null>;
   ratedPower: FormControl<number | null>;
-  electricityMeterNumber: FormControl<string | null>;
   powerProductionType: FormControl<PowerProductionType | null>;
   decommissioningPlannedOn: FormControl<Date | null>;
   financialSupportReceived: FormControl<boolean | null>;
@@ -77,7 +69,6 @@ export const newUnitForm = () =>
     modelNumber: new FormControl<string | null>(null, Validators.required),
     serialNumber: new FormControl<string | null>(null, Validators.required),
     commissionedOn: new FormControl<Date | null>(null, Validators.required),
-    mastrNumber: new FormControl<string | null>(null, Validators.required),
     address: new FormGroup<{
       street: FormControl<string | null>;
       postalCode: FormControl<string | null>;
@@ -98,22 +89,15 @@ export const newHydrogenStorageForm = () =>
     capacity: new FormControl<number | null>(null, {
       validators: [positiveNumberValidator, integerValidator],
     }),
-    pressure: new FormControl<number | null>(null, {
-      validators: [positiveNumberValidator],
-    }),
     storageType: new FormControl<HydrogenStorageType | null>(null, Validators.required),
   });
 
 export const newPowerProductionForm = () =>
   new FormGroup<PowerProductionFormGroup>({
     biddingZone: new FormControl<BiddingZone | null>(null, Validators.required),
-    gridOperator: new FormControl<string | null>(null, Validators.required),
-    gridLevel: new FormControl<GridLevel | null>(null, Validators.required),
-    gridConnectionNumber: new FormControl<string | null>(null, Validators.required),
     ratedPower: new FormControl<number | null>(null, {
       validators: [positiveNumberValidator],
     }),
-    electricityMeterNumber: new FormControl<string | null>(null, Validators.required),
     powerProductionType: new FormControl<PowerProductionType | null>(null, Validators.required),
     decommissioningPlannedOn: new FormControl<Date | null>(null, Validators.required),
     financialSupportReceived: new FormControl<boolean | null>(false),
@@ -125,11 +109,8 @@ export const newHydrogenProductionForm = () =>
     ratedPower: new FormControl<number | null>(null, {
       validators: [positiveNumberValidator],
     }),
-    method: new FormControl<HydrogenProductionMethod | null>(null, Validators.required),
+    method: new FormControl<HydrogenProductionType | null>(null, Validators.required),
     technology: new FormControl<HydrogenProductionTechnology | null>(null, Validators.required),
-    pressure: new FormControl<number | null>(null, {
-      validators: [positiveNumberValidator],
-    }),
     waterConsumptionLitersPerHour: new FormControl<number | null>(null, {
       validators: [positiveNumberValidator],
     }),

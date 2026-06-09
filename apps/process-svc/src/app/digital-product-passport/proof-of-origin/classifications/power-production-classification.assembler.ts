@@ -7,7 +7,6 @@
  */
 
 import {
-  PowerProductionUnitEntity,
   ProcessStepEntity,
   ProofOfOriginBatchEntity,
   ProofOfOriginEmissionEntity,
@@ -15,14 +14,15 @@ import {
   ProofOfOriginSubClassificationEntity,
   ProofOfSustainabilityEmissionCalculationEntity,
 } from '@h2-trust/contracts/entities';
-import { BatchType, EnergySource, PowerType, ProcessType } from '@h2-trust/domain';
+import { BatchType, PowerProductionType, PowerType, ProcessType } from '@h2-trust/domain';
+import { assertValidEnum } from '@h2-trust/utils';
 import { computePowerSupplyEmissionCalculations } from '../../proof-of-sustainability/emissions/power-production-emission-calculation.assembler';
 import { assembleSubClassification } from '../../util';
 
 function getPowerBatchEntities(
   powerProductionProcesses: ProcessStepEntity[],
   bottledKgHydrogen: number,
-  energySource: EnergySource,
+  powerProductionType: PowerProductionType,
 ): ProofOfOriginPowerBatchEntity[] {
   return powerProductionProcesses.map((powerProduction) => {
     const [powerSupplyEmission]: ProofOfSustainabilityEmissionCalculationEntity[] =
@@ -43,16 +43,17 @@ function getPowerBatchEntities(
       batchType: BatchType.POWER,
       producer: powerProduction.batch.owner.name,
       unitId: powerProduction.executedBy.id,
-      energySource: energySource,
+      powerProductionType: powerProductionType,
       accountingPeriodEnd: powerProduction.endedAt,
       powerType: powerType,
     };
   });
 }
 
-function getEnergySource(powerProduction: ProcessStepEntity): EnergySource {
-  const unit = powerProduction.executedBy as PowerProductionUnitEntity;
-  return unit.type?.energySource;
+function getPowerProductionType(powerProduction: ProcessStepEntity): PowerProductionType {
+  const unit = powerProduction.executedBy;
+  assertValidEnum(unit.specification.type, PowerProductionType, 'PowerProductionType');
+  return unit.specification.type;
 }
 
 function onlyPowerProduction(processSteps: ProcessStepEntity[]) {
@@ -67,13 +68,13 @@ export function buildPowerSupplySubClassifications(
     return [];
   }
 
-  const occurringEnergySources = [...new Set(powerProductions.map(getEnergySource))];
+  const occurringEnergySources = [...new Set(powerProductions.map(getPowerProductionType))];
 
   const subClassifications: ProofOfOriginSubClassificationEntity[] = [];
 
   for (const energySource of occurringEnergySources) {
     const powerProductionsByEnergySource: ProcessStepEntity[] = powerProductions.filter(
-      (powerProduction) => getEnergySource(powerProduction) === energySource,
+      (powerProduction) => getPowerProductionType(powerProduction) === energySource,
     );
 
     if (powerProductionsByEnergySource.length > 0) {

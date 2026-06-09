@@ -10,7 +10,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 import {
   HydrogenProductionUnitEntityFixture,
   HydrogenStorageUnitEntityFixture,
-  PowerProductionTypeEntityFixture,
   PowerProductionUnitEntityFixture,
 } from '@h2-trust/contracts/entities/fixtures';
 import { ReadByIdPayload, ReadByIdsPayload } from '@h2-trust/contracts/payloads';
@@ -20,7 +19,8 @@ import {
   CreatePowerProductionUnitPayloadFixture,
   UpdateUnitStatusPayloadFixture,
 } from '@h2-trust/contracts/payloads/fixtures';
-import { PowerProductionTypeRepository, UnitRepository } from '@h2-trust/database';
+import { UnitRepository } from '@h2-trust/database';
+import { UnitType } from '@h2-trust/domain';
 import { DomainException } from '@h2-trust/exceptions';
 import { UnitService } from './unit.service';
 
@@ -30,19 +30,11 @@ describe('UnitService', () => {
   const unitRepositoryMock = {
     findUnitById: jest.fn(),
     findUnitsByIds: jest.fn(),
-    findPowerProductionUnitsByOwnerId: jest.fn(),
-    findPowerProductionUnitsByIds: jest.fn(),
-    findHydrogenProductionUnitsByOwnerId: jest.fn(),
-    findHydrogenProductionUnitsByIds: jest.fn(),
-    findHydrogenStorageUnitsByOwnerId: jest.fn(),
+    findUnitsByOwnerIdAndType: jest.fn(),
     updateOrCreateHydrogenProductionUnit: jest.fn(),
     updateOrCreatePowerProductionUnit: jest.fn(),
     updateOrCreateHydrogenStorageUnit: jest.fn(),
     updateUnitStatus: jest.fn(),
-  };
-
-  const powerProductionTypeRepositoryMock = {
-    findPowerProductionTypes: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -52,10 +44,6 @@ describe('UnitService', () => {
         {
           provide: UnitRepository,
           useValue: unitRepositoryMock,
-        },
-        {
-          provide: PowerProductionTypeRepository,
-          useValue: powerProductionTypeRepositoryMock,
         },
       ],
     }).compile();
@@ -103,13 +91,16 @@ describe('UnitService', () => {
       // arrange
       const givenPayload = new ReadByIdPayload('company-1');
       const expectedUnits = [PowerProductionUnitEntityFixture.create()];
-      unitRepositoryMock.findPowerProductionUnitsByOwnerId.mockResolvedValue(expectedUnits);
+      unitRepositoryMock.findUnitsByOwnerIdAndType.mockResolvedValue(expectedUnits);
 
       // act
-      const actualResult = await service.readPowerProductionUnitsByOwnerId(givenPayload);
+      const actualResult = await service.readUnitsByOwnerIdAndType(givenPayload.id, UnitType.POWER_PRODUCTION);
 
       // assert
-      expect(unitRepositoryMock.findPowerProductionUnitsByOwnerId).toHaveBeenCalledWith(givenPayload.id);
+      expect(unitRepositoryMock.findUnitsByOwnerIdAndType).toHaveBeenCalledWith(
+        givenPayload.id,
+        UnitType.POWER_PRODUCTION,
+      );
       expect(actualResult).toEqual(expectedUnits);
     });
 
@@ -117,13 +108,13 @@ describe('UnitService', () => {
       // arrange
       const givenPayload = new ReadByIdsPayload(['unit-1']);
       const expectedUnits = [PowerProductionUnitEntityFixture.create({ id: 'unit-1' })];
-      unitRepositoryMock.findPowerProductionUnitsByIds.mockResolvedValue(expectedUnits);
+      unitRepositoryMock.findUnitsByIds.mockResolvedValue(expectedUnits);
 
       // act
-      const actualResult = await service.readPowerProductionUnitsByIds(givenPayload);
+      const actualResult = await service.readUnitsByIds(givenPayload.ids);
 
       // assert
-      expect(unitRepositoryMock.findPowerProductionUnitsByIds).toHaveBeenCalledWith(givenPayload.ids);
+      expect(unitRepositoryMock.findUnitsByIds).toHaveBeenCalledWith(givenPayload.ids);
       expect(actualResult).toEqual(expectedUnits);
     });
 
@@ -131,13 +122,16 @@ describe('UnitService', () => {
       // arrange
       const givenPayload = new ReadByIdPayload('company-1');
       const expectedUnits = [HydrogenProductionUnitEntityFixture.create()];
-      unitRepositoryMock.findHydrogenProductionUnitsByOwnerId.mockResolvedValue(expectedUnits);
+      unitRepositoryMock.findUnitsByOwnerIdAndType.mockResolvedValue(expectedUnits);
 
       // act
-      const actualResult = await service.readHydrogenProductionUnitsByOwnerId(givenPayload);
+      const actualResult = await service.readUnitsByOwnerIdAndType(givenPayload.id, UnitType.HYDROGEN_PRODUCTION);
 
       // assert
-      expect(unitRepositoryMock.findHydrogenProductionUnitsByOwnerId).toHaveBeenCalledWith(givenPayload.id);
+      expect(unitRepositoryMock.findUnitsByOwnerIdAndType).toHaveBeenCalledWith(
+        givenPayload.id,
+        UnitType.HYDROGEN_PRODUCTION,
+      );
       expect(actualResult).toEqual(expectedUnits);
     });
 
@@ -145,13 +139,13 @@ describe('UnitService', () => {
       // arrange
       const givenPayload = new ReadByIdsPayload(['unit-1']);
       const expectedUnits = [HydrogenProductionUnitEntityFixture.create({ id: 'unit-1' })];
-      unitRepositoryMock.findHydrogenProductionUnitsByIds.mockResolvedValue(expectedUnits);
+      unitRepositoryMock.findUnitsByIds.mockResolvedValue(expectedUnits);
 
       // act
-      const actualResult = await service.readHydrogenProductionUnitsByIds(givenPayload);
+      const actualResult = await service.readUnitsByIds(givenPayload.ids);
 
       // assert
-      expect(unitRepositoryMock.findHydrogenProductionUnitsByIds).toHaveBeenCalledWith(givenPayload.ids);
+      expect(unitRepositoryMock.findUnitsByIds).toHaveBeenCalledWith(givenPayload.ids);
       expect(actualResult).toEqual(expectedUnits);
     });
 
@@ -159,27 +153,17 @@ describe('UnitService', () => {
       // arrange
       const givenPayload = new ReadByIdPayload('company-1');
       const expectedUnits = [HydrogenStorageUnitEntityFixture.create()];
-      unitRepositoryMock.findHydrogenStorageUnitsByOwnerId.mockResolvedValue(expectedUnits);
+      unitRepositoryMock.findUnitsByOwnerIdAndType.mockResolvedValue(expectedUnits);
 
       // act
-      const actualResult = await service.readHydrogenStorageUnitsByOwnerId(givenPayload);
+      const actualResult = await service.readUnitsByOwnerIdAndType(givenPayload.id, UnitType.HYDROGEN_STORAGE);
 
       // assert
-      expect(unitRepositoryMock.findHydrogenStorageUnitsByOwnerId).toHaveBeenCalledWith(givenPayload.id);
+      expect(unitRepositoryMock.findUnitsByOwnerIdAndType).toHaveBeenCalledWith(
+        givenPayload.id,
+        UnitType.HYDROGEN_STORAGE,
+      );
       expect(actualResult).toEqual(expectedUnits);
-    });
-
-    it('should delegate readPowerProductionTypes to PowerProductionTypeRepository when reading power production types', async () => {
-      // arrange
-      const expectedPowerProductionTypes = [PowerProductionTypeEntityFixture.createGrid()];
-      powerProductionTypeRepositoryMock.findPowerProductionTypes.mockResolvedValue(expectedPowerProductionTypes);
-
-      // act
-      const actualResult = await service.readPowerProductionTypes();
-
-      // assert
-      expect(powerProductionTypeRepositoryMock.findPowerProductionTypes).toHaveBeenCalled();
-      expect(actualResult).toEqual(expectedPowerProductionTypes);
     });
   });
 
@@ -205,7 +189,6 @@ describe('UnitService', () => {
       givenPayload.requesterCompanyId = 'company-1';
       const givenExistingUnit = HydrogenProductionUnitEntityFixture.create({
         id: givenPayload.id,
-        owner: { id: 'company-1' },
       });
       const expectedUpdatedUnit = HydrogenProductionUnitEntityFixture.create({ id: givenPayload.id });
 
@@ -227,7 +210,6 @@ describe('UnitService', () => {
       givenPayload.requesterCompanyId = 'company-2';
       const givenExistingUnit = HydrogenProductionUnitEntityFixture.create({
         id: givenPayload.id,
-        owner: { id: 'company-1' },
       });
 
       unitRepositoryMock.findUnitById.mockResolvedValue(givenExistingUnit);
@@ -263,7 +245,6 @@ describe('UnitService', () => {
       givenPayload.requesterCompanyId = 'company-1';
       const givenExistingUnit = PowerProductionUnitEntityFixture.create({
         id: givenPayload.id,
-        owner: { id: 'company-1' },
       });
       const expectedUpdatedUnit = PowerProductionUnitEntityFixture.create({ id: givenPayload.id });
 
@@ -316,7 +297,6 @@ describe('UnitService', () => {
       givenPayload.requesterCompanyId = 'company-1';
       const givenExistingUnit = HydrogenStorageUnitEntityFixture.create({
         id: givenPayload.id,
-        owner: { id: 'company-1' },
       });
       const expectedUpdatedUnit = HydrogenStorageUnitEntityFixture.create({ id: givenPayload.id });
 
@@ -338,7 +318,6 @@ describe('UnitService', () => {
       givenPayload.requesterCompanyId = 'company-2';
       const givenExistingUnit = HydrogenStorageUnitEntityFixture.create({
         id: givenPayload.id,
-        owner: { id: 'company-1' },
       });
 
       unitRepositoryMock.findUnitById.mockResolvedValue(givenExistingUnit);
@@ -358,7 +337,6 @@ describe('UnitService', () => {
       const givenPayload = UpdateUnitStatusPayloadFixture.create({ id: 'unit-1', requesterCompanyId: 'company-1' });
       const givenExistingUnit = PowerProductionUnitEntityFixture.create({
         id: givenPayload.id,
-        owner: { id: 'company-1' },
       });
       const expectedUpdatedUnit = PowerProductionUnitEntityFixture.create({ id: givenPayload.id });
 
@@ -379,7 +357,6 @@ describe('UnitService', () => {
       const givenPayload = UpdateUnitStatusPayloadFixture.create({ id: 'unit-1', requesterCompanyId: 'company-2' });
       const givenExistingUnit = PowerProductionUnitEntityFixture.create({
         id: givenPayload.id,
-        owner: { id: 'company-1' },
       });
 
       unitRepositoryMock.findUnitById.mockResolvedValue(givenExistingUnit);

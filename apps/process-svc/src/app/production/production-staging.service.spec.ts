@@ -183,7 +183,9 @@ describe('ProductionStagingService', () => {
       );
       const givenHydrogenUnit = HydrogenProductionUnitEntityFixture.create({
         id: 'hydrogen-unit-1',
-        waterConsumptionLitersPerHour: 20,
+        specification: {
+          waterConsumptionLitersPerHour: 20,
+        },
       });
       const givenPowerUnit = PowerProductionUnitEntityFixture.create({ id: 'power-unit-1' });
       const givenStorageUnit = HydrogenStorageUnitEntityFixture.create({ id: givenPayload.storageUnitId });
@@ -291,7 +293,9 @@ describe('ProductionStagingService', () => {
       );
       const givenHydrogenUnit = HydrogenProductionUnitEntityFixture.create({
         id: 'hydrogen-unit-1',
-        waterConsumptionLitersPerHour: 20,
+        specification: {
+          waterConsumptionLitersPerHour: 20,
+        },
       });
       const givenPowerUnit = PowerProductionUnitEntityFixture.create({ id: 'power-unit-1' });
       const givenStorageUnit = HydrogenStorageUnitEntityFixture.create({ id: givenPayload.storageUnitId });
@@ -359,7 +363,9 @@ describe('ProductionStagingService', () => {
       );
       const givenHydrogenUnit = HydrogenProductionUnitEntityFixture.create({
         id: 'hydrogen-unit-1',
-        waterConsumptionLitersPerHour: 20,
+        specification: {
+          waterConsumptionLitersPerHour: 20,
+        },
       });
       const givenPowerUnit = PowerProductionUnitEntityFixture.create({ id: 'power-unit-1' });
       const givenStorageUnit = HydrogenStorageUnitEntityFixture.create({ id: givenPayload.storageUnitId });

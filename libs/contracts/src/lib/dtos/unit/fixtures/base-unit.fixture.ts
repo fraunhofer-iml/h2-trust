@@ -16,7 +16,6 @@ export const BaseUnitDtoFixture = {
   create: (overrides: Partial<BaseUnitDto> = {}): BaseUnitDto => ({
     id: overrides.id ?? 'unit-1',
     name: overrides.name ?? 'Fixture Unit',
-    mastrNumber: overrides.mastrNumber ?? 'MASTR-001',
     manufacturer: overrides.manufacturer ?? 'Fixture Manufacturer',
     modelType: overrides.modelType ?? 'Fixture Model Type',
     modelNumber: overrides.modelNumber ?? 'Fixture Model Number',

@@ -6,29 +6,23 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { PowerProductionUnitEntity } from '@h2-trust/contracts/entities';
-import { BiddingZone, GridLevel, UnitType } from '@h2-trust/domain';
+import { UnitEntity } from '@h2-trust/contracts/entities';
+import { BiddingZone, PowerProductionType, UnitType } from '@h2-trust/domain';
 import { AddressDto } from '../address';
 import { CompanyBaseDto } from '../company';
 import { BaseUnitDto } from './base-unit.dto';
-import { PowerProductionTypeDto } from './power-production-type.dto';
 import { UnitOwnerDto } from './unit-owner.dto';
 
 export class PowerProductionUnitDto extends BaseUnitDto {
-  electricityMeterNumber: string;
-  gridOperator: string;
-  gridConnectionNumber: string;
-  gridLevel: GridLevel;
   biddingZone: BiddingZone;
   ratedPower: number;
   decommissioningPlannedOn: Date;
-  type: PowerProductionTypeDto;
+  type: PowerProductionType;
   financialSupportReceived: boolean;
 
   constructor(
     id: string,
     name: string,
-    mastrNumber: string,
     manufacturer: string,
     modelType: string,
     serialNumber: string,
@@ -37,15 +31,11 @@ export class PowerProductionUnitDto extends BaseUnitDto {
     decommissioningPlannedOn: Date,
     address: AddressDto,
     ratedPower: number,
-    gridOperator: string,
-    gridLevel: GridLevel,
-    gridConnectionNumber: string,
-    type: PowerProductionTypeDto,
+    type: PowerProductionType,
     unitType: UnitType,
     modelNumber: string,
     owner: UnitOwnerDto,
     operator: CompanyBaseDto,
-    electricityMeterNumber: string,
     biddingZone: BiddingZone,
     financialSupportReceived: boolean,
     active: boolean,
@@ -53,7 +43,6 @@ export class PowerProductionUnitDto extends BaseUnitDto {
     super(
       id,
       name,
-      mastrNumber,
       manufacturer,
       modelType,
       serialNumber,
@@ -67,31 +56,20 @@ export class PowerProductionUnitDto extends BaseUnitDto {
       active,
     );
     this.ratedPower = ratedPower;
-    this.gridOperator = gridOperator;
-    this.gridLevel = gridLevel;
-    this.gridConnectionNumber = gridConnectionNumber;
     this.type = type;
-    this.electricityMeterNumber = electricityMeterNumber;
     this.biddingZone = biddingZone;
     this.decommissioningPlannedOn = decommissioningPlannedOn;
     this.financialSupportReceived = financialSupportReceived;
   }
 
-  static override fromEntity(unit: PowerProductionUnitEntity): PowerProductionUnitDto {
+  static override fromEntity(unit: UnitEntity): PowerProductionUnitDto {
     return {
       ...BaseUnitDto.fromEntity(unit),
-      electricityMeterNumber: unit.electricityMeterNumber,
-      gridOperator: unit.gridOperator,
-      gridConnectionNumber: unit.gridConnectionNumber,
-      gridLevel: unit.gridLevel,
-      biddingZone: unit.biddingZone,
-      ratedPower: unit.ratedPower,
-      decommissioningPlannedOn: unit.decommissioningPlannedOn,
-      type: {
-        name: unit.type.name,
-        energySource: unit.type.energySource,
-      },
-      financialSupportReceived: unit.financialSupportReceived,
+      biddingZone: unit.specification.biddingZone!,
+      ratedPower: unit.specification.ratedPower ?? 0,
+      decommissioningPlannedOn: unit.specification.decommissioningPlannedOn!,
+      type: unit.specification.type as PowerProductionType,
+      financialSupportReceived: unit.specification.financialSupportReceived ?? false,
     };
   }
 }

@@ -7,7 +7,7 @@
  */
 
 import { CreateHydrogenProductionUnitPayload } from '@h2-trust/contracts/payloads';
-import { BiddingZone, HydrogenProductionMethod, HydrogenProductionTechnology } from '@h2-trust/domain';
+import { BiddingZone, HydrogenProductionTechnology, HydrogenProductionType } from '@h2-trust/domain';
 import { createBaseCreateUnitPayloadValues } from './unit-payload-defaults';
 
 export const CreateHydrogenProductionUnitPayloadFixture = {
@@ -16,15 +16,13 @@ export const CreateHydrogenProductionUnitPayloadFixture = {
 
     return new CreateHydrogenProductionUnitPayload(
       defaults.name,
-      defaults.mastrNumber,
       defaults.commissionedOn,
       defaults.address,
       defaults.ownerId,
-      overrides.method ?? HydrogenProductionMethod.ELECTROLYSIS,
+      overrides.hydrogenProductionType ?? HydrogenProductionType.ELECTROLYSIS,
       overrides.technology ?? HydrogenProductionTechnology.PEM,
       overrides.biddingZone ?? BiddingZone.DE_LU,
       overrides.ratedPower ?? 500,
-      overrides.pressure ?? 35,
       overrides.waterConsumptionLitersPerHour ?? 1200,
       defaults.manufacturer,
       defaults.modelType,

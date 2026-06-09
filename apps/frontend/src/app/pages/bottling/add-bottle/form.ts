@@ -8,7 +8,7 @@
 
 import { FormControl } from '@angular/forms';
 import { HydrogenStorageOverviewDto, UserDto } from '@h2-trust/contracts/dtos';
-import { FuelType, TransportMode } from '@h2-trust/domain';
+import { FuelType, TransportType } from '@h2-trust/domain';
 
 export type BottlingForm = {
   date: FormControl<Date | undefined | null>;
@@ -17,7 +17,7 @@ export type BottlingForm = {
   recipient: FormControl<UserDto | undefined | null>;
   storageUnit: FormControl<HydrogenStorageOverviewDto | undefined | null>;
   type: FormControl<'NON_CERTIFIABLE' | 'RFNBO_READY' | undefined | null>;
-  transportMode: FormControl<TransportMode | null>;
+  transportMode: FormControl<TransportType | null>;
   fuelType: FormControl<FuelType | null>;
   distance: FormControl<number | null>;
 };

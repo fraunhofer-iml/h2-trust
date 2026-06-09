@@ -9,4 +9,3 @@
 export * from './paginated-process-step.entity';
 export * from './process-step.entity';
 export * from './provenance.entity';
-export * from './transportation-details.entity';

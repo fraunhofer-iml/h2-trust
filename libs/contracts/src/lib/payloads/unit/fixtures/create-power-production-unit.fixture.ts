@@ -7,7 +7,7 @@
  */
 
 import { CreatePowerProductionUnitPayload } from '@h2-trust/contracts/payloads';
-import { BiddingZone, GridLevel, PowerProductionType } from '@h2-trust/domain';
+import { BiddingZone, PowerProductionType } from '@h2-trust/domain';
 import { createBaseCreateUnitPayloadValues } from './unit-payload-defaults';
 
 export const CreatePowerProductionUnitPayloadFixture = {
@@ -16,13 +16,10 @@ export const CreatePowerProductionUnitPayloadFixture = {
 
     return new CreatePowerProductionUnitPayload(
       defaults.name,
-      defaults.mastrNumber,
       defaults.commissionedOn,
       defaults.address,
       defaults.ownerId,
-      overrides.electricityMeterNumber ?? 'METER-001',
       overrides.ratedPower ?? 1000,
-      overrides.gridLevel ?? GridLevel.LOW_VOLTAGE,
       overrides.biddingZone ?? BiddingZone.DE_LU,
       overrides.financialSupportReceived ?? false,
       overrides.powerProductionType ?? PowerProductionType.WIND_TURBINE,
@@ -33,8 +30,6 @@ export const CreatePowerProductionUnitPayloadFixture = {
       defaults.certifiedBy,
       defaults.operatorId,
       overrides.decommissioningPlannedOn ?? new Date('2036-01-01T00:00:00Z'),
-      overrides.gridOperator ?? 'Grid Operator GmbH',
-      overrides.gridConnectionNumber ?? 'GRID-001',
       defaults.id,
     );
   },

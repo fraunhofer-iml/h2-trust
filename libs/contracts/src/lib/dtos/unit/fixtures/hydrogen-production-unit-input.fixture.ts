@@ -7,7 +7,7 @@
  */
 
 import { HydrogenProductionUnitInputDto } from '@h2-trust/contracts/dtos';
-import { BiddingZone, HydrogenProductionMethod, HydrogenProductionTechnology, UnitType } from '@h2-trust/domain';
+import { BiddingZone, HydrogenProductionTechnology, HydrogenProductionType, UnitType } from '@h2-trust/domain';
 import { UnitInputDtoFixture } from './unit-input.fixture';
 
 export const HydrogenProductionUnitInputDtoFixture = {
@@ -16,11 +16,10 @@ export const HydrogenProductionUnitInputDtoFixture = {
       ...overrides,
       unitType: overrides.unitType ?? UnitType.HYDROGEN_PRODUCTION,
     }),
-    method: overrides.method ?? HydrogenProductionMethod.ELECTROLYSIS,
+    method: overrides.method ?? HydrogenProductionType.ELECTROLYSIS,
     technology: overrides.technology ?? HydrogenProductionTechnology.PEM,
     biddingZone: overrides.biddingZone ?? BiddingZone.DE_LU,
     ratedPower: overrides.ratedPower ?? 50,
-    pressure: overrides.pressure ?? 30,
     waterConsumptionLitersPerHour: overrides.waterConsumptionLitersPerHour ?? 100,
   }),
 } as const;

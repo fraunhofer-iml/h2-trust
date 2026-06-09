@@ -7,14 +7,14 @@
  */
 
 import { IsEnum, IsNotEmpty, IsNumber, IsPositive } from 'class-validator';
-import { BiddingZone, HydrogenProductionMethod, HydrogenProductionTechnology } from '@h2-trust/domain';
+import { BiddingZone, HydrogenProductionTechnology, HydrogenProductionType } from '@h2-trust/domain';
 import { AddressPayload } from '../common';
 import { BaseCreateUnitPayload } from './base-create-unit.payload';
 
 export class CreateHydrogenProductionUnitPayload extends BaseCreateUnitPayload {
-  @IsEnum(HydrogenProductionMethod)
+  @IsEnum(HydrogenProductionType)
   @IsNotEmpty()
-  method: HydrogenProductionMethod;
+  hydrogenProductionType: HydrogenProductionType;
 
   @IsEnum(HydrogenProductionTechnology)
   @IsNotEmpty()
@@ -32,24 +32,17 @@ export class CreateHydrogenProductionUnitPayload extends BaseCreateUnitPayload {
   @IsNumber()
   @IsPositive()
   @IsNotEmpty()
-  pressure: number;
-
-  @IsNumber()
-  @IsPositive()
-  @IsNotEmpty()
   waterConsumptionLitersPerHour: number;
 
   constructor(
     name: string,
-    mastrNumber: string,
     commissionedOn: Date,
     address: AddressPayload,
     ownerId: string,
-    method: HydrogenProductionMethod,
+    hydrogenProductionType: HydrogenProductionType,
     technology: HydrogenProductionTechnology,
     biddingZone: BiddingZone,
     ratedPower: number,
-    pressure: number,
     waterConsumptionLitersPerHour: number,
     manufacturer: string,
     modelType: string,
@@ -61,7 +54,6 @@ export class CreateHydrogenProductionUnitPayload extends BaseCreateUnitPayload {
   ) {
     super(
       name,
-      mastrNumber,
       commissionedOn,
       address,
       ownerId,
@@ -73,11 +65,10 @@ export class CreateHydrogenProductionUnitPayload extends BaseCreateUnitPayload {
       operatorId,
       id,
     );
-    this.method = method;
+    this.hydrogenProductionType = hydrogenProductionType;
     this.technology = technology;
     this.biddingZone = biddingZone;
     this.ratedPower = ratedPower;
-    this.pressure = pressure;
     this.waterConsumptionLitersPerHour = waterConsumptionLitersPerHour;
   }
 }
