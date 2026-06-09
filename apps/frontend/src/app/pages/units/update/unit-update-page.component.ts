@@ -14,6 +14,9 @@ import { Router, RouterModule } from '@angular/router';
 import { injectMutation, injectQuery, QueryClient } from '@tanstack/angular-query-experimental';
 import { toast } from 'ngx-sonner';
 import {
+  HydrogenBottlingUnitInputDto,
+  HydrogenCompressorUnitInputDto,
+  HydrogenEndUseUnitInputDto,
   HydrogenProductionUnitInputDto,
   HydrogenStorageUnitInputDto,
   PowerProductionUnitInputDto,
@@ -33,8 +36,12 @@ import { QueryKeyPrefix } from '../../../shared/queries/shared-query-keys';
 import { UnitsService } from '../../../shared/services/units/units.service';
 import { toastQueryError } from '../../../shared/util/query-error-handler';
 import {
+  isHydrogenBottlingUnitDetails,
+  isHydrogenCompressorUnitDetails,
+  isHydrogenEndUseUnitDetails,
   isHydrogenProductionUnitDetails,
   isHydrogenStorageUnitDetails,
+  isHydrogenTransportUnitDetails,
   isPowerProductionUnitDetails,
 } from '../../../shared/util/unit-type-guards';
 import { BaseUnitFormComponent } from '../forms/base-unit/base-unit-form-component';
@@ -42,8 +49,10 @@ import {
   addValidatorsToFormGroup,
   HydrogenProductionFormGroup,
   HydrogenStorageFormGroup,
+  HydrogenTransportFormGroup,
   newHydrogenProductionForm,
   newHydrogenStorageForm,
+  newHydrogenTransportForm,
   newPowerProductionForm,
   newUnitForm,
   PowerProductionFormGroup,
@@ -51,6 +60,7 @@ import {
 } from '../forms/forms';
 import { HydrogenProductionUnitFormComponent } from '../forms/hydrogen-production/hydrogen-production-unit-form.component';
 import { HydrogenUnitFormComponent } from '../forms/hydrogen-storage/hydrogen-storage-unit-form.component';
+import { HydrogenTransportComponent } from '../forms/hydrogen-transport/hydrogen-transport.component';
 import { PowerProductionUnitFormComponent } from '../forms/power-production/power-production-unit-form.component';
 
 @Component({
@@ -65,6 +75,7 @@ import { PowerProductionUnitFormComponent } from '../forms/power-production/powe
     LoadingCardComponent,
     ErrorCardComponent,
     UnitCardComponent,
+    HydrogenTransportComponent,
   ],
   templateUrl: './unit-update-page.component.html',
 })
@@ -77,11 +88,13 @@ export class UnitUpdatePageComponent {
   protected isHydrogenProductionUnit = isHydrogenProductionUnitDetails;
   protected isHydrogenStorageUnit = isHydrogenStorageUnitDetails;
   protected isPowerProductionUnit = isPowerProductionUnitDetails;
+  protected isTransportUnit = isHydrogenTransportUnitDetails;
 
   unitForm: FormGroup<UnitFormGroup> = newUnitForm();
   hydrogenProductionForm: FormGroup<HydrogenProductionFormGroup> = newHydrogenProductionForm();
   hydrogenStorageUnitForm: FormGroup<HydrogenStorageFormGroup> = newHydrogenStorageForm();
   powerProductionForm: FormGroup<PowerProductionFormGroup> = newPowerProductionForm();
+  transportUnitForm: FormGroup<HydrogenTransportFormGroup> = newHydrogenTransportForm();
 
   readonly unitQuery = injectQuery(() => ({
     queryKey: [QueryKeyPrefix.UNITS, this.id()],
@@ -131,6 +144,32 @@ export class UnitUpdatePageComponent {
       return this.unitsService.updatePowerProductionUnit(unit.id, dto);
     }
 
+    if (this.isTransportUnit(unit)) {
+      const dto = this.buildHydrogenTransportDto();
+      return this.unitsService.updateHydrogenTransportUnit(unit.id, dto);
+    }
+
+    if (isHydrogenBottlingUnitDetails(unit)) {
+      const dto = {
+        ...this.unitForm.value,
+      } as HydrogenBottlingUnitInputDto;
+      return this.unitsService.updateHydrogenBottlingUnit(unit.id, dto);
+    }
+
+    if (isHydrogenCompressorUnitDetails(unit)) {
+      const dto = {
+        ...this.unitForm.value,
+      } as HydrogenCompressorUnitInputDto;
+      return this.unitsService.updateHydrogenCompressorUnit(unit.id, dto);
+    }
+
+    if (isHydrogenEndUseUnitDetails(unit)) {
+      const dto = {
+        ...this.unitForm.value,
+      } as HydrogenEndUseUnitInputDto;
+      return this.unitsService.updateHydrogenEndUseUnit(unit.id, dto);
+    }
+
     throw new Error(`Fetched unit has unexpected type "${unitType}" for update page.`);
   }
 
@@ -154,6 +193,13 @@ export class UnitUpdatePageComponent {
       ...this.unitForm.value,
       ...this.powerProductionForm.value,
     } as PowerProductionUnitInputDto;
+  }
+
+  private buildHydrogenTransportDto(): HydrogenProductionUnitInputDto {
+    return {
+      ...this.unitForm.value,
+      ...this.transportUnitForm.value,
+    } as HydrogenProductionUnitInputDto;
   }
 
   private setFormData(unit: UnitDto) {

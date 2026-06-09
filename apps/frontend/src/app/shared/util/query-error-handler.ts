@@ -39,6 +39,7 @@ export function toastQueryError(err: unknown, toastId?: string | number) {
   }
 
   toast.error('Request failed', { id: toastId });
+  console.error('An error occurred:', err);
 }
 
 export async function handleMutationWithPromiseToast<T>(promise: Promise<T>, successMessage: string): Promise<T> {

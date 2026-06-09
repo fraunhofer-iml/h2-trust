@@ -27,7 +27,9 @@
   }
 
   @if (selectedType.value === UnitType.TRANSPORTATION) {
-    <app-hydrogen-transport [hydrogenTransportForm]="hydrogenTransportForm"></app-hydrogen-transport>
+    <app-hydrogen-transport-unit-form
+      [hydrogenTransportForm]="hydrogenTransportForm"
+    ></app-hydrogen-transport-unit-form>
   }
   @if (!selectedType.value) {
     <div class="flex flex-col gap-2 rounded-lg bg-white p-4">

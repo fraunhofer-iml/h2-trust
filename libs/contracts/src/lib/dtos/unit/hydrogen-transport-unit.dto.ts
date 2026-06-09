@@ -16,6 +16,7 @@ import { UnitOwnerDto } from './unit-owner.dto';
 export class HydrogenTransportUnitDto extends BaseUnitDto {
   type: TransportType;
   fuelType: FuelType;
+  override readonly unitType = UnitType.TRANSPORTATION;
 
   constructor(
     id: string,
@@ -26,7 +27,6 @@ export class HydrogenTransportUnitDto extends BaseUnitDto {
     certifiedBy: string,
     commissionedOn: Date,
     address: AddressDto,
-    unitType: UnitType,
     modelNumber: string,
     owner: UnitOwnerDto,
     operator: CompanyBaseDto,
@@ -46,7 +46,6 @@ export class HydrogenTransportUnitDto extends BaseUnitDto {
       modelNumber,
       owner,
       operator,
-      unitType,
       active,
     );
     this.type = type;
@@ -56,6 +55,7 @@ export class HydrogenTransportUnitDto extends BaseUnitDto {
   static override fromEntity(unit: UnitEntity): HydrogenTransportUnitDto {
     return {
       ...BaseUnitDto.fromEntity(unit),
+      unitType: UnitType.TRANSPORTATION,
       type: unit.specification.type as TransportType,
       fuelType: unit.specification.fuelType as FuelType,
     };

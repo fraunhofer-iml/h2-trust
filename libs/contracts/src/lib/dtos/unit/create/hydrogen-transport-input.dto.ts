@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { IsEnum, IsNotEmpty } from 'class-validator';
+import { IsEnum, IsNotEmpty, ValidateIf } from 'class-validator';
 import { AddressPayload } from '@h2-trust/contracts/payloads';
 import { FuelType, TransportType, UnitType } from '@h2-trust/domain';
 import { CreateHydrogenTransportUnitPayload } from '../../../payloads/unit/create-hydrogen-transport-unit.payload';
@@ -18,9 +18,10 @@ export class HydrogenTransportUnitInputDto extends UnitInputDto {
   @IsNotEmpty()
   transportType: TransportType;
 
+  @ValidateIf((dto) => dto.transportType === TransportType.TRAILER)
   @IsEnum(FuelType)
   @IsNotEmpty()
-  fuelType: FuelType;
+  fuelType?: FuelType;
 
   constructor(
     type: UnitType,
@@ -35,7 +36,7 @@ export class HydrogenTransportUnitInputDto extends UnitInputDto {
     commissionedOn: Date,
     address: AddressDto,
     transportType: TransportType,
-    fuelType: FuelType,
+    fuelType?: FuelType,
   ) {
     super(
       type,

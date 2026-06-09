@@ -11,7 +11,7 @@ import { Component, inject, input } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { injectQuery, QueryClient } from '@tanstack/angular-query-experimental';
 import { UnitDto } from '@h2-trust/contracts/dtos';
-import { MeasurementUnit, UnitType } from '@h2-trust/domain';
+import { MeasurementUnit, TransportType, UnitType } from '@h2-trust/domain';
 import { ErrorCardComponent } from '../../../layout/error-card/error-card.component';
 import { InfoTooltipComponent } from '../../../layout/info-tooltip/info-tooltip.component';
 import { LoadingCardComponent } from '../../../layout/loading-card/loading-card.component';
@@ -25,6 +25,7 @@ import { UnitsService } from '../../../shared/services/units/units.service';
 import {
   isHydrogenProductionUnitDetails,
   isHydrogenStorageUnitDetails,
+  isHydrogenTransportUnitDetails,
   isPowerProductionUnitDetails,
 } from '../../../shared/util/unit-type-guards';
 import { UnitActionsComponent } from './shared/unit-actions/unit-actions.component';
@@ -49,11 +50,13 @@ import { UnitDetailsComponent } from './shared/unit-details/unit-details.compone
 })
 export class UnitDetailsPageComponent {
   protected readonly MeasurementUnit = MeasurementUnit;
+  protected readonly TransportType = TransportType;
   protected readonly RFNBO_CRITERIA = RFNBO_CRITERIA;
   protected readonly UnitType = UnitType;
   protected readonly isHydrogenProductionUnitDetails = isHydrogenProductionUnitDetails;
   protected readonly isHydrogenStorageUnitDetails = isHydrogenStorageUnitDetails;
   protected readonly isPowerProductionUnitDetails = isPowerProductionUnitDetails;
+  protected readonly isTransportUnitDetails = isHydrogenTransportUnitDetails;
 
   readonly id = input<string>('');
 

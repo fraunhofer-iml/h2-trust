@@ -13,6 +13,8 @@ import { CompanyBaseDto } from '../company';
 import { UnitOwnerDto } from './unit-owner.dto';
 
 export abstract class BaseUnitDto {
+  abstract readonly unitType: UnitType;
+
   id: string;
   name: string;
   manufacturer: string;
@@ -24,7 +26,6 @@ export abstract class BaseUnitDto {
   address: AddressDto;
   owner: UnitOwnerDto;
   operator: CompanyBaseDto;
-  unitType: UnitType;
   active: boolean;
 
   protected constructor(
@@ -39,7 +40,6 @@ export abstract class BaseUnitDto {
     modelNumber: string,
     owner: UnitOwnerDto,
     operator: CompanyBaseDto,
-    unitType: UnitType,
     active: boolean,
   ) {
     this.id = id;
@@ -53,7 +53,7 @@ export abstract class BaseUnitDto {
     this.address = address;
     this.owner = owner;
     this.operator = operator;
-    this.unitType = unitType;
+
     this.active = active;
   }
 
@@ -84,8 +84,8 @@ export abstract class BaseUnitDto {
           })) ?? [],
       },
       operator: new CompanyBaseDto(unit.operator.id, unit.operator.name),
-      unitType: unit.unitType,
       active: unit.active,
+      unitType: unit.unitType,
     };
   }
 }

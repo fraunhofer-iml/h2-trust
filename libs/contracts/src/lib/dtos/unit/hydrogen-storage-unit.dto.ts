@@ -18,6 +18,7 @@ export class HydrogenStorageUnitDto extends BaseUnitDto {
   storageType: HydrogenStorageType;
   capacity: number;
   filling: FillingDto[];
+  override readonly unitType = UnitType.HYDROGEN_STORAGE;
 
   constructor(
     id: string,
@@ -31,7 +32,6 @@ export class HydrogenStorageUnitDto extends BaseUnitDto {
     capacity: number,
     filling: FillingDto[],
     storageType: HydrogenStorageType,
-    unitType: UnitType,
     modelNumber: string,
     owner: UnitOwnerDto,
     operator: CompanyBaseDto,
@@ -49,7 +49,6 @@ export class HydrogenStorageUnitDto extends BaseUnitDto {
       modelNumber,
       owner,
       operator,
-      unitType,
       active,
     );
     this.capacity = capacity;
@@ -60,6 +59,7 @@ export class HydrogenStorageUnitDto extends BaseUnitDto {
   static override fromEntity(unit: UnitEntity): HydrogenStorageUnitDto {
     return {
       ...BaseUnitDto.fromEntity(unit),
+      unitType: UnitType.HYDROGEN_STORAGE,
       storageType: unit.specification.type as HydrogenStorageType,
       capacity: unit.specification.capacity ?? 0,
       filling:

@@ -20,6 +20,8 @@ export class HydrogenProductionUnitDto extends BaseUnitDto {
   ratedPower: number;
   waterConsumptionLitersPerHour: number;
 
+  override readonly unitType = UnitType.HYDROGEN_PRODUCTION;
+
   constructor(
     id: string,
     name: string,
@@ -33,7 +35,6 @@ export class HydrogenProductionUnitDto extends BaseUnitDto {
     modelNumber: string,
     owner: UnitOwnerDto,
     operator: CompanyBaseDto,
-    unitType: UnitType,
     biddingZone: BiddingZone,
     method: HydrogenProductionType,
     technology: HydrogenProductionTechnology,
@@ -52,7 +53,6 @@ export class HydrogenProductionUnitDto extends BaseUnitDto {
       modelNumber,
       owner,
       operator,
-      unitType,
       active,
     );
     this.method = method;
@@ -65,6 +65,7 @@ export class HydrogenProductionUnitDto extends BaseUnitDto {
   static override fromEntity(unit: UnitEntity): HydrogenProductionUnitDto {
     return {
       ...BaseUnitDto.fromEntity(unit),
+      unitType: UnitType.HYDROGEN_PRODUCTION,
       method: unit.specification.type as HydrogenProductionType,
       technology: unit.specification.technology!,
       biddingZone: unit.specification.biddingZone!,

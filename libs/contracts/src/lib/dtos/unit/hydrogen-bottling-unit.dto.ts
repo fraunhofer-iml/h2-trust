@@ -6,6 +6,17 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { UnitEntity } from '@h2-trust/contracts/entities';
+import { UnitType } from '@h2-trust/domain';
 import { BaseUnitDto } from './base-unit.dto';
 
-export class HydrogenBottlingUnitDto extends BaseUnitDto {}
+export class HydrogenBottlingUnitDto extends BaseUnitDto {
+  override readonly unitType = UnitType.BOTTLING;
+
+  static override fromEntity(unit: UnitEntity): HydrogenBottlingUnitDto {
+    return {
+      ...BaseUnitDto.fromEntity(unit),
+      unitType: UnitType.BOTTLING,
+    };
+  }
+}

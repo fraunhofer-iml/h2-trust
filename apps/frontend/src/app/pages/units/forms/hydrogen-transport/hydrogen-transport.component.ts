@@ -7,7 +7,7 @@ import { EnumPipe } from '../../../../shared/pipes/enum.pipe';
 import { HydrogenTransportFormGroup } from '../forms';
 
 @Component({
-  selector: 'app-hydrogen-transport',
+  selector: 'app-hydrogen-transport-unit-form',
   imports: [MatSelectModule, FormsModule, ReactiveFormsModule, CommonModule, EnumPipe],
   templateUrl: './hydrogen-transport.component.html',
 })
