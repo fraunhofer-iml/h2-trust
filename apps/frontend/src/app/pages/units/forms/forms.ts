@@ -9,10 +9,12 @@
 import { FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 import {
   BiddingZone,
+  FuelType,
   HydrogenProductionTechnology,
   HydrogenProductionType,
   HydrogenStorageType,
   PowerProductionType,
+  TransportType,
   UnitType,
 } from '@h2-trust/domain';
 import { integerValidator, positiveNumberValidator } from '../../../shared/util/number-validators';
@@ -55,6 +57,11 @@ export type PowerProductionFormGroup = {
   powerProductionType: FormControl<PowerProductionType | null>;
   decommissioningPlannedOn: FormControl<Date | null>;
   financialSupportReceived: FormControl<boolean | null>;
+};
+
+export type HydrogenTransportFormGroup = {
+  transportType: FormControl<TransportType | null>;
+  fuelType: FormControl<FuelType | null>;
 };
 
 export const newUnitForm = () =>
@@ -114,6 +121,12 @@ export const newHydrogenProductionForm = () =>
     waterConsumptionLitersPerHour: new FormControl<number | null>(null, {
       validators: [positiveNumberValidator],
     }),
+  });
+
+export const newHydrogenTransportForm = () =>
+  new FormGroup<HydrogenTransportFormGroup>({
+    transportType: new FormControl<TransportType | null>(null, Validators.required),
+    fuelType: new FormControl<FuelType | null>(null, Validators.required),
   });
 
 export const addValidatorsToFormGroup = (formGroup: FormGroup): void => {
