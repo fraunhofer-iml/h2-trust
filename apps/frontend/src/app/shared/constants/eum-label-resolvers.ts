@@ -22,6 +22,7 @@ import {
   PowerType,
   ProcessType,
   RfnboType,
+  TransportType,
   UnitType,
 } from '@h2-trust/domain';
 import {
@@ -40,6 +41,7 @@ import {
   getPPaStatus,
   getProcessType,
   getRfnboType,
+  getTransportType,
   getUnitType,
 } from '@h2-trust/strings';
 
@@ -50,6 +52,7 @@ export const ENUM_LABEL_RESOLVERS = {
   hydrogenProductionTechnology: (value: HydrogenProductionTechnology) => getHydrogenProductionTechnology(value),
   hydrogenStorageType: (value: HydrogenStorageType) => getHydrogenStorageType(value),
   fuelType: (value: FuelType) => getFuelType(value),
+  transportType: (value: TransportType) => getTransportType(value),
   energySource: (value: EnergySource) => getEnergySource(value),
   csvDocumentIntegrityStatus: (value: CsvDocumentIntegrityStatus) => getCsvDocumentIntegrityStatus(value),
   unitType: (value: UnitType) => getUnitType(value),

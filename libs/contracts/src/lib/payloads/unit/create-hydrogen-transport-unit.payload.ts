@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { IsEnum, IsNotEmpty } from 'class-validator';
+import { IsEnum, IsNotEmpty, ValidateIf } from 'class-validator';
 import { FuelType, TransportType } from '@h2-trust/domain';
 import { AddressPayload } from '../common';
 import { BaseCreateUnitPayload } from './base-create-unit.payload';
@@ -16,9 +16,10 @@ export class CreateHydrogenTransportUnitPayload extends BaseCreateUnitPayload {
   @IsNotEmpty()
   transportType: TransportType;
 
+  @ValidateIf((payload) => payload.transportType === TransportType.TRAILER)
   @IsEnum(FuelType)
   @IsNotEmpty()
-  fuelType: FuelType;
+  fuelType?: FuelType;
 
   constructor(
     name: string,
@@ -32,7 +33,7 @@ export class CreateHydrogenTransportUnitPayload extends BaseCreateUnitPayload {
     certifiedBy: string,
     operatorId: string,
     transportType: TransportType,
-    fuelType: FuelType,
+    fuelType?: FuelType,
     id?: string,
   ) {
     super(

@@ -9,10 +9,12 @@
 import { FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 import {
   BiddingZone,
+  FuelType,
   HydrogenProductionTechnology,
   HydrogenProductionType,
   HydrogenStorageType,
   PowerProductionType,
+  TransportType,
   UnitType,
 } from '@h2-trust/domain';
 import { integerValidator, positiveNumberValidator } from '../../../shared/util/number-validators';
@@ -55,6 +57,11 @@ export type PowerProductionFormGroup = {
   powerProductionType: FormControl<PowerProductionType | null>;
   decommissioningPlannedOn: FormControl<Date | null>;
   financialSupportReceived: FormControl<boolean | null>;
+};
+
+export type HydrogenTransportFormGroup = {
+  transportType: FormControl<TransportType | null>;
+  fuelType: FormControl<FuelType | null>;
 };
 
 export const newUnitForm = () =>
@@ -116,8 +123,19 @@ export const newHydrogenProductionForm = () =>
     }),
   });
 
+export const newHydrogenTransportForm = () => {
+  const form = new FormGroup<HydrogenTransportFormGroup>({
+    transportType: new FormControl<TransportType | null>(null, Validators.required),
+    fuelType: new FormControl<FuelType | null>(null),
+  });
+
+  form.controls.fuelType.disable();
+
+  return form;
+};
+
 export const addValidatorsToFormGroup = (formGroup: FormGroup): void => {
-  const excludeKeys = ['decommissioningPlannedOn', 'gridConnectionNumber', 'gridOperator'];
+  const excludeKeys = ['decommissioningPlannedOn', 'gridConnectionNumber', 'gridOperator', 'fuelType'];
   Object.keys(formGroup.controls).forEach((key) => {
     if (excludeKeys.includes(key)) return;
     const control = formGroup.get(key);

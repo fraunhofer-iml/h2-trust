@@ -23,6 +23,7 @@ import {
   PowerType,
   ProcessType,
   RfnboType,
+  TransportType,
   UnitType,
 } from '@h2-trust/domain';
 
@@ -58,6 +59,11 @@ const HYDROGEN_STORAGE_TYPE_LABELS: Record<HydrogenStorageType, string> = {
 
 const FUEL_TYPE_LABELS: Record<FuelType, string> = {
   [FuelType.DIESEL]: 'Diesel',
+};
+
+const TRANSPORT_TYPE_LABELS: Record<TransportType, string> = {
+  [TransportType.PIPELINE]: 'Pipeline',
+  [TransportType.TRAILER]: 'Trailer',
 };
 
 const ENERGY_SOURCE_LABELS: Record<EnergySource, string> = {
@@ -158,6 +164,10 @@ export function getHydrogenStorageType(value: HydrogenStorageType): string {
 
 export function getFuelType(value: FuelType): string {
   return getLabel(value, FUEL_TYPE_LABELS);
+}
+
+export function getTransportType(value: TransportType): string {
+  return getLabel(value, TRANSPORT_TYPE_LABELS);
 }
 
 export function getEnergySource(value: EnergySource): string {

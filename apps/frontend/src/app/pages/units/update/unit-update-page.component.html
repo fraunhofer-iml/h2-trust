@@ -22,8 +22,8 @@
       <app-hydrogen-storage-unit-form [hydrogenStorageForm]="hydrogenStorageUnitForm"></app-hydrogen-storage-unit-form>
     } @else if (isPowerProductionUnit(unit)) {
       <app-power-production-unit-form [powerProductionForm]="powerProductionForm"></app-power-production-unit-form>
-    } @else {
-      <p class="text-sm text-neutral-500">Unknown unit type.</p>
+    } @else if (isTransportUnit(unit)) {
+      <app-hydrogen-transport-unit-form [hydrogenTransportForm]="transportUnitForm"></app-hydrogen-transport-unit-form>
     }
 
     <div class="relative flex w-full justify-end gap-2 rounded-md bg-white p-4">

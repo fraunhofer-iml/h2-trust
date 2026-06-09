@@ -37,6 +37,22 @@ export const API = {
       BASE: UNITS_ENDPOINT + 'hydrogen-storage/',
       BY_ID: (id: string) => `${API.UNITS.HYDROGEN_STORAGE.BASE}${id}`,
     },
+    HYDROGEN_BOTTLING: {
+      BASE: UNITS_ENDPOINT + 'hydrogen-bottling/',
+      BY_ID: (id: string) => `${API.UNITS.HYDROGEN_BOTTLING.BASE}${id}`,
+    },
+    HYDROGEN_TRANSPORT: {
+      BASE: UNITS_ENDPOINT + 'hydrogen-transport/',
+      BY_ID: (id: string) => `${API.UNITS.HYDROGEN_TRANSPORT.BASE}${id}`,
+    },
+    HYDROGEN_END_USE: {
+      BASE: UNITS_ENDPOINT + 'hydrogen-end-use/',
+      BY_ID: (id: string) => `${API.UNITS.HYDROGEN_END_USE.BASE}${id}`,
+    },
+    HYDROGEN_COMPRESSOR: {
+      BASE: UNITS_ENDPOINT + 'hydrogen-compressor/',
+      BY_ID: (id: string) => `${API.UNITS.HYDROGEN_COMPRESSOR.BASE}${id}`,
+    },
   },
   COMPANIES: { BASE: COMPANIES_ENDPOINT },
   POWER_PURCHASE_AGREEMENTS: {

@@ -20,6 +20,8 @@ export class PowerProductionUnitDto extends BaseUnitDto {
   type: PowerProductionType;
   financialSupportReceived: boolean;
 
+  override readonly unitType = UnitType.POWER_PRODUCTION;
+
   constructor(
     id: string,
     name: string,
@@ -32,7 +34,6 @@ export class PowerProductionUnitDto extends BaseUnitDto {
     address: AddressDto,
     ratedPower: number,
     type: PowerProductionType,
-    unitType: UnitType,
     modelNumber: string,
     owner: UnitOwnerDto,
     operator: CompanyBaseDto,
@@ -52,7 +53,6 @@ export class PowerProductionUnitDto extends BaseUnitDto {
       modelNumber,
       owner,
       operator,
-      unitType,
       active,
     );
     this.ratedPower = ratedPower;
@@ -65,6 +65,7 @@ export class PowerProductionUnitDto extends BaseUnitDto {
   static override fromEntity(unit: UnitEntity): PowerProductionUnitDto {
     return {
       ...BaseUnitDto.fromEntity(unit),
+      unitType: UnitType.POWER_PRODUCTION,
       biddingZone: unit.specification.biddingZone!,
       ratedPower: unit.specification.ratedPower ?? 0,
       decommissioningPlannedOn: unit.specification.decommissioningPlannedOn!,

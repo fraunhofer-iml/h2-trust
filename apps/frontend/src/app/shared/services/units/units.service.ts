@@ -10,11 +10,22 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { lastValueFrom } from 'rxjs';
 import {
+  HydrogenBottlingOverviewDto,
+  HydrogenBottlingUnitDto,
+  HydrogenBottlingUnitInputDto,
+  HydrogenCompressorOverviewDto,
+  HydrogenCompressorUnitDto,
+  HydrogenCompressorUnitInputDto,
+  HydrogenEndUseOverviewDto,
+  HydrogenEndUseUnitDto,
+  HydrogenEndUseUnitInputDto,
   HydrogenProductionUnitDto,
   HydrogenProductionUnitInputDto,
   HydrogenStorageOverviewDto,
   HydrogenStorageUnitDto,
   HydrogenStorageUnitInputDto,
+  HydrogenTransportOverviewDto,
+  HydrogenTransportUnitInputDto,
   PowerProductionOverviewDto,
   PowerProductionUnitDto,
   PowerProductionUnitInputDto,
@@ -52,26 +63,36 @@ export class UnitsService {
     return lastValueFrom(this.httpClient.post<HydrogenStorageOverviewDto[]>(API.UNITS.HYDROGEN_PRODUCTION.BASE, dto));
   }
 
+  createHydrogenCompressionUnit(dto: HydrogenCompressorUnitInputDto) {
+    return lastValueFrom(
+      this.httpClient.post<HydrogenCompressorOverviewDto[]>(API.UNITS.HYDROGEN_COMPRESSOR.BASE, dto),
+    );
+  }
+
+  createHydrogenBottlingUnit(dto: HydrogenBottlingUnitInputDto) {
+    return lastValueFrom(this.httpClient.post<HydrogenBottlingOverviewDto[]>(API.UNITS.HYDROGEN_BOTTLING.BASE, dto));
+  }
+
+  createHydrogenTransportUnit(dto: HydrogenTransportUnitInputDto) {
+    return lastValueFrom(this.httpClient.post<HydrogenTransportOverviewDto[]>(API.UNITS.HYDROGEN_TRANSPORT.BASE, dto));
+  }
+
+  createHydrogenEndUseUnit(dto: HydrogenEndUseUnitInputDto) {
+    return lastValueFrom(this.httpClient.post<HydrogenEndUseOverviewDto[]>(API.UNITS.HYDROGEN_END_USE.BASE, dto));
+  }
+
   getUnitById(id: string) {
     return lastValueFrom(this.httpClient.get<UnitDto>(API.UNITS.BY_ID(id)));
   }
 
-  getHydrogenStorageUnit(id: string) {
-    return lastValueFrom(this.httpClient.get<HydrogenStorageUnitDto>(API.UNITS.HYDROGEN_STORAGE.BY_ID(id)));
-  }
-
-  getPowerProductionUnit(id: string) {
-    return lastValueFrom(this.httpClient.get<PowerProductionUnitDto>(API.UNITS.POWER_PRODUCTION.BY_ID(id)));
-  }
-
-  getHydrogenProductionUnit(id: string) {
-    return lastValueFrom(this.httpClient.get<HydrogenProductionUnitDto>(API.UNITS.HYDROGEN_PRODUCTION.BY_ID(id)));
-  }
+  // update unit status
 
   updateActive(id: string, active: boolean) {
     const dto: UnitUpdateActiveDto = { active };
     return lastValueFrom(this.httpClient.patch<void>(API.UNITS.ACTIVE(id), dto));
   }
+
+  // update units
 
   updatePowerProductionUnit(id: string, dto: PowerProductionUnitInputDto) {
     return lastValueFrom(this.httpClient.put<PowerProductionUnitDto>(API.UNITS.POWER_PRODUCTION.BY_ID(id), dto));
@@ -83,5 +104,21 @@ export class UnitsService {
 
   updateHydrogenProductionUnit(id: string, dto: HydrogenProductionUnitInputDto) {
     return lastValueFrom(this.httpClient.put<HydrogenProductionUnitDto>(API.UNITS.HYDROGEN_PRODUCTION.BY_ID(id), dto));
+  }
+
+  updateHydrogenCompressorUnit(id: string, dto: HydrogenCompressorUnitInputDto) {
+    return lastValueFrom(this.httpClient.put<HydrogenCompressorUnitDto>(API.UNITS.HYDROGEN_COMPRESSOR.BY_ID(id), dto));
+  }
+
+  updateHydrogenBottlingUnit(id: string, dto: HydrogenBottlingUnitInputDto) {
+    return lastValueFrom(this.httpClient.put<HydrogenBottlingUnitDto>(API.UNITS.HYDROGEN_BOTTLING.BY_ID(id), dto));
+  }
+
+  updateHydrogenTransportUnit(id: string, dto: HydrogenProductionUnitInputDto) {
+    return lastValueFrom(this.httpClient.put<HydrogenProductionUnitDto>(API.UNITS.HYDROGEN_TRANSPORT.BY_ID(id), dto));
+  }
+
+  updateHydrogenEndUseUnit(id: string, dto: HydrogenEndUseUnitInputDto) {
+    return lastValueFrom(this.httpClient.put<HydrogenEndUseUnitDto>(API.UNITS.HYDROGEN_END_USE.BY_ID(id), dto));
   }
 }

@@ -21,8 +21,12 @@ import { Router, RouterModule } from '@angular/router';
 import { injectMutation, QueryClient } from '@tanstack/angular-query-experimental';
 import { toast } from 'ngx-sonner';
 import {
+  HydrogenBottlingUnitInputDto,
+  HydrogenCompressorUnitInputDto,
+  HydrogenEndUseUnitInputDto,
   HydrogenProductionUnitInputDto,
   HydrogenStorageUnitInputDto,
+  HydrogenTransportUnitInputDto,
   PowerProductionUnitInputDto,
   UnitInputDto,
 } from '@h2-trust/contracts/dtos';
@@ -38,8 +42,10 @@ import {
   addValidatorsToFormGroup,
   HydrogenProductionFormGroup,
   HydrogenStorageFormGroup,
+  HydrogenTransportFormGroup,
   newHydrogenProductionForm,
   newHydrogenStorageForm,
+  newHydrogenTransportForm,
   newPowerProductionForm,
   newUnitForm,
   PowerProductionFormGroup,
@@ -47,6 +53,7 @@ import {
 } from '../forms/forms';
 import { HydrogenProductionUnitFormComponent } from '../forms/hydrogen-production/hydrogen-production-unit-form.component';
 import { HydrogenUnitFormComponent } from '../forms/hydrogen-storage/hydrogen-storage-unit-form.component';
+import { HydrogenTransportComponent } from '../forms/hydrogen-transport/hydrogen-transport.component';
 import { PowerProductionUnitFormComponent } from '../forms/power-production/power-production-unit-form.component';
 
 @Component({
@@ -68,6 +75,7 @@ import { PowerProductionUnitFormComponent } from '../forms/power-production/powe
     PowerProductionUnitFormComponent,
     HydrogenUnitFormComponent,
     TypeSelectionComponent,
+    HydrogenTransportComponent,
   ],
   providers: [provideNativeDateAdapter()],
   templateUrl: './create-unit.component.html',
@@ -87,31 +95,65 @@ export class CreateUnitComponent {
   hydrogenProductionForm: FormGroup<HydrogenProductionFormGroup> = newHydrogenProductionForm();
   hydrogenStorageForm: FormGroup<HydrogenStorageFormGroup> = newHydrogenStorageForm();
   powerProductionForm: FormGroup<PowerProductionFormGroup> = newPowerProductionForm();
+  hydrogenTransportForm: FormGroup<HydrogenTransportFormGroup> = newHydrogenTransportForm();
   selectedForm:
     | FormGroup<PowerProductionFormGroup>
     | FormGroup<HydrogenStorageFormGroup>
-    | FormGroup<HydrogenProductionFormGroup> = this.hydrogenProductionForm;
+    | FormGroup<HydrogenProductionFormGroup>
+    | FormGroup<HydrogenTransportFormGroup>
+    | null = null;
 
+  // HYDROGEN STORAGE
   createHydrogenStorageUnitMutation = injectMutation(() => ({
     mutationFn: (dto: HydrogenStorageUnitInputDto) => this.unitsService.createHydrogenStorageUnit(dto),
     onError: (e) => toastQueryError(e),
-    onSuccess: () => this.onSuccess(QueryKeyPrefix.UNITS),
+    onSuccess: () => this.onSuccess(),
   }));
 
+  // POWER PRODUCTION
   createPowerProductionUnitMutation = injectMutation(() => ({
     mutationFn: (dto: PowerProductionUnitInputDto) => this.unitsService.createPowerProductionUnit(dto),
     onError: (e) => toastQueryError(e),
-    onSuccess: () => this.onSuccess(QueryKeyPrefix.UNITS),
+    onSuccess: () => this.onSuccess(),
   }));
 
+  // PRODUCTION
   createHydrogenProductionUnitMutation = injectMutation(() => ({
     mutationFn: (dto: HydrogenProductionUnitInputDto) => this.unitsService.createHydrogenProductionUnit(dto),
     onError: (e) => toastQueryError(e),
-    onSuccess: () => this.onSuccess(QueryKeyPrefix.UNITS),
+    onSuccess: () => this.onSuccess(),
   }));
 
-  private async onSuccess(queryKeyPrefix: QueryKeyPrefix) {
-    await this.queryClient.invalidateQueries({ queryKey: [queryKeyPrefix] });
+  // COMPRESSION
+  createHydrogenCompressionUnitMutation = injectMutation(() => ({
+    mutationFn: (dto: HydrogenCompressorUnitInputDto) => this.unitsService.createHydrogenCompressionUnit(dto),
+    onError: (e) => toastQueryError(e),
+    onSuccess: () => this.onSuccess(),
+  }));
+
+  // BOTTLING
+  createHydrogenBottlingUnitMutation = injectMutation(() => ({
+    mutationFn: (dto: HydrogenBottlingUnitInputDto) => this.unitsService.createHydrogenBottlingUnit(dto),
+    onError: (e) => toastQueryError(e),
+    onSuccess: () => this.onSuccess(),
+  }));
+
+  // TRANSPORT
+  createHydrogenTransportUnitMutation = injectMutation(() => ({
+    mutationFn: (dto: HydrogenTransportUnitInputDto) => this.unitsService.createHydrogenTransportUnit(dto),
+    onError: (e) => toastQueryError(e),
+    onSuccess: () => this.onSuccess(),
+  }));
+
+  // END USE
+  createHydrogenEndUseUnitMutation = injectMutation(() => ({
+    mutationFn: (dto: HydrogenEndUseUnitInputDto) => this.unitsService.createHydrogenEndUseUnit(dto),
+    onError: (e) => toastQueryError(e),
+    onSuccess: () => this.onSuccess(),
+  }));
+
+  private async onSuccess() {
+    await this.queryClient.invalidateQueries({ queryKey: [QueryKeyPrefix.UNITS] });
     toast.success('Successfully created.');
     this.router.navigateByUrl(H2TrustRoutes.UNITS);
   }
@@ -141,6 +183,7 @@ export class CreateUnitComponent {
         ...additional,
         method: additional.method,
         technology: additional.technology,
+        waterConsumptionLitersPerHour: additional.waterConsumptionLitersPerHour,
       } as HydrogenProductionUnitInputDto;
       return this.createHydrogenProductionUnitMutation.mutate(dto);
     }
@@ -161,22 +204,66 @@ export class CreateUnitComponent {
       } as PowerProductionUnitInputDto;
       return this.createPowerProductionUnitMutation.mutate(dto);
     }
+
+    if (type === UnitType.COMPRESSION) {
+      const dto = {
+        ...baseDto,
+      } as HydrogenCompressorUnitInputDto;
+      return this.createHydrogenCompressionUnitMutation.mutate(dto);
+    }
+
+    if (type === UnitType.BOTTLING) {
+      const dto = {
+        ...baseDto,
+      } as HydrogenBottlingUnitInputDto;
+      return this.createHydrogenBottlingUnitMutation.mutate(dto);
+    }
+
+    if (type === UnitType.TRANSPORTATION) {
+      const additional = this.hydrogenTransportForm.value;
+      const dto = {
+        ...baseDto,
+        ...additional,
+      } as HydrogenTransportUnitInputDto;
+      return this.createHydrogenTransportUnitMutation.mutate(dto);
+    }
+
+    if (type === UnitType.END_USE) {
+      const dto = {
+        ...baseDto,
+      } as HydrogenEndUseUnitInputDto;
+      return this.createHydrogenEndUseUnitMutation.mutate(dto);
+    }
   }
 
   private onUnitTypeChange(value: UnitType | null) {
     if (value === UnitType.HYDROGEN_PRODUCTION) {
       this.powerProductionForm.removeValidators(Validators.required);
       this.hydrogenStorageForm.removeValidators(Validators.required);
+      this.hydrogenTransportForm.removeValidators(Validators.required);
       this.selectedForm = this.hydrogenProductionForm;
     } else if (value === UnitType.POWER_PRODUCTION) {
       this.hydrogenProductionForm.removeValidators(Validators.required);
       this.hydrogenStorageForm.removeValidators(Validators.required);
+      this.hydrogenTransportForm.removeValidators(Validators.required);
       this.selectedForm = this.powerProductionForm;
+    } else if (value === UnitType.TRANSPORTATION) {
+      this.hydrogenProductionForm.removeValidators(Validators.required);
+      this.hydrogenStorageForm.removeValidators(Validators.required);
+      this.powerProductionForm.removeValidators(Validators.required);
+      this.selectedForm = this.hydrogenTransportForm;
+    } else if (value === UnitType.HYDROGEN_STORAGE) {
+      this.powerProductionForm.removeValidators(Validators.required);
+      this.hydrogenProductionForm.removeValidators(Validators.required);
+      this.hydrogenTransportForm.removeValidators(Validators.required);
+      this.selectedForm = this.hydrogenStorageForm;
     } else {
       this.powerProductionForm.removeValidators(Validators.required);
       this.hydrogenProductionForm.removeValidators(Validators.required);
-      this.selectedForm = this.hydrogenStorageForm;
+      this.hydrogenStorageForm.removeValidators(Validators.required);
+      this.hydrogenTransportForm.removeValidators(Validators.required);
+      this.selectedForm = null;
     }
-    addValidatorsToFormGroup(this.selectedForm);
+    if (this.selectedForm) addValidatorsToFormGroup(this.selectedForm);
   }
 }

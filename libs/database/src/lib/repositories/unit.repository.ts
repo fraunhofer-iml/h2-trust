@@ -106,6 +106,7 @@ export class UnitRepository {
                 technology: payload.technology,
                 biddingZone: payload.biddingZone,
                 ratedPower: new Prisma.Decimal(payload.ratedPower),
+                waterConsumptionLitersPerHour: new Prisma.Decimal(payload.waterConsumptionLitersPerHour),
               },
             },
           },
