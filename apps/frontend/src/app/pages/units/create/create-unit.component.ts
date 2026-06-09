@@ -185,6 +185,7 @@ export class CreateUnitComponent {
         ...additional,
         method: additional.method,
         technology: additional.technology,
+        waterConsumptionLitersPerHour: additional.waterConsumptionLitersPerHour,
       } as HydrogenProductionUnitInputDto;
       return this.createHydrogenProductionUnitMutation.mutate(dto);
     }
