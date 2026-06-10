@@ -28,7 +28,7 @@ import { BatchType, CsvContentType } from '@h2-trust/domain';
 import { FileDragAndDropComponent } from '../../../../layout/drag-and-drop/file-drag-and-drop.component';
 import { TypeSelectionComponent } from '../../../../layout/type-selection/type-selection.component';
 import { FileTypes } from '../../../../shared/constants/file-types';
-import { H2TrustRoutes } from '../../../../shared/constants/routes';
+import { H2TrustRouterLinks } from '../../../../shared/constants/router-links';
 import { UploadFlowAction } from '../../../../shared/constants/upload-flow-action.enum';
 import { FileSizePipe } from '../../../../shared/pipes/file-size.pipe';
 import { invalidateByQueryPrefixes } from '../../../../shared/queries/query-invalidation';
@@ -71,7 +71,7 @@ import { ModalData } from './loading-modal/modal-data.model';
   templateUrl: './add-production-data.component.html',
 })
 export class AddProductionDataComponent {
-  protected readonly H2TrustRoutes = H2TrustRoutes;
+  protected readonly H2TrustRouterLinks = H2TrustRouterLinks;
   protected readonly FileTypes = FileTypes;
   protected readonly CsvContentType = CsvContentType;
 

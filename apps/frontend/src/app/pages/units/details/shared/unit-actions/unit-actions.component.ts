@@ -11,7 +11,7 @@ import { Component, inject, input, output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { RouterModule } from '@angular/router';
 import { injectMutation } from '@tanstack/angular-query-experimental';
-import { H2TrustRoutes } from '../../../../../shared/constants/routes';
+import { H2TrustRouterLinks } from '../../../../../shared/constants/router-links';
 import { UnitsService } from '../../../../../shared/services/units/units.service';
 import { toastQueryError } from '../../../../../shared/util/query-error-handler';
 
@@ -21,7 +21,7 @@ import { toastQueryError } from '../../../../../shared/util/query-error-handler'
   templateUrl: './unit-actions.component.html',
 })
 export class UnitActionsComponent {
-  protected readonly H2TrustRoutes = H2TrustRoutes;
+  protected readonly H2TrustRouterLinks = H2TrustRouterLinks;
   unit = input.required<{ id: string; active: boolean }>();
 
   statusChange = output<void>();

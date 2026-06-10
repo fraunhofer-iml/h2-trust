@@ -25,6 +25,7 @@ import { ProductionOverviewDto } from '@h2-trust/contracts/dtos';
 import { MeasurementUnit } from '@h2-trust/domain';
 import { PowerTypeChipComponent } from '../../../layout/chips/power-type-chip.component';
 import { RfnboChipComponent } from '../../../layout/chips/rfnbo-chip.component';
+import { H2TrustRouterLinks } from '../../../shared/constants/router-links';
 import { UnitPipe } from '../../../shared/pipes/unit.pipe';
 import { QueryKeyPrefix } from '../../../shared/queries/shared-query-keys';
 import { ProductionService } from '../../../shared/services/production/production.service';
@@ -65,6 +66,7 @@ export const DATE_FORMATS = {
   templateUrl: './production-view.component.html',
 })
 export class ProductionViewComponent implements AfterViewInit {
+  protected readonly H2TrustRouterLinks = H2TrustRouterLinks;
   displayedColumns = [
     'producedAt',
     'powerProducer',

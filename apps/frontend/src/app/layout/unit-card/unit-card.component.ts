@@ -15,6 +15,7 @@ import { MatTooltip } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
 import { UnitOverviewDto } from '@h2-trust/contracts/dtos';
 import { ICONS } from '../../shared/constants/icons';
+import { H2TrustRouterLinks } from '../../shared/constants/router-links';
 import { EnumPipe } from '../../shared/pipes/enum.pipe';
 
 type PartialUnitOverviewDto = Pick<UnitOverviewDto, 'id' | 'name' | 'unitType' | 'active'>;
@@ -25,6 +26,7 @@ type PartialUnitOverviewDto = Pick<UnitOverviewDto, 'id' | 'name' | 'unitType' |
   templateUrl: './unit-card.component.html',
 })
 export class UnitCardComponent {
+  protected readonly H2TrustRouterLinks = H2TrustRouterLinks;
   unit = input.required<PartialUnitOverviewDto>();
   showActions = input<boolean>(true);
   protected readonly ICONS = ICONS;

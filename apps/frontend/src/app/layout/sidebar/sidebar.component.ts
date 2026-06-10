@@ -19,6 +19,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { Router, RouterModule } from '@angular/router';
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { PowerPurchaseAgreementStatus, PpaRequestRole } from '@h2-trust/domain';
+import { H2TrustRouterLinks } from '../../shared/constants/router-links';
 import { H2TrustRoutes } from '../../shared/constants/routes';
 import { UserProfile } from '../../shared/model/user-profile.model';
 import { ppaRequestsQueryOptions } from '../../shared/queries/ppa-requests.query';
@@ -54,7 +55,7 @@ interface SidebarOption {
 })
 export class SidebarComponent implements OnInit {
   protected readonly router = inject(Router);
-  protected readonly H2TrustRoutes = H2TrustRoutes;
+  protected readonly H2TrustRouterLinks = H2TrustRouterLinks;
   protected readonly unitsService = inject(UnitsService);
   protected readonly ppaService = inject(PowerPurchaseAgreementService);
   protected readonly authService = inject(AuthService);

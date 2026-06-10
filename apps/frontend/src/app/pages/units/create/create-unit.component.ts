@@ -32,6 +32,7 @@ import {
 } from '@h2-trust/contracts/dtos';
 import { HydrogenProductionType, HydrogenStorageType, UnitType } from '@h2-trust/domain';
 import { TypeSelectionComponent } from '../../../layout/type-selection/type-selection.component';
+import { H2TrustRouterLinks } from '../../../shared/constants/router-links';
 import { H2TrustRoutes } from '../../../shared/constants/routes';
 import { QueryKeyPrefix } from '../../../shared/queries/shared-query-keys';
 import { CompaniesService } from '../../../shared/services/companies/companies.service';
@@ -85,7 +86,7 @@ export class CreateUnitComponent {
   protected readonly HydrogenProductionType = HydrogenProductionType;
   protected readonly HydrogenStorageType = HydrogenStorageType;
   protected readonly unitTypes = Object.values(UnitType);
-  protected readonly H2TrustRoutes = H2TrustRoutes;
+  protected readonly H2TrustRouterLinks = H2TrustRouterLinks;
 
   unitsService = inject(UnitsService);
   companiesService = inject(CompaniesService);

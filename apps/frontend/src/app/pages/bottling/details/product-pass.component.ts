@@ -15,7 +15,7 @@ import { MeasurementUnit } from '@h2-trust/domain';
 import { EmptyStateComponent } from '../../../layout/empty-state/empty-state.component';
 import { ErrorCardComponent } from '../../../layout/error-card/error-card.component';
 import { LoadingCardComponent } from '../../../layout/loading-card/loading-card.component';
-import { H2TrustRoutes } from '../../../shared/constants/routes';
+import { H2TrustRouterLinks } from '../../../shared/constants/router-links';
 import { EnumPipe } from '../../../shared/pipes/enum.pipe';
 import { UnitPipe } from '../../../shared/pipes/unit.pipe';
 import { QueryKeyPrefix } from '../../../shared/queries/shared-query-keys';
@@ -45,7 +45,7 @@ import { RfnboComplianceComponent } from './rfnbo-compliance/rfnbo-compliance.co
   templateUrl: './product-pass.component.html',
 })
 export class ProductPassComponent {
-  protected readonly H2TrustRoutes = H2TrustRoutes;
+  protected readonly H2TrustRouterLinks = H2TrustRouterLinks;
   bottlingService = inject(BottlingService);
   authService = inject(AuthService);
 

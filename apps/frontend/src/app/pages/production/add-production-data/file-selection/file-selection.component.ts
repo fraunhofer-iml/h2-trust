@@ -28,6 +28,7 @@ import {
   StagingScope,
 } from '@h2-trust/domain';
 import { EmptyStateComponent } from '../../../../layout/empty-state/empty-state.component';
+import { H2TrustRouterLinks } from '../../../../shared/constants/router-links';
 import { H2TrustRoutes } from '../../../../shared/constants/routes';
 import { UnitPipe } from '../../../../shared/pipes/unit.pipe';
 import { invalidateByQueryPrefixes } from '../../../../shared/queries/query-invalidation';
@@ -58,7 +59,7 @@ import { handleMutationWithPromiseToast } from '../../../../shared/util/query-er
   templateUrl: './file-selection.component.html',
 })
 export class FileSelectionComponent {
-  protected readonly H2TrustRoutes = H2TrustRoutes;
+  protected readonly H2TrustRouterLinks = H2TrustRouterLinks;
   protected readonly productionService = inject(ProductionService);
   protected readonly powerPurchaseAgreementService = inject(PowerPurchaseAgreementService);
   protected readonly unitsService = inject(UnitsService);

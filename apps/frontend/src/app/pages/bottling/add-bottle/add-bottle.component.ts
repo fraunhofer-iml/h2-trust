@@ -32,6 +32,7 @@ import { FileDragAndDropComponent } from '../../../layout/drag-and-drop/file-dra
 import { FileCardComponent } from '../../../layout/file-card/file-card.component';
 import { TypeSelectionComponent } from '../../../layout/type-selection/type-selection.component';
 import { FileTypes } from '../../../shared/constants/file-types';
+import { H2TrustRouterLinks } from '../../../shared/constants/router-links';
 import { H2TrustRoutes } from '../../../shared/constants/routes';
 import { EnumPipe } from '../../../shared/pipes/enum.pipe';
 import { UnitPipe } from '../../../shared/pipes/unit.pipe';
@@ -84,7 +85,7 @@ export class AddBottleComponent {
   protected readonly MeasurementUnit = MeasurementUnit;
   protected readonly RfnboType = RfnboType;
   protected readonly bottleTypes = [RfnboType.RFNBO_READY, RfnboType.NON_CERTIFIABLE] as const;
-  protected readonly H2TrustRoutes = H2TrustRoutes;
+  protected readonly H2TrustRouterLinks = H2TrustRouterLinks;
 
   dateDelimiter: Date = new Date();
   uploadedFiles: File[] = [];

@@ -1,8 +1,8 @@
 <div class="flex h-full flex-col gap-4 overflow-auto p-8">
   <div class="flex flex-row items-center gap-2 text-lg text-neutral-500">
-    <a [routerLink]="H2TrustRoutes.UNITS" class="cursor-pointer hover:underline">Units</a>
+    <a [routerLink]="H2TrustRouterLinks.UNITS" class="cursor-pointer hover:underline">Units</a>
     <span class="material-symbols-outlined"> keyboard_arrow_right </span>
-    <a [routerLink]="[H2TrustRoutes.UNITS, id()]" class="cursor-pointer hover:underline">
+    <a [routerLink]="H2TrustRouterLinks.UNIT_DETAILS(id())" class="cursor-pointer hover:underline">
       {{ unitQuery.data()?.name ?? id() }} </a
     ><span class="material-symbols-outlined"> keyboard_arrow_right </span>
     Edit
@@ -28,12 +28,12 @@
     }
 
     <div class="relative flex w-full justify-end gap-2 rounded-md bg-white p-4">
-      <a matButton="outlined" [routerLink]="[H2TrustRoutes.UNITS, unit.id]">Cancel</a>
+      <a matButton="outlined" [routerLink]="H2TrustRouterLinks.UNIT_DETAILS(unit.id)">Cancel</a>
       <button matButton="filled" (click)="onSave(unit)">Save</button>
     </div>
   } @else if (unitQuery.isLoading()) {
     <app-loading-card></app-loading-card>
   } @else if (unitQuery.error(); as err) {
-    <app-error-card [error]="err" [routerLink]="H2TrustRoutes.UNITS" class="h-full grow"></app-error-card>
+    <app-error-card [error]="err" [routerLink]="H2TrustRouterLinks.UNITS" class="h-full grow"></app-error-card>
   }
 </div>
