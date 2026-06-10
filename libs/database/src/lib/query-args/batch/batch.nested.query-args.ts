@@ -8,7 +8,6 @@
 
 import { Prisma } from '@prisma/client';
 import { companyFlatQueryArgs } from '../company/company.flat.query-args';
-import { hydrogenStorageUnitNestedQueryArgs } from '../unit';
 import { batchFlatQueryArgs } from './batch.flat.query-args';
 
 export const batchNestedQueryArgs = Prisma.validator<Prisma.BatchDefaultArgs>()({
@@ -16,12 +15,7 @@ export const batchNestedQueryArgs = Prisma.validator<Prisma.BatchDefaultArgs>()(
     owner: companyFlatQueryArgs,
     predecessors: batchFlatQueryArgs,
     successors: batchFlatQueryArgs,
-    hydrogenStorageUnit: hydrogenStorageUnitNestedQueryArgs,
-    batchDetails: {
-      include: {
-        qualityDetails: true,
-      },
-    },
+    qualityDetails: true,
     processStep: true,
   },
 });

@@ -7,12 +7,8 @@
  */
 
 import { ProcessStepEntity, ProofOfOriginPowerBatchEntity } from '@h2-trust/contracts/entities';
-import {
-  PowerProductionTypeEntityFixture,
-  PowerProductionUnitEntityFixture,
-  ProcessStepEntityFixture,
-} from '@h2-trust/contracts/entities/fixtures';
-import { BatchType, EnergySource } from '@h2-trust/domain';
+import { PowerProductionUnitEntityFixture, ProcessStepEntityFixture } from '@h2-trust/contracts/entities/fixtures';
+import { BatchType, PowerProductionType } from '@h2-trust/domain';
 import { buildPowerSupplySubClassifications } from './power-production-classification.assembler';
 
 describe('PowerProductionProofOfOriginAssembler', () => {
@@ -21,7 +17,9 @@ describe('PowerProductionProofOfOriginAssembler', () => {
       // arrange
       const givenSolarPowerProduction = ProcessStepEntityFixture.createPowerProduction({
         executedBy: PowerProductionUnitEntityFixture.create({
-          type: PowerProductionTypeEntityFixture.createSolarEnergy(),
+          specification: {
+            type: PowerProductionType.PHOTOVOLTAIC_SYSTEM,
+          },
         }),
       });
       givenSolarPowerProduction.id = 'solar-production';
@@ -29,7 +27,9 @@ describe('PowerProductionProofOfOriginAssembler', () => {
 
       const givenWindPowerProduction = ProcessStepEntityFixture.createPowerProduction({
         executedBy: PowerProductionUnitEntityFixture.create({
-          type: PowerProductionTypeEntityFixture.createWindEnergy(),
+          specification: {
+            type: PowerProductionType.WIND_TURBINE,
+          },
         }),
       });
       givenWindPowerProduction.id = 'wind-production';
@@ -44,22 +44,24 @@ describe('PowerProductionProofOfOriginAssembler', () => {
       // assert
       expect(actualResult).toHaveLength(2);
 
-      const givenSolarSubClassification = actualResult.find((sc) => sc.name === EnergySource.SOLAR_ENERGY);
+      const givenSolarSubClassification = actualResult.find(
+        (sc) => sc.name === PowerProductionType.PHOTOVOLTAIC_SYSTEM,
+      );
       expect(givenSolarSubClassification).toBeDefined();
       expect(givenSolarSubClassification.classificationType).toBe(BatchType.POWER);
       expect(givenSolarSubClassification.batches).toHaveLength(1);
 
       const givenSolarBatch = givenSolarSubClassification.batches[0] as ProofOfOriginPowerBatchEntity;
       expect(givenSolarBatch.id).toBe(givenSolarPowerProduction.batch.id);
-      expect(givenSolarBatch.energySource).toBe(EnergySource.SOLAR_ENERGY);
+      expect(givenSolarBatch.powerProductionType).toBe(PowerProductionType.PHOTOVOLTAIC_SYSTEM);
 
-      const givenWindSubClassification = actualResult.find((sc) => sc.name === EnergySource.WIND_ENERGY);
+      const givenWindSubClassification = actualResult.find((sc) => sc.name === PowerProductionType.WIND_TURBINE);
       expect(givenWindSubClassification).toBeDefined();
       expect(givenWindSubClassification.batches).toHaveLength(1);
 
       const givenWindBatch = givenWindSubClassification.batches[0] as ProofOfOriginPowerBatchEntity;
       expect(givenWindBatch.id).toBe(givenWindPowerProduction.batch.id);
-      expect(givenWindBatch.energySource).toBe(EnergySource.WIND_ENERGY);
+      expect(givenSolarBatch.powerProductionType).toBe(PowerProductionType.PHOTOVOLTAIC_SYSTEM);
     });
 
     it('should return an empty array when no power productions are provided', async () => {

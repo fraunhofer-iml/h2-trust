@@ -6,14 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import {
-  BatchEntity,
-  HydrogenProductionUnitEntity,
-  PowerProductionUnitEntity,
-  ProcessStepEntity,
-  ProductionChainEntity,
-  ProvenanceEntity,
-} from '@h2-trust/contracts/entities';
+import { BatchEntity, ProcessStepEntity, ProductionChainEntity, ProvenanceEntity } from '@h2-trust/contracts/entities';
 import { BatchType, ProcessType } from '@h2-trust/domain';
 import { InternalException } from '@h2-trust/exceptions';
 import { assertDefined } from '@h2-trust/utils';
@@ -75,8 +68,8 @@ function buildProductionChains(processSteps: ProcessStepEntity[]): ProductionCha
       rootProduction,
       powerProduction,
       waterConsumption,
-      powerProduction.executedBy as PowerProductionUnitEntity,
-      rootProduction.executedBy as HydrogenProductionUnitEntity,
+      powerProduction.executedBy,
+      rootProduction.executedBy,
     );
   });
 }

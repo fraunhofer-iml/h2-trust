@@ -6,15 +6,15 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { BaseUnitDeepDbType, BaseUnitFlatDbType, BaseUnitNestedDbType } from '@h2-trust/database';
+import { UnitDeepDbType, UnitNestedDbType } from '@h2-trust/database';
 import { UnitType } from '@h2-trust/domain';
 import { AddressEntity } from '../address';
 import { CompanyEntity } from '../company';
+import { UnitSpecificationEntity } from './unit-specification.entity';
 
-export abstract class BaseUnitEntity {
+export class UnitEntity {
   id: string;
   name: string;
-  mastrNumber: string;
   manufacturer: string;
   modelType: string;
   modelNumber: string;
@@ -26,11 +26,11 @@ export abstract class BaseUnitEntity {
   operator: CompanyEntity;
   unitType: UnitType;
   active: boolean;
+  specification: UnitSpecificationEntity;
 
-  protected constructor(
+  constructor(
     id: string,
     name: string,
-    mastrNumber: string,
     manufacturer: string,
     modelType: string,
     modelNumber: string,
@@ -42,10 +42,10 @@ export abstract class BaseUnitEntity {
     operator: CompanyEntity,
     unitType: UnitType,
     active: boolean,
+    specification: UnitSpecificationEntity,
   ) {
     this.id = id;
     this.name = name;
-    this.mastrNumber = mastrNumber;
     this.manufacturer = manufacturer;
     this.modelType = modelType;
     this.modelNumber = modelNumber;
@@ -57,13 +57,13 @@ export abstract class BaseUnitEntity {
     this.operator = operator;
     this.unitType = unitType;
     this.active = active;
+    this.specification = specification;
   }
 
-  static fromDeepBaseUnit(unit: BaseUnitDeepDbType): BaseUnitEntity {
-    return <BaseUnitEntity>{
+  static fromDeepBaseUnit(unit: UnitDeepDbType): UnitEntity {
+    return <UnitEntity>{
       id: unit.id,
       name: unit.name,
-      mastrNumber: unit.mastrNumber,
       manufacturer: unit.manufacturer,
       modelType: unit.modelType,
       modelNumber: unit.modelNumber,
@@ -74,14 +74,15 @@ export abstract class BaseUnitEntity {
       owner: CompanyEntity.fromNestedDatabase(unit.owner),
       operator: CompanyEntity.fromNestedDatabase(unit.operator),
       active: unit.active,
+      unitType: unit.type,
+      specification: UnitSpecificationEntity.fromDatabase(unit),
     };
   }
 
-  static fromNestedBaseUnit(unit: BaseUnitNestedDbType): BaseUnitEntity {
-    return <BaseUnitEntity>{
+  static fromNestedBaseUnit(unit: UnitNestedDbType): UnitEntity {
+    return <UnitEntity>{
       id: unit.id,
       name: unit.name,
-      mastrNumber: unit.mastrNumber,
       manufacturer: unit.manufacturer,
       modelType: unit.modelType,
       modelNumber: unit.modelNumber,
@@ -92,37 +93,21 @@ export abstract class BaseUnitEntity {
       owner: CompanyEntity.fromFlatDatabase(unit.owner),
       operator: CompanyEntity.fromFlatDatabase(unit.operator),
       active: unit.active,
+      unitType: unit.type,
+      specification: UnitSpecificationEntity.fromDatabase(unit),
     };
   }
 
-  static fromFlatBaseUnit(unit: BaseUnitFlatDbType): BaseUnitEntity {
-    return <BaseUnitEntity>{
-      id: unit.id,
-      name: unit.name,
-      mastrNumber: unit.mastrNumber,
-      manufacturer: unit.manufacturer,
-      modelType: unit.modelType,
-      modelNumber: unit.modelNumber,
-      serialNumber: unit.serialNumber,
-      certifiedBy: unit.certifiedBy,
-      commissionedOn: unit.commissionedOn,
-      address: AddressEntity.fromDatabase(unit.address),
-      owner: CompanyEntity.fromBaseType(unit.owner),
-      operator: CompanyEntity.fromBaseType(unit.operator),
-      active: unit.active,
-    };
-  }
-
-  protected static mapOwner(unit: BaseUnitDeepDbType) {
+  protected static mapOwner(unit: UnitDeepDbType) {
     return unit.owner
       ? {
           id: unit.ownerId,
-          hydrogenAgreements: BaseUnitEntity.mapHydrogenAgreements(unit),
+          hydrogenAgreements: UnitEntity.mapHydrogenAgreements(unit),
         }
       : undefined;
   }
 
-  private static mapHydrogenAgreements(unit: BaseUnitDeepDbType) {
+  private static mapHydrogenAgreements(unit: UnitDeepDbType) {
     return (
       unit.owner?.hydrogenAgreements?.map((agreement) => ({
         powerPurchaseAgreementStatus: agreement.status,

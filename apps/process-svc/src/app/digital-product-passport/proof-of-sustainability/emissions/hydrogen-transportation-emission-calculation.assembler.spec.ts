@@ -6,8 +6,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ProvenanceEntity, TransportationDetailsEntity } from '@h2-trust/contracts/entities';
-import { ProcessStepEntityFixture, TransportationDetailsEntityFixture } from '@h2-trust/contracts/entities/fixtures';
+import { ProvenanceEntity } from '@h2-trust/contracts/entities';
+import { ProcessStepEntityFixture } from '@h2-trust/contracts/entities/fixtures';
 import { CalculationTopic } from '@h2-trust/domain';
 import { assembleHydrogenTransportationEmissionCalculations } from './hydrogen-transportation-emission-calculation.assembler';
 
@@ -16,11 +16,7 @@ describe('HydrogenTransportationEmissionCalculationAssembler', () => {
     it('should compute emissions for provenance with hydrogen bottling only when called', () => {
       // arrange
       const givenHydrogenBottling = ProcessStepEntityFixture.createHydrogenBottling();
-      const givenTransportationDetails: TransportationDetailsEntity =
-        TransportationDetailsEntityFixture.createPipeline();
-      const givenHydrogenTransportation = ProcessStepEntityFixture.createHydrogenTransportation({
-        givenTransportationDetails,
-      });
+      const givenHydrogenTransportation = ProcessStepEntityFixture.createHydrogenTransportation();
       const givenProvenance = new ProvenanceEntity(givenHydrogenTransportation, [], givenHydrogenBottling);
 
       // act

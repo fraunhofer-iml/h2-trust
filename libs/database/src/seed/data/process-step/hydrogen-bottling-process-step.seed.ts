@@ -9,7 +9,7 @@
 import { ProcessStep } from '@prisma/client';
 import { ProcessType } from '@h2-trust/domain';
 import { auditTimestamp } from '../audit-timestamp.constant';
-import { HydrogenStorageUnitSeed } from '../unit';
+import { UnitSeed } from '../unit';
 import { UserSeed } from '../user.seed';
 
 export const HydrogenBottlingProcessStepSeed: readonly ProcessStep[] = Object.freeze([
@@ -22,7 +22,7 @@ export const HydrogenBottlingProcessStepSeed: readonly ProcessStep[] = Object.fr
     endedAt: new Date('2025-10-01T20:01:02.000Z'),
     batchId: 'batch-hydrogen-bottled-0',
     userId: UserSeed[1].id,
-    unitId: HydrogenStorageUnitSeed[0].id,
+    unitId: UnitSeed[5].id,
   },
   {
     id: 'process-step-hydrogen-bottling-1',
@@ -33,7 +33,7 @@ export const HydrogenBottlingProcessStepSeed: readonly ProcessStep[] = Object.fr
     endedAt: new Date('2025-10-03T13:11:41.000Z'),
     batchId: 'batch-hydrogen-bottled-1',
     userId: UserSeed[1].id,
-    unitId: HydrogenStorageUnitSeed[0].id,
+    unitId: UnitSeed[5].id,
   },
   {
     id: 'process-step-hydrogen-bottling-2',
@@ -44,6 +44,6 @@ export const HydrogenBottlingProcessStepSeed: readonly ProcessStep[] = Object.fr
     endedAt: new Date('2025-10-03T14:12:13.000Z'),
     batchId: 'batch-hydrogen-bottled-2',
     userId: UserSeed[1].id,
-    unitId: HydrogenStorageUnitSeed[0].id,
+    unitId: UnitSeed[5].id,
   },
 ]);

@@ -6,7 +6,7 @@
       <mat-label>Method</mat-label>
       <mat-select formControlName="method">
         <mat-option [value]="HydrogenProductionMethod.ELECTROLYSIS">{{
-          HydrogenProductionMethod.ELECTROLYSIS | enum: 'hydrogenProductionMethod'
+          HydrogenProductionMethod.ELECTROLYSIS | enum: 'hydrogenProductionType'
         }}</mat-option>
       </mat-select> </mat-form-field
     ><mat-form-field appearance="outline">
@@ -28,11 +28,6 @@
     <mat-form-field appearance="outline">
       <mat-label>Rated Power (MW) </mat-label>
       <input matInput placeholder="1000" formControlName="ratedPower" type="number" min="0" />
-    </mat-form-field>
-
-    <mat-form-field appearance="outline">
-      <mat-label>Pressure</mat-label>
-      <input matInput placeholder="1000" formControlName="pressure" type="number" min="0" />
     </mat-form-field>
 
     <mat-form-field appearance="outline">

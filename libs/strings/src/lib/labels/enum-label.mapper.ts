@@ -14,8 +14,8 @@ import {
   EnergySource,
   FuelType,
   GridLevel,
-  HydrogenProductionMethod,
   HydrogenProductionTechnology,
+  HydrogenProductionType,
   HydrogenStorageType,
   MeasurementUnit,
   PowerProductionType,
@@ -23,6 +23,7 @@ import {
   PowerType,
   ProcessType,
   RfnboType,
+  TransportType,
   UnitType,
 } from '@h2-trust/domain';
 
@@ -40,8 +41,8 @@ const GRID_LEVEL_LABELS: Record<GridLevel, string> = {
   [GridLevel.LOW_VOLTAGE]: 'Low Voltage',
 };
 
-const HYDROGEN_PRODUCTION_METHOD_LABELS: Record<HydrogenProductionMethod, string> = {
-  [HydrogenProductionMethod.ELECTROLYSIS]: 'Electrolysis',
+const HYDROGEN_PRODUCTION_METHOD_LABELS: Record<HydrogenProductionType, string> = {
+  [HydrogenProductionType.ELECTROLYSIS]: 'Electrolysis',
 };
 
 const HYDROGEN_PRODUCTION_TECHNOLOGY_LABELS: Record<HydrogenProductionTechnology, string> = {
@@ -58,6 +59,11 @@ const HYDROGEN_STORAGE_TYPE_LABELS: Record<HydrogenStorageType, string> = {
 
 const FUEL_TYPE_LABELS: Record<FuelType, string> = {
   [FuelType.DIESEL]: 'Diesel',
+};
+
+const TRANSPORT_TYPE_LABELS: Record<TransportType, string> = {
+  [TransportType.PIPELINE]: 'Pipeline',
+  [TransportType.TRAILER]: 'Trailer',
 };
 
 const ENERGY_SOURCE_LABELS: Record<EnergySource, string> = {
@@ -133,6 +139,7 @@ const PROCESS_TYPE_LABELS: Record<ProcessType, string> = {
   [ProcessType.HYDROGEN_TRANSPORTATION]: 'Hydrogen Transportation',
   [ProcessType.POWER_PRODUCTION]: 'Power Production',
   [ProcessType.WATER_CONSUMPTION]: 'Water Consumption',
+  [ProcessType.HYDROGEN_STORAGE]: 'Hydrogen Storage',
 };
 
 export function getPowerProductionType(value: PowerProductionType): string {
@@ -143,7 +150,7 @@ export function getGridLevel(value: GridLevel): string {
   return getLabel(value, GRID_LEVEL_LABELS);
 }
 
-export function getHydrogenProductionMethod(value: HydrogenProductionMethod): string {
+export function getHydrogenProductionType(value: HydrogenProductionType): string {
   return getLabel(value, HYDROGEN_PRODUCTION_METHOD_LABELS);
 }
 
@@ -157,6 +164,10 @@ export function getHydrogenStorageType(value: HydrogenStorageType): string {
 
 export function getFuelType(value: FuelType): string {
   return getLabel(value, FUEL_TYPE_LABELS);
+}
+
+export function getTransportType(value: TransportType): string {
+  return getLabel(value, TRANSPORT_TYPE_LABELS);
 }
 
 export function getEnergySource(value: EnergySource): string {

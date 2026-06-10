@@ -8,7 +8,7 @@
 
 import { BatchEntityFixture, ProcessStepEntityFixture } from '@h2-trust/contracts/entities/fixtures';
 import { CreateHydrogenTransportationPayload } from '@h2-trust/contracts/payloads';
-import { FuelType, TransportMode } from '@h2-trust/domain';
+import { FuelType, TransportType } from '@h2-trust/domain';
 
 export const CreateHydrogenTransportationPayloadFixture = {
   create: (overrides: Partial<CreateHydrogenTransportationPayload> = {}): CreateHydrogenTransportationPayload =>
@@ -19,7 +19,7 @@ export const CreateHydrogenTransportationPayloadFixture = {
           id: 'batch-4',
           processStepId: 'process-step-4',
         }),
-      overrides.transportMode ?? TransportMode.TRAILER,
+      overrides.transportMode ?? TransportType.TRAILER,
       overrides.distance ?? 120,
       overrides.fuelType ?? FuelType.DIESEL,
     ),

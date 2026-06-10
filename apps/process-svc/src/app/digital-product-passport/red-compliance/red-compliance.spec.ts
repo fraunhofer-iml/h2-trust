@@ -7,11 +7,10 @@
  */
 
 import {
-  HydrogenProductionUnitEntity,
-  PowerProductionUnitEntity,
   ProcessStepEntity,
   ProductionChainEntity,
   RedComplianceEntity,
+  UnitEntity,
 } from '@h2-trust/contracts/entities';
 import {
   HydrogenProductionUnitEntityFixture,
@@ -67,13 +66,17 @@ describe('RedCompliance', () => {
     it('should return RedComplianceEntity with all flags true when all compliance criteria are met', () => {
       // arrange
       const givenPowerUnit = PowerProductionUnitEntityFixture.create({
-        biddingZone: BiddingZone.DE_LU,
+        specification: {
+          biddingZone: BiddingZone.DE_LU,
+          financialSupportReceived: false,
+        },
         commissionedOn: new Date('2025-01-01'),
-        financialSupportReceived: false,
       });
 
       const givenHydrogenUnit = HydrogenProductionUnitEntityFixture.create({
-        biddingZone: BiddingZone.DE_LU,
+        specification: {
+          biddingZone: BiddingZone.DE_LU,
+        },
         commissionedOn: new Date('2025-01-01'),
       });
       const givenPowerProcessStep = ProcessStepEntityFixture.createPowerProduction({
@@ -99,13 +102,17 @@ describe('RedCompliance', () => {
     it('should return RedComplianceEntity with isGeoCorrelationValid false when units are in different bidding zones', () => {
       // arrange
       const givenPowerUnit = PowerProductionUnitEntityFixture.create({
-        biddingZone: BiddingZone.DE_LU,
+        specification: {
+          biddingZone: BiddingZone.DE_LU,
+          financialSupportReceived: false,
+        },
         commissionedOn: new Date('2025-01-01'),
-        financialSupportReceived: false,
       });
 
       const givenHydrogenUnit = HydrogenProductionUnitEntityFixture.create({
-        biddingZone: BiddingZone.BE,
+        specification: {
+          biddingZone: BiddingZone.BE,
+        },
         commissionedOn: new Date('2025-01-01'),
       });
       const givenPowerProcessStep = ProcessStepEntityFixture.createPowerProduction({
@@ -127,13 +134,17 @@ describe('RedCompliance', () => {
     it('should return RedComplianceEntity with isTimeCorrelationValid false when productions are not within time correlation', () => {
       // arrange
       const givenPowerUnit = PowerProductionUnitEntityFixture.create({
-        biddingZone: BiddingZone.DE_LU,
+        specification: {
+          biddingZone: BiddingZone.DE_LU,
+          financialSupportReceived: false,
+        },
         commissionedOn: new Date('2025-01-01'),
-        financialSupportReceived: false,
       });
 
       const givenHydrogenUnit = HydrogenProductionUnitEntityFixture.create({
-        biddingZone: BiddingZone.DE_LU,
+        specification: {
+          biddingZone: BiddingZone.DE_LU,
+        },
         commissionedOn: new Date('2025-01-01'),
       });
       const givenPowerProcessStep = ProcessStepEntityFixture.createPowerProduction({
@@ -155,13 +166,17 @@ describe('RedCompliance', () => {
     it('should return RedComplianceEntity with isAdditionalityFulfilled false when additionality criterion is not met', () => {
       // arrange
       const givenPowerUnit = PowerProductionUnitEntityFixture.create({
-        biddingZone: BiddingZone.DE_LU,
+        specification: {
+          biddingZone: BiddingZone.DE_LU,
+          financialSupportReceived: false,
+        },
         commissionedOn: new Date('2020-01-01'),
-        financialSupportReceived: false,
       });
 
       const givenHydrogenUnit = HydrogenProductionUnitEntityFixture.create({
-        biddingZone: BiddingZone.DE_LU,
+        specification: {
+          biddingZone: BiddingZone.DE_LU,
+        },
         commissionedOn: new Date('2025-01-01'),
       });
       const givenPowerProcessStep = ProcessStepEntityFixture.createPowerProduction({
@@ -183,13 +198,17 @@ describe('RedCompliance', () => {
     it('should return RedComplianceEntity with financialSupportReceived false when financial support was received', () => {
       // arrange
       const givenPowerUnit = PowerProductionUnitEntityFixture.create({
-        biddingZone: BiddingZone.DE_LU,
+        specification: {
+          biddingZone: BiddingZone.DE_LU,
+          financialSupportReceived: true,
+        },
         commissionedOn: new Date('2025-01-01'),
-        financialSupportReceived: true,
       });
 
       const givenHydrogenUnit = HydrogenProductionUnitEntityFixture.create({
-        biddingZone: BiddingZone.DE_LU,
+        specification: {
+          biddingZone: BiddingZone.DE_LU,
+        },
         commissionedOn: new Date('2025-01-01'),
       });
       const givenPowerProcessStep = ProcessStepEntityFixture.createPowerProduction({
@@ -254,12 +273,16 @@ describe('RedCompliance', () => {
     it('should aggregate false values across all production chains when called', () => {
       const givenFullyCompliantChain: ProductionChainEntity = {
         powerProductionUnit: PowerProductionUnitEntityFixture.create({
-          biddingZone: BiddingZone.DE_LU,
+          specification: {
+            biddingZone: BiddingZone.DE_LU,
+            financialSupportReceived: false,
+          },
           commissionedOn: new Date('2025-01-01T00:00:00Z'),
-          financialSupportReceived: false,
         }),
         hydrogenProductionUnit: HydrogenProductionUnitEntityFixture.create({
-          biddingZone: BiddingZone.DE_LU,
+          specification: {
+            biddingZone: BiddingZone.DE_LU,
+          },
           commissionedOn: new Date('2026-01-01T00:00:00Z'),
         }),
         powerProduction: ProcessStepEntityFixture.createPowerProduction({
@@ -271,12 +294,16 @@ describe('RedCompliance', () => {
       } as ProductionChainEntity;
       const givenFailingChain: ProductionChainEntity = {
         powerProductionUnit: PowerProductionUnitEntityFixture.create({
-          biddingZone: BiddingZone.BE,
+          specification: {
+            biddingZone: BiddingZone.BE,
+            financialSupportReceived: true,
+          },
           commissionedOn: new Date('2020-01-01T00:00:00Z'),
-          financialSupportReceived: true,
         }),
         hydrogenProductionUnit: HydrogenProductionUnitEntityFixture.create({
-          biddingZone: BiddingZone.DE_LU,
+          specification: {
+            biddingZone: BiddingZone.DE_LU,
+          },
           commissionedOn: new Date('2026-01-01T00:00:00Z'),
         }),
         powerProduction: ProcessStepEntityFixture.createPowerProduction({
@@ -302,20 +329,20 @@ describe('RedCompliance', () => {
 
   describe('areUnitsInSameBiddingZone', () => {
     it('should return true when both units are in the same zone', () => {
-      const givenPowerUnit = { biddingZone: BiddingZone.DE_LU } as PowerProductionUnitEntity;
-      const givenHydrogenUnit = { biddingZone: BiddingZone.DE_LU } as HydrogenProductionUnitEntity;
+      const givenPowerUnit = { specification: { biddingZone: BiddingZone.DE_LU } } as unknown as UnitEntity;
+      const givenHydrogenUnit = { specification: { biddingZone: BiddingZone.DE_LU } } as unknown as UnitEntity;
       expect(areUnitsInSameBiddingZone(givenPowerUnit, givenHydrogenUnit)).toBe(true);
     });
 
     it('should return false when units are in different zones', () => {
-      const givenPowerUnit = { biddingZone: BiddingZone.DE_LU } as PowerProductionUnitEntity;
-      const givenHydrogenUnit = { biddingZone: BiddingZone.AT } as HydrogenProductionUnitEntity;
+      const givenPowerUnit = { specification: { biddingZone: BiddingZone.DE_LU } } as unknown as UnitEntity;
+      const givenHydrogenUnit = { specification: { biddingZone: BiddingZone.AT } } as unknown as UnitEntity;
       expect(areUnitsInSameBiddingZone(givenPowerUnit, givenHydrogenUnit)).toBe(false);
     });
 
     it('should throw error when a biddingZone is missing', () => {
-      const givenPowerUnit = { biddingZone: null } as unknown as PowerProductionUnitEntity;
-      const givenHydrogenUnit = { biddingZone: BiddingZone.DE_LU } as HydrogenProductionUnitEntity;
+      const givenPowerUnit = { biddingZone: null } as unknown as UnitEntity;
+      const givenHydrogenUnit = { biddingZone: BiddingZone.DE_LU } as unknown as UnitEntity;
       expect(() => areUnitsInSameBiddingZone(givenPowerUnit, givenHydrogenUnit)).toThrow(Error);
     });
   });
@@ -342,28 +369,32 @@ describe('RedCompliance', () => {
 
   describe('meetsAdditionalityCriterion', () => {
     it('should return true when power commissionedOn is within 36 months before hydrogen unit', () => {
-      const givenHydrogen = { commissionedOn: '2024-01-01T00:00:00.000Z' } as unknown as HydrogenProductionUnitEntity;
-      const givenPower = { commissionedOn: '2022-02-01T00:00:00.000Z' } as unknown as PowerProductionUnitEntity; // 23 months before
+      const givenHydrogen = { commissionedOn: '2024-01-01T00:00:00.000Z' } as unknown as unknown as UnitEntity;
+      const givenPower = { commissionedOn: '2022-02-01T00:00:00.000Z' } as unknown as unknown as UnitEntity; // 23 months before
       expect(meetsAdditionalityCriterion(givenPower, givenHydrogen)).toBe(true);
     });
 
     it('should return false when power commissionedOn is before the 36-month limit', () => {
-      const givenHydrogen = { commissionedOn: '2024-01-01T00:00:00.000Z' } as unknown as HydrogenProductionUnitEntity;
-      const givenPower = { commissionedOn: '2019-12-31T00:00:00.000Z' } as unknown as PowerProductionUnitEntity; // > 36 months before
+      const givenHydrogen = { commissionedOn: '2024-01-01T00:00:00.000Z' } as unknown as unknown as UnitEntity;
+      const givenPower = { commissionedOn: '2019-12-31T00:00:00.000Z' } as unknown as unknown as UnitEntity; // > 36 months before
       expect(meetsAdditionalityCriterion(givenPower, givenHydrogen)).toBe(false);
     });
 
     it('should throw error for invalid commissionedOn dates when called', () => {
-      const givenHydrogen = { commissionedOn: 'invalid-date' } as unknown as HydrogenProductionUnitEntity;
-      const givenPower = { commissionedOn: '2023-01-01T00:00:00.000Z' } as unknown as PowerProductionUnitEntity;
+      const givenHydrogen = { commissionedOn: 'invalid-date' } as unknown as unknown as UnitEntity;
+      const givenPower = { commissionedOn: '2023-01-01T00:00:00.000Z' } as unknown as unknown as UnitEntity;
       expect(() => meetsAdditionalityCriterion(givenPower, givenHydrogen)).toThrow(Error);
     });
   });
 
   describe('hasFinancialSupport', () => {
     it('should reflect financialSupportReceived field when called', () => {
-      expect(hasFinancialSupport({ financialSupportReceived: true } as PowerProductionUnitEntity)).toBe(false);
-      expect(hasFinancialSupport({ financialSupportReceived: false } as PowerProductionUnitEntity)).toBe(true);
+      expect(hasFinancialSupport({ specification: { financialSupportReceived: true } } as unknown as UnitEntity)).toBe(
+        false,
+      );
+      expect(hasFinancialSupport({ specification: { financialSupportReceived: false } } as unknown as UnitEntity)).toBe(
+        true,
+      );
     });
   });
 });

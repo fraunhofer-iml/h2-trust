@@ -112,7 +112,7 @@ export class FileSelectionComponent {
   powerPurchaseAgreementsQuery = injectQuery(() => ({
     queryKey: [QueryKeyPrefix.POWER_PURCHASE_AGREEMENTS, PowerPurchaseAgreementStatus.APPROVED],
     queryFn: () => this.powerPurchaseAgreementService.getAgreements(PowerPurchaseAgreementStatus.APPROVED),
-    select: (approvals: PpaDto[]) => approvals.filter((a) => a.energySource !== 'GRID'),
+    select: (approvals: PpaDto[]) => approvals.filter((a) => a.powerProductionType !== 'GRID'),
   }));
 
   storageUnitsQuery = injectQuery(() => hydrogenStorageUnitsQueryOptions(this.unitsService));

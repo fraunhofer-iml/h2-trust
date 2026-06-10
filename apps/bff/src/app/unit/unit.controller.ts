@@ -10,10 +10,18 @@ import { Body, Controller, Get, Param, Patch, Post, Put, Query } from '@nestjs/c
 import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiQuery } from '@nestjs/swagger';
 import { KeycloakUser } from 'nest-keycloak-connect';
 import {
+  HydrogenBottlingUnitDto,
+  HydrogenBottlingUnitInputDto,
+  HydrogenCompressorUnitDto,
+  HydrogenCompressorUnitInputDto,
+  HydrogenEndUseUnitDto,
+  HydrogenEndUseUnitInputDto,
   HydrogenProductionUnitDto,
   HydrogenProductionUnitInputDto,
   HydrogenStorageUnitDto,
   HydrogenStorageUnitInputDto,
+  HydrogenTransportUnitDto,
+  HydrogenTransportUnitInputDto,
   PowerProductionUnitDto,
   PowerProductionUnitInputDto,
   UnitDto,
@@ -99,6 +107,21 @@ export class UnitController {
     return this.unitService.readUnitById(id);
   }
 
+  @Post('hydrogen-transport')
+  @ApiBearerAuth()
+  @ApiOperation({
+    description: 'Create new Unit.',
+  })
+  @ApiOkResponse({
+    description: 'Returns the created unit.',
+  })
+  createHydrogenTransportUnit(
+    @KeycloakUser() authenticatedUser: AuthenticatedKCUser,
+    @Body() dto: HydrogenTransportUnitInputDto,
+  ): Promise<HydrogenTransportUnitDto> {
+    return this.unitService.createHydrogenTransportUnit(dto, authenticatedUser.sub);
+  }
+
   @Post('hydrogen-production')
   @ApiBearerAuth()
   @ApiOperation({
@@ -112,6 +135,51 @@ export class UnitController {
     @Body() dto: HydrogenProductionUnitInputDto,
   ): Promise<HydrogenProductionUnitDto> {
     return this.unitService.createHydrogenProductionUnit(dto, authenticatedUser.sub);
+  }
+
+  @Post('hydrogen-compressor')
+  @ApiBearerAuth()
+  @ApiOperation({
+    description: 'Create new Unit.',
+  })
+  @ApiOkResponse({
+    description: 'Returns the created unit.',
+  })
+  createHydrogenCompressorUnit(
+    @KeycloakUser() authenticatedUser: AuthenticatedKCUser,
+    @Body() dto: HydrogenCompressorUnitInputDto,
+  ): Promise<HydrogenCompressorUnitDto> {
+    return this.unitService.createHydrogenCompressorUnit(dto, authenticatedUser.sub);
+  }
+
+  @Post('hydrogen-bottling')
+  @ApiBearerAuth()
+  @ApiOperation({
+    description: 'Create new Unit.',
+  })
+  @ApiOkResponse({
+    description: 'Returns the created unit.',
+  })
+  createHydrogenBottlingUnit(
+    @KeycloakUser() authenticatedUser: AuthenticatedKCUser,
+    @Body() dto: HydrogenBottlingUnitInputDto,
+  ): Promise<HydrogenBottlingUnitDto> {
+    return this.unitService.createHydrogenBottlingUnit(dto, authenticatedUser.sub);
+  }
+
+  @Post('hydrogen-end-use')
+  @ApiBearerAuth()
+  @ApiOperation({
+    description: 'Create new Unit.',
+  })
+  @ApiOkResponse({
+    description: 'Returns the created unit.',
+  })
+  createHydrogenEndUseUnit(
+    @KeycloakUser() authenticatedUser: AuthenticatedKCUser,
+    @Body() dto: HydrogenEndUseUnitInputDto,
+  ): Promise<HydrogenEndUseUnitDto> {
+    return this.unitService.createHydrogenEndUseUnit(dto, authenticatedUser.sub);
   }
 
   @Patch(':id/active')
@@ -174,5 +242,69 @@ export class UnitController {
     @Body() dto: HydrogenStorageUnitInputDto,
   ): Promise<void> {
     return this.unitService.updateHydrogenStorageUnit(unitId, dto, authenticatedUser.sub);
+  }
+
+  @Put('hydrogen-transport/:id')
+  @ApiBearerAuth()
+  @ApiOperation({
+    description: 'Update a Unit.',
+  })
+  @ApiOkResponse({
+    description: 'Returns the hydrogen transport updated unit.',
+  })
+  updateHydrogenTransportUnit(
+    @KeycloakUser() authenticatedUser: AuthenticatedKCUser,
+    @Param('id') unitId: string,
+    @Body() dto: HydrogenTransportUnitInputDto,
+  ): Promise<void> {
+    return this.unitService.updateHydrogenTransportUnit(unitId, dto, authenticatedUser.sub);
+  }
+
+  @Put('hydrogen-compressor/:id')
+  @ApiBearerAuth()
+  @ApiOperation({
+    description: 'Update a Unit.',
+  })
+  @ApiOkResponse({
+    description: 'Returns the hydrogen compressor updated unit.',
+  })
+  updateHydrogenCompressorUnit(
+    @KeycloakUser() authenticatedUser: AuthenticatedKCUser,
+    @Param('id') unitId: string,
+    @Body() dto: HydrogenCompressorUnitInputDto,
+  ): Promise<void> {
+    return this.unitService.updateHydrogenCompressorUnit(unitId, dto, authenticatedUser.sub);
+  }
+
+  @Put('hydrogen-bottling/:id')
+  @ApiBearerAuth()
+  @ApiOperation({
+    description: 'Update a Unit.',
+  })
+  @ApiOkResponse({
+    description: 'Returns the hydrogen bottling updated unit.',
+  })
+  updateHydrogenBottlingUnit(
+    @KeycloakUser() authenticatedUser: AuthenticatedKCUser,
+    @Param('id') unitId: string,
+    @Body() dto: HydrogenBottlingUnitInputDto,
+  ): Promise<void> {
+    return this.unitService.updateHydrogenBottlingUnit(unitId, dto, authenticatedUser.sub);
+  }
+
+  @Put('hydrogen-end-use/:id')
+  @ApiBearerAuth()
+  @ApiOperation({
+    description: 'Update a Unit.',
+  })
+  @ApiOkResponse({
+    description: 'Returns the hydrogen end use updated unit.',
+  })
+  updateHydrogenEndUseUnit(
+    @KeycloakUser() authenticatedUser: AuthenticatedKCUser,
+    @Param('id') unitId: string,
+    @Body() dto: HydrogenEndUseUnitInputDto,
+  ): Promise<void> {
+    return this.unitService.updateHydrogenEndUseUnit(unitId, dto, authenticatedUser.sub);
   }
 }

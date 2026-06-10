@@ -9,13 +9,8 @@
     <span>Unit Type</span>
     <app-type-selection [types]="unitTypes" [typeControl]="selectedType"></app-type-selection>
   </div>
-  @if (
-    [UnitType.HYDROGEN_PRODUCTION, UnitType.POWER_PRODUCTION, UnitType.HYDROGEN_STORAGE].includes(selectedType.value)
-  ) {
-    <app-base-unit-form [unitForm]="unitForm"></app-base-unit-form>
-  } @else if (selectedType.value) {
-    <div class="rounded-lg bg-white p-4">This unit type is currently not available.</div>
-  }
+
+  <app-base-unit-form [unitForm]="unitForm"></app-base-unit-form>
 
   @if (selectedType.value === UnitType.HYDROGEN_PRODUCTION) {
     <app-hydrogen-production-unit-form
@@ -30,6 +25,12 @@
   @if (selectedType.value === UnitType.HYDROGEN_STORAGE) {
     <app-hydrogen-storage-unit-form [hydrogenStorageForm]="hydrogenStorageForm"></app-hydrogen-storage-unit-form>
   }
+
+  @if (selectedType.value === UnitType.TRANSPORTATION) {
+    <app-hydrogen-transport-unit-form
+      [hydrogenTransportForm]="hydrogenTransportForm"
+    ></app-hydrogen-transport-unit-form>
+  }
   @if (!selectedType.value) {
     <div class="flex flex-col gap-2 rounded-lg bg-white p-4">
       <span>Additional Information</span>
@@ -38,6 +39,6 @@
   }
 
   <div class="flex justify-end rounded-lg bg-white p-4">
-    <button mat-flat-button (click)="save()" [disabled]="unitForm.invalid || selectedForm.invalid">Save</button>
+    <button mat-flat-button (click)="save()" [disabled]="unitForm.invalid || selectedForm?.invalid">Save</button>
   </div>
 </div>

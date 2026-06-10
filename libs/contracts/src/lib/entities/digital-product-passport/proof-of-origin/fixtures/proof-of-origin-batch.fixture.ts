@@ -11,7 +11,7 @@ import {
   ProofOfOriginPowerBatchEntity,
   ProofOfOriginWaterBatchEntity,
 } from '@h2-trust/contracts/entities';
-import { EnergySource, PowerType, ProcessType, RfnboType } from '@h2-trust/domain';
+import { PowerProductionType, PowerType, ProcessType, RfnboType } from '@h2-trust/domain';
 import { HydrogenComponentEntityFixture } from '../../../bottling/fixtures/hydrogen-component.fixture';
 import { ProofOfOriginEmissionEntityFixture } from './proof-of-origin-emission.fixture';
 
@@ -24,7 +24,7 @@ export const ProofOfOriginPowerBatchEntityFixture = {
       overrides.amount ?? 100,
       overrides.producer ?? 'The Power Company',
       overrides.unitId ?? 'power-production-unit-1',
-      overrides.energySource ?? EnergySource.SOLAR_ENERGY,
+      overrides.powerProductionType ?? PowerProductionType.PHOTOVOLTAIC_SYSTEM,
       overrides.accountingPeriodEnd ?? new Date('2026-12-31T23:59:59Z'),
       overrides.powerType ?? PowerType.RENEWABLE,
     ),

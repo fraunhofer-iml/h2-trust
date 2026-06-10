@@ -8,7 +8,7 @@
 
 import { Type } from 'class-transformer';
 import { IsEnum, IsNotEmpty, IsNumber, IsOptional, IsPositive, ValidateIf } from 'class-validator';
-import { FuelType, TransportMode } from '@h2-trust/domain';
+import { FuelType, TransportType } from '@h2-trust/domain';
 import { BatchEntity, ProcessStepEntity } from '../../../../../contracts/src/lib/entities';
 
 export class CreateHydrogenTransportationPayload {
@@ -20,17 +20,17 @@ export class CreateHydrogenTransportationPayload {
   @Type(() => BatchEntity)
   predecessorBatch: BatchEntity;
 
-  @IsEnum(TransportMode)
+  @IsEnum(TransportType)
   @IsNotEmpty()
-  transportMode: TransportMode;
+  transportMode: TransportType;
 
-  @ValidateIf((o) => o.transportMode === TransportMode.TRAILER)
+  @ValidateIf((o) => o.transportMode === TransportType.TRAILER)
   @IsNumber()
   @IsPositive()
   @IsOptional()
   distance?: number;
 
-  @ValidateIf((o) => o.transportMode === TransportMode.TRAILER)
+  @ValidateIf((o) => o.transportMode === TransportType.TRAILER)
   @IsEnum(FuelType)
   @IsOptional()
   fuelType?: FuelType;
@@ -38,7 +38,7 @@ export class CreateHydrogenTransportationPayload {
   constructor(
     processStep: ProcessStepEntity,
     predecessorBatch: BatchEntity,
-    transportMode: TransportMode,
+    transportMode: TransportType,
     distance: number,
     fuelType: FuelType,
   ) {

@@ -9,15 +9,22 @@
 import { Prisma } from '@prisma/client';
 import {
   BaseCreateUnitPayload,
+  CreateHydrogenBottlingUnitPayload,
+  CreateHydrogenCompressorUnitPayload,
+  CreateHydrogenEndUseUnitPayload,
   CreateHydrogenProductionUnitPayload,
   CreateHydrogenStorageUnitPayload,
+  CreateHydrogenTransportUnitPayload,
   CreatePowerProductionUnitPayload,
 } from '@h2-trust/contracts/payloads';
+import { UnitType } from '@h2-trust/domain';
 
-export function buildBaseUnitCreateInput(payload: BaseCreateUnitPayload): Prisma.UnitCreateInput {
-  return Prisma.validator<Prisma.UnitCreateInput>()({
+export function buildBaseUnitCreateInput(
+  payload: BaseCreateUnitPayload,
+  type: UnitType,
+): Omit<Prisma.UnitCreateInput, 'specification'> {
+  return Prisma.validator<Omit<Prisma.UnitCreateInput, 'specification'>>()({
     name: payload.name,
-    mastrNumber: payload.mastrNumber,
     manufacturer: payload.manufacturer,
     modelType: payload.modelType,
     modelNumber: payload.modelNumber,
@@ -39,22 +46,19 @@ export function buildBaseUnitCreateInput(payload: BaseCreateUnitPayload): Prisma
     operator: {
       connect: { id: payload.operatorId },
     },
+    type: type,
   });
 }
 
 export function buildPowerProductionUnitCreateInput(payload: CreatePowerProductionUnitPayload): Prisma.UnitCreateInput {
   return Prisma.validator<Prisma.UnitCreateInput>()({
-    ...buildBaseUnitCreateInput(payload),
-    powerProductionUnit: {
+    ...buildBaseUnitCreateInput(payload, UnitType.POWER_PRODUCTION),
+    specification: {
       create: {
         decommissioningPlannedOn: payload.decommissioningPlannedOn,
-        electricityMeterNumber: payload.electricityMeterNumber,
         ratedPower: new Prisma.Decimal(payload.ratedPower),
-        gridOperator: payload.gridOperator,
-        gridConnectionNumber: payload.gridConnectionNumber,
         financialSupportReceived: payload.financialSupportReceived,
-        type: { connect: { name: payload.powerProductionType } },
-        gridLevel: payload.gridLevel,
+        type: payload.powerProductionType,
         biddingZone: payload.biddingZone,
       },
     },
@@ -65,14 +69,13 @@ export function buildHydrogenProductionUnitCreateInput(
   payload: CreateHydrogenProductionUnitPayload,
 ): Prisma.UnitCreateInput {
   return Prisma.validator<Prisma.UnitCreateInput>()({
-    ...buildBaseUnitCreateInput(payload),
-    hydrogenProductionUnit: {
+    ...buildBaseUnitCreateInput(payload, UnitType.HYDROGEN_PRODUCTION),
+    specification: {
       create: {
-        method: payload.method,
+        type: payload.hydrogenProductionType,
         technology: payload.technology,
         biddingZone: payload.biddingZone,
         ratedPower: new Prisma.Decimal(payload.ratedPower),
-        pressure: new Prisma.Decimal(payload.pressure),
         waterConsumptionLitersPerHour: new Prisma.Decimal(payload.waterConsumptionLitersPerHour),
       },
     },
@@ -81,13 +84,38 @@ export function buildHydrogenProductionUnitCreateInput(
 
 export function buildHydrogenStorageUnitCreateInput(payload: CreateHydrogenStorageUnitPayload): Prisma.UnitCreateInput {
   return Prisma.validator<Prisma.UnitCreateInput>()({
-    ...buildBaseUnitCreateInput(payload),
-    hydrogenStorageUnit: {
+    ...buildBaseUnitCreateInput(payload, UnitType.HYDROGEN_STORAGE),
+    specification: {
       create: {
         capacity: new Prisma.Decimal(payload.capacity),
-        pressure: new Prisma.Decimal(payload.pressure),
-        type: payload.storageType,
+        type: payload.type,
       },
+    },
+  });
+}
+
+export function buildHydrogenTransportUnitCreateInput(
+  payload: CreateHydrogenTransportUnitPayload,
+): Prisma.UnitCreateInput {
+  return Prisma.validator<Prisma.UnitCreateInput>()({
+    ...buildBaseUnitCreateInput(payload, UnitType.TRANSPORTATION),
+    specification: {
+      create: {
+        fuelType: payload.fuelType,
+        type: payload.transportType,
+      },
+    },
+  });
+}
+
+export function buildUnitCreateInputWitEmptySpecification(
+  payload: CreateHydrogenCompressorUnitPayload | CreateHydrogenEndUseUnitPayload | CreateHydrogenBottlingUnitPayload,
+  unitType: UnitType,
+): Prisma.UnitCreateInput {
+  return Prisma.validator<Prisma.UnitCreateInput>()({
+    ...buildBaseUnitCreateInput(payload, unitType),
+    specification: {
+      create: {},
     },
   });
 }

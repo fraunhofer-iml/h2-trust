@@ -10,11 +10,10 @@ import { Logger } from '@nestjs/common';
 import {
   BatchEntity,
   CompanyEntity,
-  ConcreteUnitEntity,
   CreateProductionEntity,
-  HydrogenStorageUnitEntity,
   ProcessStepEntity,
   QualityDetailsEntity,
+  UnitEntity,
   UserEntity,
 } from '@h2-trust/contracts/entities';
 import { BatchType, PowerType, ProcessType, RfnboType } from '@h2-trust/domain';
@@ -26,7 +25,7 @@ const logger = new Logger('ProductionAssembler');
 
 export function assemblePowerProductions(
   entity: CreateProductionEntity,
-  productionUnitsForId: Map<string, ConcreteUnitEntity>,
+  productionUnitsForId: Map<string, UnitEntity>,
 ): ProcessStepEntity[] {
   const powerProductionUnit = productionUnitsForId.get(entity.powerProductionUnitId);
   assertDefined(powerProductionUnit, 'powerProductionUnit');
@@ -49,7 +48,7 @@ export function assemblePowerProductions(
 
 export function assembleWaterConsumptions(
   entity: CreateProductionEntity,
-  productionUnitsForId: Map<string, ConcreteUnitEntity>,
+  productionUnitsForId: Map<string, UnitEntity>,
 ): ProcessStepEntity[] {
   const hydrogenProductionUnit = productionUnitsForId.get(entity.hydrogenProductionUnitId);
   assertDefined(hydrogenProductionUnit, 'hydrogenProductionUnit');
@@ -77,7 +76,7 @@ export function assembleHydrogenProductions(
   entity: CreateProductionEntity,
   powerProductions: ProcessStepEntity[],
   waterConsumptions: ProcessStepEntity[],
-  productionUnitsForId: Map<string, ConcreteUnitEntity>,
+  productionUnitsForId: Map<string, UnitEntity>,
 ): ProcessStepEntity[] {
   const hydrogenProductionUnit = productionUnitsForId.get(entity.hydrogenProductionUnitId);
   assertDefined(hydrogenProductionUnit, 'hydrogenProductionUnit');
@@ -125,14 +124,11 @@ function createProcessStep(accountingPeriod: AccountingPeriod, params: ProcessSt
 
   const { batchParams } = params;
 
-  const hydrogenStorageUnit = batchParams.hydrogenStorageUnitId
-    ? ({ id: batchParams.hydrogenStorageUnitId } as HydrogenStorageUnitEntity)
-    : null;
-
   const qualityDetails: QualityDetailsEntity = new QualityDetailsEntity(
     null,
     RfnboType.NOT_SPECIFIED,
     batchParams.powerType,
+    0,
   );
 
   const batch = new BatchEntity(
@@ -143,7 +139,6 @@ function createProcessStep(accountingPeriod: AccountingPeriod, params: ProcessSt
     accountingPeriod.predecessors,
     [],
     { id: batchParams.owner } as CompanyEntity,
-    hydrogenStorageUnit,
     qualityDetails,
   );
 

@@ -6,16 +6,17 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { BaseUnitEntity } from '@h2-trust/contracts/entities';
+import { UnitEntity } from '@h2-trust/contracts/entities';
 import { UnitType } from '@h2-trust/domain';
 import { AddressDto } from '../address';
 import { CompanyBaseDto } from '../company';
 import { UnitOwnerDto } from './unit-owner.dto';
 
 export abstract class BaseUnitDto {
+  abstract readonly unitType: UnitType;
+
   id: string;
   name: string;
-  mastrNumber: string;
   manufacturer: string;
   modelType: string;
   modelNumber: string;
@@ -25,13 +26,11 @@ export abstract class BaseUnitDto {
   address: AddressDto;
   owner: UnitOwnerDto;
   operator: CompanyBaseDto;
-  unitType: UnitType;
   active: boolean;
 
   protected constructor(
     id: string,
     name: string,
-    mastrNumber: string,
     manufacturer: string,
     modelType: string,
     serialNumber: string,
@@ -41,12 +40,10 @@ export abstract class BaseUnitDto {
     modelNumber: string,
     owner: UnitOwnerDto,
     operator: CompanyBaseDto,
-    unitType: UnitType,
     active: boolean,
   ) {
     this.id = id;
     this.name = name;
-    this.mastrNumber = mastrNumber;
     this.manufacturer = manufacturer;
     this.modelType = modelType;
     this.modelNumber = modelNumber;
@@ -56,15 +53,14 @@ export abstract class BaseUnitDto {
     this.address = address;
     this.owner = owner;
     this.operator = operator;
-    this.unitType = unitType;
+
     this.active = active;
   }
 
-  static fromEntity(unit: BaseUnitEntity): BaseUnitDto {
+  static fromEntity(unit: UnitEntity): BaseUnitDto {
     return {
       id: unit.id,
       name: unit.name,
-      mastrNumber: unit.mastrNumber,
       manufacturer: unit.manufacturer,
       modelType: unit.modelType,
       modelNumber: unit.modelNumber,
@@ -88,8 +84,8 @@ export abstract class BaseUnitDto {
           })) ?? [],
       },
       operator: new CompanyBaseDto(unit.operator.id, unit.operator.name),
-      unitType: unit.unitType,
       active: unit.active,
+      unitType: unit.unitType,
     };
   }
 }

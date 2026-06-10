@@ -7,11 +7,10 @@
  */
 
 import {
-  HydrogenProductionUnitEntity,
-  PowerProductionUnitEntity,
   ProcessStepEntity,
   ProductionChainEntity,
   RedComplianceEntity,
+  UnitEntity,
 } from '@h2-trust/contracts/entities';
 import { BiddingZone } from '@h2-trust/domain';
 import { InternalException } from '@h2-trust/exceptions';
@@ -26,9 +25,8 @@ export function determineRedCompliance(
       'The passed-in power production or hydrogen production do not have an executedBy unit specified.',
     );
   }
-  const powerProductionUnit: PowerProductionUnitEntity = powerProduction.executedBy as PowerProductionUnitEntity;
-  const hydrogenProductionUnit: HydrogenProductionUnitEntity =
-    hydrogenProduction.executedBy as HydrogenProductionUnitEntity;
+  const powerProductionUnit: UnitEntity = powerProduction.executedBy;
+  const hydrogenProductionUnit: UnitEntity = hydrogenProduction.executedBy;
 
   const isGeoCorrelationValid = areUnitsInSameBiddingZone(powerProductionUnit, hydrogenProductionUnit);
   const isTimeCorrelationValid = isWithinTimeCorrelation(powerProduction, hydrogenProduction);
@@ -72,12 +70,9 @@ export function determineTotalRedCompliance(productionChains: ProductionChainEnt
   );
 }
 
-export function areUnitsInSameBiddingZone(
-  powerUnit: PowerProductionUnitEntity,
-  hydrogenUnit: HydrogenProductionUnitEntity,
-): boolean {
-  const powerUnitZone = powerUnit?.biddingZone;
-  const hydrogenUnitZone = hydrogenUnit?.biddingZone;
+export function areUnitsInSameBiddingZone(powerUnit: UnitEntity, hydrogenUnit: UnitEntity): boolean {
+  const powerUnitZone = powerUnit?.specification?.biddingZone;
+  const hydrogenUnitZone = hydrogenUnit?.specification?.biddingZone;
   assertValidEnum(powerUnitZone, BiddingZone, 'BiddingZone');
   assertValidEnum(hydrogenUnitZone, BiddingZone, 'BiddingZone');
   return powerUnitZone === hydrogenUnitZone;
@@ -97,10 +92,7 @@ export function isWithinTimeCorrelation(
   return powerHour === hydrogenHour;
 }
 
-export function meetsAdditionalityCriterion(
-  powerUnit: PowerProductionUnitEntity,
-  hydrogenUnit: HydrogenProductionUnitEntity,
-): boolean {
+export function meetsAdditionalityCriterion(powerUnit: UnitEntity, hydrogenUnit: UnitEntity): boolean {
   const powerCommissioning = toValidDate(powerUnit?.commissionedOn, 'powerUnit.commissionedOn');
   const hydrogenCommissioning = toValidDate(hydrogenUnit?.commissionedOn, 'hydrogenUnit.commissionedOn');
 
@@ -111,7 +103,7 @@ export function meetsAdditionalityCriterion(
   return powerCommissioning >= limitDate;
 }
 
-export function hasFinancialSupport(powerUnit: PowerProductionUnitEntity): boolean {
-  assertBoolean(powerUnit?.financialSupportReceived, 'powerUnit.financialSupportReceived');
-  return !powerUnit.financialSupportReceived;
+export function hasFinancialSupport(powerUnit: UnitEntity): boolean {
+  assertBoolean(powerUnit?.specification?.financialSupportReceived, 'powerUnit.financialSupportReceived');
+  return !powerUnit.specification.financialSupportReceived;
 }

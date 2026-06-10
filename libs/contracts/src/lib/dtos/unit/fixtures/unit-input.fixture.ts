@@ -20,7 +20,6 @@ export const UnitInputDtoFixture = {
     modelType: overrides.modelType ?? 'Fixture Model Type',
     modelNumber: overrides.modelNumber ?? 'Fixture Model Number',
     serialNumber: overrides.serialNumber ?? 'SN-001',
-    mastrNumber: overrides.mastrNumber ?? 'MASTR-001',
     certifiedBy: overrides.certifiedBy ?? 'Fixture Certification Body',
     commissionedOn: overrides.commissionedOn ?? new Date('2024-01-01T00:00:00.000Z'),
     address: overrides.address ?? AddressDtoFixture.create(),

@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { PowerProductionUnitEntity } from '@h2-trust/contracts/entities';
+import { UnitEntity } from '@h2-trust/contracts/entities';
 import { PowerProductionType, UnitType } from '@h2-trust/domain';
 
 export class PowerProductionOverviewDto {
@@ -33,13 +33,13 @@ export class PowerProductionOverviewDto {
     this.active = active;
   }
 
-  static fromEntity(unit: PowerProductionUnitEntity): PowerProductionOverviewDto {
+  static fromEntity(unit: UnitEntity): PowerProductionOverviewDto {
     return {
       id: unit.id,
       name: unit.name,
       unitType: UnitType.POWER_PRODUCTION,
-      ratedPower: unit.ratedPower,
-      typeName: unit.type?.name ?? undefined,
+      ratedPower: unit.specification.ratedPower ?? 0,
+      typeName: unit.specification.type as PowerProductionType,
       active: unit.active,
     };
   }

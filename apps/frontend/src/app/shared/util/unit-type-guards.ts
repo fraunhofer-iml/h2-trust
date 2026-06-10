@@ -7,10 +7,14 @@
  */
 
 import {
+  HydrogenBottlingUnitDto,
+  HydrogenCompressorUnitDto,
+  HydrogenEndUseUnitDto,
   HydrogenProductionOverviewDto,
   HydrogenProductionUnitDto,
   HydrogenStorageOverviewDto,
   HydrogenStorageUnitDto,
+  HydrogenTransportUnitDto,
   PowerProductionOverviewDto,
   PowerProductionUnitDto,
   UnitDto,
@@ -39,4 +43,20 @@ export function isHydrogenStorageUnitDetails(unit: UnitDto): unit is HydrogenSto
 
 export function isPowerProductionUnitDetails(unit: UnitDto): unit is PowerProductionUnitDto {
   return unit.unitType === UnitType.POWER_PRODUCTION;
+}
+
+export function isHydrogenTransportUnitDetails(unit: UnitDto): unit is HydrogenTransportUnitDto {
+  return unit.unitType === UnitType.TRANSPORTATION;
+}
+
+export function isHydrogenBottlingUnitDetails(unit: UnitDto): unit is HydrogenBottlingUnitDto {
+  return unit.unitType === UnitType.BOTTLING;
+}
+
+export function isHydrogenCompressorUnitDetails(unit: UnitDto): unit is HydrogenCompressorUnitDto {
+  return unit.unitType === UnitType.COMPRESSION;
+}
+
+export function isHydrogenEndUseUnitDetails(unit: UnitDto): unit is HydrogenEndUseUnitDto {
+  return unit.unitType === UnitType.END_USE;
 }

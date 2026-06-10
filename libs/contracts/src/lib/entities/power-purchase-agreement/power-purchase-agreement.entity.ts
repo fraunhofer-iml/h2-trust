@@ -11,7 +11,7 @@ import { PowerPurchaseAgreementStatus } from '@h2-trust/domain';
 import { assertValidEnum } from '@h2-trust/utils';
 import { CompanyEntity } from '../company';
 import { PowerPurchaseAgreementDecisionEntity } from '../power-purchase-agreement-decision';
-import { PowerProductionUnitEntity } from '../unit';
+import { UnitEntity } from '../unit';
 import { UserEntity } from '../user';
 
 export class PowerPurchaseAgreementEntity {
@@ -24,7 +24,7 @@ export class PowerPurchaseAgreementEntity {
   creator: UserEntity;
   requestedCompany: CompanyEntity;
   hydrogenProducer: CompanyEntity;
-  powerProductionUnit?: PowerProductionUnitEntity;
+  powerProductionUnit?: UnitEntity;
   decision?: PowerPurchaseAgreementDecisionEntity;
 
   constructor(
@@ -37,7 +37,7 @@ export class PowerPurchaseAgreementEntity {
     hydrogenProducer: CompanyEntity,
     suggestedPowerProductionTypeName: string,
     creator: UserEntity,
-    powerProductionUnit?: PowerProductionUnitEntity,
+    powerProductionUnit?: UnitEntity,
     decision?: PowerPurchaseAgreementDecisionEntity,
   ) {
     this.id = id;
@@ -67,7 +67,7 @@ export class PowerPurchaseAgreementEntity {
       powerPurchaseAgreement.suggestedPowerTypeName,
       UserEntity.fromDeepDatabase(powerPurchaseAgreement.requestingUser),
       powerPurchaseAgreement.powerProductionUnit
-        ? PowerProductionUnitEntity.fromNestedPowerProductionUnit(powerPurchaseAgreement.powerProductionUnit)
+        ? UnitEntity.fromNestedBaseUnit(powerPurchaseAgreement.powerProductionUnit)
         : undefined,
       powerPurchaseAgreement.decision
         ? PowerPurchaseAgreementDecisionEntity.fromDatabase(powerPurchaseAgreement.decision)
@@ -89,7 +89,7 @@ export class PowerPurchaseAgreementEntity {
       powerPurchaseAgreement.suggestedPowerTypeName,
       UserEntity.fromDeepDatabase(powerPurchaseAgreement.requestingUser),
       powerPurchaseAgreement.powerProductionUnit
-        ? PowerProductionUnitEntity.fromNestedPowerProductionUnit(powerPurchaseAgreement.powerProductionUnit)
+        ? UnitEntity.fromNestedBaseUnit(powerPurchaseAgreement.powerProductionUnit)
         : undefined,
     );
   }

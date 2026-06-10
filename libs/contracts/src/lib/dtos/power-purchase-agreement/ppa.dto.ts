@@ -7,7 +7,7 @@
  */
 
 import { PowerPurchaseAgreementEntity } from '@h2-trust/contracts/entities';
-import { EnergySource, PowerPurchaseAgreementStatus } from '@h2-trust/domain';
+import { PowerProductionType, PowerPurchaseAgreementStatus } from '@h2-trust/domain';
 import { CompanyDto } from '../company';
 import { PowerProductionOverviewDto } from '../unit';
 
@@ -16,7 +16,7 @@ export class PpaDto {
   hydrogenProducer: CompanyDto;
   powerProducer: CompanyDto;
   status: PowerPurchaseAgreementStatus;
-  energySource: EnergySource;
+  powerProductionType: PowerProductionType;
   powerProductionUnit?: PowerProductionOverviewDto;
 
   constructor(
@@ -24,7 +24,7 @@ export class PpaDto {
     hydrogenProducer: CompanyDto,
     powerProducer: CompanyDto,
     status: PowerPurchaseAgreementStatus,
-    energySource: EnergySource,
+    powerProductionType: PowerProductionType,
     powerProductionUnit?: PowerProductionOverviewDto,
   ) {
     this.id = id;
@@ -32,7 +32,7 @@ export class PpaDto {
     this.powerProducer = powerProducer;
     this.powerProductionUnit = powerProductionUnit;
     this.status = status;
-    this.energySource = energySource;
+    this.powerProductionType = powerProductionType;
   }
 
   static fromEntity(powerPurchaseAgreement: PowerPurchaseAgreementEntity): PpaDto {
@@ -44,8 +44,8 @@ export class PpaDto {
         ? PowerProductionOverviewDto.fromEntity(powerPurchaseAgreement.powerProductionUnit)
         : undefined,
       status: powerPurchaseAgreement.status,
-      energySource: powerPurchaseAgreement.powerProductionUnit
-        ? powerPurchaseAgreement.powerProductionUnit.type.energySource
+      powerProductionType: powerPurchaseAgreement.powerProductionUnit
+        ? powerPurchaseAgreement.powerProductionUnit.specification.type
         : undefined,
     };
   }

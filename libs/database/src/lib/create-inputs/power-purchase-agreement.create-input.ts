@@ -18,11 +18,7 @@ export function buildPowerPurchaseAgreementCreateData(
     validTo: ppa.validTo,
     validFrom: ppa.validFrom,
     status: PowerPurchaseAgreementStatus.PENDING,
-    suggestedPowerType: {
-      connect: {
-        name: ppa.powerProductionType,
-      },
-    },
+    suggestedPowerTypeName: ppa.powerProductionType,
     hydrogenProducer: {
       connect: {
         id: hydrogenProducerCompanyId,

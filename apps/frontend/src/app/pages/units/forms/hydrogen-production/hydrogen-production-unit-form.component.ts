@@ -14,9 +14,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import {
   BiddingZone,
-  GridLevel,
-  HydrogenProductionMethod,
   HydrogenProductionTechnology,
+  HydrogenProductionType,
   PowerProductionType,
 } from '@h2-trust/domain';
 import { EnumPipe } from '../../../../shared/pipes/enum.pipe';
@@ -36,16 +35,15 @@ import { HydrogenProductionFormGroup } from '../forms';
   templateUrl: './hydrogen-production-unit-form.component.html',
 })
 export class HydrogenProductionUnitFormComponent {
-  protected readonly HydrogenProductionMethod = HydrogenProductionMethod;
+  protected readonly HydrogenProductionMethod = HydrogenProductionType;
 
   availableBiddingZones = Object.values(BiddingZone);
-  availableGridLevels = Object.entries(GridLevel);
   availablePowerProductionType = Object.entries(PowerProductionType);
 
   hydrogenProductionForm = input.required<FormGroup<HydrogenProductionFormGroup>>();
 
-  private readonly H2_PRODUCTION_TYPES: Map<HydrogenProductionMethod, typeof HydrogenProductionTechnology> = new Map([
-    [HydrogenProductionMethod.ELECTROLYSIS, HydrogenProductionTechnology],
+  private readonly H2_PRODUCTION_TYPES: Map<HydrogenProductionType, typeof HydrogenProductionTechnology> = new Map([
+    [HydrogenProductionType.ELECTROLYSIS, HydrogenProductionTechnology],
   ]);
 
   get availableTechnologies() {

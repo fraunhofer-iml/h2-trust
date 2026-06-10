@@ -7,7 +7,6 @@
  */
 
 import {
-  PowerProductionUnitEntity,
   ProcessStepEntity,
   ProofOfSustainabilityEmissionCalculationEntity,
   ProofOfSustainabilityEmissionEntity,
@@ -17,18 +16,19 @@ import {
   CalculationTopic,
   EmissionNumericConstants,
   EmissionStringConstants,
-  EnergySource,
   MeasurementUnit,
+  PowerProductionType,
   PowerType,
   ProcessType,
 } from '@h2-trust/domain';
 import { InternalException } from '@h2-trust/exceptions';
-import { getEnergySource } from '@h2-trust/strings';
+import { getPowerProductionType } from '@h2-trust/strings';
+import { assertValidEnum } from '@h2-trust/utils';
 import { ProofOfSustainabilityEmissionAssembler } from '../proof-of-sustainability-assembler.interface';
 
 export function assemblePowerSupplyEmissionCalculation(
   powerProduction: ProcessStepEntity,
-  energySource: EnergySource,
+  powerProductionType: PowerProductionType,
 ): ProofOfSustainabilityEmissionCalculationEntity {
   if (powerProduction?.type !== ProcessType.POWER_PRODUCTION) {
     throw new InternalException(
@@ -40,7 +40,7 @@ export function assemblePowerSupplyEmissionCalculation(
   const powerInput = `Power Input: ${power} ${MeasurementUnit.KWH}`;
   const powerType: PowerType = powerProduction.batch.qualityDetails.powerType as PowerType;
 
-  const emissionFactorLabel = getEnergySource(energySource);
+  const emissionFactorLabel = getPowerProductionType(powerProductionType);
   const emissionFactor = EmissionNumericConstants.POWER_TYPE_EMISSION_FACTORS[powerType];
   const emissionFactorInput = `Emission Factor ${emissionFactorLabel}: ${emissionFactor} ${MeasurementUnit.G_CO2_PER_KWH}`;
 
@@ -70,8 +70,11 @@ export function computePowerSupplyEmissionCalculations(
       throw new InternalException(`PowerProductionUnit for process step ${powerProduction} not found.`);
     }
 
-    const unit = powerProduction.executedBy as PowerProductionUnitEntity;
-    return assemblePowerSupplyEmissionCalculation(powerProduction, unit.type.energySource);
+    const unit = powerProduction.executedBy;
+
+    assertValidEnum(unit.specification.type, PowerProductionType, 'PowerProductionType');
+
+    return assemblePowerSupplyEmissionCalculation(powerProduction, unit.specification.type);
   });
 }
 

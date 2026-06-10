@@ -11,6 +11,7 @@ import { of } from 'rxjs';
 import { QualityDetailsEntity } from '@h2-trust/contracts/entities';
 import {
   BatchEntityFixture,
+  CompanyEntityFixture,
   HydrogenProductionUnitEntityFixture,
   HydrogenStorageUnitEntityFixture,
   PowerProductionUnitEntityFixture,
@@ -21,7 +22,7 @@ import {
   CreateHydrogenProductionStatisticsPayloadFixture,
   CreateProductionsPayloadFixture,
 } from '@h2-trust/contracts/payloads/fixtures';
-import { EnergySource, PowerType, ProcessType, RfnboType } from '@h2-trust/domain';
+import { PowerProductionType, PowerType, ProcessType, RfnboType } from '@h2-trust/domain';
 import { QUEUE_GENERAL_SVC } from '@h2-trust/messaging';
 import { ProcessStepService } from '../process-step/process-step.service';
 import { ProductionCreationService } from './production-creation.service';
@@ -78,16 +79,17 @@ describe('ProductionService', () => {
       const givenPayload = CreateProductionsPayloadFixture.create();
       const givenPowerProductionUnit = PowerProductionUnitEntityFixture.create({
         id: givenPayload.powerProductionUnitId,
-        owner: { id: 'power-owner-1' },
-        type: {
-          ...PowerProductionUnitEntityFixture.create().type,
-          energySource: EnergySource.SOLAR_ENERGY,
+        owner: CompanyEntityFixture.createPowerProducer({ id: 'power-owner-1' }),
+        specification: {
+          type: PowerProductionType.PHOTOVOLTAIC_SYSTEM,
         },
       });
       const givenHydrogenProductionUnit = HydrogenProductionUnitEntityFixture.create({
         id: givenPayload.hydrogenProductionUnitId,
-        owner: { id: 'hydrogen-owner-1' },
-        waterConsumptionLitersPerHour: 25,
+        owner: CompanyEntityFixture.createHydrogenProducer({ id: 'hydrogen-owner-1' }),
+        specification: {
+          waterConsumptionLitersPerHour: 25,
+        },
       });
       const givenHydrogenStorageUnit = HydrogenStorageUnitEntityFixture.create({
         id: givenPayload.hydrogenStorageUnitId,
@@ -143,16 +145,17 @@ describe('ProductionService', () => {
       });
       const givenPowerProductionUnit = PowerProductionUnitEntityFixture.create({
         id: givenPayload.powerProductionUnitId,
-        owner: { id: 'power-owner-1' },
-        type: {
-          ...PowerProductionUnitEntityFixture.create().type,
-          energySource: EnergySource.GRID,
+        owner: CompanyEntityFixture.createPowerProducer({ id: 'power-owner-1' }),
+        specification: {
+          type: PowerProductionType.GRID,
         },
       });
       const givenHydrogenProductionUnit = HydrogenProductionUnitEntityFixture.create({
         id: givenPayload.hydrogenProductionUnitId,
-        owner: { id: 'hydrogen-owner-1' },
-        waterConsumptionLitersPerHour: 25,
+        owner: CompanyEntityFixture.createHydrogenProducer({ id: 'hydrogen-owner-1' }),
+        specification: {
+          waterConsumptionLitersPerHour: 25,
+        },
       });
       const givenHydrogenStorageUnit = HydrogenStorageUnitEntityFixture.create({
         id: givenPayload.hydrogenStorageUnitId,
@@ -300,7 +303,7 @@ describe('ProductionService', () => {
       const givenPayload = CreateHydrogenProductionStatisticsPayloadFixture.create();
       const givenProcessStep = ProcessStepEntityFixture.createHydrogenProduction({
         batch: BatchEntityFixture.createHydrogenBatch({
-          qualityDetails: new QualityDetailsEntity('quality-details-2', undefined as never, PowerType.RENEWABLE),
+          qualityDetails: new QualityDetailsEntity('quality-details-2', undefined as never, PowerType.RENEWABLE, 0),
         }),
       });
 

@@ -1,0 +1,20 @@
+<div class="flex flex-col gap-2 rounded-lg bg-white p-4">
+  <span>Additional Information</span>
+
+  <div class="grid grid-cols-3 gap-2" [formGroup]="hydrogenTransportForm()">
+    <mat-form-field appearance="outline">
+      <mat-label>Transport Type</mat-label>
+      <mat-select formControlName="transportType">
+        <mat-option [value]="TransportType.PIPELINE">{{ TransportType.PIPELINE | enum: 'transportType' }}</mat-option>
+        <mat-option [value]="TransportType.TRAILER">{{ TransportType.TRAILER | enum: 'transportType' }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Fuel Type</mat-label>
+      <mat-select formControlName="fuelType">
+        <mat-option [value]="FuelType.DIESEL">{{ FuelType.DIESEL | enum: 'fuelType' }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+</div>
