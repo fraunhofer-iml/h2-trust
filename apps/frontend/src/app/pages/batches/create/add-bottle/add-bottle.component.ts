@@ -21,7 +21,6 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTimepickerModule } from '@angular/material/timepicker';
 import { Router, RouterModule } from '@angular/router';
 import { injectMutation, injectQuery, QueryClient } from '@tanstack/angular-query-experimental';
-import { H2TrustRouterLinks } from 'apps/frontend/src/app/shared/constants/router-links';
 import {
   BottlingOverviewDto,
   HydrogenComponentDto,
@@ -33,6 +32,7 @@ import { FileDragAndDropComponent } from '../../../../layout/drag-and-drop/file-
 import { FileCardComponent } from '../../../../layout/file-card/file-card.component';
 import { TypeSelectionComponent } from '../../../../layout/type-selection/type-selection.component';
 import { FileTypes } from '../../../../shared/constants/file-types';
+import { H2TrustRouterLinks } from '../../../../shared/constants/router-links';
 import { H2TrustRoutes } from '../../../../shared/constants/routes';
 import { EnumPipe } from '../../../../shared/pipes/enum.pipe';
 import { UnitPipe } from '../../../../shared/pipes/unit.pipe';
