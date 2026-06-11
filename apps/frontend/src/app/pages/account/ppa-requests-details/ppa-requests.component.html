@@ -1,10 +1,10 @@
-<div class="flex flex-col gap-4 p-8">
-  <div class="flex justify-between">
-    <div class="flx-row flex gap-2 text-neutral-500">
-      <a class="text-lg hover:underline" routerLink="">My Account</a>
-      <span class="material-symbols-outlined"> keyboard_arrow_right </span>
-      <h2 class="text-lg">PPA Requests</h2>
+<div class="flex flex-col gap-4">
+  <div class="flex justify-between rounded-md bg-white p-4 text-sm">
+    <div>
+      <h3 class="text-lg font-semibold text-neutral-600">My PPA Requests</h3>
+      <p class="text-neutral-400">View and manage power purchase agreement requests you have sent or received.</p>
     </div>
+
     @if (roles.isHydrogenProducer()) {
       <button matButton="filled" (click)="openDialog()">Request PPA</button>
     }
@@ -17,7 +17,7 @@
       [error]="ppaRequestsReceivedQuery.error() ?? ppaRequestsSentQuery.error() ?? undefined"
     ></app-error-card>
   } @else {
-    <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start" class="rounded-md" dynamicHeight>
+    <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start" class="rounded-md bg-white px-4 pt-2" dynamicHeight>
       <mat-tab [disabled]="!roles.isPowerProducer()">
         <ng-template mat-tab-label>
           <span class="material-symbols-outlined p-2">markunread_mailbox</span>

@@ -13,7 +13,7 @@ import { KeycloakUser } from 'nest-keycloak-connect';
 import {
   AccountingPeriodMatchingResultDto,
   CsvDocumentIntegrityResultDto,
-  PaginatedProductionDataDto,
+  PaginatedDataDto,
   ProcessedCsvDto,
   ProductionCSVUploadDto,
   ProductionOverviewDto,
@@ -33,10 +33,6 @@ export class ProductionController {
   @ApiBearerAuth()
   @ApiOperation({
     description: "Retrieve all hydrogen productions for the authenticated user's company.",
-  })
-  @ApiOkResponse({
-    description: "Returns a list of all hydrogen productions belonging to the authenticated user's company.",
-    type: [ProductionOverviewDto],
   })
   @ApiQuery({
     name: 'pageNumber',
@@ -74,7 +70,7 @@ export class ProductionController {
     @Query('pageSize') pageSize: number,
     @Query('unitName') unitName: string,
     @Query('month') month: Date,
-  ): Promise<PaginatedProductionDataDto> {
+  ): Promise<PaginatedDataDto<ProductionOverviewDto>> {
     return this.service.readHydrogenProductionsByOwner(authenticatedUser.sub, pageNumber, pageSize, unitName, month);
   }
 

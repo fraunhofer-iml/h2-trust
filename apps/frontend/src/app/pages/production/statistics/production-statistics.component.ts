@@ -9,8 +9,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, input } from '@angular/core';
 import { injectQuery } from '@tanstack/angular-query-experimental';
-import { MeasurementUnit } from '@h2-trust/domain';
-import { ICONS } from '../../../shared/constants/icons';
+import { MeasurementUnit, PowerType, RfnboType } from '@h2-trust/domain';
+import { getHydrogenStatisticsIcon, getPowerStatisticsIcon } from '../../../shared/constants/icons';
 import { QueryKeyPrefix } from '../../../shared/queries/shared-query-keys';
 import { ProductionService } from '../../../shared/services/production/production.service';
 import { FilterModel } from '../model/generated-productions-filter.model';
@@ -23,7 +23,10 @@ import { StatisticsCardComponent } from './statistics-card.component';
 })
 export class ProductionStatisticsComponent {
   readonly MeasurementUnit = MeasurementUnit;
-  readonly ICONS = ICONS;
+  readonly PowerType = PowerType;
+  readonly RfnboType = RfnboType;
+  readonly getPowerStatisticsIcon = getPowerStatisticsIcon;
+  readonly getHydrogenStatisticsIcon = getHydrogenStatisticsIcon;
 
   productionService = inject(ProductionService);
 

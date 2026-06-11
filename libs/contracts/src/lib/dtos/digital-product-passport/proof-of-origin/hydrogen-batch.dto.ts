@@ -8,10 +8,10 @@
 
 import { BatchType, HydrogenProductionType, MeasurementUnit, ProcessType, RfnboType } from '@h2-trust/domain';
 import { HydrogenComponentDto } from '../general-information';
-import { BatchDto } from './batch.dto';
+import { DppBatchDto } from './dpp-batch.dto';
 import { EmissionDto } from './emission.dto';
 
-export class HydrogenBatchDto extends BatchDto {
+export class HydrogenBatchDto extends DppBatchDto {
   producer: string;
   unitId: string;
   typeOfProduction: HydrogenProductionType;

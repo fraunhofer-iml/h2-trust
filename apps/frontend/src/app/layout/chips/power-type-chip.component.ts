@@ -8,7 +8,7 @@
 
 import { Component, computed, input } from '@angular/core';
 import { PowerType } from '@h2-trust/domain';
-import { ICONS } from '../../shared/constants/icons';
+import { getPowerTypeIcon } from '../../shared/constants/icons';
 import { EnumPipe } from '../../shared/pipes/enum.pipe';
 import { StatusChipComponent } from './status-chip.component';
 
@@ -21,26 +21,15 @@ export class PowerTypeChipComponent {
   powerType = input.required<PowerType>();
 
   private readonly chipClassByPowerType = {
-    [PowerType.NOT_SPECIFIED]: 'border-neutral-300 bg-neutral-100 text-neutral-600',
-    [PowerType.NON_RENEWABLE]: 'border-neutral-300 bg-neutral-100 text-neutral-600',
+    [PowerType.NOT_SPECIFIED]: 'border-neutral-200 bg-white text-neutral-600',
+    [PowerType.NON_RENEWABLE]: 'border-neutral-200 bg-neutral-100 text-neutral-700',
     [PowerType.PARTLY_RENEWABLE]:
       'bg-gradient-to-r from-neutral-100 to-secondary-100 text-neutral-700 border-r-secondary-100 border-neutral-200',
-    [PowerType.RENEWABLE]: 'border-secondary-100 bg-secondary-100/60 text-secondary-700',
+    [PowerType.RENEWABLE]: 'border-secondary-200 bg-secondary-100/60 text-secondary-700',
   };
 
   icon = computed(() => {
-    const type = this.powerType();
-
-    switch (type) {
-      case PowerType.NOT_SPECIFIED:
-        return ICONS.POWER.NON_RENEWABLE;
-      case PowerType.NON_RENEWABLE:
-        return ICONS.POWER.NON_RENEWABLE;
-      case PowerType.PARTLY_RENEWABLE:
-        return ICONS.POWER.PARTLY_RENEWABLE;
-      case PowerType.RENEWABLE:
-        return ICONS.POWER.RENEWABLE;
-    }
+    return getPowerTypeIcon(this.powerType());
   });
 
   chipClass = computed(() => {

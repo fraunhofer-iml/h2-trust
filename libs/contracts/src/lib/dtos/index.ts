@@ -7,9 +7,11 @@
  */
 
 export * from './address';
+export * from './batch';
 export * from './company';
 export * from './digital-product-passport';
 export * from './file';
+export * from './pagination';
 export * from './power-purchase-agreement';
 export * from './problem-detail';
 export * from './process-step';

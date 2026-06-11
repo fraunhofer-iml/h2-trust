@@ -17,7 +17,20 @@ export const HYDROGEN_ASSETS_ROUTES: Route[] = [
     path: '',
     component: HydrogenAssetsComponent,
   },
-  { path: 'create', component: CreateUnitComponent },
-  { path: ':id', component: UnitDetailsPageComponent },
-  { path: ':id/edit', component: UnitUpdatePageComponent },
+  { path: 'create', component: CreateUnitComponent, data: { breadcrumb: 'Create' } },
+  {
+    path: ':id',
+    data: { breadcrumb: 'Details' },
+    children: [
+      {
+        path: '',
+        component: UnitDetailsPageComponent,
+      },
+      {
+        path: 'edit',
+        component: UnitUpdatePageComponent,
+        data: { breadcrumb: 'Edit' },
+      },
+    ],
+  },
 ];

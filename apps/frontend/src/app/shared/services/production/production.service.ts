@@ -13,7 +13,7 @@ import {
   AccountingPeriodMatchingResultDto,
   CsvDocumentIntegrityResultDto,
   DownloadFilesDto,
-  PaginatedProductionDataDto,
+  PaginatedDataDto,
   ProcessedCsvDto,
   ProductionOverviewDto,
   ProductionStatisticsDto,
@@ -36,7 +36,7 @@ export class ProductionService {
     params = params.set('pageNumber', pageIndex + 1);
     params = params.set('pageSize', pageSize);
 
-    return lastValueFrom(this.httpClient.get<PaginatedProductionDataDto>(API.PRODUCTION.BASE, { params }));
+    return lastValueFrom(this.httpClient.get<PaginatedDataDto<ProductionOverviewDto>>(API.PRODUCTION.BASE, { params }));
   }
 
   getStatistics({ month, unit }: FilterModel) {

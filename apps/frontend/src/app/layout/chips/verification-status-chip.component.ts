@@ -26,7 +26,7 @@ export class VerificationStatusChipComponent {
   status = input<CsvDocumentIntegrityStatus | undefined>(undefined);
   verifiable = input.required<boolean>();
 
-  private readonly defaultChipClass = 'border-neutral-300 bg-neutral-100 text-neutral-600';
+  private readonly defaultChipClass = 'border-neutral-200 bg-neutral-100 text-neutral-600';
   private readonly defaultIconClass = 'text-neutral-600';
 
   private readonly statusIcons = {
@@ -37,15 +37,15 @@ export class VerificationStatusChipComponent {
 
   private readonly styleByStatus = {
     [CsvDocumentIntegrityStatus.MISMATCH]: {
-      chipClass: 'border-red-600 bg-red-100 text-red-700',
+      chipClass: 'border-red-200 bg-red-100 text-red-700',
       iconClass: 'text-red-700',
     },
     [CsvDocumentIntegrityStatus.FAILED]: {
-      chipClass: 'border-yellow-600 bg-yellow-100 text-yellow-700',
+      chipClass: 'border-yellow-200 bg-yellow-100 text-yellow-700',
       iconClass: 'text-yellow-700',
     },
     [CsvDocumentIntegrityStatus.VERIFIED]: {
-      chipClass: 'border-secondary-100 bg-secondary-100/60 text-secondary-700',
+      chipClass: 'border-secondary-200 bg-secondary-100/60 text-secondary-700',
       iconClass: 'text-secondary-700',
     },
   };

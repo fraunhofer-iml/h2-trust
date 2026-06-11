@@ -10,6 +10,5 @@ export * from './bottling.dto';
 export * from './bottling-overview.dto';
 export * from './classification-type.type';
 export * from './emission-process-step.type';
-export * from './paginated-production-data.dto';
 export * from './production-overview.dto';
 export * from './production-statistics.dto';

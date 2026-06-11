@@ -4,7 +4,7 @@
       <app-statistics-card
         class="h-full grow"
         [config]="{
-          icon: ICONS.POWER.BASE,
+          icon: getPowerStatisticsIcon('BASE'),
           value: data.power.total,
           percentage: null,
           unit: MeasurementUnit.KWH,
@@ -15,7 +15,7 @@
       <app-statistics-card
         class="h-full grow"
         [config]="{
-          icon: ICONS.POWER.RENEWABLE,
+          icon: getPowerStatisticsIcon(PowerType.RENEWABLE),
           value: data.power.renewable,
           percentage: data.power.renewable / data.power.total,
           unit: MeasurementUnit.KWH,
@@ -23,11 +23,11 @@
           theme: 'power-fraction',
         }"
       ></app-statistics-card>
-      <div class="h-[80%] w-[1px] bg-neutral-200"></div>
+      <div class="h-[80%] w-px bg-neutral-200"></div>
       <app-statistics-card
         class="h-full grow"
         [config]="{
-          icon: ICONS.POWER.PARTLY_RENEWABLE,
+          icon: getPowerStatisticsIcon(PowerType.PARTLY_RENEWABLE),
           value: data.power.partlyRenewable,
           percentage: data.power.partlyRenewable / data.power.total,
           unit: MeasurementUnit.KWH,
@@ -35,11 +35,11 @@
           theme: 'power-fraction',
         }"
       ></app-statistics-card>
-      <div class="h-[80%] w-[1px] bg-neutral-200"></div>
+      <div class="h-[80%] w-px bg-neutral-200"></div>
       <app-statistics-card
         class="h-full grow"
         [config]="{
-          icon: ICONS.POWER.NON_RENEWABLE,
+          icon: getPowerStatisticsIcon(PowerType.NON_RENEWABLE),
           value: data.power.nonRenewable,
           percentage: data.power.nonRenewable / data.power.total,
           unit: MeasurementUnit.KWH,
@@ -53,7 +53,7 @@
       <app-statistics-card
         class="h-full grow"
         [config]="{
-          icon: ICONS.HYDROGEN.BASE,
+          icon: getHydrogenStatisticsIcon('BASE'),
           value: data.hydrogen.total,
           percentage: null,
           unit: MeasurementUnit.KG_H2,
@@ -64,7 +64,7 @@
       <app-statistics-card
         class="h-full grow"
         [config]="{
-          icon: ICONS.HYDROGEN.RFNBO_READY,
+          icon: getHydrogenStatisticsIcon(RfnboType.RFNBO_READY),
           value: data.hydrogen.rfnboReady,
           percentage: data.hydrogen.rfnboReady / data.hydrogen.total,
           unit: MeasurementUnit.KG_H2,
@@ -72,11 +72,11 @@
           theme: 'hydrogen-fraction',
         }"
       ></app-statistics-card>
-      <div class="h-[80%] w-[1px] bg-neutral-200"></div>
+      <div class="h-[80%] w-px bg-neutral-200"></div>
       <app-statistics-card
         class="h-full grow"
         [config]="{
-          icon: ICONS.HYDROGEN.NON_CERTIFIABLE,
+          icon: getHydrogenStatisticsIcon(RfnboType.NON_CERTIFIABLE),
           value: data.hydrogen.nonCertifiable,
           percentage: data.hydrogen.nonCertifiable / data.hydrogen.total,
           unit: MeasurementUnit.KG_H2,

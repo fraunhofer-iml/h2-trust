@@ -1,47 +1,43 @@
-<div class="flex flex-col gap-4 p-8">
-  <h2 class="text-lg text-neutral-500">My Account</h2>
-
+<div class="flex flex-col gap-4">
   @if (accountQuery.isLoading()) {
     <app-loading-card></app-loading-card>
   } @else if (accountQuery.isError()) {
     <app-error-card [error]="accountQuery.error()" class="grow"></app-error-card>
   } @else if (accountQuery.data(); as account) {
-    <div class="grid w-full grid-cols-2 gap-4 text-sm">
-      <div class="flex flex-col gap-4 rounded-lg bg-white p-4">
-        <h3 class="font-semibold text-neutral-500">Personal</h3>
-        <div>
-          <span class="text-neutral-400">Name</span>
-          <p>{{ account.name }}</p>
-        </div>
-        <div>
-          <span class="text-neutral-400">Mail</span>
-          <p>{{ account.email }}</p>
-        </div>
+    <div class="rounded-lg bg-white p-5 text-sm">
+      <div class="mb-4">
+        <h3 class="font-semibold text-neutral-600">Profile Information</h3>
       </div>
 
-      <div class="flex flex-col gap-4 rounded-lg bg-white p-4">
-        <h3 class="font-semibold text-neutral-500">Company</h3>
-        <div>
-          <span class="text-neutral-400">Name</span>
-          <p>{{ account.company.name }}</p>
+      <div class="grid grid-cols-1 gap-4 xl:grid-cols-2">
+        <div class="border-primary-200 bg-primary-50 flex flex-col gap-3 rounded-md border p-4">
+          <h4 class="flex items-center gap-2 font-semibold text-neutral-500">
+            <span class="material-symbols-outlined text-primary-600">badge</span>
+            Personal
+          </h4>
+          <p class="text-neutral-700">{{ account.name }}</p>
+          <p class="text-neutral-700">{{ account.email }}</p>
         </div>
-        <div>
-          <span class="text-neutral-400">Address</span>
-          <p>
+
+        <div class="flex flex-col gap-3 rounded-md border border-neutral-200 bg-white p-4">
+          <h4 class="flex items-center gap-2 font-semibold text-neutral-500">
+            <span class="material-symbols-outlined text-neutral-500">business</span>
+            Company
+          </h4>
+          <p class="text-neutral-700">{{ account.company.name }}</p>
+          <p class="text-neutral-700">
             {{ account.company.address.street }}, {{ account.company.address.postalCode }}
             {{ account.company.address.city }}
           </p>
-        </div>
-        <div>
-          <span class="text-neutral-400">MaStR-number</span>
-          <p>{{ account.company.mastrNumber }}</p>
+          <p class="text-neutral-700">{{ account.company.mastrNumber }}</p>
         </div>
       </div>
     </div>
 
-    <div class="flex flex-col gap-2 rounded-lg bg-white p-4">
-      <div class="flex justify-between">
-        <h3 class="font-semibold text-neutral-500">My PPA Requests</h3>
+    <div class="rounded-lg bg-white p-5 text-sm">
+      <div class="mb-4 flex justify-between">
+        <h3 class="font-semibold text-neutral-600">My PPA Requests</h3>
+
         <div class="flex gap-2">
           @if (roles.isHydrogenProducer()) {
             <button matButton="filled" (click)="openDialog()">Request PPA</button>

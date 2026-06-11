@@ -14,20 +14,25 @@ export const appRoutes: Route[] = [
   {
     path: '',
     canActivate: [canActivateAuth],
+    data: { breadcrumb: 'Account' },
     loadChildren: () => import('./pages/account/routes').then((m) => m.ACCOUNT_ROUTES),
   },
   {
     path: H2TrustRoutes.UNITS,
     canActivate: [canActivateAuth],
+    data: { breadcrumb: 'Units' },
     loadChildren: () => import('./pages/units/routes').then((m) => m.HYDROGEN_ASSETS_ROUTES),
-  },
-  {
-    path: H2TrustRoutes.BOTTLING,
-    loadChildren: () => import('./pages/bottling/routes').then((m) => m.BOTTLING_ROUTES),
   },
   {
     path: H2TrustRoutes.PRODUCTION,
     canActivate: [canActivateAuth],
+    data: { breadcrumb: 'Production' },
     loadChildren: () => import('./pages/production/routes').then((m) => m.PRODUCTION_ROUTES),
+  },
+  {
+    path: H2TrustRoutes.BATCHES,
+    canActivate: [canActivateAuth],
+    data: { breadcrumb: 'Batches' },
+    loadChildren: () => import('./pages/batches/routes').then((m) => m.BATCH_ROUTES),
   },
 ];

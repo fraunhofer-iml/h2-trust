@@ -1,0 +1,109 @@
+<div class="flex flex-col gap-2">
+  <div class="gap-2 rounded-lg bg-white p-5">
+    <div class="flex flex-row items-center justify-between">
+      <div>
+        <h2 class="font-semibold text-neutral-600">My Hydrogen Batches</h2>
+        <p class="text-neutral-400">View all your hydrogen Batches here.</p>
+      </div>
+
+      <button matButton="filled" [routerLink]="['create']">
+        <span class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-lg!">add</span> Add Batch
+        </span>
+      </button>
+    </div>
+  </div>
+
+  <div class="flex items-center gap-2 rounded-lg bg-white p-5">
+    <mat-form-field appearance="outline" class="w-lg">
+      <mat-label>Search batch-id</mat-label>
+      <input matInput placeholder="Hydrogen...." [formField]="filterForm.id" />
+      @if (filterForm.id().value()) {
+        <button matSuffix matIconButton aria-label="Clear" (click)="filterForm.id().value.set('')">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="w-sm">
+      <mat-label>Batch Type</mat-label>
+      <mat-select [formField]="filterForm.batchType">
+        @for (batchType of availableBatchTypes; track batchType) {
+          <mat-option [value]="batchType"> {{ batchType | enum: 'processType' }}</mat-option>
+        }
+        <mat-option [value]="null">All</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <div class="flex w-full flex-col gap-2 rounded-lg bg-white p-5">
+    <div class="flex flex-col gap-4">
+      <table mat-table [dataSource]="dataSource">
+        <ng-container matColumnDef="id">
+          <th mat-header-cell *matHeaderCellDef><div class="bold">Batch-Id</div></th>
+          <td mat-cell *matCellDef="let batch">
+            {{ batch.id }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="amount">
+          <th mat-header-cell *matHeaderCellDef><div class="bold">Amount</div></th>
+          <td mat-cell *matCellDef="let batch">
+            {{ batch.amount | unit: MeasurementUnit.KG_H2 }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="createdAt">
+          <th mat-header-cell *matHeaderCellDef><div class="bold">Created at</div></th>
+          <td mat-cell *matCellDef="let batch">
+            {{ batch.createdAt | date: 'medium' }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="batchType">
+          <th mat-header-cell *matHeaderCellDef><div class="bold">Type</div></th>
+          <td mat-cell *matCellDef="let batch">
+            <app-batch-type-chip [type]="batch.batchType"></app-batch-type-chip>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="rfnboType">
+          <th mat-header-cell *matHeaderCellDef><div class="bold">RFNBO Status</div></th>
+          <td mat-cell *matCellDef="let batch">
+            <app-rfnbo-chip [rfnboType]="batch.rfnboType"></app-rfnbo-chip>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="dpp">
+          <th mat-header-cell *matHeaderCellDef><div class="bold"></div></th>
+          <td mat-cell *matCellDef="let batch">
+            <a [routerLink]="batch.id" matIconButton [matTooltip]="'Show DPP'" class="group">
+              <span class="material-symbols-outlined text-neutral-400 group-hover:text-neutral-600"
+                >content_paste_search</span
+              >
+            </a>
+          </td>
+        </ng-container>
+
+        <!-- No data row -->
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell p-4">No data found.</td>
+        </tr>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+    </div>
+
+    <div class="flex flex-col gap-4 rounded-lg bg-white py-1">
+      <mat-paginator
+        [pageSizeOptions]="[5, 10, 25, 100]"
+        [length]="totalItems"
+        [pageSize]="paginationModel().pageSize"
+        [pageIndex]="paginationModel().pageIndex"
+        aria-label="Select page of users"
+        (page)="onPageChange($event)"
+      ></mat-paginator>
+    </div>
+  </div>
+</div>

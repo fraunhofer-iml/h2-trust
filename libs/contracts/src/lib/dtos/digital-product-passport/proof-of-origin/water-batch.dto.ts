@@ -7,11 +7,11 @@
  */
 
 import { BatchType, MeasurementUnit } from '@h2-trust/domain';
-import { BatchDto } from './batch.dto';
+import { DppBatchDto } from './dpp-batch.dto';
 import { EmissionDto } from './emission.dto';
 import { WaterDetailsDto } from './water-details.dto';
 
-export class WaterBatchDto extends BatchDto {
+export class WaterBatchDto extends DppBatchDto {
   deionizedWater: WaterDetailsDto;
 
   constructor(

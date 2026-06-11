@@ -75,7 +75,6 @@ export class ProductionViewComponent implements AfterViewInit {
     'productionUnit',
     'producedAmount',
     'rfnboType',
-    'storageUnit',
   ];
   protected readonly MeasurementUnit = MeasurementUnit;
   dataSource: MatTableDataSource<ProductionOverviewDto> = new MatTableDataSource<ProductionOverviewDto>();
@@ -97,6 +96,7 @@ export class ProductionViewComponent implements AfterViewInit {
   filterForm = form(this.filterModel, (schemaPath) => {
     debounce(schemaPath.unit, 500);
   });
+
   productionQuery = injectQuery(() => ({
     queryKey: [QueryKeyPrefix.PRODUCTIONS, this.filterModel(), this.pagination()],
     queryFn: async () => {

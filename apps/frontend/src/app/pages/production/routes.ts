@@ -14,19 +14,33 @@ import { ProductionFilesComponent } from './uploaded-production-files/production
 
 export const PRODUCTION_ROUTES: Route[] = [
   {
-    path: 'data',
-    component: ProductionViewComponent,
+    path: '',
+    pathMatch: 'full',
+    redirectTo: 'data',
   },
   {
-    path: 'data/select',
-    component: FileSelectionComponent,
+    path: 'data',
+    data: { breadcrumb: 'Data' },
+    children: [
+      {
+        path: '',
+        component: ProductionViewComponent,
+      },
+      {
+        path: 'select',
+        component: FileSelectionComponent,
+        data: { breadcrumb: 'Select File' },
+      },
+    ],
   },
   {
     path: 'files',
     component: ProductionFilesComponent,
+    data: { breadcrumb: 'Uploads' },
   },
   {
     path: 'add',
     component: AddProductionDataComponent,
+    data: { breadcrumb: 'Add Data' },
   },
 ];

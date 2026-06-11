@@ -7,10 +7,10 @@
  */
 
 import { BatchType, MeasurementUnit, PowerProductionType, PowerType } from '@h2-trust/domain';
-import { BatchDto } from './batch.dto';
+import { DppBatchDto } from './dpp-batch.dto';
 import { EmissionDto } from './emission.dto';
 
-export class PowerBatchDto extends BatchDto {
+export class PowerBatchDto extends DppBatchDto {
   producer: string;
   unitId: string;
   powerProductionType: PowerProductionType;

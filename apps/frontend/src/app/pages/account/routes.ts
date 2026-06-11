@@ -18,5 +18,6 @@ export const ACCOUNT_ROUTES: Route[] = [
   {
     path: 'ppa-requests',
     component: PpaRequestsComponent,
+    data: { breadcrumb: 'PPA Requests' },
   },
 ];

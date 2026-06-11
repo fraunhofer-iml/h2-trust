@@ -12,7 +12,7 @@ import { hashBuffer } from '@h2-trust/blockchain';
 import {
   AccountingPeriodMatchingResultDto,
   CsvDocumentIntegrityResultDto,
-  PaginatedProductionDataDto,
+  PaginatedDataDto,
   ProcessedCsvDto,
   ProductionOverviewDto,
   ProductionStatisticsDto,
@@ -112,7 +112,7 @@ describe('ProductionService', () => {
     processSvcMock.send.mockImplementation((_pattern, _payload) => of(expectedPaginated));
 
     // act
-    const actualResult: PaginatedProductionDataDto = await service.readHydrogenProductionsByOwner(
+    const actualResult: PaginatedDataDto<ProductionOverviewDto> = await service.readHydrogenProductionsByOwner(
       givenUserId,
       1,
       10,
@@ -129,7 +129,13 @@ describe('ProductionService', () => {
         new ProductionDataFilter(1, 10, 'Unit A', givenMonth),
       ),
     );
-    expect(actualResult).toEqual(PaginatedProductionDataDto.fromEntity(expectedPaginated));
+    expect(actualResult).toEqual(
+      PaginatedDataDto.fromEntity<ProductionOverviewDto>(
+        expectedPaginated.processSteps.map(ProductionOverviewDto.fromEntity),
+        expectedPaginated.totalAmountOfItems,
+        expectedPaginated.currentPage,
+      ),
+    );
   });
 
   it('should reject when the user company lookup fails while reading hydrogen productions by owner', async () => {

@@ -1,13 +1,4 @@
-<div class="flex h-full flex-col gap-4 overflow-auto p-8">
-  <div class="flex flex-row items-center gap-2 text-lg text-neutral-500">
-    <a [routerLink]="H2TrustRouterLinks.UNITS" class="cursor-pointer hover:underline">Units</a>
-    <span class="material-symbols-outlined"> keyboard_arrow_right </span>
-    <a [routerLink]="H2TrustRouterLinks.UNIT_DETAILS(id())" class="cursor-pointer hover:underline">
-      {{ unitQuery.data()?.name ?? id() }} </a
-    ><span class="material-symbols-outlined"> keyboard_arrow_right </span>
-    Edit
-  </div>
-
+<div class="flex h-full flex-col gap-4">
   @if (unitQuery.data(); as unit) {
     <div class="relative w-full rounded-md bg-white p-4">
       <app-unit-card [unit]="unit" [showActions]="false"></app-unit-card>

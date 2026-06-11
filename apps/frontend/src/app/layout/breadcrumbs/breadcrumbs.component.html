@@ -1,0 +1,28 @@
+@if (breadcrumbs().length > 0) {
+  <div class="pb-4">
+    <div class="flex flex-wrap items-center gap-2 text-sm text-neutral-600">
+      <div class="flex items-center gap-2">
+        <span class="font-medium text-neutral-500">H2-Trust</span>
+        <span class="material-symbols-outlined text-base text-neutral-400">chevron_right</span>
+      </div>
+
+      @for (crumb of breadcrumbs(); track crumb.url; let last = $last) {
+        <div class="flex items-center gap-2">
+          @if (!last) {
+            <a
+              [routerLink]="crumb.url"
+              class="hover:text-primary-600 cursor-pointer transition-colors hover:underline hover:underline-offset-2"
+            >
+              {{ crumb.label }}
+            </a>
+          } @else {
+            <span class="text-neutral-900">{{ crumb.label }}</span>
+          }
+          <span class="material-symbols-outlined text-base text-neutral-400" [class.invisible]="last"
+            >chevron_right</span
+          >
+        </div>
+      }
+    </div>
+  </div>
+}

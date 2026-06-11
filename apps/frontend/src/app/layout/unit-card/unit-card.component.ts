@@ -14,7 +14,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltip } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
 import { UnitOverviewDto } from '@h2-trust/contracts/dtos';
-import { ICONS } from '../../shared/constants/icons';
+import { getUnitIcon } from '../../shared/constants/icons';
 import { H2TrustRouterLinks } from '../../shared/constants/router-links';
 import { EnumPipe } from '../../shared/pipes/enum.pipe';
 
@@ -29,10 +29,9 @@ export class UnitCardComponent {
   protected readonly H2TrustRouterLinks = H2TrustRouterLinks;
   unit = input.required<PartialUnitOverviewDto>();
   showActions = input<boolean>(true);
-  protected readonly ICONS = ICONS;
 
   icon$ = computed(() => {
     const type = this.unit().unitType;
-    return ICONS.UNITS[type];
+    return getUnitIcon(type);
   });
 }
