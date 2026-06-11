@@ -116,7 +116,7 @@ export class AddBottleComponent {
       await this.queryClient.invalidateQueries({
         queryKey: [QueryKeyPrefix.BOTTLING],
       });
-      this.router.navigateByUrl(H2TrustRoutes.BOTTLING);
+      this.router.navigateByUrl(H2TrustRoutes.BATCHES);
     },
   }));
 

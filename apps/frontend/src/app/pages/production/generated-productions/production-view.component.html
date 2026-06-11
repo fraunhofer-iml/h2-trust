@@ -4,7 +4,7 @@
       <h2 class="font-semibold text-neutral-600">Production Data</h2>
       <p class="text-neutral-400">View all Hydrogen productin data and the statistics.</p>
     </div>
-    <a matButton="filled" [routerLink]="'select'">Add Data</a>
+    <a matButton="filled" [routerLink]="H2TrustRouterLinks.PRODUCTION_DATA_SELECT">Add Data</a>
   </div>
 
   <div class="flex w-full items-center justify-between gap-2 rounded-md bg-white p-4">
@@ -37,7 +37,6 @@
         </mat-datepicker>
       </mat-form-field>
     </div>
-    <a matButton="filled" [routerLink]="H2TrustRouterLinks.PRODUCTION_DATA_SELECT">Add Data</a>
   </div>
 
   <div class="flex w-full flex-col gap-2">
@@ -89,10 +88,6 @@
           <td mat-cell *matCellDef="let row">
             <app-power-type-chip [powerType]="row.powerType"></app-power-type-chip>
           </td>
-        </ng-container>
-        <ng-container matColumnDef="storageUnit">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header><div class="bold">Hydrogen Storage Unit</div></th>
-          <td mat-cell *matCellDef="let row">{{ row.storageUnit }}</td>
         </ng-container>
 
         <!-- No data row -->

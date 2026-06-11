@@ -12,7 +12,6 @@ export enum H2TrustRoutes {
   PRODUCTION = 'production',
   FILES = 'files',
   DATA = 'data',
-  BOTTLING = 'bottling',
   BATCHES = 'batches',
   PPA_REQUESTS = 'ppa-requests',
 }

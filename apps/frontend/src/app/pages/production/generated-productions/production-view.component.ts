@@ -75,7 +75,6 @@ export class ProductionViewComponent implements AfterViewInit {
     'productionUnit',
     'producedAmount',
     'rfnboType',
-    'storageUnit',
   ];
   protected readonly MeasurementUnit = MeasurementUnit;
   dataSource: MatTableDataSource<ProductionOverviewDto> = new MatTableDataSource<ProductionOverviewDto>();
