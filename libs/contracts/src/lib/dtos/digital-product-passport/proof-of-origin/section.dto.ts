@@ -16,7 +16,7 @@ import {
   ProofOfOriginSubClassificationEntity,
   ProofOfOriginWaterBatchEntity,
 } from '@h2-trust/contracts/entities';
-import { BatchType, HydrogenProductionMethod, MeasurementUnit, RfnboType } from '@h2-trust/domain';
+import { BatchType, HydrogenProductionType, MeasurementUnit, RfnboType } from '@h2-trust/domain';
 import { getMeasurementUnit } from '@h2-trust/strings';
 import { HydrogenComponentDto } from '../general-information';
 import { ClassificationDto } from './classification.dto';
@@ -80,7 +80,7 @@ export class SectionDto {
       MeasurementUnit.KWH,
       batch.producer ?? '',
       batch.unitId ?? '',
-      batch.energySource,
+      batch.powerProductionType,
       batch.accountingPeriodEnd,
       batch.powerType,
     );
@@ -110,7 +110,7 @@ export class SectionDto {
       MeasurementUnit.KG,
       batch.producer ?? '',
       batch.unitId ?? '',
-      HydrogenProductionMethod.ELECTROLYSIS,
+      HydrogenProductionType.ELECTROLYSIS,
       hydrogenComposition,
       batch.rfnboType ?? RfnboType.NOT_SPECIFIED,
       batch.processStep,

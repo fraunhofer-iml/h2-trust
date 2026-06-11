@@ -27,26 +27,8 @@
       </mat-select>
     </mat-form-field>
     <mat-form-field appearance="outline">
-      <mat-label>Grid Operator</mat-label>
-      <input matInput placeholder="Powernetz GmbH" formControlName="gridOperator" />
-    </mat-form-field>
-    <mat-form-field appearance="outline">
-      <mat-label>Grid Level</mat-label>
-      <mat-select formControlName="gridLevel">
-        @for (level of availableGridLevels; track level) {
-          <mat-option [value]="level[1]">{{ level[1] | enum: 'gridLevel' }}</mat-option>
-        }
-      </mat-select>
-    </mat-form-field>
-    <mat-form-field appearance="outline">
-      <mat-label>Grid Connection Number</mat-label>
-      <input matInput placeholder="DE0012345678901234" formControlName="gridConnectionNumber" /> </mat-form-field
-    ><mat-form-field appearance="outline">
       <mat-label>Rated Power (MW)</mat-label>
-      <input matInput placeholder="50" type="number" formControlName="ratedPower" min="0" /> </mat-form-field
-    ><mat-form-field appearance="outline">
-      <mat-label>Electricity Meter Number</mat-label>
-      <input matInput placeholder="1EMH726364890" formControlName="electricityMeterNumber" />
+      <input matInput placeholder="50" type="number" formControlName="ratedPower" min="0" />
     </mat-form-field>
 
     <section class="flex h-full flex-row items-center gap-2">

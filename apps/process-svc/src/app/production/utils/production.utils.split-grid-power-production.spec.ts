@@ -7,7 +7,7 @@
  */
 
 import { CreateProductionEntity } from '@h2-trust/contracts/entities';
-import { EnergySource, PowerType, RenewableShareInGridMix } from '@h2-trust/domain';
+import { PowerProductionType, PowerType, RenewableShareInGridMix } from '@h2-trust/domain';
 import { splitGridPowerProduction } from './production.utils';
 
 describe('ProductionUtils.splitGridPowerProduction', () => {
@@ -29,7 +29,7 @@ describe('ProductionUtils.splitGridPowerProduction', () => {
     );
 
     // act
-    const actualResult = splitGridPowerProduction(givenCreateProduction, EnergySource.SOLAR_ENERGY);
+    const actualResult = splitGridPowerProduction(givenCreateProduction, PowerProductionType.PHOTOVOLTAIC_SYSTEM);
 
     // assert
     expect(actualResult).toEqual([givenCreateProduction]);
@@ -53,7 +53,7 @@ describe('ProductionUtils.splitGridPowerProduction', () => {
     );
 
     // act
-    const actualResult = splitGridPowerProduction(givenCreateProduction, EnergySource.GRID);
+    const actualResult = splitGridPowerProduction(givenCreateProduction, PowerProductionType.GRID);
 
     // assert
     expect(actualResult).toHaveLength(2);

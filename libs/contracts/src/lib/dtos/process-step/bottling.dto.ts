@@ -9,7 +9,7 @@
 import { Transform } from 'class-transformer';
 import { IsEnum, IsISO8601, IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString, ValidateIf } from 'class-validator';
 import { BatchEntity, CompanyEntity, ProcessStepEntity } from '@h2-trust/contracts/entities';
-import { FuelType, RfnboType, TransportMode } from '@h2-trust/domain';
+import { FuelType, RfnboType, TransportType } from '@h2-trust/domain';
 
 export class BottlingDto {
   @IsNotEmpty()
@@ -42,17 +42,17 @@ export class BottlingDto {
   file?: string;
 
   @IsNotEmpty()
-  @IsEnum(TransportMode)
-  transportMode: TransportMode;
+  @IsEnum(TransportType)
+  transportMode: TransportType;
 
-  @ValidateIf((o) => o.transportMode === TransportMode.TRAILER)
+  @ValidateIf((o) => o.transportMode === TransportType.TRAILER)
   @IsOptional()
   @IsNumber()
   @IsPositive()
   @Transform(({ value }) => Number(value), { toClassOnly: true })
   distance?: number;
 
-  @ValidateIf((o) => o.transportMode === TransportMode.TRAILER)
+  @ValidateIf((o) => o.transportMode === TransportType.TRAILER)
   @IsOptional()
   @IsEnum(FuelType)
   fuelType?: FuelType;
@@ -65,7 +65,7 @@ export class BottlingDto {
     hydrogenStorageUnit: string,
     rfnboType: RfnboType,
     file: string,
-    transportMode: TransportMode,
+    transportMode: TransportType,
     distance: number,
     fuelType: FuelType,
   ) {

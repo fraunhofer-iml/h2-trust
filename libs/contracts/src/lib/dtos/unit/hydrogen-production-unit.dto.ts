@@ -6,25 +6,25 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { HydrogenProductionUnitEntity } from '@h2-trust/contracts/entities';
-import { BiddingZone, HydrogenProductionMethod, HydrogenProductionTechnology, UnitType } from '@h2-trust/domain';
+import { UnitEntity } from '@h2-trust/contracts/entities';
+import { BiddingZone, HydrogenProductionTechnology, HydrogenProductionType, UnitType } from '@h2-trust/domain';
 import { AddressDto } from '../address';
 import { CompanyBaseDto } from '../company';
 import { BaseUnitDto } from './base-unit.dto';
 import { UnitOwnerDto } from './unit-owner.dto';
 
 export class HydrogenProductionUnitDto extends BaseUnitDto {
-  method: HydrogenProductionMethod;
+  method: HydrogenProductionType;
   technology: HydrogenProductionTechnology;
   biddingZone: BiddingZone;
   ratedPower: number;
-  pressure: number;
   waterConsumptionLitersPerHour: number;
+
+  override readonly unitType = UnitType.HYDROGEN_PRODUCTION;
 
   constructor(
     id: string,
     name: string,
-    mastrNumber: string,
     manufacturer: string,
     modelType: string,
     serialNumber: string,
@@ -35,10 +35,8 @@ export class HydrogenProductionUnitDto extends BaseUnitDto {
     modelNumber: string,
     owner: UnitOwnerDto,
     operator: CompanyBaseDto,
-    unitType: UnitType,
     biddingZone: BiddingZone,
-    pressure: number,
-    method: HydrogenProductionMethod,
+    method: HydrogenProductionType,
     technology: HydrogenProductionTechnology,
     waterConsumptionLitersPerHour: number,
     active: boolean,
@@ -46,7 +44,6 @@ export class HydrogenProductionUnitDto extends BaseUnitDto {
     super(
       id,
       name,
-      mastrNumber,
       manufacturer,
       modelType,
       serialNumber,
@@ -56,26 +53,24 @@ export class HydrogenProductionUnitDto extends BaseUnitDto {
       modelNumber,
       owner,
       operator,
-      unitType,
       active,
     );
     this.method = method;
     this.technology = technology;
     this.biddingZone = biddingZone;
     this.ratedPower = ratedPower;
-    this.pressure = pressure;
     this.waterConsumptionLitersPerHour = waterConsumptionLitersPerHour;
   }
 
-  static override fromEntity(unit: HydrogenProductionUnitEntity): HydrogenProductionUnitDto {
+  static override fromEntity(unit: UnitEntity): HydrogenProductionUnitDto {
     return {
       ...BaseUnitDto.fromEntity(unit),
-      method: unit.method,
-      technology: unit.technology,
-      biddingZone: unit.biddingZone,
-      ratedPower: unit.ratedPower,
-      pressure: unit.pressure,
-      waterConsumptionLitersPerHour: unit.waterConsumptionLitersPerHour,
+      unitType: UnitType.HYDROGEN_PRODUCTION,
+      method: unit.specification.type as HydrogenProductionType,
+      technology: unit.specification.technology!,
+      biddingZone: unit.specification.biddingZone!,
+      ratedPower: unit.specification.ratedPower ?? 0,
+      waterConsumptionLitersPerHour: unit.specification.waterConsumptionLitersPerHour ?? 0,
     };
   }
 }

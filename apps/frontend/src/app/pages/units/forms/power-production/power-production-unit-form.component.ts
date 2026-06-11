@@ -15,7 +15,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { BiddingZone, GridLevel, PowerProductionType } from '@h2-trust/domain';
+import { BiddingZone, PowerProductionType } from '@h2-trust/domain';
 import { InfoTooltipComponent } from '../../../../layout/info-tooltip/info-tooltip.component';
 import { RFNBO_CRITERIA } from '../../../../shared/constants/rfnbo-criteria';
 import { EnumPipe } from '../../../../shared/pipes/enum.pipe';
@@ -45,6 +45,5 @@ export class PowerProductionUnitFormComponent {
   powerProductionForm = input.required<FormGroup<PowerProductionFormGroup>>();
 
   availableBiddingZones = Object.values(BiddingZone);
-  availableGridLevels = Object.entries(GridLevel);
   availablePowerProductionType = Object.entries(PowerProductionType);
 }

@@ -20,7 +20,6 @@ export const HydrogenBottlingBatchSeed: readonly Batch[] = Object.freeze([
     amount: new Prisma.Decimal(15),
     active: false,
     ownerId: CompanySeed[1].id,
-    hydrogenStorageUnitId: null,
   },
   {
     id: 'batch-hydrogen-bottled-1',
@@ -30,7 +29,6 @@ export const HydrogenBottlingBatchSeed: readonly Batch[] = Object.freeze([
     amount: new Prisma.Decimal(10),
     active: false,
     ownerId: CompanySeed[1].id,
-    hydrogenStorageUnitId: null,
   },
   {
     id: 'batch-hydrogen-bottled-2',
@@ -40,6 +38,5 @@ export const HydrogenBottlingBatchSeed: readonly Batch[] = Object.freeze([
     amount: new Prisma.Decimal(10),
     active: false,
     ownerId: CompanySeed[1].id,
-    hydrogenStorageUnitId: null,
   },
 ]);

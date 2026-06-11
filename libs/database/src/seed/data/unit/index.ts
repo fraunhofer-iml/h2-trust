@@ -6,8 +6,5 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export * from './hydrogen-production-unit.seed';
-export * from './hydrogen-storage-unit.seed';
-export * from './power-production-type.seed';
-export * from './power-production-unit.seed';
 export * from './unit.seed';
+export * from './unit-specification.seed';

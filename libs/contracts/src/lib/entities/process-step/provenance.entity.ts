@@ -25,11 +25,15 @@ export class ProvenanceEntity {
   }
 
   public getAllPowerProductions(): ProcessStepEntity[] {
-    return this.productionChains.map((productionChain) => productionChain.powerProduction);
+    return this.productionChains
+      .map((productionChain) => productionChain.powerProduction)
+      .filter((powerProduction) => powerProduction !== undefined);
   }
 
   public getAllWaterConsumptions(): ProcessStepEntity[] {
-    return this.productionChains.map((productionChain) => productionChain.waterConsumption);
+    return this.productionChains
+      .map((productionChain) => productionChain.waterConsumption)
+      .filter((powerProduction) => powerProduction !== undefined);
   }
 
   public getAllHydrogenRootProductions(): ProcessStepEntity[] {

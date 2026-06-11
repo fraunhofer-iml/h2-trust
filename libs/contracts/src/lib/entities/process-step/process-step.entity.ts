@@ -11,10 +11,8 @@ import { ProcessType } from '@h2-trust/domain';
 import { assertValidEnum } from '@h2-trust/utils';
 import { BatchEntity } from '../batch';
 import { DocumentEntity } from '../document';
-import { ConcreteUnitEntity } from '../unit';
-import { getSpecificUnit } from '../unit/unit.factory';
+import { UnitEntity } from '../unit';
 import { UserEntity } from '../user';
-import { TransportationDetailsEntity } from './transportation-details.entity';
 
 export class ProcessStepEntity {
   id?: string;
@@ -23,9 +21,8 @@ export class ProcessStepEntity {
   type: ProcessType;
   batch: BatchEntity;
   recordedBy: UserEntity;
-  executedBy: ConcreteUnitEntity;
+  executedBy: UnitEntity;
   documents?: DocumentEntity[];
-  transportationDetails?: TransportationDetailsEntity;
 
   constructor(
     id: string | undefined,
@@ -34,9 +31,8 @@ export class ProcessStepEntity {
     type: ProcessType,
     batch: BatchEntity,
     recordedBy: UserEntity,
-    executedBy: ConcreteUnitEntity,
+    executedBy: UnitEntity,
     documents?: DocumentEntity[],
-    transportationDetails?: TransportationDetailsEntity,
   ) {
     this.id = id;
     this.startedAt = startedAt;
@@ -46,7 +42,6 @@ export class ProcessStepEntity {
     this.recordedBy = recordedBy;
     this.executedBy = executedBy;
     this.documents = documents;
-    this.transportationDetails = transportationDetails;
   }
 
   static fromDeepDatabase(processStep: ProcessStepDeepDbType): ProcessStepEntity {
@@ -58,11 +53,8 @@ export class ProcessStepEntity {
       processStep.type,
       BatchEntity.fromNestedDatabase(processStep.batch),
       UserEntity.fromNestedDatabase(processStep.recordedBy),
-      getSpecificUnit(processStep.executedBy),
+      UnitEntity.fromNestedBaseUnit(processStep.executedBy),
       processStep.documents.map((doc) => DocumentEntity.fromDatabase(doc)),
-      processStep.processStepDetails?.transportationDetails
-        ? TransportationDetailsEntity.fromDatabase(processStep.processStepDetails.transportationDetails)
-        : undefined,
     );
   }
 }

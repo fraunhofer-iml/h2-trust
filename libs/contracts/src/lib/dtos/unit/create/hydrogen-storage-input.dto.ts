@@ -22,11 +22,6 @@ export class HydrogenStorageUnitInputDto extends UnitInputDto {
   @IsNotEmpty()
   capacity: number;
 
-  @IsNumber()
-  @IsPositive()
-  @IsNotEmpty()
-  pressure: number;
-
   constructor(
     type: UnitType,
     name: string,
@@ -36,13 +31,11 @@ export class HydrogenStorageUnitInputDto extends UnitInputDto {
     modelType: string,
     modelNumber: string,
     serialNumber: string,
-    mastrNumber: string,
     certifiedBy: string,
     commissionedOn: Date,
     address: AddressDto,
     storageType: HydrogenStorageType,
     capacity: number,
-    pressure: number,
   ) {
     super(
       type,
@@ -53,14 +46,12 @@ export class HydrogenStorageUnitInputDto extends UnitInputDto {
       modelType,
       modelNumber,
       serialNumber,
-      mastrNumber,
       certifiedBy,
       commissionedOn,
       address,
     );
     this.storageType = storageType;
     this.capacity = capacity;
-    this.pressure = pressure;
   }
 
   static toPayload(
@@ -70,7 +61,6 @@ export class HydrogenStorageUnitInputDto extends UnitInputDto {
   ): CreateHydrogenStorageUnitPayload {
     const payload = new CreateHydrogenStorageUnitPayload(
       dto.name,
-      dto.mastrNumber,
       dto.commissionedOn,
       new AddressPayload(
         dto.address.street,
@@ -82,7 +72,6 @@ export class HydrogenStorageUnitInputDto extends UnitInputDto {
       dto.owner,
       dto.storageType,
       dto.capacity,
-      dto.pressure,
       dto.manufacturer,
       dto.modelType,
       dto.modelNumber,

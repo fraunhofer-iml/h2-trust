@@ -27,7 +27,7 @@ import {
   HydrogenStorageOverviewDto,
   UserDto,
 } from '@h2-trust/contracts/dtos';
-import { FuelType, MeasurementUnit, RfnboType, TransportMode, UnitType } from '@h2-trust/domain';
+import { FuelType, MeasurementUnit, RfnboType, TransportType, UnitType } from '@h2-trust/domain';
 import { FileDragAndDropComponent } from '../../../../layout/drag-and-drop/file-drag-and-drop.component';
 import { FileCardComponent } from '../../../../layout/file-card/file-card.component';
 import { TypeSelectionComponent } from '../../../../layout/type-selection/type-selection.component';
@@ -77,7 +77,7 @@ export class AddBottleComponent {
   private queryClient = inject(QueryClient);
 
   protected readonly FileTypes = FileTypes;
-  protected readonly TransportType = TransportMode;
+  protected readonly TransportType = TransportType;
   protected readonly FuelType = FuelType;
   protected readonly MeasurementUnit = MeasurementUnit;
   protected readonly RfnboType = RfnboType;
@@ -93,7 +93,7 @@ export class AddBottleComponent {
     recipient: new FormControl<UserDto | undefined>(undefined, Validators.required),
     storageUnit: new FormControl<HydrogenStorageOverviewDto | undefined>(undefined, Validators.required),
     type: new FormControl<'NON_CERTIFIABLE' | 'RFNBO_READY' | undefined>(undefined, Validators.required),
-    transportMode: new FormControl<TransportMode | null>(null, Validators.required),
+    transportMode: new FormControl<TransportType | null>(null, Validators.required),
     fuelType: new FormControl<FuelType | null>(null),
     distance: new FormControl<number | null>(null),
   });
@@ -172,13 +172,13 @@ export class AddBottleComponent {
     return pickedDate;
   }
 
-  private onTransportModeChange(transportMode: TransportMode | null) {
+  private onTransportModeChange(transportMode: TransportType | null) {
     if (!transportMode) return;
 
     const fuelTypeControl = this.bottleFormGroup.controls.fuelType;
     const distanceControl = this.bottleFormGroup.controls.distance;
 
-    if (transportMode === TransportMode.TRAILER) {
+    if (transportMode === TransportType.TRAILER) {
       fuelTypeControl.addValidators(Validators.required);
       distanceControl.addValidators([Validators.required, Validators.min(1)]);
     } else {

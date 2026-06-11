@@ -11,14 +11,12 @@ import { ClientProxy } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
 import {
   BatchEntity,
-  ConcreteUnitEntity,
   CreateProductionEntity,
-  HydrogenProductionUnitEntity,
   HydrogenStatisticsEntity,
-  PowerProductionUnitEntity,
   PowerStatisticsEntity,
   ProcessStepEntity,
   ProductionStatisticsEntity,
+  UnitEntity,
 } from '@h2-trust/contracts/entities';
 import {
   CreateHydrogenProductionStatisticsPayload,
@@ -26,7 +24,7 @@ import {
   ReadByIdPayload,
   ReadByIdsPayload,
 } from '@h2-trust/contracts/payloads';
-import { BatchType, PowerType, ProcessType, RfnboType } from '@h2-trust/domain';
+import { BatchType, PowerProductionType, PowerType, ProcessType, RfnboType } from '@h2-trust/domain';
 import { InternalException } from '@h2-trust/exceptions';
 import { QUEUE_GENERAL_SVC, UnitMessagePatterns } from '@h2-trust/messaging';
 import { ProcessStepService } from '../process-step/process-step.service';
@@ -41,28 +39,24 @@ export class ProductionService {
     private readonly processStepService: ProcessStepService,
   ) {}
 
-  private async getProductionUnits(
-    createProductions: CreateProductionEntity[],
-  ): Promise<Map<string, ConcreteUnitEntity>> {
+  private async getProductionUnits(createProductions: CreateProductionEntity[]): Promise<Map<string, UnitEntity>> {
     const productionUnitIds: string[] = createProductions.flatMap((production) => [
       production.hydrogenStorageUnitId,
       production.powerProductionUnitId,
       production.hydrogenProductionUnitId,
     ]);
-    const productionUnits: ConcreteUnitEntity[] = await firstValueFrom(
+    const productionUnits: UnitEntity[] = await firstValueFrom(
       this.generalSvc.send(UnitMessagePatterns.READ_MANY_BY_IDS, new ReadByIdsPayload(productionUnitIds)),
     );
-    return new Map<string, ConcreteUnitEntity>(
-      productionUnits.map((productionUnit) => [productionUnit.id, productionUnit]),
-    );
+    return new Map<string, UnitEntity>(productionUnits.map((productionUnit) => [productionUnit.id, productionUnit]));
   }
 
   async createProductions(payload: CreateProductionsPayload): Promise<ProcessStepEntity[]> {
-    const powerProductionUnit: PowerProductionUnitEntity = await firstValueFrom(
+    const powerProductionUnit: UnitEntity = await firstValueFrom(
       this.generalSvc.send(UnitMessagePatterns.READ_BY_ID, new ReadByIdPayload(payload.powerProductionUnitId)),
     );
 
-    const hydrogenProductionUnit: HydrogenProductionUnitEntity = await firstValueFrom(
+    const hydrogenProductionUnit: UnitEntity = await firstValueFrom(
       this.generalSvc.send(UnitMessagePatterns.READ_BY_ID, new ReadByIdPayload(payload.hydrogenProductionUnitId)),
     );
 
@@ -78,16 +72,15 @@ export class ProductionService {
       payload.hydrogenStorageUnitId,
       powerProductionUnit.owner.id,
       hydrogenProductionUnit.owner.id,
-      hydrogenProductionUnit.waterConsumptionLitersPerHour,
+      hydrogenProductionUnit.specification.waterConsumptionLitersPerHour,
     );
 
     const createProductionEntities: CreateProductionEntity[] = splitGridPowerProduction(
       createProductionEntity,
-      powerProductionUnit.type.energySource,
+      powerProductionUnit.specification.type as PowerProductionType,
     );
 
-    const productionUnitForId: Map<string, ConcreteUnitEntity> =
-      await this.getProductionUnits(createProductionEntities);
+    const productionUnitForId: Map<string, UnitEntity> = await this.getProductionUnits(createProductionEntities);
     return this.productionCreationService.createAndPersistProductions(createProductionEntities, productionUnitForId);
   }
 

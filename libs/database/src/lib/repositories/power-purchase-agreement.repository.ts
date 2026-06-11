@@ -17,6 +17,7 @@ import { PowerPurchaseAgreementStatus, PpaRequestRole } from '@h2-trust/domain';
 import { buildPowerPurchaseAgreementCreateData } from '../create-inputs';
 import { PrismaService } from '../prisma.service';
 import { powerPurchaseAgreementDeepQueryArgs } from '../query-args/power-purchase-agreement/power-purchase-agreement.deep.query-args';
+import { PowerPurchaseAgreementDeepDbType } from '../types';
 import { wrapPrismaError } from './prisma-error.wrapper';
 
 @Injectable()
@@ -39,7 +40,7 @@ export class PowerPurchaseAgreementRepository {
     ppa: CreatePowerPurchaseAgreementsPayload,
     hydrogenProducerCompanyId: string,
   ): Promise<PowerPurchaseAgreementEntity> {
-    const powerPurchaseAgreement = await this.prismaService.powerPurchaseAgreement
+    const powerPurchaseAgreement: PowerPurchaseAgreementDeepDbType = await this.prismaService.powerPurchaseAgreement
       .create({
         data: buildPowerPurchaseAgreementCreateData(ppa, hydrogenProducerCompanyId),
         ...powerPurchaseAgreementDeepQueryArgs,

@@ -7,93 +7,88 @@
  */
 
 import { Injectable } from '@nestjs/common';
+import { UnitEntity } from '@h2-trust/contracts/entities';
 import {
-  BaseUnitEntity,
-  ConcreteUnitEntity,
-  HydrogenProductionUnitEntity,
-  HydrogenStorageUnitEntity,
-  PowerProductionTypeEntity,
-  PowerProductionUnitEntity,
-} from '@h2-trust/contracts/entities';
-import {
+  CreateHydrogenBottlingUnitPayload,
+  CreateHydrogenCompressorUnitPayload,
+  CreateHydrogenEndUseUnitPayload,
   CreateHydrogenProductionUnitPayload,
   CreateHydrogenStorageUnitPayload,
+  CreateHydrogenTransportUnitPayload,
   CreatePowerProductionUnitPayload,
-  ReadByIdPayload,
-  ReadByIdsPayload,
   UpdateUnitStatusPayload,
 } from '@h2-trust/contracts/payloads';
-import { PowerProductionTypeRepository, UnitRepository } from '@h2-trust/database';
+import { UnitRepository } from '@h2-trust/database';
+import { UnitType } from '@h2-trust/domain';
 import { DomainException, ErrorCode } from '@h2-trust/exceptions';
 import { assertDefined } from '@h2-trust/utils';
 
 @Injectable()
 export class UnitService {
-  constructor(
-    private readonly unitRepository: UnitRepository,
-    private readonly powerProductionTypeRepository: PowerProductionTypeRepository,
-  ) {}
+  constructor(private readonly unitRepository: UnitRepository) {}
 
-  readUnitById(id: string): Promise<ConcreteUnitEntity> {
+  readUnitById(id: string): Promise<UnitEntity> {
     return this.unitRepository.findUnitById(id);
   }
 
-  readUnitsByIds(ids: string[]): Promise<ConcreteUnitEntity[]> {
+  readUnitsByIds(ids: string[]): Promise<UnitEntity[]> {
     return this.unitRepository.findUnitsByIds(ids);
   }
 
-  readPowerProductionUnitsByOwnerId(payload: ReadByIdPayload): Promise<PowerProductionUnitEntity[]> {
-    return this.unitRepository.findPowerProductionUnitsByOwnerId(payload.id);
+  readUnitsByOwnerIdAndType(ownerId: string, unitType: UnitType): Promise<UnitEntity[]> {
+    return this.unitRepository.findUnitsByOwnerIdAndType(ownerId, unitType);
   }
 
-  readPowerProductionUnitsByIds(payload: ReadByIdsPayload): Promise<PowerProductionUnitEntity[]> {
-    return this.unitRepository.findPowerProductionUnitsByIds(payload.ids);
-  }
-
-  readHydrogenProductionUnitsByOwnerId(payload: ReadByIdPayload): Promise<HydrogenProductionUnitEntity[]> {
-    return this.unitRepository.findHydrogenProductionUnitsByOwnerId(payload.id);
-  }
-
-  readHydrogenProductionUnitsByIds(payload: ReadByIdsPayload): Promise<HydrogenProductionUnitEntity[]> {
-    return this.unitRepository.findHydrogenProductionUnitsByIds(payload.ids);
-  }
-
-  readHydrogenStorageUnitsByOwnerId(payload: ReadByIdPayload): Promise<HydrogenStorageUnitEntity[]> {
-    return this.unitRepository.findHydrogenStorageUnitsByOwnerId(payload.id);
-  }
-
-  readPowerProductionTypes(): Promise<PowerProductionTypeEntity[]> {
-    return this.powerProductionTypeRepository.findPowerProductionTypes();
-  }
-
-  async updateOrCreateHydrogenProductionUnit(
-    payload: CreateHydrogenProductionUnitPayload,
-  ): Promise<HydrogenProductionUnitEntity> {
+  async updateOrCreateHydrogenProductionUnit(payload: CreateHydrogenProductionUnitPayload): Promise<UnitEntity> {
     if (payload.id) {
       await this.assertOwnership(payload.id, payload.requesterCompanyId);
     }
     return this.unitRepository.updateOrCreateHydrogenProductionUnit(payload);
   }
 
-  async updateOrCreatePowerProductionUnit(
-    payload: CreatePowerProductionUnitPayload,
-  ): Promise<PowerProductionUnitEntity> {
+  async updateOrCreatePowerProductionUnit(payload: CreatePowerProductionUnitPayload): Promise<UnitEntity> {
     if (payload.id) {
       await this.assertOwnership(payload.id, payload.requesterCompanyId);
     }
     return this.unitRepository.updateOrCreatePowerProductionUnit(payload);
   }
 
-  async updateOrCreateHydrogenStorageUnit(
-    payload: CreateHydrogenStorageUnitPayload,
-  ): Promise<HydrogenStorageUnitEntity> {
+  async updateOrCreateHydrogenStorageUnit(payload: CreateHydrogenStorageUnitPayload): Promise<UnitEntity> {
     if (payload.id) {
       await this.assertOwnership(payload.id, payload.requesterCompanyId);
     }
     return this.unitRepository.updateOrCreateHydrogenStorageUnit(payload);
   }
 
-  async updateUnitStatus(payload: UpdateUnitStatusPayload): Promise<BaseUnitEntity> {
+  async updateOrCreateHydrogenTransportUnit(payload: CreateHydrogenTransportUnitPayload): Promise<UnitEntity> {
+    if (payload.id) {
+      await this.assertOwnership(payload.id, payload.requesterCompanyId);
+    }
+    return this.unitRepository.updateOrCreateHydrogenTransportUnit(payload);
+  }
+
+  async updateOrCreateHydrogenBottlingUnit(payload: CreateHydrogenBottlingUnitPayload): Promise<UnitEntity> {
+    if (payload.id) {
+      await this.assertOwnership(payload.id, payload.requesterCompanyId);
+    }
+    return this.unitRepository.updateOrCreateHydrogenBottlingUnit(payload);
+  }
+
+  async updateOrCreateHydrogenCompressionUnit(payload: CreateHydrogenCompressorUnitPayload): Promise<UnitEntity> {
+    if (payload.id) {
+      await this.assertOwnership(payload.id, payload.requesterCompanyId);
+    }
+    return this.unitRepository.updateOrCreateHydrogenCompressorUnit(payload);
+  }
+
+  async updateOrCreateHydrogenEndUseUnit(payload: CreateHydrogenEndUseUnitPayload): Promise<UnitEntity> {
+    if (payload.id) {
+      await this.assertOwnership(payload.id, payload.requesterCompanyId);
+    }
+    return this.unitRepository.updateOrCreateHydrogenEndUseUnit(payload);
+  }
+
+  async updateUnitStatus(payload: UpdateUnitStatusPayload): Promise<UnitEntity> {
     await this.assertOwnership(payload.id, payload.requesterCompanyId);
     return this.unitRepository.updateUnitStatus(payload);
   }

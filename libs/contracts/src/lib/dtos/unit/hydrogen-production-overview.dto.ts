@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { HydrogenProductionUnitEntity } from '@h2-trust/contracts/entities';
+import { UnitEntity } from '@h2-trust/contracts/entities';
 import { HydrogenProductionTechnology, UnitType } from '@h2-trust/domain';
 
 export class HydrogenProductionOverviewDto {
@@ -42,15 +42,15 @@ export class HydrogenProductionOverviewDto {
     this.active = active;
   }
 
-  static fromEntity(unit: HydrogenProductionUnitEntity): HydrogenProductionOverviewDto {
+  static fromEntity(unit: UnitEntity): HydrogenProductionOverviewDto {
     const firstAgreement = unit.owner?.hydrogenAgreements?.[0];
 
     return {
       id: unit.id,
       name: unit.name,
       unitType: UnitType.HYDROGEN_PRODUCTION,
-      ratedPower: unit.ratedPower,
-      technology: unit.technology,
+      ratedPower: unit.specification.ratedPower ?? 0,
+      technology: unit.specification.technology!,
       powerPurchaseAgreementStatus: HydrogenProductionOverviewDto.existsPowerProducer(unit),
       powerProducerId: firstAgreement?.requestedCompany.id ?? '',
       powerProducerName: firstAgreement?.requestedCompany.name ?? '',
@@ -58,7 +58,7 @@ export class HydrogenProductionOverviewDto {
     };
   }
 
-  private static existsPowerProducer(unit: HydrogenProductionUnitEntity) {
+  private static existsPowerProducer(unit: UnitEntity) {
     return unit.owner?.hydrogenAgreements?.length ? unit.owner.hydrogenAgreements.length !== 0 : false;
   }
 }

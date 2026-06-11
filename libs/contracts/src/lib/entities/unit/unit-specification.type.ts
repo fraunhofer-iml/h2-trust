@@ -6,6 +6,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { TransportationDetails } from '@prisma/client';
+import { HydrogenProductionType, HydrogenStorageType, PowerProductionType, TransportType } from '@h2-trust/domain';
 
-export type TransportationDetailsDbType = TransportationDetails;
+export type UnitSpecificationType = PowerProductionType | HydrogenProductionType | HydrogenStorageType | TransportType;

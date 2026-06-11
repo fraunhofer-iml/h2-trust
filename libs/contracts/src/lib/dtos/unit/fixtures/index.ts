@@ -15,7 +15,6 @@ export * from './hydrogen-storage-overview.fixture';
 export * from './hydrogen-storage-unit.fixture';
 export * from './hydrogen-storage-unit-input.fixture';
 export * from './power-production-overview.fixture';
-export * from './power-production-type.fixture';
 export * from './power-production-unit.fixture';
 export * from './power-production-unit-input.fixture';
 export * from './power-purchase-agreement-connection.fixture';

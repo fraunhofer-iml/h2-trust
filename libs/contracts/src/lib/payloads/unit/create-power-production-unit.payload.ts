@@ -7,28 +7,12 @@
  */
 
 import { Type } from 'class-transformer';
-import { IsBoolean, IsDate, IsEnum, IsNotEmpty, IsNumber, IsPositive, IsString } from 'class-validator';
-import { BiddingZone, GridLevel, PowerProductionType } from '@h2-trust/domain';
+import { IsBoolean, IsDate, IsEnum, IsNotEmpty, IsNumber, IsPositive } from 'class-validator';
+import { BiddingZone, PowerProductionType } from '@h2-trust/domain';
 import { AddressPayload } from '../common';
 import { BaseCreateUnitPayload } from './base-create-unit.payload';
 
 export class CreatePowerProductionUnitPayload extends BaseCreateUnitPayload {
-  @IsString()
-  @IsNotEmpty()
-  electricityMeterNumber: string;
-
-  @IsString()
-  @IsNotEmpty()
-  gridOperator: string;
-
-  @IsString()
-  @IsNotEmpty()
-  gridConnectionNumber: string;
-
-  @IsEnum(GridLevel)
-  @IsNotEmpty()
-  gridLevel: GridLevel;
-
   @IsEnum(BiddingZone)
   @IsNotEmpty()
   biddingZone: BiddingZone;
@@ -53,13 +37,10 @@ export class CreatePowerProductionUnitPayload extends BaseCreateUnitPayload {
 
   constructor(
     name: string,
-    mastrNumber: string,
     commissionedOn: Date,
     address: AddressPayload,
     ownerId: string,
-    electricityMeterNumber: string,
     ratedPower: number,
-    gridLevel: GridLevel,
     biddingZone: BiddingZone,
     financialSupportReceived: boolean,
     powerProductionType: PowerProductionType,
@@ -70,13 +51,10 @@ export class CreatePowerProductionUnitPayload extends BaseCreateUnitPayload {
     certifiedBy: string,
     operatorId: string,
     decommissioningPlannedOn: Date,
-    gridOperator: string,
-    gridConnectionNumber: string,
     id?: string,
   ) {
     super(
       name,
-      mastrNumber,
       commissionedOn,
       address,
       ownerId,
@@ -88,14 +66,10 @@ export class CreatePowerProductionUnitPayload extends BaseCreateUnitPayload {
       operatorId,
       id,
     );
-    this.electricityMeterNumber = electricityMeterNumber;
     this.ratedPower = ratedPower;
-    this.gridLevel = gridLevel;
     this.biddingZone = biddingZone;
     this.financialSupportReceived = financialSupportReceived;
     this.powerProductionType = powerProductionType;
     this.decommissioningPlannedOn = decommissioningPlannedOn;
-    this.gridOperator = gridOperator;
-    this.gridConnectionNumber = gridConnectionNumber;
   }
 }

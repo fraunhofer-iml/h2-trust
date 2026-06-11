@@ -46,10 +46,6 @@ export abstract class UnitInputDto {
 
   @IsString()
   @IsNotEmpty()
-  mastrNumber: string;
-
-  @IsString()
-  @IsNotEmpty()
   certifiedBy: string;
 
   @IsDate()
@@ -71,7 +67,6 @@ export abstract class UnitInputDto {
     modelType: string,
     modelNumber: string,
     serialNumber: string,
-    mastrNumber: string,
     certifiedBy: string,
     commissionedOn: Date,
     address: AddressDto,
@@ -84,7 +79,6 @@ export abstract class UnitInputDto {
     this.modelType = modelType;
     this.modelNumber = modelNumber;
     this.serialNumber = serialNumber;
-    this.mastrNumber = mastrNumber;
     this.certifiedBy = certifiedBy;
     this.commissionedOn = commissionedOn;
     this.address = address;

@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { BatchType, HydrogenProductionMethod, MeasurementUnit, ProcessType, RfnboType } from '@h2-trust/domain';
+import { BatchType, HydrogenProductionType, MeasurementUnit, ProcessType, RfnboType } from '@h2-trust/domain';
 import { HydrogenComponentDto } from '../general-information';
 import { DppBatchDto } from './dpp-batch.dto';
 import { EmissionDto } from './emission.dto';
@@ -14,7 +14,7 @@ import { EmissionDto } from './emission.dto';
 export class HydrogenBatchDto extends DppBatchDto {
   producer: string;
   unitId: string;
-  typeOfProduction: HydrogenProductionMethod;
+  typeOfProduction: HydrogenProductionType;
   hydrogenComposition: HydrogenComponentDto[];
   rfnboType: RfnboType;
   processStep: ProcessType;
@@ -30,7 +30,7 @@ export class HydrogenBatchDto extends DppBatchDto {
     unit: MeasurementUnit,
     producer: string,
     unitId: string,
-    typeOfProduction: HydrogenProductionMethod,
+    typeOfProduction: HydrogenProductionType,
     hydrogenComposition: HydrogenComponentDto[],
     rfnboType: RfnboType,
     processStep: ProcessType,

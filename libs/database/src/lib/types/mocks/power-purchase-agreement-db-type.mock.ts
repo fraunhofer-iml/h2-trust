@@ -9,7 +9,7 @@
 import { PowerPurchaseAgreementSeed } from '../../../seed';
 import { PowerPurchaseAgreementDeepDbType } from '../power-purchase-agreement.db.type';
 import { CompanyDbTypeMock } from './company-db-type.mock';
-import { PowerProductionUnitDeepDbTypeMock } from './power-production-unit-db-type.mock';
+import { UnitDeepDbTypeMock } from './unit-db-type.mock';
 import { UserDeepDbTypeMock } from './user-db-type.mock';
 
 export const PowerPurchaseAgreementDbTypeMock = <PowerPurchaseAgreementDeepDbType[]>[
@@ -18,7 +18,7 @@ export const PowerPurchaseAgreementDbTypeMock = <PowerPurchaseAgreementDeepDbTyp
     requestingUser: UserDeepDbTypeMock[0],
     requestedCompany: CompanyDbTypeMock[0],
     hydrogenProducer: CompanyDbTypeMock[1],
-    powerProductionUnit: PowerProductionUnitDeepDbTypeMock[0],
+    powerProductionUnit: UnitDeepDbTypeMock[0],
     decision: null,
   },
 ];

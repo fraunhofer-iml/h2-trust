@@ -7,7 +7,7 @@
  */
 
 import { BottlingDto } from '@h2-trust/contracts/dtos';
-import { FuelType, RfnboType, TransportMode } from '@h2-trust/domain';
+import { FuelType, RfnboType, TransportType } from '@h2-trust/domain';
 
 export const BottlingDtoFixture = {
   create: (overrides: Partial<BottlingDto> = {}): BottlingDto => ({
@@ -18,7 +18,7 @@ export const BottlingDtoFixture = {
     hydrogenStorageUnit: overrides.hydrogenStorageUnit ?? 'hydrogen-storage-unit-1',
     rfnboType: overrides.rfnboType ?? RfnboType.RFNBO_READY,
     file: overrides.file,
-    transportMode: overrides.transportMode ?? TransportMode.TRAILER,
+    transportMode: overrides.transportMode ?? TransportType.TRAILER,
     distance: overrides.distance ?? 1000,
     fuelType: overrides.fuelType ?? FuelType.DIESEL,
   }),

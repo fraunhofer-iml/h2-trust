@@ -19,11 +19,6 @@ import { UnitCardComponent } from '../../../layout/unit-card/unit-card.component
 import { EnumPipe } from '../../../shared/pipes/enum.pipe';
 import { unitsQueryOptions } from '../../../shared/queries/units.query';
 import { UnitsService } from '../../../shared/services/units/units.service';
-import {
-  isHydrogenProductionUnitOverview,
-  isHydrogenStorageUnitOverview,
-  isPowerProductionUnitOverview,
-} from '../../../shared/util/unit-type-guards';
 
 @Component({
   selector: 'app-hydrogen-assets',
@@ -44,9 +39,6 @@ export class HydrogenAssetsComponent {
   protected readonly MeasurementUnit = MeasurementUnit;
   protected readonly UnitType = UnitType;
   protected readonly unitTypes = Object.values(UnitType);
-  protected readonly isHydrogenProductionUnit = isHydrogenProductionUnitOverview;
-  protected readonly isHydrogenStorageUnit = isHydrogenStorageUnitOverview;
-  protected readonly isPowerProductionUnit = isPowerProductionUnitOverview;
   protected readonly unitsService = inject(UnitsService);
 
   typeToShow = signal<UnitType | undefined>(undefined);

@@ -8,14 +8,14 @@
 
 import { IsEnum, IsNotEmpty, IsNumber, IsPositive } from 'class-validator';
 import { AddressPayload, CreateHydrogenProductionUnitPayload } from '@h2-trust/contracts/payloads';
-import { BiddingZone, HydrogenProductionMethod, HydrogenProductionTechnology, UnitType } from '@h2-trust/domain';
+import { BiddingZone, HydrogenProductionTechnology, HydrogenProductionType, UnitType } from '@h2-trust/domain';
 import { AddressDto } from '../../address';
 import { UnitInputDto } from './unit-input.dto';
 
 export class HydrogenProductionUnitInputDto extends UnitInputDto {
-  @IsEnum(HydrogenProductionMethod)
+  @IsEnum(HydrogenProductionType)
   @IsNotEmpty()
-  method: HydrogenProductionMethod;
+  method: HydrogenProductionType;
 
   @IsEnum(HydrogenProductionTechnology)
   @IsNotEmpty()
@@ -33,11 +33,6 @@ export class HydrogenProductionUnitInputDto extends UnitInputDto {
   @IsNumber()
   @IsPositive()
   @IsNotEmpty()
-  pressure: number;
-
-  @IsNumber()
-  @IsPositive()
-  @IsNotEmpty()
   waterConsumptionLitersPerHour: number;
 
   constructor(
@@ -49,15 +44,13 @@ export class HydrogenProductionUnitInputDto extends UnitInputDto {
     modelType: string,
     modelNumber: string,
     serialNumber: string,
-    mastrNumber: string,
     certifiedBy: string,
     commissionedOn: Date,
     address: AddressDto,
     technology: HydrogenProductionTechnology,
-    method: HydrogenProductionMethod,
+    method: HydrogenProductionType,
     biddingZone: BiddingZone,
     ratedPower: number,
-    pressure: number,
     waterConsumptionLitersPerHour: number,
   ) {
     super(
@@ -69,7 +62,6 @@ export class HydrogenProductionUnitInputDto extends UnitInputDto {
       modelType,
       modelNumber,
       serialNumber,
-      mastrNumber,
       certifiedBy,
       commissionedOn,
       address,
@@ -78,7 +70,6 @@ export class HydrogenProductionUnitInputDto extends UnitInputDto {
     this.technology = technology;
     this.biddingZone = biddingZone;
     this.ratedPower = ratedPower;
-    this.pressure = pressure;
     this.waterConsumptionLitersPerHour = waterConsumptionLitersPerHour;
   }
 
@@ -89,7 +80,6 @@ export class HydrogenProductionUnitInputDto extends UnitInputDto {
   ): CreateHydrogenProductionUnitPayload {
     const payload = new CreateHydrogenProductionUnitPayload(
       dto.name,
-      dto.mastrNumber,
       dto.commissionedOn,
       new AddressPayload(
         dto.address.street,
@@ -103,7 +93,6 @@ export class HydrogenProductionUnitInputDto extends UnitInputDto {
       dto.technology,
       dto.biddingZone,
       dto.ratedPower,
-      dto.pressure,
       dto.waterConsumptionLitersPerHour,
       dto.manufacturer,
       dto.modelType,

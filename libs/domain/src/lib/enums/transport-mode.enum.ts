@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export enum TransportMode {
+export enum TransportType {
   TRAILER = 'TRAILER',
   PIPELINE = 'PIPELINE',
 }

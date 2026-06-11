@@ -10,7 +10,6 @@ import { Batch, Prisma } from '@prisma/client';
 import { BatchType } from '@h2-trust/domain';
 import { auditTimestamp } from '../audit-timestamp.constant';
 import { CompanySeed } from '../company.seed';
-import { HydrogenStorageUnitSeed } from '../unit/hydrogen-storage-unit.seed';
 
 export const HydrogenProductionBatchSeed: readonly Batch[] = Object.freeze([
   {
@@ -21,7 +20,6 @@ export const HydrogenProductionBatchSeed: readonly Batch[] = Object.freeze([
     amount: new Prisma.Decimal(50),
     active: true,
     ownerId: CompanySeed[2].id,
-    hydrogenStorageUnitId: HydrogenStorageUnitSeed[0].id,
   },
   {
     id: 'batch-hydrogen-produced-1',
@@ -31,7 +29,6 @@ export const HydrogenProductionBatchSeed: readonly Batch[] = Object.freeze([
     amount: new Prisma.Decimal(50),
     active: true,
     ownerId: CompanySeed[2].id,
-    hydrogenStorageUnitId: HydrogenStorageUnitSeed[0].id,
   },
   {
     id: 'batch-hydrogen-produced-2',
@@ -41,7 +38,6 @@ export const HydrogenProductionBatchSeed: readonly Batch[] = Object.freeze([
     amount: new Prisma.Decimal(5),
     active: false,
     ownerId: CompanySeed[2].id,
-    hydrogenStorageUnitId: HydrogenStorageUnitSeed[0].id,
   },
   {
     id: 'batch-hydrogen-produced-3',
@@ -51,7 +47,6 @@ export const HydrogenProductionBatchSeed: readonly Batch[] = Object.freeze([
     amount: new Prisma.Decimal(5),
     active: false,
     ownerId: CompanySeed[2].id,
-    hydrogenStorageUnitId: HydrogenStorageUnitSeed[0].id,
   },
   {
     id: 'batch-hydrogen-produced-4',
@@ -61,7 +56,6 @@ export const HydrogenProductionBatchSeed: readonly Batch[] = Object.freeze([
     amount: new Prisma.Decimal(5),
     active: false,
     ownerId: CompanySeed[2].id,
-    hydrogenStorageUnitId: HydrogenStorageUnitSeed[0].id,
   },
   {
     id: 'batch-hydrogen-produced-5',
@@ -71,7 +65,6 @@ export const HydrogenProductionBatchSeed: readonly Batch[] = Object.freeze([
     amount: new Prisma.Decimal(5),
     active: false,
     ownerId: CompanySeed[2].id,
-    hydrogenStorageUnitId: HydrogenStorageUnitSeed[0].id,
   },
   {
     id: 'batch-hydrogen-produced-6',
@@ -81,7 +74,6 @@ export const HydrogenProductionBatchSeed: readonly Batch[] = Object.freeze([
     amount: new Prisma.Decimal(5),
     active: false,
     ownerId: CompanySeed[2].id,
-    hydrogenStorageUnitId: HydrogenStorageUnitSeed[0].id,
   },
   {
     id: 'batch-hydrogen-produced-7',
@@ -91,7 +83,6 @@ export const HydrogenProductionBatchSeed: readonly Batch[] = Object.freeze([
     amount: new Prisma.Decimal(5),
     active: false,
     ownerId: CompanySeed[2].id,
-    hydrogenStorageUnitId: HydrogenStorageUnitSeed[0].id,
   },
   {
     id: 'batch-hydrogen-produced-8',
@@ -101,7 +92,6 @@ export const HydrogenProductionBatchSeed: readonly Batch[] = Object.freeze([
     amount: new Prisma.Decimal(5),
     active: false,
     ownerId: CompanySeed[2].id,
-    hydrogenStorageUnitId: HydrogenStorageUnitSeed[0].id,
   },
   {
     id: 'batch-hydrogen-produced-9',
@@ -111,6 +101,5 @@ export const HydrogenProductionBatchSeed: readonly Batch[] = Object.freeze([
     amount: new Prisma.Decimal(50),
     active: true,
     ownerId: CompanySeed[2].id,
-    hydrogenStorageUnitId: HydrogenStorageUnitSeed[0].id,
   },
 ]);
