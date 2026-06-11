@@ -7,7 +7,7 @@
       </div>
       <div class="flex items-center gap-2">
         <app-download-button [selectedFiles]="selection"></app-download-button>
-        <button mat-flat-button routerLink="/production/add">
+        <button mat-flat-button [routerLink]="H2TrustRouterLinks.PRODUCTION_ADD">
           <span class="flex flex-row items-center">
             <span class="material-symbols-outlined pr-2">upload</span>
             Upload

@@ -19,7 +19,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { Router, RouterModule } from '@angular/router';
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { PowerPurchaseAgreementStatus, PpaRequestRole } from '@h2-trust/domain';
-import { H2TrustRoutes } from '../../shared/constants/routes';
+import { H2TrustRouterLinks } from '../../shared/constants/router-links';
 import { UserProfile } from '../../shared/model/user-profile.model';
 import { ppaRequestsQueryOptions } from '../../shared/queries/ppa-requests.query';
 import { AuthService } from '../../shared/services/auth/auth.service';
@@ -32,7 +32,7 @@ import { BreadcrumbsComponent } from '../breadcrumbs/breadcrumbs.component';
 interface SidebarOption {
   title: string;
   icon: string;
-  route: H2TrustRoutes | null;
+  route: readonly string[] | null;
   visible: Signal<boolean>;
   children?: SidebarOption[];
 }
@@ -56,6 +56,7 @@ interface SidebarOption {
 })
 export class SidebarComponent implements OnInit {
   protected readonly router = inject(Router);
+  protected readonly H2TrustRouterLinks = H2TrustRouterLinks;
   protected readonly unitsService = inject(UnitsService);
   protected readonly ppaService = inject(PowerPurchaseAgreementService);
   protected readonly authService = inject(AuthService);
@@ -74,7 +75,7 @@ export class SidebarComponent implements OnInit {
     {
       title: 'Units',
       icon: 'water_drop',
-      route: H2TrustRoutes.UNITS,
+      route: H2TrustRouterLinks.UNITS,
       visible: signal(true),
     },
     {
@@ -86,13 +87,13 @@ export class SidebarComponent implements OnInit {
         {
           title: 'Data',
           icon: 'table',
-          route: H2TrustRoutes.PRODUCTION_DATA,
+          route: H2TrustRouterLinks.PRODUCTION_DATA,
           visible: this.roles.isHydrogenProducer,
         },
         {
           title: 'Uploads',
           icon: 'files',
-          route: H2TrustRoutes.PRODUCTION_FILES,
+          route: H2TrustRouterLinks.PRODUCTION_FILES,
           visible: signal(true),
         },
       ],
@@ -100,7 +101,7 @@ export class SidebarComponent implements OnInit {
     {
       title: 'Batches',
       icon: 'data_table',
-      route: H2TrustRoutes.BATCHES,
+      route: H2TrustRouterLinks.BATCH,
       visible: signal(true),
     },
   ];
@@ -119,9 +120,10 @@ export class SidebarComponent implements OnInit {
     });
   }
 
-  isActive(route: string | null): boolean {
+  isActive(route: readonly string[] | null): boolean {
     if (!route) return false;
-    return this.router.url.includes(route);
+    const url = this.router.serializeUrl(this.router.createUrlTree(route));
+    return this.router.url.startsWith(url);
   }
 
   logout() {

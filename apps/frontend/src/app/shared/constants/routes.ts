@@ -7,10 +7,12 @@
  */
 
 export enum H2TrustRoutes {
+  ROOT = '/',
   UNITS = 'units',
   PRODUCTION = 'production',
-  PRODUCTION_FILES = 'production/files',
-  PRODUCTION_DATA = 'production/data',
+  FILES = 'files',
+  DATA = 'data',
   BOTTLING = 'bottling',
   BATCHES = 'batches',
+  PPA_REQUESTS = 'ppa-requests',
 }

@@ -29,6 +29,8 @@ import { ProcessedCsvDto } from '@h2-trust/contracts/dtos';
 import { BatchType, CsvContentType, MeasurementUnit } from '@h2-trust/domain';
 import { CsvContentTypeChipComponent } from '../../../layout/chips/csv-content-type-chip.component';
 import { VerificationStatusChipComponent } from '../../../layout/chips/verification-status-chip.component';
+import { H2TrustRouterLinks } from '../../../shared/constants/router-links';
+import { H2TrustRoutes } from '../../../shared/constants/routes';
 import { UnitPipe } from '../../../shared/pipes/unit.pipe';
 import { QueryKeyPrefix } from '../../../shared/queries/shared-query-keys';
 import { ProductionService } from '../../../shared/services/production/production.service';
@@ -73,6 +75,8 @@ interface FilterModel {
   templateUrl: './production-files.component.html',
 })
 export class ProductionFilesComponent implements AfterViewInit {
+  protected readonly H2TrustRouterLinks = H2TrustRouterLinks;
+  protected readonly H2TrustRoutes = H2TrustRoutes;
   protected readonly MeasurementUnit = MeasurementUnit;
   protected readonly CsvContentType = BatchType;
   private displayedColumns = [

@@ -19,12 +19,12 @@
     }
 
     <div class="relative flex w-full justify-end gap-2 rounded-md bg-white p-4">
-      <a matButton="outlined" [routerLink]="['/units', unit.id]">Cancel</a>
+      <a matButton="outlined" [routerLink]="H2TrustRouterLinks.UNIT_DETAILS(unit.id)">Cancel</a>
       <button matButton="filled" (click)="onSave(unit)">Save</button>
     </div>
   } @else if (unitQuery.isLoading()) {
     <app-loading-card></app-loading-card>
   } @else if (unitQuery.error(); as err) {
-    <app-error-card [error]="err" [routerLink]="'/units'" class="h-full grow"></app-error-card>
+    <app-error-card [error]="err" [routerLink]="H2TrustRouterLinks.UNITS" class="h-full grow"></app-error-card>
   }
 </div>

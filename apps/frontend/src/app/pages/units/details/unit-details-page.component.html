@@ -1,5 +1,5 @@
 @if (unitQuery.error(); as err) {
-  <app-error-card [error]="err" [routerLink]="'/units'" class="grow"></app-error-card>
+  <app-error-card [error]="err" [routerLink]="H2TrustRouterLinks.UNITS" class="grow"></app-error-card>
 } @else if (unitQuery.isLoading()) {
   <app-loading-card class="col-span-2 h-full" />
 } @else if (unitQuery.data(); as unit) {

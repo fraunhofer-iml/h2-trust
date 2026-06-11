@@ -21,6 +21,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTimepickerModule } from '@angular/material/timepicker';
 import { Router, RouterModule } from '@angular/router';
 import { injectMutation, injectQuery, QueryClient } from '@tanstack/angular-query-experimental';
+import { H2TrustRouterLinks } from 'apps/frontend/src/app/shared/constants/router-links';
 import {
   BottlingOverviewDto,
   HydrogenComponentDto,
@@ -82,6 +83,7 @@ export class AddBottleComponent {
   protected readonly MeasurementUnit = MeasurementUnit;
   protected readonly RfnboType = RfnboType;
   protected readonly bottleTypes = [RfnboType.RFNBO_READY, RfnboType.NON_CERTIFIABLE] as const;
+  protected readonly H2TrustRouterLinks = H2TrustRouterLinks;
 
   dateDelimiter: Date = new Date();
   uploadedFiles: File[] = [];

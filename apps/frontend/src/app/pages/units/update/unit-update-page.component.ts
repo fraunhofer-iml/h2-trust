@@ -31,6 +31,7 @@ import {
 import { ErrorCardComponent } from '../../../layout/error-card/error-card.component';
 import { LoadingCardComponent } from '../../../layout/loading-card/loading-card.component';
 import { UnitCardComponent } from '../../../layout/unit-card/unit-card.component';
+import { H2TrustRouterLinks } from '../../../shared/constants/router-links';
 import { H2TrustRoutes } from '../../../shared/constants/routes';
 import { QueryKeyPrefix } from '../../../shared/queries/shared-query-keys';
 import { UnitsService } from '../../../shared/services/units/units.service';
@@ -89,6 +90,7 @@ export class UnitUpdatePageComponent {
   protected isHydrogenStorageUnit = isHydrogenStorageUnitDetails;
   protected isPowerProductionUnit = isPowerProductionUnitDetails;
   protected isTransportUnit = isHydrogenTransportUnitDetails;
+  protected readonly H2TrustRouterLinks = H2TrustRouterLinks;
 
   unitForm: FormGroup<UnitFormGroup> = newUnitForm();
   hydrogenProductionForm: FormGroup<HydrogenProductionFormGroup> = newHydrogenProductionForm();

@@ -2,7 +2,7 @@
   @if (batchQuery.error(); as err) {
     <app-error-card
       [error]="err"
-      [routerLink]="isAuthenticated ? '/bottling' : undefined"
+      [routerLink]="isAuthenticated ? H2TrustRouterLinks.BOTTLING : undefined"
       class="grow"
     ></app-error-card>
   } @else if (batchQuery.isLoading()) {
