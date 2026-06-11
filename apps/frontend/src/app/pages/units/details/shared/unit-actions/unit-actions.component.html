@@ -4,7 +4,7 @@
     <div class="flex flex-col gap-2 rounded-lg border border-neutral-300 p-4">
       <span class="text-neutral-500">Update</span>
       <p class="text-sm">Edit all properties of this unit.</p>
-      <a matButton="outlined" class="w-fit" [routerLink]="['/units', unit().id, 'edit']"> Edit</a>
+      <a matButton="outlined" class="w-fit" [routerLink]="H2TrustRouterLinks.UNIT_EDIT(unit().id)"> Edit</a>
     </div>
     <div class="border-error-red/20 flex flex-col gap-2 rounded-lg border p-4">
       <span class="text-neutral-500">Status</span>

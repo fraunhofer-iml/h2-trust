@@ -28,7 +28,7 @@ import {
   StagingScope,
 } from '@h2-trust/domain';
 import { EmptyStateComponent } from '../../../../layout/empty-state/empty-state.component';
-import { H2TrustRoutes } from '../../../../shared/constants/routes';
+import { H2TrustRouterLinks } from '../../../../shared/constants/router-links';
 import { UnitPipe } from '../../../../shared/pipes/unit.pipe';
 import { invalidateByQueryPrefixes } from '../../../../shared/queries/query-invalidation';
 import { QueryKeyPrefix } from '../../../../shared/queries/shared-query-keys';
@@ -58,6 +58,7 @@ import { handleMutationWithPromiseToast } from '../../../../shared/util/query-er
   templateUrl: './file-selection.component.html',
 })
 export class FileSelectionComponent {
+  protected readonly H2TrustRouterLinks = H2TrustRouterLinks;
   protected readonly productionService = inject(ProductionService);
   protected readonly powerPurchaseAgreementService = inject(PowerPurchaseAgreementService);
   protected readonly unitsService = inject(UnitsService);
@@ -149,7 +150,8 @@ export class FileSelectionComponent {
         QueryKeyPrefix.PRODUCTIONS,
       ]);
 
-      this.router.navigateByUrl(H2TrustRoutes.PRODUCTION_DATA);
+      const tree = this.router.createUrlTree(H2TrustRouterLinks.PRODUCTION_DATA);
+      this.router.navigateByUrl(tree);
     },
   }));
 

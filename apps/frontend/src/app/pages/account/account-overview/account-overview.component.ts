@@ -20,6 +20,7 @@ import { injectQuery } from '@tanstack/angular-query-experimental';
 import { PpaRequestRole } from '@h2-trust/domain';
 import { ErrorCardComponent } from '../../../layout/error-card/error-card.component';
 import { LoadingCardComponent } from '../../../layout/loading-card/loading-card.component';
+import { H2TrustRouterLinks } from '../../../shared/constants/router-links';
 import { QueryKeyPrefix } from '../../../shared/queries/shared-query-keys';
 import { AuthService } from '../../../shared/services/auth/auth.service';
 import { UnitsService } from '../../../shared/services/units/units.service';
@@ -48,8 +49,8 @@ import { PpaRequestsOverviewComponent } from '../ppa-requests-overview/ppa-reque
   templateUrl: './account-overview.component.html',
 })
 export class AccountOverviewComponent implements OnInit {
+  protected readonly H2TrustRouterLinks = H2TrustRouterLinks;
   protected readonly PpaRequestRole = PpaRequestRole;
-
   protected readonly unitsService = inject(UnitsService);
   protected readonly authService = inject(AuthService);
   protected readonly accountService = inject(UsersService);

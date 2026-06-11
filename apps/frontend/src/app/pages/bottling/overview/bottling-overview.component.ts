@@ -20,6 +20,7 @@ import { RouterModule } from '@angular/router';
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { BottlingOverviewDto } from '@h2-trust/contracts/dtos';
 import { RfnboChipComponent } from '../../../layout/chips/rfnbo-chip.component';
+import { H2TrustRouterLinks } from '../../../shared/constants/router-links';
 import { QueryKeyPrefix } from '../../../shared/queries/shared-query-keys';
 import { BottlingService } from '../../../shared/services/bottling/bottling.service';
 import { UnitsService } from '../../../shared/services/units/units.service';
@@ -49,6 +50,7 @@ import { UnitsService } from '../../../shared/services/units/units.service';
   `,
 })
 export class BottlingOverviewComponent implements AfterViewInit {
+  protected readonly H2TrustRouterLinks = H2TrustRouterLinks;
   displayedColumns = ['id', 'filledAt', 'owner', 'filledAmount', 'color'];
   dataSource: MatTableDataSource<BottlingOverviewDto> = new MatTableDataSource<BottlingOverviewDto>();
 

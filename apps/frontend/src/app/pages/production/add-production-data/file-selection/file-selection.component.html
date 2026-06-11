@@ -1,6 +1,6 @@
 <div class="flex h-screen flex-col gap-4 overflow-hidden p-8" [formGroup]="form">
   <div class="flex items-center gap-2 text-lg text-neutral-500">
-    <a routerLink="/production/data" class="hover:underline">Data</a>
+    <a [routerLink]="H2TrustRouterLinks.PRODUCTION_DATA" class="hover:underline">Data</a>
     <span class="material-symbols-outlined">keyboard_arrow_right</span>
     Add
   </div>
@@ -192,7 +192,7 @@
       </div>
 
       <div class="flex justify-end gap-2 rounded-lg bg-white p-4">
-        <a matButton routerLink="/production/files">Cancel</a>
+        <a matButton [routerLink]="H2TrustRouterLinks.PRODUCTION_FILES">Cancel</a>
         <button matButton="filled" [disabled]="form.invalid" (click)="save()">Save</button>
       </div>
     </div>

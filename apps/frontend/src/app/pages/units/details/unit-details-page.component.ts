@@ -17,6 +17,7 @@ import { InfoTooltipComponent } from '../../../layout/info-tooltip/info-tooltip.
 import { LoadingCardComponent } from '../../../layout/loading-card/loading-card.component';
 import { UnitCardComponent } from '../../../layout/unit-card/unit-card.component';
 import { RFNBO_CRITERIA } from '../../../shared/constants/rfnbo-criteria';
+import { H2TrustRouterLinks } from '../../../shared/constants/router-links';
 import { BoolPipe } from '../../../shared/pipes/bool-pipe';
 import { EnumPipe } from '../../../shared/pipes/enum.pipe';
 import { UnitPipe } from '../../../shared/pipes/unit.pipe';
@@ -57,6 +58,7 @@ export class UnitDetailsPageComponent {
   protected readonly isHydrogenStorageUnitDetails = isHydrogenStorageUnitDetails;
   protected readonly isPowerProductionUnitDetails = isPowerProductionUnitDetails;
   protected readonly isTransportUnitDetails = isHydrogenTransportUnitDetails;
+  protected readonly H2TrustRouterLinks = H2TrustRouterLinks;
 
   readonly id = input<string>('');
 

@@ -20,5 +20,5 @@ import { RouterModule } from '@angular/router';
 })
 export class ErrorCardComponent {
   error = input<HttpErrorResponse>();
-  routerLink = input<string>();
+  routerLink = input<readonly string[]>();
 }
