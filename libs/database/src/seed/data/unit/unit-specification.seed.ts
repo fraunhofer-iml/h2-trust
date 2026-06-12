@@ -67,6 +67,7 @@ export const UnitSpecificationSeed: readonly Partial<UnitSpecification>[] = Obje
     technology: HydrogenProductionTechnology.PEM,
     biddingZone: BiddingZone.DE_LU,
     ratedPower: new Prisma.Decimal(5),
+    waterConsumptionLitersPerHour: new Prisma.Decimal(50),
   },
   {
     id: 'hydrogen-storage-unit-0',

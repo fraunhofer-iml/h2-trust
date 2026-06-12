@@ -8,7 +8,7 @@
 
 import { Prisma } from '@prisma/client';
 import { ProcessStepEntity } from '@h2-trust/contracts/entities';
-import { BatchType } from '@h2-trust/domain';
+import { BatchType, PowerType, RfnboType } from '@h2-trust/domain';
 
 export function buildProcessStepCreateInput(processStep: ProcessStepEntity): Prisma.ProcessStepCreateInput {
   const predecessors = processStep.batch.predecessors ?? [];
@@ -21,24 +21,19 @@ export function buildProcessStepCreateInput(processStep: ProcessStepEntity): Pri
       create: {
         active: processStep.batch.active ?? true,
         amount: processStep.batch.amount,
-        ...(processStep.batch.qualityDetails && {
-          batchDetails: {
-            create: {
-              qualityDetails: {
-                create: {
-                  rfnboType: processStep.batch.qualityDetails.rfnboType,
-                  usedRenewablePower: processStep.batch.qualityDetails.usedRenewablePower,
-                  usedGridPower: processStep.batch.qualityDetails.usedGridPower,
-                  distance: processStep.batch.qualityDetails.distance,
-                  wasteWater: processStep.batch.qualityDetails.wasteWater,
-                  resinConsumption: processStep.batch.qualityDetails.resinConsumption,
-                  compressedAir: processStep.batch.qualityDetails.compressedAir,
-                  nitrogenConsumption: processStep.batch.qualityDetails.nitrogenConsumption,
-                },
-              },
-            },
+        qualityDetails: {
+          create: {
+            rfnboType: processStep.batch.qualityDetails?.rfnboType ?? RfnboType.NOT_SPECIFIED,
+            productionPowerType: processStep.batch.qualityDetails?.productionPowerType ?? PowerType.NOT_SPECIFIED,
+            usedRenewablePower: processStep.batch.qualityDetails?.usedRenewablePower,
+            usedGridPower: processStep.batch.qualityDetails?.usedGridPower,
+            distance: processStep.batch.qualityDetails?.distance,
+            wasteWater: processStep.batch.qualityDetails?.wasteWater,
+            resinConsumption: processStep.batch.qualityDetails?.resinConsumption,
+            compressedAir: processStep.batch.qualityDetails?.compressedAir,
+            nitrogenConsumption: processStep.batch.qualityDetails?.nitrogenConsumption,
           },
-        }),
+        },
         type: BatchType[processStep.batch.type as keyof typeof BatchType],
 
         owner: {
