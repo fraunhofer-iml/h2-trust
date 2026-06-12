@@ -45,30 +45,42 @@ export function assembleComposition(provenance: ProvenanceEntity): HydrogenCompo
         ),
     );
 
-  return computeHydrogenComposition(hydrogenComponentsOfProductions, rootBatchAmount, hydrogenStorageUnitId);
+  return computeHydrogenComposition(
+    hydrogenComponentsOfProductions,
+    rootBatchAmount,
+    [hydrogenStorageUnitId],
+    RfnboType.NOT_SPECIFIED,
+  );
 }
 
 /**
  * Merges a list of HydrogenComponents, so that all components are grouped together with the same RFNBO type.
  * Then sets the amount of each grouped HydrogenComponent to an amount value according to the requested bottleAmount.
- * @param hydrogenComponents The HydrogenComponents, that should be grouped.
+ * @param availableHydrogenComponents The HydrogenComponents, that should be grouped.
  * @param bottleAmount The requested bottle Amount.
  * @param hydrogenStorageUnitId The ID of the hydrogen storage unit (included in error context).
  * @returns The merged list of HydrogenComponents, where each RFNBO type only exists once.
  */
 export function computeHydrogenComposition(
-  hydrogenComponents: HydrogenComponentEntity[],
+  availableHydrogenComponents: HydrogenComponentEntity[],
   bottleAmount: number,
-  hydrogenStorageUnitId: string,
+  predecessorUnitIds: string[],
+  rfnboType: RfnboType,
 ): HydrogenComponentEntity[] {
-  //The list of HydrogenComponents merged according to their RFNBO Type
-  const mergedHydrogenComponents = hydrogenComponents.reduce<HydrogenComponentEntity[]>(mergeSingleComponent, []);
+  if (rfnboType === RfnboType.RFNBO_READY) {
+    return [new HydrogenComponentEntity(null, bottleAmount, RfnboType.RFNBO_READY)];
+  }
+  //The list of available HydrogenComponents merged according to their RFNBO Type
+  const mergedHydrogenComponents = availableHydrogenComponents.reduce<HydrogenComponentEntity[]>(
+    mergeSingleComponent,
+    [],
+  );
 
   const totalAmount = mergedHydrogenComponents.reduce((sum, item) => sum + item.amount, 0);
   if (totalAmount <= 0) {
     throw new DomainException(
       ErrorCode.DOMAIN_BUSINESS_RULE_VIOLATION,
-      `Total stored amount of storage unit '${hydrogenStorageUnitId}' is not greater than 0`,
+      `Total stored amount of units '${predecessorUnitIds}' is not greater than 0`,
     );
   }
 

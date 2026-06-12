@@ -80,7 +80,7 @@ export function assembleHydrogenProductions(
 ): ProcessStepEntity[] {
   const hydrogenProductionUnit = productionUnitsForId.get(entity.hydrogenProductionUnitId);
   assertDefined(hydrogenProductionUnit, 'hydrogenProductionUnit');
-  const rawPowerType = powerProductions[0]?.batch?.qualityDetails?.powerType ?? PowerType.NOT_SPECIFIED;
+  const rawPowerType = powerProductions[0]?.batch?.qualityDetails?.productionPowerType ?? PowerType.NOT_SPECIFIED;
   assertValidEnum(rawPowerType, PowerType, 'PowerType');
   const params: ProcessStepParams = {
     type: ProcessType.HYDROGEN_PRODUCTION,

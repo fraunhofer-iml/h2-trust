@@ -6,6 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { ProcessStepEntity } from '@h2-trust/contracts/entities';
 import { ProcessType, RfnboType } from '@h2-trust/domain';
 
 export class BatchDto {
@@ -21,5 +22,15 @@ export class BatchDto {
     this.createdAt = createdAt;
     this.batchType = batchType;
     this.rfnboType = rfnboType;
+  }
+
+  static fromProcessStepEntity(processStep: ProcessStepEntity): BatchDto {
+    return <BatchDto>{
+      id: processStep.batch.id,
+      amount: processStep.batch.amount,
+      createdAt: processStep.startedAt,
+      batchType: processStep.type,
+      rfnboType: processStep.batch?.qualityDetails?.rfnboType ?? RfnboType.NOT_SPECIFIED,
+    };
   }
 }

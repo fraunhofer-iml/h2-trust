@@ -27,8 +27,13 @@ export function buildProcessStepCreateInput(processStep: ProcessStepEntity): Pri
               qualityDetails: {
                 create: {
                   rfnboType: processStep.batch.qualityDetails.rfnboType,
-                  powerType: processStep.batch.qualityDetails.powerType,
+                  usedRenewablePower: processStep.batch.qualityDetails.usedRenewablePower,
+                  usedGridPower: processStep.batch.qualityDetails.usedGridPower,
                   distance: processStep.batch.qualityDetails.distance,
+                  wasteWater: processStep.batch.qualityDetails.wasteWater,
+                  resinConsumption: processStep.batch.qualityDetails.resinConsumption,
+                  compressedAir: processStep.batch.qualityDetails.compressedAir,
+                  nitrogenConsumption: processStep.batch.qualityDetails.nitrogenConsumption,
                 },
               },
             },

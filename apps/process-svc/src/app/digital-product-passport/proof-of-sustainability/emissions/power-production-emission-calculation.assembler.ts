@@ -38,7 +38,7 @@ export function assemblePowerSupplyEmissionCalculation(
 
   const power = powerProduction.batch.amount;
   const powerInput = `Power Input: ${power} ${MeasurementUnit.KWH}`;
-  const powerType: PowerType = powerProduction.batch.qualityDetails.powerType as PowerType;
+  const powerType: PowerType = powerProduction.batch.qualityDetails.productionPowerType as PowerType;
 
   const emissionFactorLabel = getPowerProductionType(powerProductionType);
   const emissionFactor = EmissionNumericConstants.POWER_TYPE_EMISSION_FACTORS[powerType];

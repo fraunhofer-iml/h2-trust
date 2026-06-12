@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { BatchEntity, HydrogenComponentEntity, ProcessStepEntity } from '@h2-trust/contracts/entities';
+import { BatchEntity, CompanyEntity, HydrogenComponentEntity, ProcessStepEntity } from '@h2-trust/contracts/entities';
 import { BatchType, ProcessType, RfnboType } from '@h2-trust/domain';
 import { DomainException, ErrorCode } from '@h2-trust/exceptions';
 import { assertDefined } from '@h2-trust/utils';
@@ -20,27 +20,22 @@ export interface BottlingAllocation {
 
 /**
  * @param processSteps All process steps (hydrogen production) of the hydrogen storage unit, i.e. all batches from which the bottling is to be created.
- * @param hydrogenComposition The hydrogen compositions to be produced.
+ * @param neededHydrogenComposition The hydrogen compositions to be produced.
  * @param hydrogenStorageUnitId The ID of the HydrogenStorage unit from which the required bottlings are to be filled.
  */
 export function allocateBottling(
   processSteps: ProcessStepEntity[],
-  hydrogenComposition: HydrogenComponentEntity[],
-  hydrogenStorageUnitId: string,
+  neededHydrogenComposition: HydrogenComponentEntity[],
+  unitIds: string[],
 ): BottlingAllocation {
   const aggregatedBatchesForBottle: BatchEntity[] = [];
   const aggregatedProcessStepsToBeSplit: ProcessStepEntity[] = [];
   const aggregatedConsumedSplitProcessSteps: ProcessStepEntity[] = [];
   const aggregatedProcessStepsForRemainingAmount: ProcessStepEntity[] = [];
 
-  for (const hydrogenComponent of hydrogenComposition) {
+  for (const hydrogenComponent of neededHydrogenComposition) {
     const { batchesForBottle, processStepsToBeSplit, consumedSplitProcessSteps, processStepsForRemainingAmount } =
-      processBottlingForEachRfnboType(
-        processSteps,
-        hydrogenComponent.rfnboType,
-        hydrogenComponent.amount,
-        hydrogenStorageUnitId,
-      );
+      processBottlingForEachRfnboType(processSteps, hydrogenComponent.rfnboType, hydrogenComponent.amount, unitIds);
 
     aggregatedBatchesForBottle.push(...batchesForBottle);
     aggregatedProcessStepsToBeSplit.push(...processStepsToBeSplit);
@@ -66,7 +61,7 @@ function processBottlingForEachRfnboType(
   processSteps: ProcessStepEntity[],
   rfnboType: RfnboType,
   amount: number,
-  hydrogenStorageUnitId: string,
+  unitIds: string[],
 ): BottlingAllocation {
   const processStepsFromHydrogenStorageWithRequestedRFNBOType = processSteps.filter(
     (ps) => ps.batch.qualityDetails.rfnboType === rfnboType,
@@ -75,7 +70,7 @@ function processBottlingForEachRfnboType(
   const { selectedProcessSteps, remainingAmount } = selectProcessStepsForBottlingAndCalculateRemainingAmount(
     processStepsFromHydrogenStorageWithRequestedRFNBOType,
     amount,
-    hydrogenStorageUnitId,
+    unitIds,
     rfnboType,
   );
 
@@ -85,7 +80,7 @@ function processBottlingForEachRfnboType(
 function selectProcessStepsForBottlingAndCalculateRemainingAmount(
   availableProcessSteps: ProcessStepEntity[],
   requestedAmount: number,
-  storageUnitId: string,
+  unitIds: string[],
   rfnboType: RfnboType,
 ): { selectedProcessSteps: ProcessStepEntity[]; remainingAmount: number } {
   const selectedProcessSteps: ProcessStepEntity[] = [];
@@ -104,7 +99,7 @@ function selectProcessStepsForBottlingAndCalculateRemainingAmount(
 
   throw new DomainException(
     ErrorCode.DOMAIN_BUSINESS_RULE_VIOLATION,
-    `There is not enough hydrogen in storage unit '${storageUnitId}' for the requested amount of ${requestedAmount} of quality ${rfnboType}.`,
+    `There is not enough hydrogen in units '${unitIds}' for the requested amount of ${requestedAmount} of quality ${rfnboType}.`,
   );
 }
 
@@ -156,17 +151,23 @@ function assembleHydrogenProductionProcessStepForRemainingAmount(
       amount: remainingAmount,
       qualityDetails: {
         rfnboType: predecessorProcessStep.batch.qualityDetails.rfnboType,
-        powerType: predecessorProcessStep.batch.qualityDetails.powerType,
+        usedRenewablePower: predecessorProcessStep.batch.qualityDetails.usedRenewablePower,
+        usedGridPower: predecessorProcessStep.batch.qualityDetails.usedGridPower,
+        distance: predecessorProcessStep.batch.qualityDetails.distance,
+        wasteWater: predecessorProcessStep.batch.qualityDetails.wasteWater,
+        resinConsumption: predecessorProcessStep.batch.qualityDetails.resinConsumption,
+        compressedAir: predecessorProcessStep.batch.qualityDetails.compressedAir,
+        nitrogenConsumption: predecessorProcessStep.batch.qualityDetails.nitrogenConsumption,
       },
       type: BatchType.HYDROGEN,
       predecessors: [
         {
           id: predecessorProcessStep.batch.id,
-        },
+        } as BatchEntity,
       ],
       owner: {
         id: predecessorProcessStep.batch.owner.id,
-      },
+      } as CompanyEntity,
     } as BatchEntity,
   } as ProcessStepEntity;
 }

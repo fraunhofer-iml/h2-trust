@@ -8,10 +8,18 @@
 
 import { Type } from 'class-transformer';
 import { IsArray, IsDate, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString } from 'class-validator';
-import { RfnboType } from '@h2-trust/domain';
+import { ProcessType } from '@h2-trust/domain';
 import 'multer';
+import { CreateProcessStepQualityPayload } from './create-process-step-quality.payload';
 
-export class CreateHydrogenBottlingPayload {
+export class CreateProcessStepPayload {
+  @IsNotEmpty()
+  qualityDetails: CreateProcessStepQualityPayload;
+
+  @IsEnum(ProcessType)
+  @IsNotEmpty()
+  processType: ProcessType;
+
   @IsNumber()
   @IsPositive()
   @IsNotEmpty()
@@ -24,7 +32,12 @@ export class CreateHydrogenBottlingPayload {
   @IsDate()
   @IsNotEmpty()
   @Type(() => Date)
-  filledAt: Date;
+  startedAt: Date;
+
+  @IsDate()
+  @IsNotEmpty()
+  @Type(() => Date)
+  endedAt: Date;
 
   @IsString()
   @IsNotEmpty()
@@ -32,31 +45,37 @@ export class CreateHydrogenBottlingPayload {
 
   @IsString()
   @IsNotEmpty()
-  hydrogenStorageUnitId: string;
+  executingUnitId: string;
 
-  @IsEnum(RfnboType)
+  @IsString()
   @IsNotEmpty()
-  rfnboType: RfnboType;
+  predecessorUnitId: string;
 
   @IsArray()
   @IsOptional()
   files?: Express.Multer.File[];
 
   constructor(
+    qualityDetails: CreateProcessStepQualityPayload,
+    processType: ProcessType,
     amount: number,
     ownerId: string,
-    filledAt: Date,
     recordedById: string,
-    hydrogenStorageUnitId: string,
-    rfnboType: RfnboType,
+    startedAt: Date,
+    endedAt: Date,
+    executingUnitId: string,
+    predecessorUnitId: string,
     files?: Express.Multer.File[],
   ) {
+    this.qualityDetails = qualityDetails;
+    this.processType = processType;
     this.amount = amount;
     this.ownerId = ownerId;
-    this.filledAt = filledAt;
     this.recordedById = recordedById;
-    this.hydrogenStorageUnitId = hydrogenStorageUnitId;
-    this.rfnboType = rfnboType;
+    this.startedAt = startedAt;
+    this.endedAt = endedAt;
+    this.executingUnitId = executingUnitId;
+    this.predecessorUnitId = predecessorUnitId;
     this.files = files;
   }
 }

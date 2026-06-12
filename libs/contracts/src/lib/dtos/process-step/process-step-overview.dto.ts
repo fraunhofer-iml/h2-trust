@@ -9,7 +9,7 @@
 import { ProcessStepEntity } from '@h2-trust/contracts/entities';
 import { RfnboType } from '@h2-trust/domain';
 
-export class BottlingOverviewDto {
+export class ProcessStepOverviewDto {
   id: string;
   filledAt: Date;
   owner?: string;
@@ -24,8 +24,8 @@ export class BottlingOverviewDto {
     this.rfnboType = rfnboType;
   }
 
-  static fromEntity(processStep: ProcessStepEntity): BottlingOverviewDto {
-    return <BottlingOverviewDto>{
+  static fromEntity(processStep: ProcessStepEntity): ProcessStepOverviewDto {
+    return <ProcessStepOverviewDto>{
       id: processStep.id,
       filledAt: processStep.endedAt,
       owner: processStep.batch?.owner?.name,

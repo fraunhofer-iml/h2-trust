@@ -6,20 +6,20 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { BottlingDto } from '@h2-trust/contracts/dtos';
-import { FuelType, RfnboType, TransportType } from '@h2-trust/domain';
+import { CreateProcessStepDto } from '@h2-trust/contracts/dtos';
+import { RfnboType } from '@h2-trust/domain';
+import { CreateQualityDetailsDtoFixture } from './create-quality-details.fixture';
 
-export const BottlingDtoFixture = {
-  create: (overrides: Partial<BottlingDto> = {}): BottlingDto => ({
+export const CreateProcessStepDtoFixture = {
+  create: (overrides: Partial<CreateProcessStepDto> = {}): CreateProcessStepDto => ({
+    predecessorUnitIds: [],
+    qualityDetails: overrides.qualityDetails ?? CreateQualityDetailsDtoFixture.create(),
     amount: overrides.amount ?? 1,
     recipient: overrides.recipient ?? 'company-recipient-1',
     filledAt: overrides.filledAt ?? '2025-04-07T00:00:00.000Z',
     recordedBy: overrides.recordedBy ?? 'user-id-1',
-    hydrogenStorageUnit: overrides.hydrogenStorageUnit ?? 'hydrogen-storage-unit-1',
     rfnboType: overrides.rfnboType ?? RfnboType.RFNBO_READY,
     file: overrides.file,
-    transportMode: overrides.transportMode ?? TransportType.TRAILER,
     distance: overrides.distance ?? 1000,
-    fuelType: overrides.fuelType ?? FuelType.DIESEL,
   }),
 } as const;

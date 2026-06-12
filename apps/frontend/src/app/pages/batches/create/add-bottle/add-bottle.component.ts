@@ -22,9 +22,9 @@ import { MatTimepickerModule } from '@angular/material/timepicker';
 import { Router, RouterModule } from '@angular/router';
 import { injectMutation, injectQuery, QueryClient } from '@tanstack/angular-query-experimental';
 import {
-  BottlingOverviewDto,
   HydrogenComponentDto,
   HydrogenStorageOverviewDto,
+  ProcessStepOverviewDto,
   UserDto,
 } from '@h2-trust/contracts/dtos';
 import { FuelType, MeasurementUnit, RfnboType, TransportType, UnitType } from '@h2-trust/domain';
@@ -106,7 +106,7 @@ export class AddBottleComponent {
 
   mutation = injectMutation(() => ({
     mutationFn: async (dto: FormData) => {
-      await handleMutationWithPromiseToast<BottlingOverviewDto>(
+      await handleMutationWithPromiseToast<ProcessStepOverviewDto>(
         this.processService.createBottleBatch(dto),
         'Successfully created',
       );

@@ -154,7 +154,7 @@ export class ProductionService {
         if (!qualityDetails) {
           return statistics;
         }
-        switch (qualityDetails.powerType) {
+        switch (qualityDetails.productionPowerType) {
           case PowerType.RENEWABLE:
             statistics.renewable += batch.amount;
             break;

@@ -12,10 +12,9 @@ const USERS_ENDPOINT = environment.BFF_URL + '/users/';
 const UNITS_ENDPOINT = environment.BFF_URL + '/units/';
 const COMPANIES_ENDPOINT = environment.BFF_URL + '/companies/';
 const POWER_PURCHASE_AGREEMENTS_ENDPOINT = environment.BFF_URL + '/power-purchase-agreements/';
-const BOTTLING_ENDPOINT = environment.BFF_URL + '/bottlings/';
+const PROCESS_STEPS_ENDPOINT = environment.BFF_URL + '/process-steps/';
 const PRODUCTION_ENDPOINT = environment.BFF_URL + '/productions/';
 const FILE_DOWNLOAD_ENDPOINT = environment.BFF_URL + '/file-download/';
-const BATCH_ENDPOINT = environment.BFF_URL + '/batches/';
 
 export const API = {
   USERS: {
@@ -61,9 +60,9 @@ export const API = {
     REQUESTS: POWER_PURCHASE_AGREEMENTS_ENDPOINT + 'requests/',
     REQUESTS_SINGLE: (id: string) => `${API.POWER_PURCHASE_AGREEMENTS.REQUESTS}${id}`,
   },
-  BOTTLING: {
-    BASE: BOTTLING_ENDPOINT,
-    DETAILS: (id: string) => `${BOTTLING_ENDPOINT}${id}`,
+  PROCESS_STEPS: {
+    BASE: PROCESS_STEPS_ENDPOINT,
+    DETAILS: (id: string) => `${PROCESS_STEPS_ENDPOINT}${id}`,
   },
   PRODUCTION: {
     BASE: PRODUCTION_ENDPOINT,
@@ -74,8 +73,5 @@ export const API = {
   },
   FILE_DOWNLOAD: {
     BASE: FILE_DOWNLOAD_ENDPOINT,
-  },
-  BATCHES: {
-    BASE: BATCH_ENDPOINT,
   },
 };

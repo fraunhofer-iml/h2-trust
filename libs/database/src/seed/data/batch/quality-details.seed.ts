@@ -20,7 +20,7 @@ export const QualityDetailsSeed: readonly Partial<QualityDetails>[] = Object.fre
     createdAt: auditTimestamp,
     updatedAt: auditTimestamp,
     rfnboType: RfnboType.RFNBO_READY,
-    powerType: PowerType.RENEWABLE,
+    productionPowerType: PowerType.RENEWABLE,
     batchId: HydrogenProductionBatchSeed[0].id,
   },
   {
@@ -28,7 +28,7 @@ export const QualityDetailsSeed: readonly Partial<QualityDetails>[] = Object.fre
     createdAt: auditTimestamp,
     updatedAt: auditTimestamp,
     rfnboType: RfnboType.RFNBO_READY,
-    powerType: PowerType.RENEWABLE,
+    productionPowerType: PowerType.RENEWABLE,
     batchId: HydrogenProductionBatchSeed[1].id,
   },
   {
@@ -36,7 +36,7 @@ export const QualityDetailsSeed: readonly Partial<QualityDetails>[] = Object.fre
     createdAt: auditTimestamp,
     updatedAt: auditTimestamp,
     rfnboType: RfnboType.NON_CERTIFIABLE,
-    powerType: PowerType.RENEWABLE,
+    productionPowerType: PowerType.RENEWABLE,
     batchId: HydrogenProductionBatchSeed[2].id,
   },
   {
@@ -44,7 +44,7 @@ export const QualityDetailsSeed: readonly Partial<QualityDetails>[] = Object.fre
     createdAt: auditTimestamp,
     updatedAt: auditTimestamp,
     rfnboType: RfnboType.NON_CERTIFIABLE,
-    powerType: PowerType.RENEWABLE,
+    productionPowerType: PowerType.RENEWABLE,
     batchId: HydrogenProductionBatchSeed[3].id,
   },
   {
@@ -52,7 +52,7 @@ export const QualityDetailsSeed: readonly Partial<QualityDetails>[] = Object.fre
     createdAt: auditTimestamp,
     updatedAt: auditTimestamp,
     rfnboType: RfnboType.NON_CERTIFIABLE,
-    powerType: PowerType.RENEWABLE,
+    productionPowerType: PowerType.RENEWABLE,
     batchId: HydrogenProductionBatchSeed[4].id,
   },
   {
@@ -60,7 +60,7 @@ export const QualityDetailsSeed: readonly Partial<QualityDetails>[] = Object.fre
     createdAt: auditTimestamp,
     updatedAt: auditTimestamp,
     rfnboType: RfnboType.NON_CERTIFIABLE,
-    powerType: PowerType.RENEWABLE,
+    productionPowerType: PowerType.RENEWABLE,
     batchId: HydrogenProductionBatchSeed[5].id,
   },
   {
@@ -68,7 +68,7 @@ export const QualityDetailsSeed: readonly Partial<QualityDetails>[] = Object.fre
     createdAt: auditTimestamp,
     updatedAt: auditTimestamp,
     rfnboType: RfnboType.NON_CERTIFIABLE,
-    powerType: PowerType.NON_RENEWABLE,
+    productionPowerType: PowerType.NON_RENEWABLE,
     batchId: HydrogenProductionBatchSeed[6].id,
   },
   {
@@ -76,7 +76,7 @@ export const QualityDetailsSeed: readonly Partial<QualityDetails>[] = Object.fre
     createdAt: auditTimestamp,
     updatedAt: auditTimestamp,
     rfnboType: RfnboType.NON_CERTIFIABLE,
-    powerType: PowerType.PARTLY_RENEWABLE,
+    productionPowerType: PowerType.PARTLY_RENEWABLE,
     batchId: HydrogenProductionBatchSeed[7].id,
   },
   {
@@ -84,7 +84,7 @@ export const QualityDetailsSeed: readonly Partial<QualityDetails>[] = Object.fre
     createdAt: auditTimestamp,
     updatedAt: auditTimestamp,
     rfnboType: RfnboType.NON_CERTIFIABLE,
-    powerType: PowerType.PARTLY_RENEWABLE,
+    productionPowerType: PowerType.PARTLY_RENEWABLE,
     batchId: HydrogenProductionBatchSeed[8].id,
   },
   {
@@ -92,7 +92,7 @@ export const QualityDetailsSeed: readonly Partial<QualityDetails>[] = Object.fre
     createdAt: auditTimestamp,
     updatedAt: auditTimestamp,
     rfnboType: RfnboType.NON_CERTIFIABLE,
-    powerType: PowerType.RENEWABLE,
+    productionPowerType: PowerType.RENEWABLE,
     batchId: HydrogenProductionBatchSeed[9].id,
   },
   {
@@ -100,7 +100,7 @@ export const QualityDetailsSeed: readonly Partial<QualityDetails>[] = Object.fre
     createdAt: auditTimestamp,
     updatedAt: auditTimestamp,
     rfnboType: RfnboType.RFNBO_READY,
-    powerType: PowerType.NOT_SPECIFIED,
+    productionPowerType: PowerType.NOT_SPECIFIED,
     batchId: HydrogenBottlingBatchSeed[0].id,
   },
   {
@@ -108,7 +108,7 @@ export const QualityDetailsSeed: readonly Partial<QualityDetails>[] = Object.fre
     createdAt: auditTimestamp,
     updatedAt: auditTimestamp,
     rfnboType: RfnboType.NON_CERTIFIABLE,
-    powerType: PowerType.NOT_SPECIFIED,
+    productionPowerType: PowerType.NOT_SPECIFIED,
     batchId: HydrogenBottlingBatchSeed[1].id,
   },
   {
@@ -116,7 +116,7 @@ export const QualityDetailsSeed: readonly Partial<QualityDetails>[] = Object.fre
     createdAt: auditTimestamp,
     updatedAt: auditTimestamp,
     rfnboType: RfnboType.NON_CERTIFIABLE,
-    powerType: PowerType.NOT_SPECIFIED,
+    productionPowerType: PowerType.NOT_SPECIFIED,
     batchId: HydrogenBottlingBatchSeed[2].id,
   },
   {
@@ -124,7 +124,7 @@ export const QualityDetailsSeed: readonly Partial<QualityDetails>[] = Object.fre
     createdAt: auditTimestamp,
     updatedAt: auditTimestamp,
     rfnboType: RfnboType.NON_CERTIFIABLE,
-    powerType: PowerType.NOT_SPECIFIED,
+    productionPowerType: PowerType.NOT_SPECIFIED,
     distance: new Prisma.Decimal(0),
     batchId: HydrogenTransportationBatchSeed[0].id,
   },
@@ -133,7 +133,7 @@ export const QualityDetailsSeed: readonly Partial<QualityDetails>[] = Object.fre
     createdAt: auditTimestamp,
     updatedAt: auditTimestamp,
     rfnboType: RfnboType.NON_CERTIFIABLE,
-    powerType: PowerType.NOT_SPECIFIED,
+    productionPowerType: PowerType.NOT_SPECIFIED,
     distance: new Prisma.Decimal(100),
     batchId: HydrogenTransportationBatchSeed[1].id,
   },
@@ -142,7 +142,7 @@ export const QualityDetailsSeed: readonly Partial<QualityDetails>[] = Object.fre
     createdAt: auditTimestamp,
     updatedAt: auditTimestamp,
     rfnboType: RfnboType.NON_CERTIFIABLE,
-    powerType: PowerType.NOT_SPECIFIED,
+    productionPowerType: PowerType.NOT_SPECIFIED,
     distance: new Prisma.Decimal(100),
     batchId: HydrogenTransportationBatchSeed[2].id,
   },
@@ -151,7 +151,7 @@ export const QualityDetailsSeed: readonly Partial<QualityDetails>[] = Object.fre
     createdAt: auditTimestamp,
     updatedAt: auditTimestamp,
     rfnboType: RfnboType.NOT_SPECIFIED,
-    powerType: PowerType.RENEWABLE,
+    productionPowerType: PowerType.RENEWABLE,
     batchId: PowerProductionBatchSeed[0].id,
   },
   {
@@ -159,7 +159,7 @@ export const QualityDetailsSeed: readonly Partial<QualityDetails>[] = Object.fre
     createdAt: auditTimestamp,
     updatedAt: auditTimestamp,
     rfnboType: RfnboType.NOT_SPECIFIED,
-    powerType: PowerType.RENEWABLE,
+    productionPowerType: PowerType.RENEWABLE,
     batchId: PowerProductionBatchSeed[1].id,
   },
   {
@@ -167,7 +167,7 @@ export const QualityDetailsSeed: readonly Partial<QualityDetails>[] = Object.fre
     createdAt: auditTimestamp,
     updatedAt: auditTimestamp,
     rfnboType: RfnboType.NOT_SPECIFIED,
-    powerType: PowerType.RENEWABLE,
+    productionPowerType: PowerType.RENEWABLE,
     batchId: PowerProductionBatchSeed[2].id,
   },
   {
@@ -175,7 +175,7 @@ export const QualityDetailsSeed: readonly Partial<QualityDetails>[] = Object.fre
     createdAt: auditTimestamp,
     updatedAt: auditTimestamp,
     rfnboType: RfnboType.NOT_SPECIFIED,
-    powerType: PowerType.RENEWABLE,
+    productionPowerType: PowerType.RENEWABLE,
     batchId: PowerProductionBatchSeed[3].id,
   },
   {
@@ -183,7 +183,7 @@ export const QualityDetailsSeed: readonly Partial<QualityDetails>[] = Object.fre
     createdAt: auditTimestamp,
     updatedAt: auditTimestamp,
     rfnboType: RfnboType.NOT_SPECIFIED,
-    powerType: PowerType.RENEWABLE,
+    productionPowerType: PowerType.RENEWABLE,
     batchId: PowerProductionBatchSeed[4].id,
   },
   {
@@ -191,7 +191,7 @@ export const QualityDetailsSeed: readonly Partial<QualityDetails>[] = Object.fre
     createdAt: auditTimestamp,
     updatedAt: auditTimestamp,
     rfnboType: RfnboType.NOT_SPECIFIED,
-    powerType: PowerType.RENEWABLE,
+    productionPowerType: PowerType.RENEWABLE,
     batchId: PowerProductionBatchSeed[5].id,
   },
   {
@@ -199,7 +199,7 @@ export const QualityDetailsSeed: readonly Partial<QualityDetails>[] = Object.fre
     createdAt: auditTimestamp,
     updatedAt: auditTimestamp,
     rfnboType: RfnboType.NOT_SPECIFIED,
-    powerType: PowerType.NON_RENEWABLE,
+    productionPowerType: PowerType.NON_RENEWABLE,
     batchId: PowerProductionBatchSeed[6].id,
   },
   {
@@ -207,7 +207,7 @@ export const QualityDetailsSeed: readonly Partial<QualityDetails>[] = Object.fre
     createdAt: auditTimestamp,
     updatedAt: auditTimestamp,
     rfnboType: RfnboType.NOT_SPECIFIED,
-    powerType: PowerType.PARTLY_RENEWABLE,
+    productionPowerType: PowerType.PARTLY_RENEWABLE,
     batchId: PowerProductionBatchSeed[7].id,
   },
   {
@@ -215,7 +215,7 @@ export const QualityDetailsSeed: readonly Partial<QualityDetails>[] = Object.fre
     createdAt: auditTimestamp,
     updatedAt: auditTimestamp,
     rfnboType: RfnboType.NOT_SPECIFIED,
-    powerType: PowerType.PARTLY_RENEWABLE,
+    productionPowerType: PowerType.PARTLY_RENEWABLE,
     batchId: PowerProductionBatchSeed[8].id,
   },
   {
@@ -223,7 +223,7 @@ export const QualityDetailsSeed: readonly Partial<QualityDetails>[] = Object.fre
     createdAt: auditTimestamp,
     updatedAt: auditTimestamp,
     rfnboType: RfnboType.NOT_SPECIFIED,
-    powerType: PowerType.RENEWABLE,
+    productionPowerType: PowerType.RENEWABLE,
     batchId: PowerProductionBatchSeed[9].id,
   },
 ]);

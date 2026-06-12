@@ -6,12 +6,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { CreateHydrogenBottlingPayload } from '@h2-trust/contracts/payloads';
+import { CreateProcessStepPayload } from '@h2-trust/contracts/payloads';
 import { RfnboType } from '@h2-trust/domain';
 
 export const CreateHydrogenBottlingPayloadFixture = {
-  create: (overrides: Partial<CreateHydrogenBottlingPayload> = {}): CreateHydrogenBottlingPayload =>
-    new CreateHydrogenBottlingPayload(
+  create: (overrides: Partial<CreateProcessStepPayload> = {}): CreateProcessStepPayload =>
+    new CreateProcessStepPayload(
       overrides.amount ?? 100,
       overrides.ownerId ?? 'company-1',
       overrides.filledAt ?? new Date('2026-01-01T03:00:00Z'),

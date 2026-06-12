@@ -69,7 +69,7 @@ export class ProductionService {
       new ProductionDataFilter(pageNumber, pageSize, unitName, month),
     );
     const paginatedProcessStep: PaginatedProcessStepEntity = await firstValueFrom(
-      this.processSvc.send(ProcessStepMessagePatterns.READ_PAGINATION_BY_PREDECESSOR_TYPES_AND_OWNER, payload),
+      this.processSvc.send(ProcessStepMessagePatterns.READ_PRODUCTION_PAGINATION, payload),
     );
     return PaginatedDataDto.fromEntity<ProductionOverviewDto>(
       paginatedProcessStep.processSteps.map(ProductionOverviewDto.fromEntity),

@@ -8,7 +8,7 @@
 
 import { BatchEntity } from '@h2-trust/contracts/entities';
 import { BatchEntityFixture, QualityDetailsEntityFixture } from '@h2-trust/contracts/entities/fixtures';
-import { CreateHydrogenBottlingPayload } from '@h2-trust/contracts/payloads';
+import { CreateProcessStepPayload } from '@h2-trust/contracts/payloads';
 import { ProcessType, RfnboType } from '@h2-trust/domain';
 import { assembleBottling } from './bottling.assembler';
 
@@ -16,7 +16,7 @@ describe('BottlingAssembler', () => {
   describe('assembleBottling', () => {
     it('should assemble process step entity from payload and predecessor batches when called', () => {
       // arrange
-      const givenPayload = new CreateHydrogenBottlingPayload(
+      const givenPayload = new CreateProcessStepPayload(
         100,
         'owner-1',
         new Date('2024-01-15T10:00:00Z'),
@@ -46,7 +46,7 @@ describe('BottlingAssembler', () => {
 
     it(`should determine all predecessors when called`, () => {
       // arrange
-      const givenPayload = new CreateHydrogenBottlingPayload(
+      const givenPayload = new CreateProcessStepPayload(
         200,
         'owner-1',
         new Date('2024-01-15T10:00:00Z'),
@@ -76,7 +76,7 @@ describe('BottlingAssembler', () => {
 
     it('should throw exception when no predecessor batches provided', () => {
       // arrange
-      const givenPayload = new CreateHydrogenBottlingPayload(
+      const givenPayload = new CreateProcessStepPayload(
         100,
         'owner-1',
         new Date('2024-01-15T10:00:00Z'),

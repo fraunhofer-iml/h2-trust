@@ -10,18 +10,17 @@ import { Module } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard, KeycloakConnectModule } from 'nest-keycloak-connect';
 import { ConfigurationModule, KeycloakConfigurationService } from '@h2-trust/configuration';
-import { BatchModule } from './batch/batch.module';
-import { BottlingModule } from './bottling/bottling.module';
 import { CompanyModule } from './company/company.module';
 import { FileDownloadModule } from './file-download/file-download.module';
 import { PowerPurchaseAgreementModule } from './power-purchase-agreement/power-purchase-agreement.module';
+import { ProcessStepModule } from './process-step/process-step.module';
 import { ProductionModule } from './production/production.module';
 import { UnitModule } from './unit/unit.module';
 import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
-    BottlingModule,
+    ProcessStepModule,
     CompanyModule,
     PowerPurchaseAgreementModule,
     ProductionModule,
@@ -32,7 +31,6 @@ import { UserModule } from './user/user.module';
       imports: [ConfigurationModule],
     }),
     FileDownloadModule,
-    BatchModule,
   ],
   controllers: [],
   providers: [{ provide: APP_GUARD, useClass: AuthGuard }],

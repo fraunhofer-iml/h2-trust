@@ -6,7 +6,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export * from './bottling.fixture';
+export * from './create-process-step.fixture';
+export * from './create-quality-details.fixture';
 export * from './bottling-overview.fixture';
 export * from './paginated-production-data.fixture';
 export * from './production-overview.fixture';

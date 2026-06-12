@@ -99,7 +99,7 @@ export const ProcessStepEntityFixture = {
           ],
           qualityDetails: {
             rfnboType: RfnboType.NOT_SPECIFIED,
-            powerType: PowerType.NOT_SPECIFIED,
+            productionPowerType: PowerType.NOT_SPECIFIED,
             distance: overrides.batch?.qualityDetails?.distance ?? 0,
           },
         }),

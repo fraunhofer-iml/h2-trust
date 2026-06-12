@@ -56,7 +56,7 @@ export class ProductionOverviewDto {
       powerConsumed: ProductionOverviewDto.determinePowerConsumed(processStep),
       // TODO: replace powerProductionUnit & powerType with actual values (DUHGW-271)
       powerProductionUnit: 'power-production-unit',
-      powerType: processStep.batch?.qualityDetails?.powerType ?? PowerType.NOT_SPECIFIED,
+      powerType: processStep.batch?.qualityDetails?.productionPowerType ?? PowerType.NOT_SPECIFIED,
     };
   }
 

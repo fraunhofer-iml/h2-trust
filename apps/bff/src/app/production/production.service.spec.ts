@@ -122,7 +122,7 @@ describe('ProductionService', () => {
 
     // assert
     expect(processSvcMock.send).toHaveBeenCalledWith(
-      ProcessStepMessagePatterns.READ_PAGINATION_BY_PREDECESSOR_TYPES_AND_OWNER,
+      ProcessStepMessagePatterns.READ_PAGINATION,
       new ReadPaginatedProcessStepsByPredecessorTypesAndOwnerPayload(
         [ProcessType.POWER_PRODUCTION],
         givenUserDetails.company.id,

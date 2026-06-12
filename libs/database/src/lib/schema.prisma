@@ -197,11 +197,15 @@ model QualityDetails {
   updatedAt DateTime @updatedAt
 
   // Emission Data
-  rfnboType          String
-  powerType          String
-  usedRenewablePower Decimal? @db.Decimal(18, 6)
-  usedGridPower      Decimal? @db.Decimal(18, 6)
-  distance           Decimal? @db.Decimal(8, 3)
+  rfnboType           String
+  productionPowerType String
+  usedRenewablePower  Decimal? @db.Decimal(18, 6)
+  usedGridPower       Decimal? @db.Decimal(18, 6)
+  distance            Decimal? @db.Decimal(8, 3)
+  wasteWater          Decimal? @db.Decimal(8, 3)
+  resinConsumption    Decimal? @db.Decimal(8, 3)
+  compressedAir       Decimal? @db.Decimal(8, 3)
+  nitrogenConsumption Decimal? @db.Decimal(8, 3)
 
   batch   Batch  @relation(fields: [batchId], references: [id])
   batchId String @unique

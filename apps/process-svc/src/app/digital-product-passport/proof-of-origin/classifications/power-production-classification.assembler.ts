@@ -33,7 +33,7 @@ function getPowerBatchEntities(
       powerSupplyEmission.result,
       powerSupplyEmission.basisOfCalculation,
     );
-    const powerType: PowerType = powerProduction.batch?.qualityDetails?.powerType ?? PowerType.NOT_SPECIFIED;
+    const powerType: PowerType = powerProduction.batch?.qualityDetails?.productionPowerType ?? PowerType.NOT_SPECIFIED;
 
     return {
       id: powerProduction.batch.id,

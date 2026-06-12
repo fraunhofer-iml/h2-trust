@@ -30,7 +30,7 @@ import { DigitalProductPassportMessagePatterns, ProcessStepMessagePatterns } fro
 import { UserService } from '../user/user.service';
 import { BottlingService } from './bottling.service';
 
-describe('BottlingService', () => {
+describe('ProcessStepService', () => {
   let service: BottlingService;
 
   const processSvcMock = {

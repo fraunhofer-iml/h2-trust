@@ -40,7 +40,7 @@ export class DigitalProductPassportService {
       productionChain.powerProduction,
     );
 
-    const rawPowerType = productionChain.powerProduction.batch.qualityDetails.powerType;
+    const rawPowerType = productionChain.powerProduction.batch.qualityDetails.productionPowerType;
     assertValidEnum(rawPowerType, PowerType, 'PowerType');
     const powerType: PowerType = rawPowerType;
     const provenance: ProvenanceEntity = ProvenanceEntity.fromProductionChain(productionChain);
@@ -91,13 +91,13 @@ export class DigitalProductPassportService {
     );
     let powerType = PowerType.RENEWABLE;
     const hasRenewableGridPower = powerProductions.some(
-      (pp) => pp.batch?.qualityDetails?.powerType == PowerType.PARTLY_RENEWABLE,
+      (pp) => pp.batch?.qualityDetails?.productionPowerType == PowerType.PARTLY_RENEWABLE,
     );
     if (hasRenewableGridPower) {
       powerType = PowerType.PARTLY_RENEWABLE;
     }
     const hasNotRenewableGrid = powerProductions.some(
-      (pp) => pp.batch?.qualityDetails?.powerType == PowerType.NON_RENEWABLE,
+      (pp) => pp.batch?.qualityDetails?.productionPowerType == PowerType.NON_RENEWABLE,
     );
     if (hasNotRenewableGrid) {
       powerType = PowerType.NON_RENEWABLE;

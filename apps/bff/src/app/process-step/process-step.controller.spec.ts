@@ -20,7 +20,7 @@ import {
 import { BottlingController } from './bottling.controller';
 import { BottlingService } from './bottling.service';
 
-describe('BottlingController', () => {
+describe('ProcessStepController', () => {
   let controller: BottlingController;
 
   const bottlingServiceMock = {

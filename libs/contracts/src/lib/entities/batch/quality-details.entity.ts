@@ -13,25 +13,54 @@ import { assertValidEnum } from '@h2-trust/utils';
 export class QualityDetailsEntity {
   id?: string;
   rfnboType: RfnboType;
-  powerType: PowerType;
-  distance: number;
+  productionPowerType: PowerType;
+  usedRenewablePower?: number;
+  usedGridPower?: number;
+  distance?: number;
+  wasteWater?: number;
+  resinConsumption?: number;
+  compressedAir?: number;
+  nitrogenConsumption?: number;
 
-  constructor(id: string | undefined, rfnboType: RfnboType, powerType: PowerType, distance: number) {
+  constructor(
+    id: string | undefined,
+    rfnboType: RfnboType,
+    productionPowerType: PowerType,
+    usedRenewablePower?: number,
+    usedGridPower?: number,
+    distance?: number,
+    wasteWater?: number,
+    resinConsumption?: number,
+    compressedAir?: number,
+    nitrogenConsumption?: number,
+  ) {
     this.id = id;
     this.rfnboType = rfnboType;
-    this.powerType = powerType;
+    this.productionPowerType = productionPowerType;
+    this.usedRenewablePower = usedRenewablePower;
+    this.usedGridPower = usedGridPower;
     this.distance = distance;
+    this.wasteWater = wasteWater;
+    this.resinConsumption = resinConsumption;
+    this.compressedAir = compressedAir;
+    this.nitrogenConsumption = nitrogenConsumption;
   }
 
   static fromDatabase(qualityDetails: QualityDetailsDbType): QualityDetailsEntity {
     assertValidEnum(qualityDetails.rfnboType, RfnboType, 'RfnboType');
-    assertValidEnum(qualityDetails.powerType, PowerType, 'PowerType');
+    assertValidEnum(qualityDetails.productionPowerType, PowerType, 'PowerType');
 
     return new QualityDetailsEntity(
       qualityDetails.id,
       qualityDetails.rfnboType,
-      qualityDetails.powerType,
+      qualityDetails.productionPowerType,
+      qualityDetails.usedRenewablePower?.toNumber() ?? 0,
+      qualityDetails.usedGridPower?.toNumber() ?? 0,
       qualityDetails.distance?.toNumber() ?? 0,
+      qualityDetails.wasteWater?.toNumber() ?? 0,
+      qualityDetails.resinConsumption?.toNumber() ?? 0,
+      qualityDetails.compressedAir?.toNumber() ?? 0,
+      qualityDetails.nitrogenConsumption?.toNumber() ?? 0,
     );
   }
 }

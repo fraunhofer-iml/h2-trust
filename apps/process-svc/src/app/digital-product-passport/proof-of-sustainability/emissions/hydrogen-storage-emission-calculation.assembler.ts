@@ -25,7 +25,7 @@ export function assembleHydrogenStorageEmissionCalculations(
     return [];
   }
 
-  const powerType: PowerType = hydrogenProduction.batch.qualityDetails.powerType as PowerType;
+  const powerType: PowerType = hydrogenProduction.batch.qualityDetails.productionPowerType as PowerType;
   const emissionFactor = EmissionNumericConstants.POWER_TYPE_EMISSION_FACTORS[powerType];
 
   const result =

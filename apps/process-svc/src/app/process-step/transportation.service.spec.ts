@@ -10,8 +10,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { BatchEntityFixture, ProcessStepEntityFixture } from '@h2-trust/contracts/entities/fixtures';
 import { CreateHydrogenTransportationPayload } from '@h2-trust/contracts/payloads';
 import { BatchType, FuelType, ProcessType, TransportType } from '@h2-trust/domain';
-import { ProcessStepService } from '../process-step/process-step.service';
-import { TransportationService } from './transportation.service';
+import { TransportationService } from './process-step-validator';
+import { ProcessStepService } from './process-step.service';
 
 describe('TransportationService', () => {
   let service: TransportationService;
