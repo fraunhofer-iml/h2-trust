@@ -52,6 +52,15 @@ export class ProcessStepRepository {
     return ProcessStepEntity.fromDeepDatabase(processStep);
   }
 
+  async findProcessStepByBatchId(batchId: string): Promise<ProcessStepEntity> {
+    const processStep = await this.prismaService.processStep
+      .findUnique({ where: { batchId }, ...processStepDeepQueryArgs })
+      .catch(wrapPrismaError);
+
+    assertRecordFound(processStep, batchId);
+    return ProcessStepEntity.fromDeepDatabase(processStep);
+  }
+
   async findProcessSteps(ids: string[]): Promise<ProcessStepEntity[]> {
     const processSteps = await this.prismaService.processStep.findMany({
       where: {

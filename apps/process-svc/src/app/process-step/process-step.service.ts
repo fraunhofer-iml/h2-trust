@@ -155,6 +155,21 @@ export class ProcessStepService {
     return processStep;
   }
 
+  public async readProcessStepByBatchId(batchId: string): Promise<ProcessStepEntity> {
+    const processStep: ProcessStepEntity = await this.processStepRepository.findProcessStepByBatchId(batchId);
+
+    if (processStep.type === ProcessType.HYDROGEN_TRANSPORTATION) {
+      const predecessorProcessStep = await this.readPredecessorProcessStep(
+        processStep.batch.predecessors[0]?.processStepId,
+      );
+      processStep.documents = this.assembleDocuments(predecessorProcessStep);
+    } else {
+      processStep.documents = this.assembleDocuments(processStep);
+    }
+
+    return processStep;
+  }
+
   private async readPredecessorProcessStep(predecessorProcessStepId: string): Promise<ProcessStepEntity> {
     if (!predecessorProcessStepId) {
       throw new InternalException('ProcessStepId of predecessor is missing.');

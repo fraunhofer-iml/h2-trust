@@ -50,11 +50,11 @@ export class DigitalProductPassportService {
 
   /**
    * Calculates all the dpp metrics for a process step, namely the RFNBO type, the ProofOfOrigin and the ProofOfSustainability.
-   * @param processStepId The ID of the process step for which the DPP is to be calculated.
+   * @param batchId The batch ID of the process step for which the DPP is to be calculated.
    * @returns The calculated dpp.
    */
-  public async readDigitalProductPassport(processStepId: string): Promise<DigitalProductPassportEntity> {
-    const processStep: ProcessStepEntity = await this.processStepService.readProcessStep(processStepId);
+  public async readDigitalProductPassport(batchId: string): Promise<DigitalProductPassportEntity> {
+    const processStep: ProcessStepEntity = await this.processStepService.readProcessStepByBatchId(batchId);
     const predecessors: ProcessStepEntity[] = await this.processStepService.getPredecessors(processStep);
 
     const provenance: ProvenanceEntity = buildProvenance(processStep, predecessors);
