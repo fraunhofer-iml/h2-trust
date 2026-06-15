@@ -1,144 +1,147 @@
-<div [formGroup]="bottleFormGroup" class="flex w-full flex-row gap-4">
-  <div class="flex w-2/3 flex-col gap-4">
-    <div class="grid grid-cols-6 gap-x-2 gap-y-4 rounded-lg bg-white p-4">
-      <span class="col-span-6 text-neutral-700"> General Information </span>
-      <mat-form-field appearance="outline" class="col-span-2">
-        <mat-label>Date</mat-label>
-        <input
-          matInput
-          [matDatepicker]="picker"
-          formControlName="date"
-          [max]="dateDelimiter"
-          placeholder="Choose a date"
-          readonly
-        />
-        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-        <mat-datepicker #picker></mat-datepicker>
-      </mat-form-field>
-
-      <mat-form-field appearance="outline" class="col-span-2">
-        <mat-label>Time</mat-label>
-        <input
-          matInput
-          [matTimepicker]="timepicker"
-          formControlName="time"
-          [max]="dateDelimiter"
-          placeholder="Pick a time"
-          readonly
-        />
-        <mat-timepicker-toggle matIconSuffix [for]="timepicker" />
-        <mat-timepicker #timepicker />
-      </mat-form-field>
-
-      <mat-form-field appearance="outline" class="col-span-2">
-        <mat-label>Amount (kg)</mat-label>
-        <input
-          matInput
-          type="number"
-          inputmode="numeric"
-          formControlName="amount"
-          min="1"
-          step="1"
-          placeholder="e.g. 71"
-          required
-        />
-      </mat-form-field>
-
-      <mat-form-field appearance="outline" class="col-span-3">
-        <mat-label>Recipients</mat-label>
-        <mat-select formControlName="recipient" placeholder="Select a Recipient">
-          @if (recipientsQuery.isSuccess() && recipientsQuery.data().length) {
-            @for (recipient of recipientsQuery.data(); track recipient) {
-              <mat-option [value]="recipient">{{ recipient.name }}</mat-option>
-            }
-          } @else {
-            <mat-option [value]="null">No data found.</mat-option>
-          }
-        </mat-select>
-      </mat-form-field>
-
-      <mat-form-field appearance="outline" class="col-span-3">
-        <mat-label>Units</mat-label>
-        <mat-select formControlName="storageUnit" placeholder="Select a Unit" #storage>
-          @for (unit of hydrogenStorageQuery.data(); track unit) {
-            <mat-option [value]="unit" [disabled]="!unit.active || (bottleFormGroup.value.amount ?? 0) > unit.filling"
-              >{{ unit.name }} ({{ unit.filling | unit: MeasurementUnit.KG }})
-            </mat-option>
-          }
-        </mat-select>
-      </mat-form-field>
-    </div>
-    <div class="flex flex-col gap-2 rounded-lg bg-white p-4">
-      <h3 class="pb-1 text-neutral-700">Select Hydrogen Composition</h3>
-
-      @if (storage.value && bottleFormGroup.value.amount) {
-        <app-type-selection
-          [types]="bottleTypes"
-          [typeControl]="bottleTypeControl"
-          [descriptions]="rfnboDescriptions(storage.value?.hydrogenComposition ?? [])"
-          [disabledTypes]="rfnboDisabledTypes(storage.value?.hydrogenComposition ?? [])"
-        ></app-type-selection>
-      } @else {
-        <span class="text-sm text-neutral-500">Please choose a storage unit and the desired amount first.</span>
-      }
-    </div>
-    <div class="grid grid-cols-2 gap-2 rounded-lg bg-white p-4" [formGroup]="bottleFormGroup">
-      <span class="col-span-2 text-neutral-700"> Transport Information </span>
-      <mat-radio-group
-        required
-        class="col-span-2 flex flex-row gap-4"
-        aria-label="Select an option"
-        formControlName="transportMode"
-      >
-        <mat-radio-button [value]="TransportType.PIPELINE">{{ TransportType.PIPELINE | titlecase }}</mat-radio-button>
-        <mat-radio-button [value]="TransportType.TRAILER">{{ TransportType.TRAILER | titlecase }}</mat-radio-button>
-      </mat-radio-group>
-
-      @if (bottleFormGroup.controls.transportMode.value === TransportType.TRAILER) {
-        <mat-form-field appearance="outline">
-          <mat-label>Fuel Type</mat-label>
-
-          <mat-select formControlName="fuelType">
-            <mat-option [value]="FuelType.DIESEL">Diesel</mat-option>
-          </mat-select>
+<div class="flex flex-col gap-4 p-6">
+  <app-storage-filling-levels [chartData]="hydrogenStorageQuery.data()"></app-storage-filling-levels>
+  <div [formGroup]="bottleFormGroup" class="flex w-full flex-row gap-4">
+    <div class="flex w-2/3 flex-col gap-4">
+      <div class="grid grid-cols-6 gap-x-2 gap-y-4 rounded-lg bg-white p-4">
+        <span class="col-span-6 text-neutral-700"> General Information </span>
+        <mat-form-field appearance="outline" class="col-span-2">
+          <mat-label>Date</mat-label>
+          <input
+            matInput
+            [matDatepicker]="picker"
+            formControlName="date"
+            [max]="dateDelimiter"
+            placeholder="Choose a date"
+            readonly
+          />
+          <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
         </mat-form-field>
 
-        <mat-form-field appearance="outline">
-          <mat-label>Distance (km)</mat-label>
+        <mat-form-field appearance="outline" class="col-span-2">
+          <mat-label>Time</mat-label>
+          <input
+            matInput
+            [matTimepicker]="timepicker"
+            formControlName="time"
+            [max]="dateDelimiter"
+            placeholder="Pick a time"
+            readonly
+          />
+          <mat-timepicker-toggle matIconSuffix [for]="timepicker" />
+          <mat-timepicker #timepicker />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="col-span-2">
+          <mat-label>Amount (kg)</mat-label>
           <input
             matInput
             type="number"
             inputmode="numeric"
-            formControlName="distance"
+            formControlName="amount"
             min="1"
             step="1"
-            placeholder="e.g. 1337"
+            placeholder="e.g. 71"
+            required
           />
         </mat-form-field>
+
+        <mat-form-field appearance="outline" class="col-span-3">
+          <mat-label>Recipients</mat-label>
+          <mat-select formControlName="recipient" placeholder="Select a Recipient">
+            @if (recipientsQuery.isSuccess() && recipientsQuery.data().length) {
+              @for (recipient of recipientsQuery.data(); track recipient) {
+                <mat-option [value]="recipient">{{ recipient.name }}</mat-option>
+              }
+            } @else {
+              <mat-option [value]="null">No data found.</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="col-span-3">
+          <mat-label>Units</mat-label>
+          <mat-select formControlName="storageUnit" placeholder="Select a Unit" #storage>
+            @for (unit of hydrogenStorageQuery.data(); track unit) {
+              <mat-option [value]="unit" [disabled]="!unit.active || (bottleFormGroup.value.amount ?? 0) > unit.filling"
+                >{{ unit.name }} ({{ unit.filling | unit: MeasurementUnit.KG }})
+              </mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="flex flex-col gap-2 rounded-lg bg-white p-4">
+        <h3 class="pb-1 text-neutral-700">Select Hydrogen Composition</h3>
+
+        @if (storage.value && bottleFormGroup.value.amount) {
+          <app-type-selection
+            [types]="bottleTypes"
+            [typeControl]="bottleTypeControl"
+            [descriptions]="rfnboDescriptions(storage.value?.hydrogenComposition ?? [])"
+            [disabledTypes]="rfnboDisabledTypes(storage.value?.hydrogenComposition ?? [])"
+          ></app-type-selection>
+        } @else {
+          <span class="text-sm text-neutral-500">Please choose a storage unit and the desired amount first.</span>
+        }
+      </div>
+      <div class="grid grid-cols-2 gap-2 rounded-lg bg-white p-4" [formGroup]="bottleFormGroup">
+        <span class="col-span-2 text-neutral-700"> Transport Information </span>
+        <mat-radio-group
+          required
+          class="col-span-2 flex flex-row gap-4"
+          aria-label="Select an option"
+          formControlName="transportMode"
+        >
+          <mat-radio-button [value]="TransportType.PIPELINE">{{ TransportType.PIPELINE | titlecase }}</mat-radio-button>
+          <mat-radio-button [value]="TransportType.TRAILER">{{ TransportType.TRAILER | titlecase }}</mat-radio-button>
+        </mat-radio-group>
+
+        @if (bottleFormGroup.controls.transportMode.value === TransportType.TRAILER) {
+          <mat-form-field appearance="outline">
+            <mat-label>Fuel Type</mat-label>
+
+            <mat-select formControlName="fuelType">
+              <mat-option [value]="FuelType.DIESEL">Diesel</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Distance (km)</mat-label>
+            <input
+              matInput
+              type="number"
+              inputmode="numeric"
+              formControlName="distance"
+              min="1"
+              step="1"
+              placeholder="e.g. 1337"
+            />
+          </mat-form-field>
+        }
+      </div>
+    </div>
+
+    <div class="flex w-1/3 flex-col gap-2 rounded-lg bg-white p-4">
+      <h2 class="pb-1">Documents</h2>
+      <app-file-drag-and-drop
+        class="mb-2"
+        [acceptedFileTypes]="FileTypes.PDF"
+        (fileSelected)="uploadedFiles.push($event)"
+      ></app-file-drag-and-drop>
+      @if (uploadedFiles.length === 0) {
+        <span class="text-sm text-neutral-600">No files selected.</span>
+      } @else {
+        <span class="text-sm text-neutral-600">Selected files:</span>
+      }
+      @for (item of uploadedFiles; track $index) {
+        <app-file-card [file]="item" (deleteEmitter)="removeFile(item)"></app-file-card>
       }
     </div>
   </div>
 
-  <div class="flex w-1/3 flex-col gap-2 rounded-lg bg-white p-4">
-    <h2 class="pb-1">Documents</h2>
-    <app-file-drag-and-drop
-      class="mb-2"
-      [acceptedFileTypes]="FileTypes.PDF"
-      (fileSelected)="uploadedFiles.push($event)"
-    ></app-file-drag-and-drop>
-    @if (uploadedFiles.length === 0) {
-      <span class="text-sm text-neutral-600">No files selected.</span>
-    } @else {
-      <span class="text-sm text-neutral-600">Selected files:</span>
-    }
-    @for (item of uploadedFiles; track $index) {
-      <app-file-card [file]="item" (deleteEmitter)="removeFile(item)"></app-file-card>
-    }
-  </div>
-</div>
-
-<div class="col-span-2 mt-4 grid grid-cols-2 gap-2 rounded-lg bg-white p-4" [formGroup]="bottleFormGroup">
-  <div class="col-span-2 flex justify-end gap-2">
-    <button mat-flat-button (click)="createBottleData()" [disabled]="!bottleFormGroup.valid">Add Bottle</button>
+  <div class="col-span-2 mt-4 grid grid-cols-2 gap-2 rounded-lg bg-white p-4" [formGroup]="bottleFormGroup">
+    <div class="col-span-2 flex justify-end gap-2">
+      <button mat-flat-button (click)="createBottleData()" [disabled]="!bottleFormGroup.valid">Add Bottle</button>
+    </div>
   </div>
 </div>

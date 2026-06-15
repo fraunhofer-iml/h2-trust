@@ -29,3 +29,4 @@ export * from './unit.factory';
 export * from './unit-overview.type';
 export * from './unit-owner.dto';
 export * from './update';
+export * from './components-overview.dto';

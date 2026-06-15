@@ -11,11 +11,13 @@ import { ClientProxy } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
 import {
   BatchDto,
+  ComponentsOverviewDto,
   CreateProcessStepDto,
   DigitalProductPassportDto,
-  HydrogenComponentDto,
+  getSpecificUnit,
   PaginatedDataDto,
   ProcessStepOverviewDto,
+  UnitDto,
 } from '@h2-trust/contracts/dtos';
 import {
   DigitalProductPassportEntity,
@@ -35,7 +37,9 @@ import { ProcessType } from '@h2-trust/domain';
 import {
   DigitalProductPassportMessagePatterns,
   ProcessStepMessagePatterns,
+  QUEUE_GENERAL_SVC,
   QUEUE_PROCESS_SVC,
+  UnitMessagePatterns,
 } from '@h2-trust/messaging';
 import { UserService } from '../user/user.service';
 
@@ -43,6 +47,7 @@ import { UserService } from '../user/user.service';
 export class ProcessStepService {
   constructor(
     @Inject(QUEUE_PROCESS_SVC) private readonly processSvc: ClientProxy,
+    @Inject(QUEUE_GENERAL_SVC) private readonly generalService: ClientProxy,
     private readonly userService: UserService,
   ) {}
 
@@ -52,15 +57,15 @@ export class ProcessStepService {
     userId: string,
   ): Promise<ProcessStepOverviewDto> {
     const qualityDetails: CreateProcessStepQualityPayload = new CreateProcessStepQualityPayload(
-      dto.qualityDetails.rfnboType,
-      dto.qualityDetails.productionPowerType,
-      dto.qualityDetails.usedRenewablePower,
-      dto.qualityDetails.usedGridPower,
-      dto.qualityDetails.distance,
-      dto.qualityDetails.wasteWater,
-      dto.qualityDetails.resinConsumption,
-      dto.qualityDetails.compressedAir,
-      dto.qualityDetails.nitrogenConsumption,
+      dto.rfnboType,
+      dto.productionPowerType,
+      dto.usedRenewablePower,
+      dto.usedGridPower,
+      dto.distance,
+      dto.wasteWater,
+      dto.resinConsumption,
+      dto.compressedAir,
+      dto.nitrogenConsumption,
     );
     const bottlingPayload: CreateProcessStepPayload = new CreateProcessStepPayload(
       qualityDetails,
@@ -107,15 +112,29 @@ export class ProcessStepService {
     );
   }
 
-  public async readHydrogenComponentsForUnits(unitIds: string[], userId: string): Promise<HydrogenComponentDto[]> {
+  public async readHydrogenComponentsForUnits(unitId: string, userId: string): Promise<ComponentsOverviewDto> {
     const userDetails = await this.userService.readUserWithCompany(userId);
 
-    const payload = new ReadProcessStepsByUnitPayload(unitIds, true, userDetails.company.id);
+    const unit = await firstValueFrom(
+      this.generalService.send(UnitMessagePatterns.READ_BY_ID, new ReadByIdPayload(unitId)),
+    );
+    const specificUnit: UnitDto = getSpecificUnit(unit);
+
+    const capacity: number = 'capacity' in specificUnit ? specificUnit.capacity : 0;
+
+    const payload = new ReadProcessStepsByUnitPayload([unitId], true, userDetails.company.id);
 
     const hydrogenComponents: HydrogenComponentEntity[] = await firstValueFrom(
       this.processSvc.send(ProcessStepMessagePatterns.READ_ALL_BY_UNIT, payload),
     );
-    return hydrogenComponents.map(HydrogenComponentDto.fromEntity);
+    return new ComponentsOverviewDto(
+      specificUnit.id,
+      specificUnit.name,
+      specificUnit.unitType,
+      capacity,
+      hydrogenComponents,
+      specificUnit.active,
+    );
   }
 
   public async readDigitalProductPassport(id: string): Promise<DigitalProductPassportDto> {

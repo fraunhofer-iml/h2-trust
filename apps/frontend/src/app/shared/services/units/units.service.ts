@@ -10,6 +10,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { lastValueFrom } from 'rxjs';
 import {
+  ComponentsOverviewDto,
   HydrogenBottlingOverviewDto,
   HydrogenBottlingUnitDto,
   HydrogenBottlingUnitInputDto,
@@ -83,6 +84,10 @@ export class UnitsService {
 
   getUnitById(id: string) {
     return lastValueFrom(this.httpClient.get<UnitDto>(API.UNITS.BY_ID(id)));
+  }
+
+  getComponentOverviewById(id: string) {
+    return lastValueFrom(this.httpClient.get<ComponentsOverviewDto>(API.UNITS.COMPONENT_OVERVIEW(id)));
   }
 
   // update unit status

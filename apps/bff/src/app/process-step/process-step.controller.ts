@@ -20,6 +20,7 @@ import {
 } from '@nestjs/swagger';
 import {
   BatchDto,
+  ComponentsOverviewDto,
   CreateProcessStepDto,
   DigitalProductPassportDto,
   HydrogenComponentDto,
@@ -44,7 +45,6 @@ const bottlingExampleDefaults = {
   fuelType: 'DIESEL',
 } as const;
 
-//TODO-LG: rename Bottling classes to ProcessStep
 @Controller('process-steps')
 export class ProcessStepController {
   constructor(private readonly processStepService: ProcessStepService) {}
@@ -91,10 +91,6 @@ export class ProcessStepController {
         recordedBy: {
           type: 'string',
           default: bottlingExampleDefaults.recordedBy,
-        },
-        hydrogenStorageUnit: {
-          type: 'string',
-          default: bottlingExampleDefaults.hydrogenStorageUnit,
         },
         transportMode: {
           type: 'string',
@@ -236,7 +232,7 @@ export class ProcessStepController {
   readHydrogenComponentsForUnit(
     @Param('id') id: string,
     @KeycloakUser() authenticatedUser: AuthenticatedKCUser,
-  ): Promise<HydrogenComponentDto[]> {
-    return this.processStepService.readHydrogenComponentsForUnits([id], authenticatedUser.sub);
+  ): Promise<ComponentsOverviewDto> {
+    return this.processStepService.readHydrogenComponentsForUnits(id, authenticatedUser.sub);
   }
 }

@@ -27,7 +27,15 @@ import {
   ProcessStepOverviewDto,
   UserDto,
 } from '@h2-trust/contracts/dtos';
-import { FuelType, MeasurementUnit, RfnboType, TransportType, UnitType } from '@h2-trust/domain';
+import {
+  FuelType,
+  MeasurementUnit,
+  PowerType,
+  ProcessType,
+  RfnboType,
+  TransportType,
+  UnitType,
+} from '@h2-trust/domain';
 import { FileDragAndDropComponent } from '../../../../layout/drag-and-drop/file-drag-and-drop.component';
 import { FileCardComponent } from '../../../../layout/file-card/file-card.component';
 import { TypeSelectionComponent } from '../../../../layout/type-selection/type-selection.component';
@@ -38,12 +46,13 @@ import { EnumPipe } from '../../../../shared/pipes/enum.pipe';
 import { UnitPipe } from '../../../../shared/pipes/unit.pipe';
 import { companiesQueryOptions } from '../../../../shared/queries/companies.query';
 import { QueryKeyPrefix } from '../../../../shared/queries/shared-query-keys';
-import { hydrogenStorageUnitsQueryOptions } from '../../../../shared/queries/units.query';
+import { componentOverviewQueryOptions } from '../../../../shared/queries/units.query';
 import { BottlingService } from '../../../../shared/services/bottling/bottling.service';
 import { CompaniesService } from '../../../../shared/services/companies/companies.service';
 import { UnitsService } from '../../../../shared/services/units/units.service';
 import { handleMutationWithPromiseToast } from '../../../../shared/util/query-error-handler';
 import { BottlingForm } from './form';
+import { StorageFillingLevelsComponent } from './storage-filling-levels/storage-filling-levels.component';
 
 @Component({
   selector: 'app-add-bottle',
@@ -66,6 +75,7 @@ import { BottlingForm } from './form';
     FileCardComponent,
     TypeSelectionComponent,
     UnitPipe,
+    StorageFillingLevelsComponent,
   ],
   templateUrl: './add-bottle.component.html',
 })
@@ -100,7 +110,7 @@ export class AddBottleComponent {
     distance: new FormControl<number | null>(null),
   });
 
-  hydrogenStorageQuery = injectQuery(() => hydrogenStorageUnitsQueryOptions(this.unitsService));
+  hydrogenStorageQuery = injectQuery(() => componentOverviewQueryOptions(this.unitsService, 'hydrogen-storage-unit-0'));
 
   recipientsQuery = injectQuery(() => companiesQueryOptions(this.companiesService));
 
@@ -144,15 +154,19 @@ export class AddBottleComponent {
         data.append('files', file);
       }
 
+    //TODO-LG: use correct ids for executing unit and predecessor unit
     data.append('amount', this.bottleFormGroup.value?.amount?.toString() ?? '');
+    data.append('processType', ProcessType.HYDROGEN_BOTTLING);
     data.append('recipient', this.bottleFormGroup.value.recipient?.id ?? '');
     data.append('filledAt', this.createTimestamp().toISOString());
     data.append('recordedBy', '');
-    data.append('hydrogenStorageUnit', this.bottleFormGroup.value.storageUnit?.id ?? '');
+    data.append('executingUnitId', 'hydrogen-storage-unit-0');
+    data.append('predecessorUnitId', 'hydrogen-storage-unit-0');
+
+    //qualityDetails
     data.append('rfnboType', this.bottleFormGroup.value.type ?? '');
-    data.append('transportMode', this.bottleFormGroup.value.transportMode ?? '');
-    data.append('fuelType', this.bottleFormGroup.value.fuelType ?? '');
-    data.append('distance', this.bottleFormGroup.value.distance?.toString() ?? '');
+    data.append('productionPowerType', PowerType.NOT_SPECIFIED);
+    data.append('distance', this.bottleFormGroup.value.distance?.toString() ?? '0');
 
     this.mutation.mutate(data);
   }

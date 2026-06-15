@@ -7,13 +7,13 @@
  */
 
 import { Module } from '@nestjs/common';
-import { getProcessSvcBroker } from '@h2-trust/messaging';
+import { getGeneralSvcBroker, getProcessSvcBroker } from '@h2-trust/messaging';
 import { UserModule } from '../user/user.module';
 import { ProcessStepController } from './process-step.controller';
 import { ProcessStepService } from './process-step.service';
 
 @Module({
-  imports: [UserModule, getProcessSvcBroker()],
+  imports: [UserModule, getProcessSvcBroker(), getGeneralSvcBroker()],
   controllers: [ProcessStepController],
   providers: [ProcessStepService],
 })
