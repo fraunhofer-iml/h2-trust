@@ -69,7 +69,7 @@ export function assembleHydrogenTransportationSections(provenance: ProvenanceEnt
   }
 
   return provenance
-    .getProcessStepsFromChain(ProcessType.HYDROGEN_BOTTLING)
+    .getProcessStepsFromChain(ProcessType.HYDROGEN_TRANSPORTATION)
     .map((transport) => assembleHydrogenTransportationSection(transport, provenance));
 }
 
