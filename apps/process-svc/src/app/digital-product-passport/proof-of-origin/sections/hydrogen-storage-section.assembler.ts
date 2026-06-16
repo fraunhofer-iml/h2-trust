@@ -8,7 +8,6 @@
 
 import {
   ProcessStepEntity,
-  ProofOfOriginBatchEntity,
   ProofOfOriginClassificationEntity,
   ProofOfOriginEmissionEntity,
   ProofOfOriginHydrogenBatchEntity,
@@ -16,7 +15,7 @@ import {
   ProofOfSustainabilityEmissionCalculationEntity,
   ProvenanceEntity,
 } from '@h2-trust/contracts/entities';
-import { BatchType, ProofOfOrigin, RfnboType } from '@h2-trust/domain';
+import { BatchType, ProcessType, ProofOfOrigin } from '@h2-trust/domain';
 import { assembleHydrogenStorageEmissionCalculations } from '../../proof-of-sustainability/emissions/hydrogen-storage-emission-calculation.assembler';
 import { assembleClassification } from '../../util';
 import { ProofOfOriginSectionAssembler } from '../proof-of-origin-assembler.interface';
@@ -46,53 +45,35 @@ function assembleHydrogenStorageBatch(
   };
 }
 
-export function assembleHydrogenStorageSection(provenance: ProvenanceEntity): ProofOfOriginSectionEntity[] {
-  if (!provenance.getAllHydrogenLeafProductions()?.length) {
+export function assembleHydrogenStorageSection(storage: ProcessStepEntity): ProofOfOriginSectionEntity {
+  const emissionCalculation: ProofOfSustainabilityEmissionCalculationEntity[] =
+    assembleHydrogenStorageEmissionCalculations(storage);
+
+  const emission: ProofOfOriginEmissionEntity =
+    emissionCalculation.length > 0
+      ? ProofOfOriginEmissionEntity.fromEmissionCalculation(storage.batch.amount, emissionCalculation[0].result)
+      : undefined;
+
+  const classification: ProofOfOriginClassificationEntity = assembleClassification(
+    storage.batch.qualityDetails.rfnboType,
+    BatchType.HYDROGEN,
+    [assembleHydrogenStorageBatch(storage, emission)],
+    [],
+  );
+
+  return new ProofOfOriginSectionEntity(ProofOfOrigin.HYDROGEN_STORAGE_SECTION, [], [classification]);
+}
+
+export function assembleHydrogenStorageSections(provenance: ProvenanceEntity): ProofOfOriginSectionEntity[] {
+  if (!provenance || !provenance.getAllHydrogenLeafProductions()?.length) {
     return [];
   }
 
-  const hydrogenProductions: ProcessStepEntity[] = provenance.getAllHydrogenLeafProductions();
-  const classifications: ProofOfOriginClassificationEntity[] = [];
-
-  for (const rfnboType of Object.values(RfnboType)) {
-    const hydrogenProductionsByRfnboType = hydrogenProductions.filter(
-      (hp) => hp.batch?.qualityDetails?.rfnboType === rfnboType,
-    );
-
-    if (hydrogenProductionsByRfnboType.length === 0) {
-      continue;
-    }
-
-    const batchesForHydrogenRfnboType: ProofOfOriginBatchEntity[] = hydrogenProductionsByRfnboType.map(
-      (hydrogenProduction) => {
-        const emissionCalculation: ProofOfSustainabilityEmissionCalculationEntity[] =
-          assembleHydrogenStorageEmissionCalculations(hydrogenProduction);
-
-        const emission: ProofOfOriginEmissionEntity =
-          emissionCalculation.length > 0
-            ? ProofOfOriginEmissionEntity.fromEmissionCalculation(
-                hydrogenProduction.batch.amount,
-                emissionCalculation[0].result,
-              )
-            : undefined;
-
-        return assembleHydrogenStorageBatch(hydrogenProduction, emission);
-      },
-    );
-
-    const classification: ProofOfOriginClassificationEntity = assembleClassification(
-      rfnboType,
-      BatchType.HYDROGEN,
-      batchesForHydrogenRfnboType,
-      [],
-    );
-
-    classifications.push(classification);
-  }
-
-  return [new ProofOfOriginSectionEntity(ProofOfOrigin.HYDROGEN_STORAGE_SECTION, [], classifications)];
+  return provenance
+    .getProcessStepsFromChain(ProcessType.HYDROGEN_STORAGE)
+    .map((storage) => assembleHydrogenStorageSection(storage));
 }
 
 export const hydrogenStorageSectionAssembler: ProofOfOriginSectionAssembler = {
-  assembleSection: assembleHydrogenStorageSection,
+  assembleSection: assembleHydrogenStorageSections,
 };
