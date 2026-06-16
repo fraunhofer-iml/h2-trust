@@ -194,6 +194,28 @@ export class ProcessStepController {
   }
 
   @Public()
+  @Get('components')
+  @ApiBearerAuth()
+  @ApiOperation({
+    description: 'Retrieve a list of hydrogen components by the corresponding unit ID.',
+  })
+  @ApiOkResponse({
+    description: 'Returns a list of hydrogen components for the given unit.',
+    type: HydrogenComponentDto,
+    isArray: true,
+  })
+  @ApiParam({
+    name: 'id',
+    description: 'Unique identifier of the unit.',
+    example: 'hydrogen-storage-unit-1',
+  })
+  readHydrogenComponentsForUnits(
+    @KeycloakUser() authenticatedUser: AuthenticatedKCUser,
+  ): Promise<ComponentsOverviewDto[]> {
+    return this.processStepService.readHydrogenComponentsForOwnUnits(authenticatedUser.sub);
+  }
+
+  @Public()
   @Get(':id')
   @ApiBearerAuth()
   @ApiOperation({
@@ -211,28 +233,5 @@ export class ProcessStepController {
   })
   readDigitalProductPassport(@Param('id') id: string): Promise<DigitalProductPassportDto> {
     return this.processStepService.readDigitalProductPassport(id);
-  }
-
-  @Public()
-  @Get('components/:id')
-  @ApiBearerAuth()
-  @ApiOperation({
-    description: 'Retrieve a list of hydrogen components by the corresponding unit ID.',
-  })
-  @ApiOkResponse({
-    description: 'Returns a list of hydrogen components for the given unit.',
-    type: HydrogenComponentDto,
-    isArray: true,
-  })
-  @ApiParam({
-    name: 'id',
-    description: 'Unique identifier of the unit.',
-    example: 'hydrogen-storage-unit-1',
-  })
-  readHydrogenComponentsForUnit(
-    @Param('id') id: string,
-    @KeycloakUser() authenticatedUser: AuthenticatedKCUser,
-  ): Promise<ComponentsOverviewDto> {
-    return this.processStepService.readHydrogenComponentsForUnits(id, authenticatedUser.sub);
   }
 }

@@ -24,12 +24,14 @@ import {
   HydrogenComponentEntity,
   PaginatedProcessStepEntity,
   ProcessStepEntity,
+  UnitEntity,
 } from '@h2-trust/contracts/entities';
 import {
   CreateProcessStepPayload,
   CreateProcessStepQualityPayload,
   ProcessStepDataFilter,
   ReadByIdPayload,
+  ReadByOwnerIdAndTypePayload,
   ReadPaginatedProcessStepsPayload,
   ReadProcessStepsByUnitPayload,
 } from '@h2-trust/contracts/payloads';
@@ -135,6 +137,41 @@ export class ProcessStepService {
       hydrogenComponents,
       specificUnit.active,
     );
+  }
+
+  public async readHydrogenComponentsForOwnUnits(userId: string): Promise<ComponentsOverviewDto[]> {
+    const userDetails = await this.userService.readUserWithCompany(userId);
+
+    const units: UnitEntity[] = await firstValueFrom(
+      this.generalService.send(
+        UnitMessagePatterns.READ_BY_OWNER_ID_AND_TYPE,
+        new ReadByOwnerIdAndTypePayload(userDetails.company.id),
+      ),
+    );
+    const specificUnits: UnitDto[] = units.map(getSpecificUnit);
+
+    const componentDtos = await Promise.all(
+      specificUnits.map((specificUnit) => {
+        const capacity: number = 'capacity' in specificUnit ? specificUnit.capacity : 0;
+
+        console.log(specificUnit.id, userDetails.company.id);
+
+        const payload = new ReadProcessStepsByUnitPayload([specificUnit.id], true, userDetails.company.id);
+
+        return firstValueFrom(this.processSvc.send(ProcessStepMessagePatterns.READ_ALL_BY_UNIT, payload)).then(
+          (hydrogenComponents: HydrogenComponentEntity[]) =>
+            new ComponentsOverviewDto(
+              specificUnit.id,
+              specificUnit.name,
+              specificUnit.unitType,
+              capacity,
+              hydrogenComponents,
+              specificUnit.active,
+            ),
+        );
+      }),
+    );
+    return componentDtos;
   }
 
   public async readDigitalProductPassport(id: string): Promise<DigitalProductPassportDto> {

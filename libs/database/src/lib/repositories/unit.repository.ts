@@ -55,9 +55,9 @@ export class UnitRepository {
     return units.map(UnitEntity.fromDeepBaseUnit);
   }
 
-  async findUnitsByOwnerIdAndType(ownerId: string, unitType: UnitType): Promise<UnitEntity[]> {
+  async findUnitsByOwnerIdAndType(ownerId: string, unitType?: UnitType): Promise<UnitEntity[]> {
     const units = await this.prismaService.unit
-      .findMany({ where: { ownerId, type: unitType }, ...unitDeepQueryArgs })
+      .findMany({ where: { ownerId, type: unitType ?? {} }, ...unitDeepQueryArgs })
       .catch(wrapPrismaError);
     return units.map(UnitEntity.fromDeepBaseUnit);
   }

@@ -86,8 +86,8 @@ export class UnitsService {
     return lastValueFrom(this.httpClient.get<UnitDto>(API.UNITS.BY_ID(id)));
   }
 
-  getComponentOverviewById(id: string) {
-    return lastValueFrom(this.httpClient.get<ComponentsOverviewDto>(API.UNITS.COMPONENT_OVERVIEW(id)));
+  getComponentOverviewsOfOwnUnits() {
+    return lastValueFrom(this.httpClient.get<ComponentsOverviewDto[]>(API.UNITS.COMPONENT_OVERVIEWS()));
   }
 
   // update unit status

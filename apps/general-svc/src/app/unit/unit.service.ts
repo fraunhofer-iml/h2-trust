@@ -35,7 +35,7 @@ export class UnitService {
     return this.unitRepository.findUnitsByIds(ids);
   }
 
-  readUnitsByOwnerIdAndType(ownerId: string, unitType: UnitType): Promise<UnitEntity[]> {
+  readUnitsByOwnerIdAndType(ownerId: string, unitType?: UnitType): Promise<UnitEntity[]> {
     return this.unitRepository.findUnitsByOwnerIdAndType(ownerId, unitType);
   }
 

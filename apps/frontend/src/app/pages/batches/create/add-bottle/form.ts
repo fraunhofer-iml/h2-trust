@@ -7,17 +7,19 @@
  */
 
 import { FormControl } from '@angular/forms';
-import { HydrogenStorageOverviewDto, UserDto } from '@h2-trust/contracts/dtos';
-import { FuelType, TransportType } from '@h2-trust/domain';
+import { ComponentsOverviewDto, UserDto } from '@h2-trust/contracts/dtos';
+import { FuelType, ProcessType, TransportType } from '@h2-trust/domain';
 
 export type BottlingForm = {
   date: FormControl<Date | undefined | null>;
   time: FormControl<Date | undefined | null>;
   amount: FormControl<number | undefined | null>;
   recipient: FormControl<UserDto | undefined | null>;
-  storageUnit: FormControl<HydrogenStorageOverviewDto | undefined | null>;
+  predecessorUnit: FormControl<ComponentsOverviewDto | undefined | null>;
+  executingUnit: FormControl<string | undefined | null>;
   type: FormControl<'NON_CERTIFIABLE' | 'RFNBO_READY' | undefined | null>;
   transportMode: FormControl<TransportType | null>;
   fuelType: FormControl<FuelType | null>;
   distance: FormControl<number | null>;
+  processType: FormControl<ProcessType | null>;
 };

@@ -21,12 +21,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTimepickerModule } from '@angular/material/timepicker';
 import { Router, RouterModule } from '@angular/router';
 import { injectMutation, injectQuery, QueryClient } from '@tanstack/angular-query-experimental';
-import {
-  HydrogenComponentDto,
-  HydrogenStorageOverviewDto,
-  ProcessStepOverviewDto,
-  UserDto,
-} from '@h2-trust/contracts/dtos';
+import { ComponentsOverviewDto, HydrogenComponentDto, ProcessStepOverviewDto, UserDto } from '@h2-trust/contracts/dtos';
 import {
   FuelType,
   MeasurementUnit,
@@ -46,7 +41,7 @@ import { EnumPipe } from '../../../../shared/pipes/enum.pipe';
 import { UnitPipe } from '../../../../shared/pipes/unit.pipe';
 import { companiesQueryOptions } from '../../../../shared/queries/companies.query';
 import { QueryKeyPrefix } from '../../../../shared/queries/shared-query-keys';
-import { componentOverviewQueryOptions } from '../../../../shared/queries/units.query';
+import { componentOverviewsQueryOptions } from '../../../../shared/queries/units.query';
 import { BottlingService } from '../../../../shared/services/bottling/bottling.service';
 import { CompaniesService } from '../../../../shared/services/companies/companies.service';
 import { UnitsService } from '../../../../shared/services/units/units.service';
@@ -97,20 +92,34 @@ export class AddBottleComponent {
 
   dateDelimiter: Date = new Date();
   uploadedFiles: File[] = [];
+  selectedChartData: ComponentsOverviewDto[] = [];
+
+  ProcessType = ProcessType; // Expose enum to template
+  processTypes = Object.values(ProcessType); // Get all enum values
 
   bottleFormGroup: FormGroup<BottlingForm> = new FormGroup({
     date: new FormControl<Date | undefined>(new Date(), Validators.required),
     time: new FormControl<Date | undefined>(new Date(), Validators.required),
     amount: new FormControl<number | undefined>(undefined, [Validators.required, Validators.min(1)]),
     recipient: new FormControl<UserDto | undefined>(undefined, Validators.required),
-    storageUnit: new FormControl<HydrogenStorageOverviewDto | undefined>(undefined, Validators.required),
+    predecessorUnit: new FormControl<ComponentsOverviewDto | undefined>(undefined, Validators.required),
+    executingUnit: new FormControl<string | undefined>(undefined, Validators.required),
     type: new FormControl<'NON_CERTIFIABLE' | 'RFNBO_READY' | undefined>(undefined, Validators.required),
     transportMode: new FormControl<TransportType | null>(null, Validators.required),
     fuelType: new FormControl<FuelType | null>(null),
     distance: new FormControl<number | null>(null),
+    processType: new FormControl<ProcessType | null>(null),
   });
 
-  hydrogenStorageQuery = injectQuery(() => componentOverviewQueryOptions(this.unitsService, 'hydrogen-storage-unit-0'));
+  changeValue() {
+    this.selectedChartData = this.bottleFormGroup.value?.predecessorUnit
+      ? [this.bottleFormGroup.value?.predecessorUnit]
+      : [];
+    console.log(this.selectedChartData);
+  }
+
+  //hydrogenStorageQuery = injectQuery(() => componentOverviewQueryOptions(this.unitsService, 'hydrogen-storage-unit-0'));
+  hydrogenStorageQuery = injectQuery(() => componentOverviewsQueryOptions(this.unitsService));
 
   recipientsQuery = injectQuery(() => companiesQueryOptions(this.companiesService));
 
@@ -213,8 +222,8 @@ export class AddBottleComponent {
 
     this.bottleFormGroup.controls.type.reset();
 
-    if (this.bottleFormGroup.value?.storageUnit && amount > this.bottleFormGroup.value?.storageUnit?.filling)
-      this.bottleFormGroup.controls.storageUnit?.reset();
+    if (this.bottleFormGroup.value?.predecessorUnit && amount > this.bottleFormGroup.value?.predecessorUnit?.filling)
+      this.bottleFormGroup.controls.predecessorUnit?.reset();
   }
 
   displayComposition(hydrogenComposition: HydrogenComponentDto[]) {

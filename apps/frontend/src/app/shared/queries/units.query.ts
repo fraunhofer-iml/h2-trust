@@ -38,10 +38,10 @@ export const powerProductionUnitsQueryOptions = (unitsService: UnitsService) =>
 export const hydrogenStorageUnitsQueryOptions = (unitsService: UnitsService) =>
   createUnitsQueryOptions(unitsService, UnitType.HYDROGEN_STORAGE, isHydrogenStorageUnitOverview);
 
-export const componentOverviewQueryOptions = (unitsService: UnitsService, unitId: string) => ({
+export const componentOverviewsQueryOptions = (unitsService: UnitsService) => ({
   queryKey: [QueryKeyPrefix.COMPONENT_OVERVIEW],
-  queryFn: () => unitsService.getComponentOverviewById(unitId),
-  select: (unit: UnitOverviewDto) => [unit] as ComponentsOverviewDto[],
+  queryFn: () => unitsService.getComponentOverviewsOfOwnUnits(),
+  select: (units: UnitOverviewDto[]) => units as ComponentsOverviewDto[],
 });
 
 export const unitsQueryOptions = (unitsService: UnitsService, type?: UnitType) => ({
