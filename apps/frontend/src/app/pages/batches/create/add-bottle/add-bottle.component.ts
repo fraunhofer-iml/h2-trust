@@ -66,6 +66,7 @@ import { StorageFillingLevelsComponent } from './storage-filling-levels/storage-
     MatIconModule,
     MatRadioModule,
     RouterModule,
+    EnumPipe,
     FileDragAndDropComponent,
     FileCardComponent,
     TypeSelectionComponent,
@@ -94,8 +95,13 @@ export class AddBottleComponent {
   uploadedFiles: File[] = [];
   selectedChartData: ComponentsOverviewDto[] = [];
 
-  ProcessType = ProcessType; // Expose enum to template
-  processTypes = Object.values(ProcessType); // Get all enum values
+  ProcessType = ProcessType;
+  protected readonly availableProcessTypes = Object.values(ProcessType).filter(
+    (type) =>
+      type !== ProcessType.WATER_CONSUMPTION &&
+      type !== ProcessType.POWER_PRODUCTION &&
+      type !== ProcessType.HYDROGEN_PRODUCTION,
+  );
 
   bottleFormGroup: FormGroup<BottlingForm> = new FormGroup({
     date: new FormControl<Date | undefined>(new Date(), Validators.required),
@@ -105,9 +111,11 @@ export class AddBottleComponent {
     predecessorUnit: new FormControl<ComponentsOverviewDto | undefined>(undefined, Validators.required),
     executingUnit: new FormControl<string | undefined>(undefined, Validators.required),
     type: new FormControl<'NON_CERTIFIABLE' | 'RFNBO_READY' | undefined>(undefined, Validators.required),
-    transportMode: new FormControl<TransportType | null>(null, Validators.required),
-    fuelType: new FormControl<FuelType | null>(null),
     distance: new FormControl<number | null>(null),
+    renewable_power: new FormControl<number | null>(null),
+    grid_power: new FormControl<number | null>(null),
+    compressed_air: new FormControl<number | null>(null),
+    nitrogen: new FormControl<number | null>(null),
     processType: new FormControl<ProcessType | null>(null),
   });
 
@@ -140,9 +148,9 @@ export class AddBottleComponent {
   }));
 
   constructor() {
-    this.bottleFormGroup.controls.transportMode.valueChanges.subscribe((transportMode) =>
+    /*this.bottleFormGroup.controls.transportMode.valueChanges.subscribe((transportMode) =>
       this.onTransportModeChange(transportMode),
-    );
+    );*/
 
     this.bottleFormGroup.controls.amount?.valueChanges.subscribe((amount) => this.onAmountChange(amount));
   }
@@ -176,6 +184,10 @@ export class AddBottleComponent {
     data.append('rfnboType', this.bottleFormGroup.value.type ?? '');
     data.append('productionPowerType', PowerType.NOT_SPECIFIED);
     data.append('distance', this.bottleFormGroup.value.distance?.toString() ?? '0');
+    data.append('usedRenewablePower', this.bottleFormGroup.value.renewable_power?.toString() ?? '0');
+    data.append('usedGridPower', this.bottleFormGroup.value.grid_power?.toString() ?? '0');
+    data.append('compressedAir', this.bottleFormGroup.value.compressed_air?.toString() ?? '0');
+    data.append('nitrogenConsumption', this.bottleFormGroup.value.nitrogen?.toString() ?? '0');
 
     this.mutation.mutate(data);
   }
@@ -196,7 +208,8 @@ export class AddBottleComponent {
 
     return pickedDate;
   }
-
+  //TODO-LG: validate form group for new process steps
+  /*
   private onTransportModeChange(transportMode: TransportType | null) {
     if (!transportMode) return;
 
@@ -215,7 +228,7 @@ export class AddBottleComponent {
 
     fuelTypeControl.updateValueAndValidity();
     distanceControl.updateValueAndValidity();
-  }
+  }*/
 
   private onAmountChange(amount: number | null | undefined) {
     if (!amount) return;

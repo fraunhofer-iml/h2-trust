@@ -55,43 +55,36 @@ export class CreateProcessStepDto {
   productionPowerType: PowerType;
 
   @IsNumber()
-  @IsPositive()
   @IsOptional()
   @Transform(({ value }) => Number(value), { toClassOnly: true })
   usedRenewablePower?: number;
 
   @IsNumber()
-  @IsPositive()
   @IsOptional()
   @Transform(({ value }) => Number(value), { toClassOnly: true })
   usedGridPower?: number;
 
   @IsOptional()
   @IsNumber()
-  @IsPositive()
   @Transform(({ value }) => Number(value), { toClassOnly: true })
   distance?: number;
 
   @IsNumber()
-  @IsPositive()
   @IsOptional()
   @Transform(({ value }) => Number(value), { toClassOnly: true })
   wasteWater?: number;
 
   @IsNumber()
-  @IsPositive()
   @IsOptional()
   @Transform(({ value }) => Number(value), { toClassOnly: true })
   resinConsumption?: number;
 
   @IsNumber()
-  @IsPositive()
   @IsOptional()
   @Transform(({ value }) => Number(value), { toClassOnly: true })
   compressedAir?: number;
 
   @IsNumber()
-  @IsPositive()
   @IsOptional()
   @Transform(({ value }) => Number(value), { toClassOnly: true })
   nitrogenConsumption?: number;

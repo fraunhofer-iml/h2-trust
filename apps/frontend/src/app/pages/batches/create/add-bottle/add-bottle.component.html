@@ -76,9 +76,9 @@
         <mat-form-field appearance="outline" class="col-span-3">
           <mat-label>Process Type</mat-label>
           <mat-select formControlName="processType" placeholder="Select a Process Type">
-            @for (processType of processTypes; track processType) {
+            @for (processType of availableProcessTypes; track processType) {
               <mat-option [value]="processType">
-                {{ processType }}
+                {{ processType | enum: 'processType' }}
               </mat-option>
             }
           </mat-select>
@@ -113,26 +113,9 @@
         }
       </div>
       <div class="grid grid-cols-2 gap-2 rounded-lg bg-white p-4" [formGroup]="bottleFormGroup">
-        <span class="col-span-2 text-neutral-700"> Transport Information </span>
-        <mat-radio-group
-          required
-          class="col-span-2 flex flex-row gap-4"
-          aria-label="Select an option"
-          formControlName="transportMode"
-        >
-          <mat-radio-button [value]="TransportType.PIPELINE">{{ TransportType.PIPELINE | titlecase }}</mat-radio-button>
-          <mat-radio-button [value]="TransportType.TRAILER">{{ TransportType.TRAILER | titlecase }}</mat-radio-button>
-        </mat-radio-group>
+        <span class="col-span-2 text-neutral-700"> Emission Information </span>
 
-        @if (bottleFormGroup.controls.transportMode.value === TransportType.TRAILER) {
-          <mat-form-field appearance="outline">
-            <mat-label>Fuel Type</mat-label>
-
-            <mat-select formControlName="fuelType">
-              <mat-option [value]="FuelType.DIESEL">Diesel</mat-option>
-            </mat-select>
-          </mat-form-field>
-
+        @if (bottleFormGroup.controls.processType.value === ProcessType.HYDROGEN_TRANSPORTATION) {
           <mat-form-field appearance="outline">
             <mat-label>Distance (km)</mat-label>
             <input
@@ -140,6 +123,69 @@
               type="number"
               inputmode="numeric"
               formControlName="distance"
+              min="1"
+              step="1"
+              placeholder="e.g. 1337"
+            />
+          </mat-form-field>
+        }
+
+        @if (
+          bottleFormGroup.controls.processType.value === ProcessType.HYDROGEN_COMPRESSION ||
+          bottleFormGroup.controls.processType.value === ProcessType.HYDROGEN_BOTTLING ||
+          bottleFormGroup.controls.processType.value === ProcessType.HYDROGEN_END_USE
+        ) {
+          <mat-form-field appearance="outline">
+            <mat-label>Renewable Power</mat-label>
+            <input
+              matInput
+              type="number"
+              inputmode="numeric"
+              formControlName="renewable_power"
+              min="1"
+              step="1"
+              placeholder="e.g. 1337"
+            />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Grid Power</mat-label>
+            <input
+              matInput
+              type="number"
+              inputmode="numeric"
+              formControlName="grid_power"
+              min="1"
+              step="1"
+              placeholder="e.g. 1337"
+            />
+          </mat-form-field>
+        }
+
+        @if (
+          bottleFormGroup.controls.processType.value === ProcessType.HYDROGEN_BOTTLING ||
+          bottleFormGroup.controls.processType.value === ProcessType.HYDROGEN_END_USE
+        ) {
+          <mat-form-field appearance="outline">
+            <mat-label>Compressed Air</mat-label>
+            <input
+              matInput
+              type="number"
+              inputmode="numeric"
+              formControlName="compressed_air"
+              min="1"
+              step="1"
+              placeholder="e.g. 1337"
+            />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Nitrogen</mat-label>
+            <input
+              matInput
+              type="number"
+              inputmode="numeric"
+              formControlName="nitrogen"
               min="1"
               step="1"
               placeholder="e.g. 1337"
