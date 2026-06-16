@@ -19,25 +19,13 @@ export function buildProvenance(root: ProcessStepEntity, predecessorsOfRoot: Pro
   switch (root.type) {
     case ProcessType.WATER_CONSUMPTION:
     case ProcessType.POWER_PRODUCTION:
-      return new ProvenanceEntity(root, []);
+      return new ProvenanceEntity(root, predecessorsOfRoot, []);
 
     case ProcessType.HYDROGEN_PRODUCTION:
-      return new ProvenanceEntity(root, buildProductionChains(predecessorsOfRoot));
+      return new ProvenanceEntity(root, predecessorsOfRoot, buildProductionChains(predecessorsOfRoot));
 
-    case ProcessType.HYDROGEN_BOTTLING:
-    case ProcessType.HYDROGEN_TRANSPORTATION: {
-      const hydrogenBottling: ProcessStepEntity = getHydrogenBottling(predecessorsOfRoot);
-      if (!hydrogenBottling) {
-        throw new InternalException(`Missing hydrogen bottling for root production [${root.id}].`);
-      }
-      return new ProvenanceEntity(
-        root,
-        buildProductionChains(predecessorsOfRoot),
-        getHydrogenBottling(predecessorsOfRoot),
-      );
-    }
     default:
-      throw new InternalException(`Unsupported process type [${root.type}].`);
+      return new ProvenanceEntity(root, predecessorsOfRoot, buildProductionChains(predecessorsOfRoot));
   }
 }
 

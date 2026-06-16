@@ -40,16 +40,18 @@ export function assembleHydrogenBottlingEmissionCalculation(
 export function assembleHydrogenBottlingEmissionCalculations(
   provenance: ProvenanceEntity,
 ): ProofOfSustainabilityEmissionCalculationEntity[] {
-  if (!provenance || !provenance.hydrogenBottling) {
+  if (!provenance) {
     return [];
   }
 
-  const hydrogenAmount = provenance.hydrogenBottling
-    ? provenance.hydrogenBottling.batch.amount
-    : provenance.root.batch.amount;
-  const hydrogenBottling = assembleHydrogenBottlingEmissionCalculation(provenance.hydrogenBottling);
+  const hydrogenAmount = provenance.root.batch.amount;
+  const hydrogenBottling: ProcessStepEntity[] = provenance.getProcessStepsFromChain(ProcessType.HYDROGEN_BOTTLING);
+  const hydrogenBottlingEmissionCalculation: ProofOfSustainabilityEmissionCalculationEntity[] = hydrogenBottling.map(
+    assembleHydrogenBottlingEmissionCalculation,
+  );
 
-  const totalEmissions = hydrogenBottling.result;
+  const totalEmissions = hydrogenBottlingEmissionCalculation.reduce((sum, curr) => sum + curr.result, 0);
+
   const totalEmissionsGrouped = [`${totalEmissions} ${MeasurementUnit.G_CO2}`];
   const totalEmissionsPerKgHydrogen = totalEmissions / hydrogenAmount;
 

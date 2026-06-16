@@ -20,17 +20,16 @@ import { assembleWaterSupplyClassification } from '../classifications/water-cons
 import { ProofOfOriginSectionAssembler } from '../proof-of-origin-assembler.interface';
 
 export function assembleHydrogenProductionSection(provenance: ProvenanceEntity): ProofOfOriginSectionEntity[] {
+  if (!provenance) {
+    return [];
+  }
   const powerProductions: ProcessStepEntity[] = provenance.getAllPowerProductions();
   const waterConsumptions: ProcessStepEntity[] = provenance.getAllWaterConsumptions();
   if (powerProductions?.length == 0 && waterConsumptions?.length == 0) {
     return [];
   }
 
-  if (!provenance.hydrogenBottling) {
-    return [];
-  }
-
-  const bottledKgHydrogen: number = provenance.hydrogenBottling.batch.amount;
+  const bottledKgHydrogen: number = provenance.root.batch.amount;
 
   const classifications: ProofOfOriginClassificationEntity[] = [];
 

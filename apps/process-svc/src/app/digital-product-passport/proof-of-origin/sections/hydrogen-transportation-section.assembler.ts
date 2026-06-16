@@ -39,12 +39,10 @@ function assembleHydrogenTransportationBatch(
   };
 }
 
-export function assembleHydrogenTransportationSection(provenance: ProvenanceEntity): ProofOfOriginSectionEntity[] {
-  if (provenance.root.type !== ProcessType.HYDROGEN_TRANSPORTATION) {
-    return [];
-  }
-
-  const hydrogenTransportation: ProcessStepEntity = provenance.root;
+export function assembleHydrogenTransportationSection(
+  hydrogenTransportation: ProcessStepEntity,
+  provenance: ProvenanceEntity,
+): ProofOfOriginSectionEntity {
   const emissionCalculation: ProofOfSustainabilityEmissionCalculationEntity =
     assembleHydrogenTransportationEmissionCalculation(hydrogenTransportation);
 
@@ -54,7 +52,7 @@ export function assembleHydrogenTransportationSection(provenance: ProvenanceEnti
     emissionCalculation.basisOfCalculation,
   );
 
-  const hydrogenComponents: HydrogenComponentEntity[] = assembleComposition(provenance);
+  const hydrogenComponents: HydrogenComponentEntity[] = assembleComposition(hydrogenTransportation, provenance);
 
   const batch: ProofOfOriginHydrogenBatchEntity = assembleHydrogenTransportationBatch(
     hydrogenTransportation,
@@ -62,9 +60,19 @@ export function assembleHydrogenTransportationSection(provenance: ProvenanceEnti
     emission,
   );
 
-  return [new ProofOfOriginSectionEntity(ProofOfOrigin.HYDROGEN_TRANSPORTATION_SECTION, [batch], [])];
+  return new ProofOfOriginSectionEntity(ProofOfOrigin.HYDROGEN_TRANSPORTATION_SECTION, [batch], []);
+}
+
+export function assembleHydrogenTransportationSections(provenance: ProvenanceEntity): ProofOfOriginSectionEntity[] {
+  if (!provenance) {
+    return [];
+  }
+
+  return provenance
+    .getProcessStepsFromChain(ProcessType.HYDROGEN_BOTTLING)
+    .map((transport) => assembleHydrogenTransportationSection(transport, provenance));
 }
 
 export const hydrogenTransportationSectionAssembler: ProofOfOriginSectionAssembler = {
-  assembleSection: assembleHydrogenTransportationSection,
+  assembleSection: assembleHydrogenTransportationSections,
 };

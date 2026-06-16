@@ -136,9 +136,7 @@ export function assembleHydrogenTransportationEmissionCalculations(
     return [];
   }
 
-  const hydrogenAmount = provenance.hydrogenBottling
-    ? provenance.hydrogenBottling.batch.amount
-    : provenance.root.batch.amount;
+  const hydrogenAmount = provenance.root.batch.amount;
   const hydrogenTransportation = assembleHydrogenTransportationEmissionCalculation(provenance.root);
 
   const totalEmissions = hydrogenTransportation.result;

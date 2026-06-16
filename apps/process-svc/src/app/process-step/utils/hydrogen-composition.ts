@@ -6,33 +6,25 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { HydrogenComponentEntity, ProvenanceEntity } from '@h2-trust/contracts/entities';
-import { ProcessType, RfnboType } from '@h2-trust/domain';
+import { HydrogenComponentEntity, ProcessStepEntity, ProvenanceEntity } from '@h2-trust/contracts/entities';
+import { RfnboType } from '@h2-trust/domain';
 import { DomainException, ErrorCode, InternalException } from '@h2-trust/exceptions';
 
 /**
- * Calculates the hydrogen components of the bottling as a proportion of the total volume bottled.
+ * Calculates the hydrogen components of the given step in the provenance as a proportion of the total volume bottled.
  * @param provenance The provenance, which covers the entire production chain from power, water and hydrogen production right through to bottling and transportation.
  * @returns The volume of HydrogenComponents filled in relation to the total volume filled.
  */
-export function assembleComposition(provenance: ProvenanceEntity): HydrogenComponentEntity[] {
-  if (!provenance.hydrogenBottling) {
-    throw new InternalException('There is no hydrogen bottling in provenance.');
-  }
+export function assembleComposition(
+  currentProcessStep: ProcessStepEntity,
+  provenance: ProvenanceEntity,
+): HydrogenComponentEntity[] {
   if (provenance.getAllHydrogenLeafProductions().length === 0) {
     throw new InternalException('There are no hydrogen productions in provenance.');
   }
-  if (
-    provenance.root.type !== ProcessType.HYDROGEN_BOTTLING &&
-    provenance.root.type !== ProcessType.HYDROGEN_TRANSPORTATION
-  ) {
-    throw new InternalException(
-      `The process step ${provenance.root.id} should be type ${ProcessType.HYDROGEN_BOTTLING} or ${ProcessType.HYDROGEN_TRANSPORTATION}, but is ${provenance.root.type}.`,
-    );
-  }
 
-  const rootBatchAmount = provenance.root.batch.amount;
-  const hydrogenStorageUnitId = provenance.hydrogenBottling.executedBy.id;
+  const rootBatchAmount = currentProcessStep.batch.amount;
+  const rootUnitId = currentProcessStep.executedBy.id;
 
   const hydrogenComponentsOfProductions = provenance
     .getAllHydrogenLeafProductions()
@@ -48,7 +40,7 @@ export function assembleComposition(provenance: ProvenanceEntity): HydrogenCompo
   return computeHydrogenComposition(
     hydrogenComponentsOfProductions,
     rootBatchAmount,
-    [hydrogenStorageUnitId],
+    [rootUnitId],
     RfnboType.NOT_SPECIFIED,
   );
 }
