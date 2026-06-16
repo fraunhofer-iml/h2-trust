@@ -30,3 +30,4 @@ export * from './rfnbo-type.enum';
 export * from './staging-scope.enum';
 export * from './transport-mode.enum';
 export * from './unit-type.enum';
+export * from './process-type-to-unit-type.record';

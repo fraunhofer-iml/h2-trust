@@ -6,7 +6,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
+import { ClientProxy } from '@nestjs/microservices';
+import { firstValueFrom } from 'rxjs';
 import { CentralizedStorageConfiguration, ConfigurationService } from '@h2-trust/configuration';
 import {
   BatchEntity,
@@ -14,21 +16,23 @@ import {
   HydrogenComponentEntity,
   PaginatedProcessStepEntity,
   ProcessStepEntity,
+  UnitEntity,
 } from '@h2-trust/contracts/entities';
 import {
   CreateHydrogenProductionStatisticsPayload,
   CreateManyProcessStepsPayload,
   CreateProcessStepPayload,
+  ReadByIdPayload,
   ReadPaginatedProcessStepsByPredecessorTypesAndOwnerPayload,
   ReadPaginatedProcessStepsPayload,
   ReadProcessStepsByTypesAndActiveAndOwnerPayload,
 } from '@h2-trust/contracts/payloads';
 import { BatchRepository, DocumentRepository, ProcessStepRepository } from '@h2-trust/database';
-import { ProcessType, TransportType } from '@h2-trust/domain';
-import { DomainException, ErrorCode, InternalException, ValidationException } from '@h2-trust/exceptions';
+import { DomainException, ErrorCode, ValidationException } from '@h2-trust/exceptions';
+import { QUEUE_GENERAL_SVC, UnitMessagePatterns } from '@h2-trust/messaging';
 import { CentralizedStorageService, ContentType } from '@h2-trust/storage';
 import { assertDefined } from '@h2-trust/utils';
-import { validateTransportProcessStep } from './process-step-validator';
+import { validateEmissionData, validateUnitType } from './process-step-validator';
 import { allocateBottling, BottlingAllocation } from './utils/bottling.allocator';
 import { buildProcessStepEntity } from './utils/bottling.assembler';
 import { computeHydrogenComposition } from './utils/hydrogen-composition';
@@ -41,13 +45,18 @@ export class ProcessStepService {
     private readonly processStepRepository: ProcessStepRepository,
     private readonly storageService: CentralizedStorageService,
     private readonly documentRepository: DocumentRepository,
+    @Inject(QUEUE_GENERAL_SVC) private readonly generalSvc: ClientProxy,
   ) {}
 
   public async createGenericProcessStep(payload: CreateProcessStepPayload): Promise<ProcessStepEntity> {
-    //TODO-LG: add validation for different process types
-    if (payload.processType == ProcessType.HYDROGEN_TRANSPORTATION) {
-      validateTransportProcessStep(TransportType.PIPELINE, payload);
-    }
+    //Get executing unit
+    const executingUnit: UnitEntity = await firstValueFrom(
+      this.generalSvc.send(UnitMessagePatterns.READ_BY_ID, new ReadByIdPayload(payload.executingUnitId)),
+    );
+
+    //validate input for new process step
+    validateUnitType(payload, executingUnit);
+    validateEmissionData(payload);
 
     //the unit id from which the predecessors of the new process step should be used
     const unitIdOfPredecessors: string = payload.predecessorUnitId;
@@ -143,14 +152,10 @@ export class ProcessStepService {
   public async readProcessStep(processStepId: string): Promise<ProcessStepEntity> {
     const processStep: ProcessStepEntity = await this.processStepRepository.findProcessStep(processStepId);
 
-    if (processStep.type === ProcessType.HYDROGEN_TRANSPORTATION) {
-      const predecessorProcessStep = await this.readPredecessorProcessStep(
-        processStep.batch.predecessors[0]?.processStepId,
-      );
-      processStep.documents = this.assembleDocuments(predecessorProcessStep);
-    } else {
-      processStep.documents = this.assembleDocuments(processStep);
-    }
+    const predecessorProcessStep = await this.processStepRepository.findProcessStep(
+      processStep.batch.predecessors[0]?.processStepId,
+    );
+    processStep.documents = this.assembleDocuments(predecessorProcessStep);
 
     return processStep;
   }
@@ -158,33 +163,12 @@ export class ProcessStepService {
   public async readProcessStepByBatchId(batchId: string): Promise<ProcessStepEntity> {
     const processStep: ProcessStepEntity = await this.processStepRepository.findProcessStepByBatchId(batchId);
 
-    if (processStep.type === ProcessType.HYDROGEN_TRANSPORTATION) {
-      const predecessorProcessStep = await this.readPredecessorProcessStep(
-        processStep.batch.predecessors[0]?.processStepId,
-      );
-      processStep.documents = this.assembleDocuments(predecessorProcessStep);
-    } else {
-      processStep.documents = this.assembleDocuments(processStep);
-    }
+    const predecessorProcessStep = await this.processStepRepository.findProcessStep(
+      processStep.batch.predecessors[0]?.processStepId,
+    );
+    processStep.documents = this.assembleDocuments(predecessorProcessStep);
 
     return processStep;
-  }
-
-  private async readPredecessorProcessStep(predecessorProcessStepId: string): Promise<ProcessStepEntity> {
-    if (!predecessorProcessStepId) {
-      throw new InternalException('ProcessStepId of predecessor is missing.');
-    }
-
-    const predecessorProcessStep: ProcessStepEntity =
-      await this.processStepRepository.findProcessStep(predecessorProcessStepId);
-
-    if (predecessorProcessStep.type !== ProcessType.HYDROGEN_BOTTLING) {
-      throw new InternalException(
-        `Expected process type of predecessor to be ${ProcessType.HYDROGEN_BOTTLING}, but got ${predecessorProcessStep.type}.`,
-      );
-    }
-
-    return predecessorProcessStep;
   }
 
   private assembleDocuments(processStep: ProcessStepEntity): DocumentEntity[] {

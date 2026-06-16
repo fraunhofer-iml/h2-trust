@@ -16,7 +16,7 @@ export type BottlingForm = {
   amount: FormControl<number | undefined | null>;
   recipient: FormControl<UserDto | undefined | null>;
   predecessorUnit: FormControl<ComponentsOverviewDto | undefined | null>;
-  executingUnit: FormControl<string | undefined | null>;
+  executingUnit: FormControl<ComponentsOverviewDto | undefined | null>;
   type: FormControl<'NON_CERTIFIABLE' | 'RFNBO_READY' | undefined | null>;
   distance: FormControl<number | null>;
   renewable_power: FormControl<number | null>;

@@ -109,7 +109,7 @@ export class AddBottleComponent {
     amount: new FormControl<number | undefined>(undefined, [Validators.required, Validators.min(1)]),
     recipient: new FormControl<UserDto | undefined>(undefined, Validators.required),
     predecessorUnit: new FormControl<ComponentsOverviewDto | undefined>(undefined, Validators.required),
-    executingUnit: new FormControl<string | undefined>(undefined, Validators.required),
+    executingUnit: new FormControl<ComponentsOverviewDto | undefined>(undefined, Validators.required),
     type: new FormControl<'NON_CERTIFIABLE' | 'RFNBO_READY' | undefined>(undefined, Validators.required),
     distance: new FormControl<number | null>(null),
     renewable_power: new FormControl<number | null>(null),
@@ -171,14 +171,13 @@ export class AddBottleComponent {
         data.append('files', file);
       }
 
-    //TODO-LG: use correct ids for executing unit and predecessor unit
     data.append('amount', this.bottleFormGroup.value?.amount?.toString() ?? '');
-    data.append('processType', ProcessType.HYDROGEN_BOTTLING);
+    data.append('processType', this.bottleFormGroup.value?.processType?.toString() ?? '');
     data.append('recipient', this.bottleFormGroup.value.recipient?.id ?? '');
     data.append('filledAt', this.createTimestamp().toISOString());
     data.append('recordedBy', '');
-    data.append('executingUnitId', 'hydrogen-storage-unit-0');
-    data.append('predecessorUnitId', 'hydrogen-storage-unit-0');
+    data.append('executingUnitId', this.bottleFormGroup.value?.executingUnit?.id.toString() ?? '');
+    data.append('predecessorUnitId', this.bottleFormGroup.value?.predecessorUnit?.id.toString() ?? '');
 
     //qualityDetails
     data.append('rfnboType', this.bottleFormGroup.value.type ?? '');

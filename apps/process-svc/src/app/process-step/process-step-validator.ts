@@ -6,18 +6,38 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { UnitEntity } from '@h2-trust/contracts/entities';
 import { CreateProcessStepPayload } from '@h2-trust/contracts/payloads';
-import { TransportType } from '@h2-trust/domain';
+import { ProcessType, ProcessTypeToUnitType, TransportType } from '@h2-trust/domain';
 import { ValidationException } from '@h2-trust/exceptions';
 
-export function validateTransportProcessStep(transportMode: TransportType, payload: CreateProcessStepPayload): void {
-  const validModes = [TransportType.TRAILER, TransportType.PIPELINE];
+export function validateUnitType(payload: CreateProcessStepPayload, executingUnit: UnitEntity): void {
+  const allowedUnitType = ProcessTypeToUnitType[payload.processType];
+  if (executingUnit.unitType != allowedUnitType) {
+    throw new ValidationException(
+      `Executing unit has the wrong type ${executingUnit.unitType} fo process type: ${payload.processType}`,
+    );
+  }
+}
 
-  if (!validModes.includes(transportMode)) {
-    throw new ValidationException(`Invalid transport mode: ${transportMode}`);
+export function validateEmissionData(payload: CreateProcessStepPayload): void {
+  if (
+    payload.processType === ProcessType.HYDROGEN_COMPRESSION ||
+    payload.processType === ProcessType.HYDROGEN_BOTTLING ||
+    payload.processType === ProcessType.HYDROGEN_END_USE
+  ) {
+    if (!payload.qualityDetails.usedGridPower || !payload.qualityDetails.usedRenewablePower) {
+      throw new ValidationException(`Missing power information for process step ${payload.processType}`);
+    }
   }
 
-  if (transportMode === TransportType.TRAILER) {
+  if (payload.processType === ProcessType.HYDROGEN_BOTTLING || payload.processType === ProcessType.HYDROGEN_END_USE) {
+    if (!payload.qualityDetails.compressedAir || !payload.qualityDetails.nitrogenConsumption) {
+      throw new ValidationException(`Missing emission information for process step ${payload.processType}`);
+    }
+  }
+
+  if (payload.processType === ProcessType.HYDROGEN_TRANSPORTATION) {
     if (!payload.qualityDetails.distance) {
       throw new ValidationException(`Distance is required for transport mode [${TransportType.TRAILER}].`);
     }

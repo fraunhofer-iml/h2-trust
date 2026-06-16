@@ -96,4 +96,9 @@ export class BatchPageComponent {
   onPageChange(e: PageEvent) {
     this.paginationModel.set({ pageIndex: e.pageIndex, pageSize: e.pageSize });
   }
+
+  isDppEnabled(batchType: string): boolean {
+    const disabledTypes = [ProcessType.WATER_CONSUMPTION, ProcessType.POWER_PRODUCTION];
+    return !disabledTypes.includes(batchType as ProcessType);
+  }
 }
