@@ -7,6 +7,8 @@
  */
 
 import { hydrogenBottlingEmissionAssembler } from './emissions/hydrogen-bottling-emission-calculation.assembler';
+import { hydrogenCompressionEmissionAssembler } from './emissions/hydrogen-compression-emission-calculation.assembler';
+import { hydrogenEndUseEmissionAssembler } from './emissions/hydrogen-end-use-emission-calculation.assembler';
 import { hydrogenProductionEmissionAssembler } from './emissions/hydrogen-production-emission-calculation.assembler';
 import { hydrogenTransportationEmissionAssembler } from './emissions/hydrogen-transportation-emission-calculation.assembler';
 import { powerProductionEmissionAssembler } from './emissions/power-production-emission-calculation.assembler';
@@ -19,4 +21,6 @@ export const proofOfSustainabilityEmissionAssemblers: ProofOfSustainabilityEmiss
   hydrogenProductionEmissionAssembler,
   hydrogenBottlingEmissionAssembler,
   hydrogenTransportationEmissionAssembler,
+  hydrogenCompressionEmissionAssembler,
+  hydrogenEndUseEmissionAssembler,
 ];

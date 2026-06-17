@@ -101,6 +101,8 @@ const CALCULATION_TOPIC_LABELS: Record<CalculationTopic, string> = {
   [CalculationTopic.WATER_SUPPLY]: 'Water Supply',
   [CalculationTopic.HYDROGEN_STORAGE]: 'Hydrogen Storage',
   [CalculationTopic.HYDROGEN_TRANSPORTATION]: 'Transportation',
+  [CalculationTopic.HYDROGEN_COMPRESSION]: 'Compression',
+  [CalculationTopic.HYDROGEN_END_USE]: 'End Use',
 };
 
 const RFNBO_TYPE_LABELS: Record<RfnboType, string> = {

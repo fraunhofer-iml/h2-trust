@@ -77,6 +77,24 @@ export const UnitSpecificationSeed: readonly Partial<UnitSpecification>[] = Obje
     capacity: new Prisma.Decimal(1200),
   },
   {
+    id: 'hydrogen-bottling-unit-0',
+    createdAt: auditTimestamp,
+    updatedAt: auditTimestamp,
+    capacity: new Prisma.Decimal(1200),
+  },
+  {
+    id: 'hydrogen-compression-unit-0',
+    createdAt: auditTimestamp,
+    updatedAt: auditTimestamp,
+    capacity: new Prisma.Decimal(1200),
+  },
+  {
+    id: 'hydrogen-end-use-unit-0',
+    createdAt: auditTimestamp,
+    updatedAt: auditTimestamp,
+    capacity: new Prisma.Decimal(1200),
+  },
+  {
     id: 'hydrogen-transport-unit-0',
     createdAt: auditTimestamp,
     updatedAt: auditTimestamp,
