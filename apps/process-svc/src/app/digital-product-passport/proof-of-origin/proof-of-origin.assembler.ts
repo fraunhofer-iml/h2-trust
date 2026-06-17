@@ -40,15 +40,11 @@ export function assembleProofOfOrigin(provenance: ProvenanceEntity): ProofOfOrig
   }
 }
 
-export function getHydrogenBottlingCompositions(
-  proofOfOrigin: ProofOfOriginSectionEntity[],
-): HydrogenComponentEntity[] {
-  if (!proofOfOrigin) {
+export function getCompositionOfLatestSection(proofOfOrigin: ProofOfOriginSectionEntity[]): HydrogenComponentEntity[] {
+  if (!proofOfOrigin || proofOfOrigin.length <= 0) {
     return [];
   }
 
-  const bottling: ProofOfOriginSectionEntity = proofOfOrigin.find(
-    (section) => section.name === ProofOfOrigin.HYDROGEN_BOTTLING_SECTION,
-  );
+  const bottling: ProofOfOriginSectionEntity = proofOfOrigin[proofOfOrigin.length - 1];
   return bottling ? (bottling.batches[0] as ProofOfOriginHydrogenBatchEntity).hydrogenComposition : [];
 }

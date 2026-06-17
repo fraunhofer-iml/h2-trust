@@ -20,7 +20,7 @@ import {
 import { PowerType, RfnboType } from '@h2-trust/domain';
 import { assertValidEnum } from '@h2-trust/utils';
 import { ProcessStepService } from '../process-step/process-step.service';
-import { assembleProofOfOrigin, getHydrogenBottlingCompositions } from './proof-of-origin/proof-of-origin.assembler';
+import { assembleProofOfOrigin, getCompositionOfLatestSection } from './proof-of-origin/proof-of-origin.assembler';
 import { assembleProofOfSustainability } from './proof-of-sustainability/proof-of-sustainability.assembler';
 import { buildProvenance } from './provenance/provenance.service';
 import { determineRedCompliance, determineTotalRedCompliance } from './red-compliance/red-compliance';
@@ -62,7 +62,7 @@ export class DigitalProductPassportService {
 
     const proofOfOrigin: ProofOfOriginSectionEntity[] = assembleProofOfOrigin(provenance);
 
-    const hydrogenComponentsForBottling: HydrogenComponentEntity[] = getHydrogenBottlingCompositions(proofOfOrigin);
+    const hydrogenComponentsForBottling: HydrogenComponentEntity[] = getCompositionOfLatestSection(proofOfOrigin);
 
     const proofOfSustainability: ProofOfSustainabilityEntity = assembleProofOfSustainability(provenance);
 
