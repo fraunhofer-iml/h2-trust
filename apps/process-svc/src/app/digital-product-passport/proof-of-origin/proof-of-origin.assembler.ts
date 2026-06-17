@@ -25,7 +25,6 @@ export function assembleProofOfOrigin(provenance: ProvenanceEntity): ProofOfOrig
   if (!provenance) {
     return [];
   }
-  console.log(provenance);
   return proofOfOriginSectionAssemblers
     .flatMap((proofOfOriginAssembler) => proofOfOriginAssembler.assembleSection(provenance))
     .sort((a, b) => getDateForSection(a) - getDateForSection(b));

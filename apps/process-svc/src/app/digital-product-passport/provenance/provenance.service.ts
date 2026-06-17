@@ -25,8 +25,33 @@ export function buildProvenance(root: ProcessStepEntity, predecessorsOfRoot: Pro
       return new ProvenanceEntity(root, predecessorsOfRoot, buildProductionChains(predecessorsOfRoot));
 
     default:
-      return new ProvenanceEntity(root, predecessorsOfRoot, buildProductionChains(predecessorsOfRoot));
+      return new ProvenanceEntity(
+        root,
+        handleSplitProcessSteps(predecessorsOfRoot),
+        buildProductionChains(predecessorsOfRoot),
+      );
   }
+}
+
+function handleSplitProcessSteps(predecessorsOfRoot: ProcessStepEntity[]) {
+  const predecessorsWithoutSplittingSteps = predecessorsOfRoot.map((pred) =>
+    getFirstProcessStepOfSplittingChain(pred, predecessorsOfRoot),
+  );
+  return Array.from(new Map(predecessorsWithoutSplittingSteps.map((obj) => [obj.id, obj])).values());
+}
+
+function getFirstProcessStepOfSplittingChain(
+  lastProcessStep: ProcessStepEntity,
+  predecessorsOfRoot: ProcessStepEntity[],
+) {
+  const predecessorIds: string[] = lastProcessStep.batch.predecessors.map((pred) => pred.id);
+  const predecessors: ProcessStepEntity[] = predecessorsOfRoot.filter((pred) => predecessorIds.includes(pred.batch.id));
+
+  const predecessorTypes: ProcessType[] = predecessors.map((predecessor) => predecessor.type);
+  if (predecessorTypes.includes(lastProcessStep.type)) {
+    return getFirstProcessStepOfSplittingChain(predecessors[0], predecessorsOfRoot);
+  }
+  return lastProcessStep;
 }
 
 function buildProductionChains(processSteps: ProcessStepEntity[]): ProductionChainEntity[] {

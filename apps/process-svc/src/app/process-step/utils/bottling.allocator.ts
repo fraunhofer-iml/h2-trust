@@ -7,7 +7,7 @@
  */
 
 import { BatchEntity, CompanyEntity, HydrogenComponentEntity, ProcessStepEntity } from '@h2-trust/contracts/entities';
-import { BatchType, ProcessType, RfnboType } from '@h2-trust/domain';
+import { BatchType, RfnboType } from '@h2-trust/domain';
 import { DomainException, ErrorCode } from '@h2-trust/exceptions';
 import { assertDefined } from '@h2-trust/utils';
 
@@ -145,7 +145,7 @@ function assembleHydrogenProductionProcessStepForRemainingAmount(
     ...predecessorProcessStep,
     startedAt: predecessorProcessStep.startedAt,
     endedAt: predecessorProcessStep.endedAt,
-    type: ProcessType.HYDROGEN_PRODUCTION,
+    type: predecessorProcessStep.type,
     batch: {
       active: active,
       amount: remainingAmount,

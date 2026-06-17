@@ -154,8 +154,6 @@ export class ProcessStepService {
       specificUnits.map((specificUnit) => {
         const capacity: number = 'capacity' in specificUnit ? specificUnit.capacity : 0;
 
-        console.log(specificUnit.id, userDetails.company.id);
-
         const payload = new ReadProcessStepsByUnitPayload([specificUnit.id], true, userDetails.company.id);
 
         return firstValueFrom(this.processSvc.send(ProcessStepMessagePatterns.READ_ALL_BY_UNIT, payload)).then(

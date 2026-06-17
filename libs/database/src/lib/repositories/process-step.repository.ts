@@ -100,7 +100,7 @@ export class ProcessStepRepository {
       : {};
 
     const batchFilter: Prisma.BatchWhereInput = {
-      AND: [predecessorsFilter, batchIdFilter, { ownerId: ownerId }],
+      AND: [predecessorsFilter, { ...batchIdFilter, active: true }, { ownerId: ownerId }],
     };
 
     const hydrogenUnitWhereInput: Prisma.UnitWhereInput = hydrogenProductionUnitName
