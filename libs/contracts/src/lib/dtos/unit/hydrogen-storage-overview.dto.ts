@@ -40,8 +40,6 @@ export class HydrogenStorageOverviewDto {
     this.active = active;
   }
 
-  //TODO-LG: the process steps of the hydrogen storage unit are missing here
-  //they have to be readded to calculate the filling of the storage
   static fromEntity(unit: UnitEntity): HydrogenStorageOverviewDto {
     return <HydrogenStorageOverviewDto>{
       id: unit.id,

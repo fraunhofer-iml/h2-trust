@@ -100,7 +100,6 @@ export class UnitSpecificationEntity {
     };
   }
 
-  //TODO-LG: use to add components to the filling attribute
   static mapFilling(processSteps: ProcessStepEntity[]): HydrogenComponentEntity[] {
     return (
       processSteps.map((processStep) => {

@@ -168,7 +168,6 @@ export class FileSelectionComponent {
     if (!hydrogenProduction || !storageUnit || powerProductions?.length === 0) return;
 
     const dto: StagingSubmissionDto = {
-      storageUnitId: storageUnit,
       stagedHydrogenProduction: hydrogenProduction[0].id,
       stagedPowerProductions: (powerProductions ?? []).map((item) => item.id),
     };

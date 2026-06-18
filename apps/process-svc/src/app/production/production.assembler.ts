@@ -90,7 +90,6 @@ export function assembleHydrogenProductions(
       activity: true,
       type: BatchType.HYDROGEN,
       owner: entity.ownerIdOfHydrogenProductionUnit,
-      hydrogenStorageUnitId: entity.hydrogenStorageUnitId,
       powerType: rawPowerType,
     },
   };

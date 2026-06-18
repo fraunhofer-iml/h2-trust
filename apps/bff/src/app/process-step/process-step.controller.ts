@@ -164,33 +164,6 @@ export class ProcessStepController {
       id,
       batchType,
     );
-
-    // TODO-LG: Implement actual logic to retrieve batches for the authenticated user's company, with pagination and filtering based on the provided query parameters. (DUHGW-470)
-    /*
-    return new Promise((resolve) => {
-      resolve(
-        new PaginatedDataDto<BatchDto>(
-          [
-            new BatchDto(
-              'process-step-hydrogen-transportation-2',
-              1000,
-              new Date(),
-              ProcessType.HYDROGEN_BOTTLING,
-              RfnboType.RFNBO_READY,
-            ),
-            new BatchDto(
-              'process-step-hydrogen-transportation-1',
-              2000,
-              new Date(),
-              ProcessType.HYDROGEN_PRODUCTION,
-              RfnboType.NON_CERTIFIABLE,
-            ),
-          ],
-          2,
-          1,
-        ),
-      );
-    });*/
   }
 
   @Public()

@@ -165,7 +165,6 @@ export class ProductionService {
       userId,
       dto.stagedHydrogenProduction,
       dto.stagedPowerProductions,
-      dto.storageUnitId,
     );
     const processSteps: ProcessStepEntity[] = await firstValueFrom(
       this.processSvc.send<ProcessStepEntity[]>(ProductionMessagePatterns.FINALIZE, payload),

@@ -72,11 +72,8 @@ export class ProductionStagingService {
    * @param productionUnitIds The production unit IDs to be used to retrieve the production units.
    * @returns The specific production unit objects are returned as a map so that the units can be retrieved and used later via their unit IDs.
    */
-  private async getProductionUnits(
-    productionUnitIds: string[],
-    hydrogenStorageUnitId: string,
-  ): Promise<Map<string, UnitEntity>> {
-    const unitIds: string[] = [...productionUnitIds, hydrogenStorageUnitId, this.defaultGridPowerUnitId];
+  private async getProductionUnits(productionUnitIds: string[]): Promise<Map<string, UnitEntity>> {
+    const unitIds: string[] = [...productionUnitIds, this.defaultGridPowerUnitId];
     const productionUnits: UnitEntity[] = await firstValueFrom(
       this.generalSvc.send(UnitMessagePatterns.READ_MANY_BY_IDS, new ReadByIdsPayload(unitIds)),
     );
@@ -111,10 +108,7 @@ export class ProductionStagingService {
 
     //get a map with all relevant units, that can be used without requesting it from the general-svc
     const stagedProductionUnitIds: string[] = stagedProductions.map((stagedProduction) => stagedProduction.unitId);
-    const productionUnitForId: Map<string, UnitEntity> = await this.getProductionUnits(
-      stagedProductionUnitIds,
-      payload.storageUnitId,
-    );
+    const productionUnitForId: Map<string, UnitEntity> = await this.getProductionUnits(stagedProductionUnitIds);
 
     const hydrogenProductionUnit: UnitEntity = productionUnitForId.get(stagedHydrogenProduction.unitId);
 
@@ -122,7 +116,6 @@ export class ProductionStagingService {
     const createProductionEntity: CreateProductionEntity[] = this.getStagedProductionDistribution(
       stagedHydrogenProduction,
       stagedPowerProductions,
-      payload.storageUnitId,
       hydrogenProductionUnit.specification.waterConsumptionLitersPerHour,
       payload.recordedBy,
     );
@@ -153,7 +146,6 @@ export class ProductionStagingService {
   private getStagedProductionDistribution(
     stagedHydrogenProduction: StagedProductionEntity,
     stagedPowerProductions: StagedProductionEntity[],
-    hydrogenStorageUnitId: string,
     totalWaterConsumption: number,
     recordedBy: string,
   ): CreateProductionEntity[] {
@@ -172,7 +164,6 @@ export class ProductionStagingService {
         remainingPowerConsuption,
         totalWaterConsumption,
         recordedBy,
-        hydrogenStorageUnitId,
       );
 
       createProductionEntities.push(createProductionEntity);
@@ -193,7 +184,6 @@ export class ProductionStagingService {
       remainingPowerConsuption,
       remainingHydrogenProduction,
       recordedBy,
-      hydrogenStorageUnitId,
     );
 
     createProductionEntities.push(...gridPowerCreateEntities);
@@ -208,7 +198,6 @@ export class ProductionStagingService {
    * @param remainingPowerConsuption The remaining amount of power that needs to be generated. Used to determine the powerConsumed value.
    * @param totalWaterConsumption The total amount of water produced during hydrogen production.
    * @param recordedBy The user who is to create the new process steps.
-   * @param hydrogenStorageUnitId The hydrogen storage facility in which the new hydrogen is to be stored.
    * @returns The new process steps that have been created.
    */
   private getStagedProductionCreateEntity(
@@ -218,7 +207,6 @@ export class ProductionStagingService {
     remainingPowerConsuption: number,
     totalWaterConsumption: number,
     recordedBy: string,
-    hydrogenStorageUnitId: string,
   ) {
     const isCurrentPowerProductionSufficient: boolean =
       stagedPowerProduction.amountProduced >= remainingPowerConsuption;
@@ -248,7 +236,6 @@ export class ProductionStagingService {
       stagedHydrogenProduction.unitId,
       amountProduced,
       recordedBy,
-      hydrogenStorageUnitId,
       stagedPowerProduction.ownerId,
       stagedHydrogenProduction.ownerId,
       partialWaterConsumption,
@@ -271,7 +258,6 @@ export class ProductionStagingService {
     gridPowerConsumption: number,
     gridPoweredHydrogen: number,
     recordedBy: string,
-    hydrogenStorageUnitId: string,
   ) {
     const partialWaterConsumption: number = calculatePartialAmountRelativeToPowerProduction(
       totalWaterConsumption,
@@ -288,7 +274,6 @@ export class ProductionStagingService {
       stagedHydrogenProduction.unitId,
       gridPoweredHydrogen,
       recordedBy,
-      hydrogenStorageUnitId,
       stagedHydrogenProduction.ownerId,
       stagedHydrogenProduction.ownerId,
       partialWaterConsumption,

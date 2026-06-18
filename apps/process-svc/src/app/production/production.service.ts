@@ -41,7 +41,6 @@ export class ProductionService {
 
   private async getProductionUnits(createProductions: CreateProductionEntity[]): Promise<Map<string, UnitEntity>> {
     const productionUnitIds: string[] = createProductions.flatMap((production) => [
-      production.hydrogenStorageUnitId,
       production.powerProductionUnitId,
       production.hydrogenProductionUnitId,
     ]);
@@ -69,7 +68,6 @@ export class ProductionService {
       payload.hydrogenProductionUnitId,
       payload.hydrogenAmountKg,
       payload.userId,
-      payload.hydrogenStorageUnitId,
       powerProductionUnit.owner.id,
       hydrogenProductionUnit.owner.id,
       hydrogenProductionUnit.specification.waterConsumptionLitersPerHour,

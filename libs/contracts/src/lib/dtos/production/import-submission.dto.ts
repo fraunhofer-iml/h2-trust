@@ -20,13 +20,8 @@ export class StagingSubmissionDto {
   @IsNotEmpty({ each: true })
   stagedPowerProductions: string[];
 
-  @IsString()
-  @IsNotEmpty()
-  storageUnitId: string;
-
-  constructor(stagedHydrogenProduction: string, stagedPowerProductions: string[], storageUnitId: string) {
+  constructor(stagedHydrogenProduction: string, stagedPowerProductions: string[]) {
     this.stagedHydrogenProduction = stagedHydrogenProduction;
     this.stagedPowerProductions = stagedPowerProductions;
-    this.storageUnitId = storageUnitId;
   }
 }

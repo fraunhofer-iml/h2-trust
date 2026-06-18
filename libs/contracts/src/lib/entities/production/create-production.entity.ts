@@ -17,7 +17,6 @@ export class CreateProductionEntity {
   hydrogenProductionUnitId: string;
   hydrogenAmountKg: number;
   recordedBy: string;
-  hydrogenStorageUnitId: string;
   ownerIdOfPowerProductionUnit: string;
   ownerIdOfHydrogenProductionUnit: string;
   waterConsumptionLitersPerHour: number;
@@ -31,7 +30,6 @@ export class CreateProductionEntity {
     hydrogenProductionUnitId: string,
     hydrogenAmountKg: number,
     recordedBy: string,
-    hydrogenStorageUnitId: string,
     ownerIdOfPowerProductionUnit: string,
     ownerIdOfHydrogenProductionUnit: string,
     waterConsumptionLitersPerHour: number,
@@ -44,7 +42,6 @@ export class CreateProductionEntity {
     this.hydrogenProductionUnitId = hydrogenProductionUnitId;
     this.hydrogenAmountKg = hydrogenAmountKg;
     this.recordedBy = recordedBy;
-    this.hydrogenStorageUnitId = hydrogenStorageUnitId;
     this.ownerIdOfPowerProductionUnit = ownerIdOfPowerProductionUnit;
     this.ownerIdOfHydrogenProductionUnit = ownerIdOfHydrogenProductionUnit;
     this.waterConsumptionLitersPerHour = waterConsumptionLitersPerHour;

@@ -36,7 +36,6 @@ export function buildProcessStepEntity(
     payload.qualityDetails.compressedAir,
     payload.qualityDetails.nitrogenConsumption,
   );
-  //TODO-LG: remove Batch Type and use only process step type
   const batch = new BatchEntity(
     null,
     true,
