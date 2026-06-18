@@ -167,6 +167,9 @@ export class ProcessStepService {
   public async readProcessStep(processStepId: string): Promise<ProcessStepEntity> {
     const processStep: ProcessStepEntity = await this.processStepRepository.findProcessStep(processStepId);
 
+    if (processStep.batch.predecessors.length <= 0 || !processStep.batch.predecessors[0]?.processStepId) {
+      throw new ValidationException(`ProcessStepId of predecessor is missing.`);
+    }
     const predecessorProcessStep = await this.processStepRepository.findProcessStep(
       processStep.batch.predecessors[0]?.processStepId,
     );
