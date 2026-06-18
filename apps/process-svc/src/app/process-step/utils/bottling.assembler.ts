@@ -21,6 +21,7 @@ import { InternalException } from '@h2-trust/exceptions';
 export function buildProcessStepEntity(
   payload: CreateProcessStepPayload,
   predecessors: BatchEntity[],
+  executingUnit: UnitEntity,
 ): ProcessStepEntity {
   const bottlingTypes = determinePredecessorTypes(predecessors);
   const qualityDetails: QualityDetailsEntity = new QualityDetailsEntity(
@@ -55,7 +56,7 @@ export function buildProcessStepEntity(
     payload.processType,
     batch,
     { id: payload.recordedById } as UserEntity,
-    { id: payload.executingUnitId } as UnitEntity,
+    executingUnit,
     null,
   );
 }

@@ -12,7 +12,13 @@ import {
   ProofOfSustainabilityEmissionEntity,
   ProvenanceEntity,
 } from '@h2-trust/contracts/entities';
-import { CalculationTopic, EmissionStringConstants, MeasurementUnit, ProcessType } from '@h2-trust/domain';
+import {
+  CalculationTopic,
+  EmissionNumericConstants,
+  EmissionStringConstants,
+  MeasurementUnit,
+  ProcessType,
+} from '@h2-trust/domain';
 import { InternalException } from '@h2-trust/exceptions';
 import { ProofOfSustainabilityEmissionAssembler } from '../proof-of-sustainability-assembler.interface';
 
@@ -25,8 +31,15 @@ export function assembleHydrogenCompressionEmissionCalculation(
     );
   }
 
-  const result = 0;
-  const basisOfCalculation = ['E = [TBD]'];
+  const usedGridPower = hydrogenCompression.batch?.qualityDetails?.usedGridPower ?? 0;
+  const gridPowerEmissions = usedGridPower * EmissionNumericConstants.GRID_POWER_PER_KWH;
+  const usedRenewablePower = hydrogenCompression.batch?.qualityDetails?.usedRenewablePower ?? 0;
+  const renewablePowerEmissions = 0;
+  const result = gridPowerEmissions + renewablePowerEmissions;
+
+  const usedGridPowerInput = `Used Grid Power: ${usedGridPower} kwh`;
+  const usedRenewablePowerInput = `Used Grid Power: ${usedRenewablePower} kwh`;
+  const basisOfCalculation = [usedGridPowerInput, usedRenewablePowerInput];
 
   return new ProofOfSustainabilityEmissionCalculationEntity(
     EmissionStringConstants.COMPRESSION,

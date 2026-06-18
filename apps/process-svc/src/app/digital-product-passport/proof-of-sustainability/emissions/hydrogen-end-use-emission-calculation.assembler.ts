@@ -12,7 +12,13 @@ import {
   ProofOfSustainabilityEmissionEntity,
   ProvenanceEntity,
 } from '@h2-trust/contracts/entities';
-import { CalculationTopic, EmissionStringConstants, MeasurementUnit, ProcessType } from '@h2-trust/domain';
+import {
+  CalculationTopic,
+  EmissionNumericConstants,
+  EmissionStringConstants,
+  MeasurementUnit,
+  ProcessType,
+} from '@h2-trust/domain';
 import { InternalException } from '@h2-trust/exceptions';
 import { ProofOfSustainabilityEmissionAssembler } from '../proof-of-sustainability-assembler.interface';
 
@@ -25,8 +31,22 @@ export function assembleHydrogenEndUseEmissionCalculation(
     );
   }
 
-  const result = 0;
-  const basisOfCalculation = ['E = [TBD]'];
+  const usedGridPower = hydrogenEndUse.batch?.qualityDetails?.usedGridPower ?? 0;
+  const gridPowerEmissions = usedGridPower * EmissionNumericConstants.GRID_POWER_PER_KWH;
+  const usedRenewablePower = hydrogenEndUse.batch?.qualityDetails?.usedRenewablePower ?? 0;
+  const renewablePowerEmissions = 0;
+  const usedCompressedAir = hydrogenEndUse.batch?.qualityDetails?.compressedAir ?? 0;
+  const compressedAirEmissions = usedCompressedAir * EmissionNumericConstants.COMPRESSED_AIR_PER_M3;
+  const usedNitrogen = hydrogenEndUse.batch?.qualityDetails?.nitrogenConsumption ?? 0;
+  const nitrogenEmissions = usedNitrogen * EmissionNumericConstants.NITROGEN_PER_KG;
+
+  const result = gridPowerEmissions + renewablePowerEmissions + compressedAirEmissions + nitrogenEmissions;
+
+  const usedGridPowerInput = `Used Grid Power: ${usedGridPower} kwh`;
+  const usedRenewablePowerInput = `Used Grid Power: ${usedRenewablePower} kwh`;
+  const usedCompressedAirInput = `Used Compressed Air: ${usedCompressedAir} m³`;
+  const usedNitrogenInput = `Used Nitrogen: ${usedNitrogen} kg`;
+  const basisOfCalculation = [usedGridPowerInput, usedRenewablePowerInput, usedCompressedAirInput, usedNitrogenInput];
 
   return new ProofOfSustainabilityEmissionCalculationEntity(
     EmissionStringConstants.END_USE,

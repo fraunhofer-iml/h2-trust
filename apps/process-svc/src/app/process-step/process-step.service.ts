@@ -16,6 +16,7 @@ import {
   HydrogenComponentEntity,
   PaginatedProcessStepEntity,
   ProcessStepEntity,
+  ProvenanceEntity,
   UnitEntity,
 } from '@h2-trust/contracts/entities';
 import {
@@ -28,10 +29,12 @@ import {
   ReadProcessStepsByTypesAndActiveAndOwnerPayload,
 } from '@h2-trust/contracts/payloads';
 import { BatchRepository, DocumentRepository, ProcessStepRepository } from '@h2-trust/database';
+import { RfnboType } from '@h2-trust/domain';
 import { DomainException, ErrorCode, ValidationException } from '@h2-trust/exceptions';
 import { QUEUE_GENERAL_SVC, UnitMessagePatterns } from '@h2-trust/messaging';
 import { CentralizedStorageService, ContentType } from '@h2-trust/storage';
 import { assertDefined } from '@h2-trust/utils';
+import { assembleProofOfSustainability } from '../digital-product-passport/proof-of-sustainability/proof-of-sustainability.assembler';
 import { validateEmissionData, validateUnitType } from './process-step-validator';
 import { allocateBottling, BottlingAllocation } from './utils/bottling.allocator';
 import { buildProcessStepEntity } from './utils/bottling.assembler';
@@ -109,10 +112,22 @@ export class ProcessStepService {
 
     //build new process step
 
-    const bottlingProcessStep: ProcessStepEntity = buildProcessStepEntity(payload, [
-      ...allocation.batchesForBottle,
-      ...persistedConsumedSplitBatches,
-    ]);
+    const bottlingProcessStep: ProcessStepEntity = buildProcessStepEntity(
+      payload,
+      [...allocation.batchesForBottle, ...persistedConsumedSplitBatches],
+      executingUnit,
+    );
+
+    //determine the rfnbo value of the new process step
+    const rfnboTypeWithoutEmissionReduction: RfnboType =
+      bottlingProcessStep?.batch?.qualityDetails?.rfnboType ?? RfnboType.NOT_SPECIFIED;
+    const provenance: ProvenanceEntity = new ProvenanceEntity(bottlingProcessStep, [bottlingProcessStep], []);
+    const proofOfSustainability = assembleProofOfSustainability(provenance);
+    const isEmissionReductionAbove70Percent = proofOfSustainability.emissionReductionPercentage > 70;
+    bottlingProcessStep.batch.qualityDetails.rfnboType =
+      rfnboTypeWithoutEmissionReduction === RfnboType.RFNBO_READY && isEmissionReductionAbove70Percent
+        ? RfnboType.RFNBO_READY
+        : RfnboType.NON_CERTIFIABLE;
 
     const persistedBottlingProcessStep: ProcessStepEntity = await this.createProcessStep(bottlingProcessStep);
 
