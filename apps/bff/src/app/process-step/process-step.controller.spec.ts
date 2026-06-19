@@ -9,30 +9,31 @@
 import { META_PUBLIC } from 'nest-keycloak-connect';
 import {
   type AuthenticatedKCUser,
-  type BottlingOverviewDto,
   type DigitalProductPassportDto,
+  type ProcessStepOverviewDto,
 } from '@h2-trust/contracts/dtos';
 import {
-  BottlingDtoFixture,
   BottlingOverviewDtoFixture,
+  CreateProcessStepDtoFixture,
   DigitalProductPassportDtoFixture,
 } from '@h2-trust/contracts/dtos/fixtures';
-import { BottlingController } from './bottling.controller';
-import { BottlingService } from './bottling.service';
+import { ProcessStepController } from './process-step.controller';
+import { ProcessStepService } from './process-step.service';
 
 describe('ProcessStepController', () => {
-  let controller: BottlingController;
+  let controller: ProcessStepController;
 
-  const bottlingServiceMock = {
-    createBottlingAndTransportation: jest.fn(),
-    readBottlingsAndTransportationsByOwner: jest.fn(),
+  const processStepServiceMock = {
+    createProcessStep: jest.fn(),
+    readHydrogenComponentsForUnits: jest.fn(),
+    readHydrogenComponentsForOwnUnits: jest.fn(),
     readDigitalProductPassport: jest.fn(),
   };
 
   const authenticatedUser = { sub: 'user-id-1' } as AuthenticatedKCUser;
 
   beforeEach(() => {
-    controller = new BottlingController(bottlingServiceMock as unknown as BottlingService);
+    controller = new ProcessStepController(processStepServiceMock as unknown as ProcessStepService);
   });
 
   afterEach(() => {
@@ -45,55 +46,51 @@ describe('ProcessStepController', () => {
 
   it('should delegate createBottlingAndTransportation to the service when uploaded files are provided', async () => {
     // arrange
-    const givenDto = BottlingDtoFixture.create();
+    const givenDto = CreateProcessStepDtoFixture.create();
     const givenFiles = [{ originalname: 'evidence.pdf' }] as Express.Multer.File[];
-    const expectedOverview: BottlingOverviewDto = BottlingOverviewDtoFixture.create();
+    const expectedOverview: ProcessStepOverviewDto = BottlingOverviewDtoFixture.create();
 
-    bottlingServiceMock.createBottlingAndTransportation.mockResolvedValue(expectedOverview);
+    processStepServiceMock.createProcessStep.mockResolvedValue(expectedOverview);
 
     // act
     const actualResult = await controller.createBottlingAndTransportation(givenDto, givenFiles, authenticatedUser);
 
     // assert
     expect(actualResult).toEqual(expectedOverview);
-    expect(bottlingServiceMock.createBottlingAndTransportation).toHaveBeenCalledWith(
-      givenDto,
-      givenFiles,
-      authenticatedUser.sub,
-    );
+    expect(processStepServiceMock.createProcessStep).toHaveBeenCalledWith(givenDto, givenFiles, authenticatedUser.sub);
   });
 
-  it('should delegate readBottlingsAndTransportationsByOwner to the service when the authenticated user requests them', async () => {
+  it('should delegate readHydrogenComponentsForUnits to the service when the authenticated user requests them', async () => {
     // arrange
-    const expectedOverviews: BottlingOverviewDto[] = [BottlingOverviewDtoFixture.create()];
+    const expectedOverviews: ProcessStepOverviewDto[] = [BottlingOverviewDtoFixture.create()];
 
-    bottlingServiceMock.readBottlingsAndTransportationsByOwner.mockResolvedValue(expectedOverviews);
+    processStepServiceMock.readHydrogenComponentsForOwnUnits.mockResolvedValue(expectedOverviews);
 
     // act
-    const actualResult = await controller.readBottlingsAndTransportationsByOwner(authenticatedUser);
+    const actualResult = await controller.readHydrogenComponentsForUnits(authenticatedUser);
 
     // assert
     expect(actualResult).toEqual(expectedOverviews);
-    expect(bottlingServiceMock.readBottlingsAndTransportationsByOwner).toHaveBeenCalledWith(authenticatedUser.sub);
+    expect(processStepServiceMock.readHydrogenComponentsForOwnUnits).toHaveBeenCalledWith(authenticatedUser.sub);
   });
 
   it('should delegate readDigitalProductPassport to the service when a transportation id is provided', async () => {
     // arrange
     const expectedPassport: DigitalProductPassportDto = DigitalProductPassportDtoFixture.create({ id: 'dpp-1' });
 
-    bottlingServiceMock.readDigitalProductPassport.mockResolvedValue(expectedPassport);
+    processStepServiceMock.readDigitalProductPassport.mockResolvedValue(expectedPassport);
 
     // act
     const actualResult = await controller.readDigitalProductPassport(expectedPassport.id);
 
     // assert
     expect(actualResult).toEqual(expectedPassport);
-    expect(bottlingServiceMock.readDigitalProductPassport).toHaveBeenCalledWith(expectedPassport.id);
+    expect(processStepServiceMock.readDigitalProductPassport).toHaveBeenCalledWith(expectedPassport.id);
   });
 
   it('should mark the digital product passport endpoint as public when reading its metadata', () => {
     // act
-    const actualResult = Reflect.getMetadata(META_PUBLIC, BottlingController.prototype.readDigitalProductPassport);
+    const actualResult = Reflect.getMetadata(META_PUBLIC, ProcessStepController.prototype.readDigitalProductPassport);
 
     // assert
     expect(actualResult).toBe(true);

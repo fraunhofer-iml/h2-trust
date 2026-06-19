@@ -7,19 +7,21 @@
  */
 
 import { CreateProcessStepDto } from '@h2-trust/contracts/dtos';
-import { RfnboType } from '@h2-trust/domain';
+import { ProcessType, RfnboType } from '@h2-trust/domain';
 import { CreateQualityDetailsDtoFixture } from './create-quality-details.fixture';
 
 export const CreateProcessStepDtoFixture = {
   create: (overrides: Partial<CreateProcessStepDto> = {}): CreateProcessStepDto => ({
-    predecessorUnitIds: [],
-    qualityDetails: overrides.qualityDetails ?? CreateQualityDetailsDtoFixture.create(),
+    predecessorUnitId: overrides.predecessorUnitId ?? 'transport-unit-1',
+    ...CreateQualityDetailsDtoFixture.create(),
     amount: overrides.amount ?? 1,
     recipient: overrides.recipient ?? 'company-recipient-1',
     filledAt: overrides.filledAt ?? '2025-04-07T00:00:00.000Z',
     recordedBy: overrides.recordedBy ?? 'user-id-1',
     rfnboType: overrides.rfnboType ?? RfnboType.RFNBO_READY,
-    file: overrides.file,
+    files: overrides.files ?? [],
     distance: overrides.distance ?? 1000,
+    processType: overrides.processType ?? ProcessType.HYDROGEN_BOTTLING,
+    executingUnitId: overrides.executingUnitId ?? 'user-1',
   }),
 } as const;

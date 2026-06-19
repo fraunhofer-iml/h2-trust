@@ -7,12 +7,13 @@
  */
 
 import { ClientProxy } from '@nestjs/microservices';
-import { of, throwError } from 'rxjs';
-import { BottlingOverviewDto, DigitalProductPassportDto } from '@h2-trust/contracts/dtos';
-import { BottlingDtoFixture, UserDetailsDtoFixture } from '@h2-trust/contracts/dtos/fixtures';
-import { DigitalProductPassportEntity } from '@h2-trust/contracts/entities';
+import { of } from 'rxjs';
+import { ComponentsOverviewDto, DigitalProductPassportDto, ProcessStepOverviewDto } from '@h2-trust/contracts/dtos';
+import { CreateProcessStepDtoFixture, UserDetailsDtoFixture } from '@h2-trust/contracts/dtos/fixtures';
+import { DigitalProductPassportEntity, HydrogenComponentEntity, UnitEntity } from '@h2-trust/contracts/entities';
 import {
   DocumentEntityFixture,
+  HydrogenBottlingUnitEntityFixture,
   HydrogenComponentEntityFixture,
   ProcessStepEntityFixture,
   ProofOfOriginSectionEntityFixture,
@@ -20,20 +21,24 @@ import {
   RedComplianceEntityFixture,
 } from '@h2-trust/contracts/entities/fixtures';
 import {
-  CreateHydrogenBottlingPayload,
-  CreateHydrogenTransportationPayload,
+  CreateProcessStepPayload,
+  CreateProcessStepQualityPayload,
   ReadByIdPayload,
-  ReadProcessStepsByTypesAndActiveAndOwnerPayload,
+  ReadProcessStepsByUnitPayload,
 } from '@h2-trust/contracts/payloads';
 import { PowerType, ProcessType, RfnboType } from '@h2-trust/domain';
 import { DigitalProductPassportMessagePatterns, ProcessStepMessagePatterns } from '@h2-trust/messaging';
 import { UserService } from '../user/user.service';
-import { BottlingService } from './bottling.service';
+import { ProcessStepService } from './process-step.service';
 
 describe('ProcessStepService', () => {
-  let service: BottlingService;
+  let service: ProcessStepService;
 
   const processSvcMock = {
+    send: jest.fn(),
+  };
+
+  const generalService = {
     send: jest.fn(),
   };
 
@@ -42,7 +47,11 @@ describe('ProcessStepService', () => {
   };
 
   beforeEach(() => {
-    service = new BottlingService(processSvcMock as unknown as ClientProxy, userServiceMock as unknown as UserService);
+    service = new ProcessStepService(
+      processSvcMock as unknown as ClientProxy,
+      generalService as unknown as ClientProxy,
+      userServiceMock as unknown as UserService,
+    );
   });
 
   afterEach(() => {
@@ -55,7 +64,7 @@ describe('ProcessStepService', () => {
 
   it('should create bottling first and transportation second when both process calls succeed', async () => {
     // arrange
-    const givenDto = BottlingDtoFixture.create();
+    const givenDto = CreateProcessStepDtoFixture.create({ processType: ProcessType.HYDROGEN_TRANSPORTATION });
     const givenFiles: Express.Multer.File[] = [];
     const givenUserId = 'user-id-1';
     const givenPersistedBottling = ProcessStepEntityFixture.createHydrogenBottling({
@@ -66,73 +75,42 @@ describe('ProcessStepService', () => {
       id: 'transportation-1',
       batch: givenPersistedBottling.batch,
     });
+    const expectedCreateQualityPayload: CreateProcessStepQualityPayload = new CreateProcessStepQualityPayload(
+      RfnboType.RFNBO_READY,
+      PowerType.RENEWABLE,
+      0,
+      0,
+      1000,
+      0,
+      0,
+      0,
+      0,
+    );
+    const expectedTransportCreatePayload: CreateProcessStepPayload = new CreateProcessStepPayload(
+      expectedCreateQualityPayload,
+      ProcessType.HYDROGEN_TRANSPORTATION,
+      givenDto.amount,
+      givenDto.recipient,
+      givenDto.recordedBy,
+      new Date(givenDto.filledAt),
+      new Date(givenDto.filledAt),
+      givenDto.executingUnitId,
+      'transport-unit-1',
+      givenFiles,
+    );
 
-    processSvcMock.send
-      .mockImplementationOnce((_pattern, _payload) => of(givenPersistedBottling))
-      .mockImplementationOnce((_pattern, _payload) => of(expectedPersistedTransportation));
+    processSvcMock.send.mockImplementationOnce((_pattern, _payload) => of(expectedPersistedTransportation));
 
     // act
-    const actualResult = await service.createBottlingAndTransportation(givenDto, givenFiles, givenUserId);
+    const actualResult = await service.createProcessStep(givenDto, givenFiles, givenUserId);
 
     // assert
     expect(processSvcMock.send).toHaveBeenNthCalledWith(
       1,
-      ProcessStepMessagePatterns.CREATE_HYDROGEN_BOTTLING,
-      new CreateHydrogenBottlingPayload(
-        givenDto.amount,
-        givenDto.recipient,
-        new Date(givenDto.filledAt),
-        givenUserId,
-        givenDto.hydrogenStorageUnit,
-        givenDto.rfnboType,
-        givenFiles,
-      ),
+      ProcessStepMessagePatterns.CREATE_PROCESS_STEP,
+      expectedTransportCreatePayload,
     );
-    expect(processSvcMock.send).toHaveBeenNthCalledWith(
-      2,
-      ProcessStepMessagePatterns.CREATE_HYDROGEN_TRANSPORTATION,
-      new CreateHydrogenTransportationPayload(
-        givenPersistedBottling,
-        givenPersistedBottling.batch,
-        givenDto.transportMode,
-        givenDto.distance,
-        givenDto.fuelType,
-      ),
-    );
-    expect(actualResult).toEqual(BottlingOverviewDto.fromEntity(expectedPersistedTransportation));
-  });
-
-  it('should reject when transportation creation fails after bottling is created', async () => {
-    // arrange
-    const givenDto = BottlingDtoFixture.create();
-    const givenFiles: Express.Multer.File[] = [];
-    const givenUserId = 'user-id-1';
-    const givenPersistedBottling = ProcessStepEntityFixture.createHydrogenBottling({
-      startedAt: new Date(givenDto.filledAt),
-      endedAt: new Date(givenDto.filledAt),
-    });
-
-    processSvcMock.send
-      .mockImplementationOnce((_pattern, _payload) => of(givenPersistedBottling))
-      .mockImplementationOnce((_pattern, _payload) => throwError(() => new Error('transport failed')));
-
-    // act
-    const actualResult = service.createBottlingAndTransportation(givenDto, givenFiles, givenUserId);
-
-    // assert
-    await expect(actualResult).rejects.toThrow('transport failed');
-    expect(processSvcMock.send).toHaveBeenCalledTimes(2);
-    expect(processSvcMock.send).toHaveBeenNthCalledWith(
-      2,
-      ProcessStepMessagePatterns.CREATE_HYDROGEN_TRANSPORTATION,
-      new CreateHydrogenTransportationPayload(
-        givenPersistedBottling,
-        givenPersistedBottling.batch,
-        givenDto.transportMode,
-        givenDto.distance,
-        givenDto.fuelType,
-      ),
-    );
+    expect(actualResult).toEqual(ProcessStepOverviewDto.fromEntity(expectedPersistedTransportation));
   });
 
   it('should resolve the owner company and request active bottling steps when reading bottlings by owner', async () => {
@@ -145,28 +123,36 @@ describe('ProcessStepService', () => {
         name: 'Company',
       },
     });
-    const expectedProcessSteps = [
-      ProcessStepEntityFixture.createHydrogenBottling({ id: 'bottling-1' }),
-      ProcessStepEntityFixture.createHydrogenTransportation({ id: 'transportation-1' }),
-    ];
+    const givenUnit: UnitEntity = HydrogenBottlingUnitEntityFixture.create();
+    const expectedHydrogenComponents: HydrogenComponentEntity[] = [HydrogenComponentEntityFixture.createRfnboReady()];
+    const expectedUnits = [givenUnit];
 
+    const expectedComponentsOverviewDtos = [
+      new ComponentsOverviewDto(
+        givenUnit.id,
+        givenUnit.name,
+        givenUnit.unitType,
+        0,
+        expectedHydrogenComponents,
+        givenUnit.active,
+      ),
+    ];
+    processSvcMock.send.mockClear();
+    processSvcMock.send.mockReset();
     userServiceMock.readUserWithCompany.mockResolvedValue(givenUserDetails);
-    processSvcMock.send.mockImplementation((_pattern, _payload) => of(expectedProcessSteps));
+    processSvcMock.send.mockImplementation((_pattern, _payload) => of(expectedHydrogenComponents));
+    generalService.send.mockImplementation((_pattern, _payload) => of(expectedUnits));
 
     // act
-    const actualResult = await service.readBottlingsAndTransportationsByOwner(givenUserId);
+    const actualResult = await service.readHydrogenComponentsForOwnUnits(givenUserId);
 
     // assert
     expect(userServiceMock.readUserWithCompany).toHaveBeenCalledWith(givenUserId);
     expect(processSvcMock.send).toHaveBeenCalledWith(
-      ProcessStepMessagePatterns.READ_ALL_BY_TYPES_AND_ACTIVE_AND_OWNER,
-      new ReadProcessStepsByTypesAndActiveAndOwnerPayload(
-        [ProcessType.HYDROGEN_BOTTLING, ProcessType.HYDROGEN_TRANSPORTATION],
-        true,
-        givenUserDetails.company.id,
-      ),
+      ProcessStepMessagePatterns.READ_ALL_BY_UNIT,
+      new ReadProcessStepsByUnitPayload([givenUnit.id], true, givenUserDetails.company.id),
     );
-    expect(actualResult).toEqual(expectedProcessSteps.map(BottlingOverviewDto.fromEntity));
+    expect(actualResult).toEqual(expectedComponentsOverviewDtos);
   });
 
   it('should request the passport by id and map the response when reading a digital product passport', async () => {
@@ -186,7 +172,8 @@ describe('ProcessStepService', () => {
       PowerType.RENEWABLE,
       RfnboType.RFNBO_READY,
     );
-
+    processSvcMock.send.mockClear();
+    processSvcMock.send.mockReset();
     processSvcMock.send.mockImplementation((_pattern, _payload) => of(expectedPassport));
 
     // act
