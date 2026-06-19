@@ -30,14 +30,12 @@ import {
 import 'multer';
 import { KeycloakUser, Public } from 'nest-keycloak-connect';
 import { ProcessType } from '@h2-trust/domain';
-import { CreateBottlingFormDataDto } from './create-bottling-form-data.dto';
 import { ProcessStepService } from './process-step.service';
 
 @Controller('process-steps')
 export class ProcessStepController {
   constructor(private readonly processStepService: ProcessStepService) {}
 
-  //TODO-LG: update swagger annotation
   @Post()
   @UseInterceptors(FilesInterceptor('files'))
   @ApiBearerAuth()
@@ -49,7 +47,7 @@ export class ProcessStepController {
     type: ProcessStepOverviewDto,
   })
   @ApiConsumes('multipart/form-data')
-  @ApiBody({ type: CreateBottlingFormDataDto })
+  @ApiBody({ type: CreateProcessStepDto })
   createBottlingAndTransportation(
     @Body() dto: CreateProcessStepDto,
     @UploadedFiles() files: Express.Multer.File[],
