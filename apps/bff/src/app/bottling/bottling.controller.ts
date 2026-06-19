@@ -26,18 +26,7 @@ import {
 import 'multer';
 import { KeycloakUser, Public } from 'nest-keycloak-connect';
 import { BottlingService } from './bottling.service';
-
-const bottlingExampleDefaults = {
-  amount: 1,
-  rfnboType: 'RFNBO_READY',
-  recipient: 'company-recipient-1',
-  filledAt: '2025-04-07T00:00:00.000Z',
-  recordedBy: 'user-id-1',
-  hydrogenStorageUnit: 'hydrogen-storage-unit-1',
-  transportMode: 'TRAILER',
-  distance: 1000,
-  fuelType: 'DIESEL',
-} as const;
+import { CreateBottlingFormDataDto } from './create-bottling-form-data.dto';
 
 @Controller('bottlings')
 export class BottlingController {
@@ -54,56 +43,7 @@ export class BottlingController {
     type: BottlingOverviewDto,
   })
   @ApiConsumes('multipart/form-data')
-  @ApiBody({
-    schema: {
-      type: 'object',
-      properties: {
-        files: {
-          type: 'array',
-          items: {
-            type: 'string',
-            format: 'binary',
-          },
-        },
-        amount: {
-          type: 'number',
-          default: bottlingExampleDefaults.amount,
-        },
-        rfnboType: {
-          type: 'string',
-          default: bottlingExampleDefaults.rfnboType,
-        },
-        recipient: {
-          type: 'string',
-          default: bottlingExampleDefaults.recipient,
-        },
-        filledAt: {
-          type: 'string',
-          default: bottlingExampleDefaults.filledAt,
-        },
-        recordedBy: {
-          type: 'string',
-          default: bottlingExampleDefaults.recordedBy,
-        },
-        hydrogenStorageUnit: {
-          type: 'string',
-          default: bottlingExampleDefaults.hydrogenStorageUnit,
-        },
-        transportMode: {
-          type: 'string',
-          default: bottlingExampleDefaults.transportMode,
-        },
-        distance: {
-          type: 'number',
-          default: bottlingExampleDefaults.distance,
-        },
-        fuelType: {
-          type: 'string',
-          default: bottlingExampleDefaults.fuelType,
-        },
-      },
-    },
-  })
+  @ApiBody({ type: CreateBottlingFormDataDto })
   createBottlingAndTransportation(
     @Body() dto: BottlingDto,
     @UploadedFiles() files: Express.Multer.File[],
