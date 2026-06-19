@@ -23,7 +23,6 @@ import {
   ComponentsOverviewDto,
   CreateProcessStepDto,
   DigitalProductPassportDto,
-  HydrogenComponentDto,
   PaginatedDataDto,
   ProcessStepOverviewDto,
   type AuthenticatedKCUser,
@@ -31,19 +30,8 @@ import {
 import 'multer';
 import { KeycloakUser, Public } from 'nest-keycloak-connect';
 import { ProcessType } from '@h2-trust/domain';
+import { CreateBottlingFormDataDto } from './create-bottling-form-data.dto';
 import { ProcessStepService } from './process-step.service';
-
-const bottlingExampleDefaults = {
-  amount: 1,
-  rfnboType: 'RFNBO_READY',
-  recipient: 'company-recipient-1',
-  filledAt: '2025-04-07T00:00:00.000Z',
-  recordedBy: 'user-id-1',
-  hydrogenStorageUnit: 'hydrogen-storage-unit-1',
-  transportMode: 'TRAILER',
-  distance: 1000,
-  fuelType: 'DIESEL',
-} as const;
 
 @Controller('process-steps')
 export class ProcessStepController {
@@ -61,52 +49,7 @@ export class ProcessStepController {
     type: ProcessStepOverviewDto,
   })
   @ApiConsumes('multipart/form-data')
-  @ApiBody({
-    schema: {
-      type: 'object',
-      properties: {
-        files: {
-          type: 'array',
-          items: {
-            type: 'string',
-            format: 'binary',
-          },
-        },
-        amount: {
-          type: 'number',
-          default: bottlingExampleDefaults.amount,
-        },
-        rfnboType: {
-          type: 'string',
-          default: bottlingExampleDefaults.rfnboType,
-        },
-        recipient: {
-          type: 'string',
-          default: bottlingExampleDefaults.recipient,
-        },
-        filledAt: {
-          type: 'string',
-          default: bottlingExampleDefaults.filledAt,
-        },
-        recordedBy: {
-          type: 'string',
-          default: bottlingExampleDefaults.recordedBy,
-        },
-        transportMode: {
-          type: 'string',
-          default: bottlingExampleDefaults.transportMode,
-        },
-        distance: {
-          type: 'number',
-          default: bottlingExampleDefaults.distance,
-        },
-        fuelType: {
-          type: 'string',
-          default: bottlingExampleDefaults.fuelType,
-        },
-      },
-    },
-  })
+  @ApiBody({ type: CreateBottlingFormDataDto })
   createBottlingAndTransportation(
     @Body() dto: CreateProcessStepDto,
     @UploadedFiles() files: Express.Multer.File[],
@@ -173,14 +116,8 @@ export class ProcessStepController {
     description: 'Retrieve a list of hydrogen components by the corresponding unit ID.',
   })
   @ApiOkResponse({
-    description: 'Returns a list of hydrogen components for the given unit.',
-    type: HydrogenComponentDto,
-    isArray: true,
-  })
-  @ApiParam({
-    name: 'id',
-    description: 'Unique identifier of the unit.',
-    example: 'hydrogen-storage-unit-1',
+    description: "Returns a list of all components belonging to the authenticated user's company.",
+    type: [ComponentsOverviewDto],
   })
   readHydrogenComponentsForUnits(
     @KeycloakUser() authenticatedUser: AuthenticatedKCUser,
