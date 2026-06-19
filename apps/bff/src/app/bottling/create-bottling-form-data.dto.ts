@@ -26,10 +26,9 @@ export class CreateBottlingFormDataDto {
     type: 'string',
     format: 'binary',
     isArray: true,
-    required: false,
     description: 'Files to be uploaded',
   })
-  files?: any[];
+  files?: Express.Multer.File[];
 
   @ApiProperty({
     example: bottlingExampleDefaults.amount,
@@ -77,8 +76,6 @@ export class CreateBottlingFormDataDto {
 
   @ApiProperty({
     example: bottlingExampleDefaults.distance,
-    required: false,
-    nullable: true,
     description: 'Transport distance in km (only relevant for TRAILER)',
   })
   distance?: number;
@@ -86,8 +83,6 @@ export class CreateBottlingFormDataDto {
   @ApiProperty({
     enum: FuelType,
     example: bottlingExampleDefaults.fuelType,
-    required: false,
-    nullable: true,
     description: 'Fuel type (only relevant for TRAILER)',
   })
   fuelType?: FuelType;
