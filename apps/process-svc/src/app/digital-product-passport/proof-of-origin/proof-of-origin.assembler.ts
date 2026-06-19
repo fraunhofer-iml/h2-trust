@@ -45,6 +45,8 @@ export function getCompositionOfLatestSection(proofOfOrigin: ProofOfOriginSectio
     return [];
   }
 
-  const bottling: ProofOfOriginSectionEntity = proofOfOrigin[proofOfOrigin.length - 1];
-  return bottling ? (bottling.batches[0] as ProofOfOriginHydrogenBatchEntity).hydrogenComposition : [];
+  const lastProofOfOrigin: ProofOfOriginSectionEntity = proofOfOrigin[proofOfOrigin.length - 1];
+  return lastProofOfOrigin && lastProofOfOrigin.batches.length > 0
+    ? (lastProofOfOrigin.batches[0] as ProofOfOriginHydrogenBatchEntity).hydrogenComposition
+    : [];
 }

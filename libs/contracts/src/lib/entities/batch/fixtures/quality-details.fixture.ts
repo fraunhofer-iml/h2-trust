@@ -14,6 +14,6 @@ export const QualityDetailsEntityFixture = {
     new QualityDetailsEntity(
       overrides.id ?? 'quality-details-1',
       overrides.rfnboType ?? RfnboType.RFNBO_READY,
-      overrides.powerType ?? PowerType.RENEWABLE,
+      overrides.productionPowerType ?? PowerType.RENEWABLE,
     ),
 } as const;

@@ -6,34 +6,56 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { BatchEntity } from '@h2-trust/contracts/entities';
-import { BatchEntityFixture, QualityDetailsEntityFixture } from '@h2-trust/contracts/entities/fixtures';
-import { CreateProcessStepPayload } from '@h2-trust/contracts/payloads';
-import { ProcessType, RfnboType } from '@h2-trust/domain';
-import { assembleBottling } from './bottling.assembler';
+import { BatchEntity, UnitEntity } from '@h2-trust/contracts/entities';
+import {
+  BatchEntityFixture,
+  HydrogenBottlingUnitEntityFixture,
+  QualityDetailsEntityFixture,
+} from '@h2-trust/contracts/entities/fixtures';
+import { CreateProcessStepPayload, CreateProcessStepQualityPayload } from '@h2-trust/contracts/payloads';
+import { PowerType, ProcessType, RfnboType } from '@h2-trust/domain';
+import { buildProcessStepEntity } from './bottling.assembler';
 
 describe('BottlingAssembler', () => {
   describe('assembleBottling', () => {
     it('should assemble process step entity from payload and predecessor batches when called', () => {
       // arrange
-      const givenPayload = new CreateProcessStepPayload(
+      const qualityDetails: CreateProcessStepQualityPayload = new CreateProcessStepQualityPayload(
+        RfnboType.RFNBO_READY,
+        PowerType.NOT_SPECIFIED,
         100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+      );
+
+      const givenPayload = new CreateProcessStepPayload(
+        qualityDetails,
+        ProcessType.HYDROGEN_BOTTLING,
+        100,
+        'company-1',
         'owner-1',
         new Date('2024-01-15T10:00:00Z'),
-        'recorder-1',
+        new Date('2024-01-15T10:00:00Z'),
         'storage-unit-1',
-        RfnboType.RFNBO_READY,
+        'hydrogen-production-unit-1',
       );
+
+      const executingUnit: UnitEntity = HydrogenBottlingUnitEntityFixture.create();
+
       const givenBatchesForBottle = [
         BatchEntityFixture.createHydrogenBatch({ qualityDetails: QualityDetailsEntityFixture.create() }),
       ];
 
       // act
-      const actualResult = assembleBottling(givenPayload, givenBatchesForBottle);
+      const actualResult = buildProcessStepEntity(givenPayload, givenBatchesForBottle, executingUnit);
 
       // assert
-      expect(actualResult.startedAt).toEqual(givenPayload.filledAt);
-      expect(actualResult.endedAt).toEqual(givenPayload.filledAt);
+      expect(actualResult.startedAt).toEqual(givenPayload.startedAt);
+      expect(actualResult.endedAt).toEqual(givenPayload.endedAt);
       expect(actualResult.type).toBe(ProcessType.HYDROGEN_BOTTLING);
       expect(actualResult.batch.amount).toBe(givenPayload.amount);
       expect(actualResult.batch.type).toBe(givenBatchesForBottle[0].type);
@@ -41,18 +63,32 @@ describe('BottlingAssembler', () => {
       expect(actualResult.batch.predecessors[0].id).toBe(givenBatchesForBottle[0].id);
       expect(actualResult.batch.owner.id).toBe(givenPayload.ownerId);
       expect(actualResult.recordedBy.id).toBe(givenPayload.recordedById);
-      expect(actualResult.executedBy.id).toBe(givenPayload.hydrogenStorageUnitId);
     });
 
     it(`should determine all predecessors when called`, () => {
       // arrange
+      const qualityDetails: CreateProcessStepQualityPayload = new CreateProcessStepQualityPayload(
+        RfnboType.RFNBO_READY,
+        PowerType.NOT_SPECIFIED,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+      );
+
       const givenPayload = new CreateProcessStepPayload(
-        200,
+        qualityDetails,
+        ProcessType.HYDROGEN_BOTTLING,
+        100,
+        'company-1',
         'owner-1',
         new Date('2024-01-15T10:00:00Z'),
-        'recorder-1',
+        new Date('2024-01-15T10:00:00Z'),
         'storage-unit-1',
-        RfnboType.RFNBO_READY,
+        'hydrogen-production-unit-1',
       );
       const givenBatchesForBottle = [
         BatchEntityFixture.createHydrogenBatch({
@@ -64,9 +100,10 @@ describe('BottlingAssembler', () => {
           qualityDetails: QualityDetailsEntityFixture.create(),
         }),
       ];
+      const executingUnit: UnitEntity = HydrogenBottlingUnitEntityFixture.create();
 
       // act
-      const actualResult = assembleBottling(givenPayload, givenBatchesForBottle);
+      const actualResult = buildProcessStepEntity(givenPayload, givenBatchesForBottle, executingUnit);
 
       // assert
       expect(actualResult.batch.predecessors).toHaveLength(2);
@@ -76,20 +113,37 @@ describe('BottlingAssembler', () => {
 
     it('should throw exception when no predecessor batches provided', () => {
       // arrange
-      const givenPayload = new CreateProcessStepPayload(
+      const qualityDetails: CreateProcessStepQualityPayload = new CreateProcessStepQualityPayload(
+        RfnboType.RFNBO_READY,
+        PowerType.NOT_SPECIFIED,
         100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+      );
+
+      const givenPayload = new CreateProcessStepPayload(
+        qualityDetails,
+        ProcessType.HYDROGEN_BOTTLING,
+        100,
+        'company-1',
         'owner-1',
         new Date('2024-01-15T10:00:00Z'),
-        'recorder-1',
+        new Date('2024-01-15T10:00:00Z'),
         'storage-unit-1',
-        RfnboType.RFNBO_READY,
+        'hydrogen-production-unit-1',
       );
+      const executingUnit: UnitEntity = HydrogenBottlingUnitEntityFixture.create();
+
       const givenBatchesForBottle: BatchEntity[] = [];
 
       const expectedErrorMessage = 'No predecessor types found: batch list has no quality details';
 
       // act & assert
-      const actualOperation = () => assembleBottling(givenPayload, givenBatchesForBottle);
+      const actualOperation = () => buildProcessStepEntity(givenPayload, givenBatchesForBottle, executingUnit);
 
       expect(actualOperation).toThrow(expectedErrorMessage);
     });

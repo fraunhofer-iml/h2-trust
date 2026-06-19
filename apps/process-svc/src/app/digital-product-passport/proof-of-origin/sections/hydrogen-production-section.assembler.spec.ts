@@ -37,8 +37,8 @@ describe('HydrogenProductionProofOfOriginAssembler', () => {
 
       const givenProvenance = new ProvenanceEntity(
         givenHydrogenProduction,
+        [givenHydrogenProduction],
         [ProductionChainEntityFixture.create()],
-        givenHydrogenProduction,
       );
 
       // act
@@ -66,8 +66,8 @@ describe('HydrogenProductionProofOfOriginAssembler', () => {
 
       const givenProvenance = new ProvenanceEntity(
         givenProductionChain.hydrogenRootProduction,
+        [givenProductionChain.hydrogenRootProduction],
         [givenProductionChain],
-        givenProductionChain.hydrogenRootProduction,
       );
 
       // act
@@ -92,8 +92,8 @@ describe('HydrogenProductionProofOfOriginAssembler', () => {
 
       const givenProvenance = new ProvenanceEntity(
         givenProductionChain.hydrogenRootProduction,
+        [givenProductionChain.hydrogenRootProduction],
         [givenProductionChain],
-        givenProductionChain.hydrogenRootProduction,
       );
 
       // act
@@ -117,8 +117,8 @@ describe('HydrogenProductionProofOfOriginAssembler', () => {
 
       const givenProvenance = new ProvenanceEntity(
         givenProductionChain.hydrogenRootProduction,
+        [givenProductionChain.hydrogenRootProduction],
         [givenProductionChain],
-        givenProductionChain.hydrogenRootProduction,
       );
 
       // act

@@ -139,7 +139,7 @@ function getHydrogenBottling(processSteps: ProcessStepEntity[]): ProcessStepEnti
 function findProcessStepById(id: string, processSteps: ProcessStepEntity[]): ProcessStepEntity {
   const foundProcessStep: ProcessStepEntity = processSteps.find((ps) => ps.id === id);
   if (!foundProcessStep) {
-    throw new InternalException(`Missing process step for given id.`);
+    throw new InternalException(`Missing process step for given id ${id}.`);
   }
   return foundProcessStep;
 }

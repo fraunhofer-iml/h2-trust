@@ -10,7 +10,6 @@ import { HydrogenComponentEntity } from '@h2-trust/contracts/entities';
 import {
   BatchEntityFixture,
   HydrogenComponentEntityFixture,
-  HydrogenStorageUnitEntityFixture,
   ProcessStepEntityFixture,
   QualityDetailsEntityFixture,
 } from '@h2-trust/contracts/entities/fixtures';
@@ -33,7 +32,7 @@ describe('allocateBottling', () => {
       const givenHydrogenComposition = [HydrogenComponentEntityFixture.createRfnboReady({ amount: 100 })];
 
       // act
-      const actualResult = allocateBottling(givenProcessSteps, givenHydrogenComposition, givenHydrogenStorageUnitId);
+      const actualResult = allocateBottling(givenProcessSteps, givenHydrogenComposition, [givenHydrogenStorageUnitId]);
 
       // assert
       expect(actualResult.batchesForBottle).toHaveLength(1);
@@ -67,7 +66,7 @@ describe('allocateBottling', () => {
       const givenHydrogenComposition = [HydrogenComponentEntityFixture.createRfnboReady({ amount: 100 })];
 
       // act
-      const actualResult = allocateBottling(givenProcessSteps, givenHydrogenComposition, givenHydrogenStorageUnitId);
+      const actualResult = allocateBottling(givenProcessSteps, givenHydrogenComposition, [givenHydrogenStorageUnitId]);
 
       // assert
       expect(actualResult.batchesForBottle).toHaveLength(2);
@@ -84,16 +83,13 @@ describe('allocateBottling', () => {
           batch: BatchEntityFixture.createHydrogenBatch({
             amount: 150,
             qualityDetails: QualityDetailsEntityFixture.create(),
-            hydrogenStorageUnit: HydrogenStorageUnitEntityFixture.create({
-              id: givenHydrogenStorageUnitId,
-            }),
           }),
         }),
       ];
       const givenHydrogenComposition = [HydrogenComponentEntityFixture.createRfnboReady({ amount: 100 })];
 
       // act
-      const actualResult = allocateBottling(givenProcessSteps, givenHydrogenComposition, givenHydrogenStorageUnitId);
+      const actualResult = allocateBottling(givenProcessSteps, givenHydrogenComposition, [givenHydrogenStorageUnitId]);
 
       // assert
       expect(actualResult.batchesForBottle).toHaveLength(0);
@@ -115,16 +111,13 @@ describe('allocateBottling', () => {
           batch: BatchEntityFixture.createHydrogenBatch({
             amount: 200,
             qualityDetails: QualityDetailsEntityFixture.create(),
-            hydrogenStorageUnit: HydrogenStorageUnitEntityFixture.create({
-              id: givenHydrogenStorageUnitId,
-            }),
           }),
         }),
       ];
       const givenHydrogenComposition = [HydrogenComponentEntityFixture.createRfnboReady({ amount: 80 })];
 
       // act
-      const actualResult = allocateBottling(givenProcessSteps, givenHydrogenComposition, givenHydrogenStorageUnitId);
+      const actualResult = allocateBottling(givenProcessSteps, givenHydrogenComposition, [givenHydrogenStorageUnitId]);
 
       // assert
       const expectedConsumedStep = actualResult.consumedSplitProcessSteps[0];
@@ -164,7 +157,7 @@ describe('allocateBottling', () => {
       const givenHydrogenComposition = [HydrogenComponentEntityFixture.createRfnboReady({ amount: 100 })];
 
       // act
-      const actualResult = allocateBottling(givenProcessSteps, givenHydrogenComposition, givenHydrogenStorageUnitId);
+      const actualResult = allocateBottling(givenProcessSteps, givenHydrogenComposition, [givenHydrogenStorageUnitId]);
 
       // assert
       expect(actualResult.batchesForBottle).toHaveLength(1);
@@ -184,11 +177,11 @@ describe('allocateBottling', () => {
       ];
       const givenHydrogenComposition = [HydrogenComponentEntityFixture.createRfnboReady({ amount: 100 })];
 
-      const expectedErrorMessage = `There is not enough hydrogen in storage unit '${givenHydrogenStorageUnitId}' for the requested amount of 100 of quality ${RfnboType.RFNBO_READY}.`;
+      const expectedErrorMessage = `There is not enough hydrogen in units '${givenHydrogenStorageUnitId}' for the requested amount of 100 of quality ${RfnboType.RFNBO_READY}.`;
 
       // act & assert
       const actualOperation = () =>
-        allocateBottling(givenProcessSteps, givenHydrogenComposition, givenHydrogenStorageUnitId);
+        allocateBottling(givenProcessSteps, givenHydrogenComposition, [givenHydrogenStorageUnitId]);
 
       expect(actualOperation).toThrow(expectedErrorMessage);
     });
@@ -207,7 +200,7 @@ describe('allocateBottling', () => {
       const givenHydrogenComposition: HydrogenComponentEntity[] = [];
 
       // act
-      const actualResult = allocateBottling(givenProcessSteps, givenHydrogenComposition, givenHydrogenStorageUnitId);
+      const actualResult = allocateBottling(givenProcessSteps, givenHydrogenComposition, [givenHydrogenStorageUnitId]);
 
       // assert
       expect(actualResult.batchesForBottle).toHaveLength(0);

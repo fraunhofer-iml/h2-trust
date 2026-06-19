@@ -13,7 +13,7 @@ import {
 } from '@h2-trust/contracts/entities';
 import { ProcessStepEntityFixture } from '@h2-trust/contracts/entities/fixtures';
 import { MeasurementUnit, ProofOfOrigin } from '@h2-trust/domain';
-import { assembleHydrogenTransportationSection } from './hydrogen-transportation-section.assembler';
+import { assembleHydrogenTransportationSections } from './hydrogen-transportation-section.assembler';
 
 describe('HydrogenTransportationProofOfOriginAssembler', () => {
   describe('assembleHydrogenTransportationSection', () => {
@@ -30,12 +30,12 @@ describe('HydrogenTransportationProofOfOriginAssembler', () => {
 
       const givenProvenance = new ProvenanceEntity(
         ProcessStepEntityFixture.createHydrogenTransportation(),
+        [ProcessStepEntityFixture.createHydrogenTransportation()],
         [givenProductionChain],
-        ProcessStepEntityFixture.createHydrogenBottling(),
       );
 
       // act
-      const actualResult = assembleHydrogenTransportationSection(givenProvenance)[0];
+      const actualResult = assembleHydrogenTransportationSections(givenProvenance)[0];
 
       // assert
       expect(actualResult.name).toBe(ProofOfOrigin.HYDROGEN_TRANSPORTATION_SECTION);
@@ -65,12 +65,12 @@ describe('HydrogenTransportationProofOfOriginAssembler', () => {
 
       const givenProvenance = new ProvenanceEntity(
         ProcessStepEntityFixture.createHydrogenTransportation(),
+        [ProcessStepEntityFixture.createHydrogenTransportation()],
         [givenProductionChain],
-        ProcessStepEntityFixture.createHydrogenBottling(),
       );
 
       // act
-      const actualResult = assembleHydrogenTransportationSection(givenProvenance)[0];
+      const actualResult = assembleHydrogenTransportationSections(givenProvenance)[0];
 
       // assert
       expect(actualResult.name).toBe(ProofOfOrigin.HYDROGEN_TRANSPORTATION_SECTION);

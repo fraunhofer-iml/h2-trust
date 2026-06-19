@@ -123,7 +123,6 @@ describe('ProductionService', () => {
           hydrogenProductionUnitId: givenPayload.hydrogenProductionUnitId,
           hydrogenAmountKg: givenPayload.hydrogenAmountKg,
           recordedBy: givenPayload.userId,
-          hydrogenStorageUnitId: givenPayload.hydrogenStorageUnitId,
           ownerIdOfPowerProductionUnit: 'power-owner-1',
           ownerIdOfHydrogenProductionUnit: 'hydrogen-owner-1',
           waterConsumptionLitersPerHour: 25,
@@ -179,13 +178,11 @@ describe('ProductionService', () => {
           expect.objectContaining({
             powerProductionUnitId: givenPayload.powerProductionUnitId,
             hydrogenProductionUnitId: givenPayload.hydrogenProductionUnitId,
-            hydrogenStorageUnitId: givenPayload.hydrogenStorageUnitId,
             powerType: PowerType.PARTLY_RENEWABLE,
           }),
           expect.objectContaining({
             powerProductionUnitId: givenPayload.powerProductionUnitId,
             hydrogenProductionUnitId: givenPayload.hydrogenProductionUnitId,
-            hydrogenStorageUnitId: givenPayload.hydrogenStorageUnitId,
             powerType: PowerType.NON_RENEWABLE,
           }),
         ]),
@@ -207,7 +204,7 @@ describe('ProductionService', () => {
           predecessors: [
             BatchEntityFixture.createPowerBatch({
               amount: 4,
-              qualityDetails: QualityDetailsEntityFixture.create({ powerType: PowerType.RENEWABLE }),
+              qualityDetails: QualityDetailsEntityFixture.create({ productionPowerType: PowerType.RENEWABLE }),
             }),
           ],
         }),
@@ -226,12 +223,12 @@ describe('ProductionService', () => {
             BatchEntityFixture.createPowerBatch({
               id: 'power-batch-2',
               amount: 3,
-              qualityDetails: QualityDetailsEntityFixture.create({ powerType: PowerType.PARTLY_RENEWABLE }),
+              qualityDetails: QualityDetailsEntityFixture.create({ productionPowerType: PowerType.PARTLY_RENEWABLE }),
             }),
             BatchEntityFixture.createPowerBatch({
               id: 'power-batch-3',
               amount: 5,
-              qualityDetails: QualityDetailsEntityFixture.create({ powerType: PowerType.NON_RENEWABLE }),
+              qualityDetails: QualityDetailsEntityFixture.create({ productionPowerType: PowerType.NON_RENEWABLE }),
             }),
           ],
         }),

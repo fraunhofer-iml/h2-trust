@@ -17,11 +17,11 @@ describe('ProofOfSustainabilityAssembler', () => {
     const givenPowerProduction = ProcessStepEntityFixture.createPowerProduction();
     const givenWaterConsumption = ProcessStepEntityFixture.createWaterConsumption();
     const givenHydrogenProduction = ProcessStepEntityFixture.createHydrogenProduction();
-    const givenHydrogenBottling = ProcessStepEntityFixture.createHydrogenBottling();
     const givenHydrogenTransportation = ProcessStepEntityFixture.createHydrogenTransportation();
 
     const givenProvenance = new ProvenanceEntity(
       givenHydrogenTransportation,
+      [givenHydrogenTransportation],
       [
         new ProductionChainEntity(
           givenHydrogenProduction,
@@ -32,7 +32,6 @@ describe('ProofOfSustainabilityAssembler', () => {
           givenWaterConsumption.executedBy,
         ),
       ],
-      givenHydrogenBottling,
     );
 
     // act
@@ -41,7 +40,7 @@ describe('ProofOfSustainabilityAssembler', () => {
     // assert
     expect(actualResult).toBeDefined();
     expect(actualResult.batchId).toBe(givenHydrogenTransportation.id);
-    expect(actualResult.calculations.length).toBe(5);
+    expect(actualResult.calculations.length).toBe(7);
     expect(actualResult.calculations.filter((c) => c.calculationTopic === CalculationTopic.POWER_SUPPLY).length).toBe(
       1,
     );
@@ -57,8 +56,14 @@ describe('ProofOfSustainabilityAssembler', () => {
     expect(
       actualResult.calculations.filter((c) => c.calculationTopic === CalculationTopic.HYDROGEN_TRANSPORTATION).length,
     ).toBe(1);
-    expect(actualResult.emissions.length).toBe(8);
-    expect(actualResult.emissions.filter((e) => e.emissionType === 'APPLICATION').length).toBe(5);
+    expect(
+      actualResult.calculations.filter((c) => c.calculationTopic === CalculationTopic.HYDROGEN_COMPRESSION).length,
+    ).toBe(1);
+    expect(
+      actualResult.calculations.filter((c) => c.calculationTopic === CalculationTopic.HYDROGEN_END_USE).length,
+    ).toBe(1);
+    expect(actualResult.emissions.length).toBe(10);
+    expect(actualResult.emissions.filter((e) => e.emissionType === 'APPLICATION').length).toBe(7);
     expect(actualResult.emissions.filter((e) => e.emissionType === 'REGULATORY').length).toBe(3);
   });
 });

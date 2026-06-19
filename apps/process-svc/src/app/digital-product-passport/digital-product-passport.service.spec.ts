@@ -26,14 +26,14 @@ import {
 import { PowerType, RfnboType } from '@h2-trust/domain';
 import { ProcessStepService } from '../process-step/process-step.service';
 import { DigitalProductPassportService } from './digital-product-passport.service';
-import { assembleProofOfOrigin, getHydrogenBottlingCompositions } from './proof-of-origin/proof-of-origin.assembler';
+import { assembleProofOfOrigin, getCompositionOfLatestSection } from './proof-of-origin/proof-of-origin.assembler';
 import { assembleProofOfSustainability } from './proof-of-sustainability/proof-of-sustainability.assembler';
 import { buildProvenance } from './provenance/provenance.service';
 import { determineRedCompliance, determineTotalRedCompliance } from './red-compliance/red-compliance';
 
 jest.mock('./proof-of-origin/proof-of-origin.assembler', () => ({
   assembleProofOfOrigin: jest.fn(),
-  getHydrogenBottlingCompositions: jest.fn(),
+  getCompositionOfLatestSection: jest.fn(),
 }));
 
 jest.mock('./proof-of-sustainability/proof-of-sustainability.assembler', () => ({
@@ -55,13 +55,14 @@ describe('DigitalProductPassportService', () => {
   const determineRedComplianceMock = jest.mocked(determineRedCompliance);
   const determineTotalRedComplianceMock = jest.mocked(determineTotalRedCompliance);
   const assembleProofOfOriginMock = jest.mocked(assembleProofOfOrigin);
-  const getHydrogenBottlingCompositionsMock = jest.mocked(getHydrogenBottlingCompositions);
+  const getCompositionOfLatestSectionMock = jest.mocked(getCompositionOfLatestSection);
   const assembleProofOfSustainabilityMock = jest.mocked(assembleProofOfSustainability);
   const buildProvenanceMock = jest.mocked(buildProvenance);
 
   const processStepServiceMock = {
     readProcessStep: jest.fn(),
     getPredecessors: jest.fn(),
+    readProcessStepByBatchId: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -111,7 +112,7 @@ describe('DigitalProductPassportService', () => {
     it('should return NON_CERTIFIABLE when power type is non-renewable', () => {
       // arrange
       const givenProductionChain: ProductionChainEntity = ProductionChainEntityFixture.create();
-      givenProductionChain.powerProduction.batch.qualityDetails.powerType = PowerType.NON_RENEWABLE;
+      givenProductionChain.powerProduction.batch.qualityDetails.productionPowerType = PowerType.NON_RENEWABLE;
       const givenRedCompliance = new RedComplianceEntity(true, true, true, true);
       const givenProofOfSustainability = ProofOfSustainabilityEntityFixture.create({ emissionReductionPercentage: 85 });
 
@@ -128,7 +129,7 @@ describe('DigitalProductPassportService', () => {
     it('should throw when the production chain contains an invalid power type', () => {
       // arrange
       const givenProductionChain: ProductionChainEntity = ProductionChainEntityFixture.create();
-      givenProductionChain.powerProduction.batch.qualityDetails.powerType = undefined as never;
+      givenProductionChain.powerProduction.batch.qualityDetails.productionPowerType = undefined as never;
 
       determineRedComplianceMock.mockReturnValue(new RedComplianceEntity(true, true, true, true));
 
@@ -167,11 +168,11 @@ describe('DigitalProductPassportService', () => {
       const givenHydrogenComponents: HydrogenComponentEntity[] = [];
       const givenProvenance = new ProvenanceEntity(
         givenHydrogenBottling,
+        [givenHydrogenBottling],
         [givenProductionChain],
-        givenHydrogenBottling,
       );
 
-      processStepServiceMock.readProcessStep.mockResolvedValue(givenHydrogenBottling);
+      processStepServiceMock.readProcessStepByBatchId.mockResolvedValue(givenHydrogenBottling);
       processStepServiceMock.getPredecessors.mockResolvedValue([
         givenHydrogenBottling,
         givenProductionChain.hydrogenRootProduction,
@@ -182,7 +183,7 @@ describe('DigitalProductPassportService', () => {
       buildProvenanceMock.mockReturnValue(givenProvenance);
       determineTotalRedComplianceMock.mockReturnValue(givenRedCompliance);
       assembleProofOfOriginMock.mockReturnValue(givenProofOfOrigin);
-      getHydrogenBottlingCompositionsMock.mockReturnValue(givenHydrogenComponents);
+      getCompositionOfLatestSectionMock.mockReturnValue(givenHydrogenComponents);
       assembleProofOfSustainabilityMock.mockReturnValue(givenProofOfSustainability);
 
       // act
@@ -191,7 +192,7 @@ describe('DigitalProductPassportService', () => {
       );
 
       // assert
-      expect(processStepServiceMock.readProcessStep).toHaveBeenCalledWith(givenHydrogenBottling.id);
+      expect(processStepServiceMock.readProcessStepByBatchId).toHaveBeenCalledWith(givenHydrogenBottling.id);
       expect(processStepServiceMock.getPredecessors).toHaveBeenCalledWith(givenHydrogenBottling);
       expect(buildProvenanceMock).toHaveBeenCalledWith(givenHydrogenBottling, [
         givenHydrogenBottling,
@@ -201,7 +202,7 @@ describe('DigitalProductPassportService', () => {
       ]);
       expect(determineTotalRedComplianceMock).toHaveBeenCalledWith(givenProvenance.productionChains);
       expect(assembleProofOfOriginMock).toHaveBeenCalledWith(givenProvenance);
-      expect(getHydrogenBottlingCompositionsMock).toHaveBeenCalledWith(givenProofOfOrigin);
+      expect(getCompositionOfLatestSectionMock).toHaveBeenCalledWith(givenProofOfOrigin);
       expect(assembleProofOfSustainabilityMock).toHaveBeenCalledWith(givenProvenance);
       expect(actualResult).toEqual(
         expect.objectContaining({
@@ -224,18 +225,18 @@ describe('DigitalProductPassportService', () => {
       // arrange
       const givenHydrogenBottling: ProcessStepEntity = ProcessStepEntityFixture.createHydrogenBottling();
       const givenProductionChain: ProductionChainEntity = ProductionChainEntityFixture.create();
-      givenProductionChain.powerProduction.batch.qualityDetails.powerType = PowerType.NON_RENEWABLE;
+      givenProductionChain.powerProduction.batch.qualityDetails.productionPowerType = PowerType.NON_RENEWABLE;
       const givenRedCompliance = new RedComplianceEntity(true, true, true, true);
       const givenProofOfSustainability: ProofOfSustainabilityEntity = ProofOfSustainabilityEntityFixture.create({
         emissionReductionPercentage: 85,
       });
       const givenProvenance = new ProvenanceEntity(
         givenHydrogenBottling,
+        [givenHydrogenBottling],
         [givenProductionChain],
-        givenHydrogenBottling,
       );
 
-      processStepServiceMock.readProcessStep.mockResolvedValue(givenHydrogenBottling);
+      processStepServiceMock.readProcessStepByBatchId.mockResolvedValue(givenHydrogenBottling);
       processStepServiceMock.getPredecessors.mockResolvedValue([
         givenHydrogenBottling,
         givenProductionChain.powerProduction,
@@ -243,7 +244,7 @@ describe('DigitalProductPassportService', () => {
       buildProvenanceMock.mockReturnValue(givenProvenance);
       determineTotalRedComplianceMock.mockReturnValue(givenRedCompliance);
       assembleProofOfOriginMock.mockReturnValue([ProofOfOriginSectionEntityFixture.create()]);
-      getHydrogenBottlingCompositionsMock.mockReturnValue([]);
+      getCompositionOfLatestSectionMock.mockReturnValue([]);
       assembleProofOfSustainabilityMock.mockReturnValue(givenProofOfSustainability);
 
       // act
@@ -259,18 +260,18 @@ describe('DigitalProductPassportService', () => {
       const givenHydrogenBottling: ProcessStepEntity = ProcessStepEntityFixture.createHydrogenBottling();
       const givenRenewableChain: ProductionChainEntity = ProductionChainEntityFixture.create();
       const givenPartlyRenewableChain: ProductionChainEntity = ProductionChainEntityFixture.create();
-      givenPartlyRenewableChain.powerProduction.batch.qualityDetails.powerType = PowerType.PARTLY_RENEWABLE;
+      givenPartlyRenewableChain.powerProduction.batch.qualityDetails.productionPowerType = PowerType.PARTLY_RENEWABLE;
       const givenRedCompliance = new RedComplianceEntity(true, true, true, true);
       const givenProofOfSustainability: ProofOfSustainabilityEntity = ProofOfSustainabilityEntityFixture.create({
         emissionReductionPercentage: 85,
       });
       const givenProvenance = new ProvenanceEntity(
         givenHydrogenBottling,
+        [givenHydrogenBottling],
         [givenRenewableChain, givenPartlyRenewableChain],
-        givenHydrogenBottling,
       );
 
-      processStepServiceMock.readProcessStep.mockResolvedValue(givenHydrogenBottling);
+      processStepServiceMock.readProcessStepByBatchId.mockResolvedValue(givenHydrogenBottling);
       processStepServiceMock.getPredecessors.mockResolvedValue([
         givenHydrogenBottling,
         givenRenewableChain.powerProduction,
@@ -279,7 +280,7 @@ describe('DigitalProductPassportService', () => {
       buildProvenanceMock.mockReturnValue(givenProvenance);
       determineTotalRedComplianceMock.mockReturnValue(givenRedCompliance);
       assembleProofOfOriginMock.mockReturnValue([ProofOfOriginSectionEntityFixture.create()]);
-      getHydrogenBottlingCompositionsMock.mockReturnValue([]);
+      getCompositionOfLatestSectionMock.mockReturnValue([]);
       assembleProofOfSustainabilityMock.mockReturnValue(givenProofOfSustainability);
 
       // act

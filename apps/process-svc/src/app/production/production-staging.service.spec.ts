@@ -19,7 +19,6 @@ import {
 } from '@h2-trust/contracts/entities';
 import {
   HydrogenProductionUnitEntityFixture,
-  HydrogenStorageUnitEntityFixture,
   PowerProductionUnitEntityFixture,
   PowerPurchaseAgreementEntityFixture,
   ProcessStepEntityFixture,
@@ -188,7 +187,6 @@ describe('ProductionStagingService', () => {
         },
       });
       const givenPowerUnit = PowerProductionUnitEntityFixture.create({ id: 'power-unit-1' });
-      const givenStorageUnit = HydrogenStorageUnitEntityFixture.create({ id: givenPayload.storageUnitId });
       const givenDefaultGridUnit = PowerProductionUnitEntityFixture.create({
         id: DefaultGridProvider.DEFAULT_GRID_POWER_PRODUCTION_UNIT_ID,
       });
@@ -198,9 +196,7 @@ describe('ProductionStagingService', () => {
         givenStagedHydrogenProduction,
         givenStagedPowerProduction,
       ]);
-      generalSvcMock.send.mockReturnValueOnce(
-        of([givenHydrogenUnit, givenPowerUnit, givenStorageUnit, givenDefaultGridUnit]),
-      );
+      generalSvcMock.send.mockReturnValueOnce(of([givenHydrogenUnit, givenPowerUnit, givenDefaultGridUnit]));
       productionCreationServiceMock.createAndPersistProductions.mockResolvedValue(expectedProcessSteps);
       stagedProductionRepositoryMock.setStagedProductionsToInactive.mockResolvedValue(2);
 
@@ -226,7 +222,6 @@ describe('ProductionStagingService', () => {
           powerAmountKwh: givenStagedHydrogenProduction.powerConsumed,
           hydrogenAmountKg: givenStagedHydrogenProduction.amountProduced,
           recordedBy: givenPayload.recordedBy,
-          hydrogenStorageUnitId: givenPayload.storageUnitId,
           ownerIdOfPowerProductionUnit: givenStagedPowerProduction.ownerId,
           ownerIdOfHydrogenProductionUnit: givenStagedHydrogenProduction.ownerId,
           waterConsumptionLitersPerHour: 20,
@@ -298,7 +293,6 @@ describe('ProductionStagingService', () => {
         },
       });
       const givenPowerUnit = PowerProductionUnitEntityFixture.create({ id: 'power-unit-1' });
-      const givenStorageUnit = HydrogenStorageUnitEntityFixture.create({ id: givenPayload.storageUnitId });
       const givenDefaultGridUnit = PowerProductionUnitEntityFixture.create({
         id: DefaultGridProvider.DEFAULT_GRID_POWER_PRODUCTION_UNIT_ID,
       });
@@ -307,9 +301,7 @@ describe('ProductionStagingService', () => {
         givenStagedHydrogenProduction,
         givenStagedPowerProduction,
       ]);
-      generalSvcMock.send.mockReturnValueOnce(
-        of([givenHydrogenUnit, givenPowerUnit, givenStorageUnit, givenDefaultGridUnit]),
-      );
+      generalSvcMock.send.mockReturnValueOnce(of([givenHydrogenUnit, givenPowerUnit, givenDefaultGridUnit]));
       productionCreationServiceMock.createAndPersistProductions.mockResolvedValue([
         ProcessStepEntityFixture.createHydrogenProduction(),
       ]);
@@ -368,7 +360,6 @@ describe('ProductionStagingService', () => {
         },
       });
       const givenPowerUnit = PowerProductionUnitEntityFixture.create({ id: 'power-unit-1' });
-      const givenStorageUnit = HydrogenStorageUnitEntityFixture.create({ id: givenPayload.storageUnitId });
       const givenDefaultGridUnit = PowerProductionUnitEntityFixture.create({
         id: DefaultGridProvider.DEFAULT_GRID_POWER_PRODUCTION_UNIT_ID,
       });
@@ -377,9 +368,7 @@ describe('ProductionStagingService', () => {
         givenStagedHydrogenProduction,
         givenStagedPowerProduction,
       ]);
-      generalSvcMock.send.mockReturnValueOnce(
-        of([givenHydrogenUnit, givenPowerUnit, givenStorageUnit, givenDefaultGridUnit]),
-      );
+      generalSvcMock.send.mockReturnValueOnce(of([givenHydrogenUnit, givenPowerUnit, givenDefaultGridUnit]));
       productionCreationServiceMock.createAndPersistProductions.mockResolvedValue([
         ProcessStepEntityFixture.createHydrogenProduction(),
       ]);
@@ -403,13 +392,11 @@ describe('ProductionStagingService', () => {
             powerProductionUnitId: DefaultGridProvider.DEFAULT_GRID_POWER_PRODUCTION_UNIT_ID,
             powerType: PowerType.PARTLY_RENEWABLE,
             hydrogenProductionUnitId: 'hydrogen-unit-1',
-            hydrogenStorageUnitId: givenPayload.storageUnitId,
           }),
           expect.objectContaining({
             powerProductionUnitId: DefaultGridProvider.DEFAULT_GRID_POWER_PRODUCTION_UNIT_ID,
             powerType: PowerType.NON_RENEWABLE,
             hydrogenProductionUnitId: 'hydrogen-unit-1',
-            hydrogenStorageUnitId: givenPayload.storageUnitId,
           }),
         ]),
       );

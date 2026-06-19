@@ -36,7 +36,6 @@ describe('ProductionAssembler', () => {
     'hydrogen-unit-1',
     30,
     'user-1',
-    'storage-unit-1',
     'power-owner-1',
     'hydrogen-owner-1',
     60,
@@ -75,7 +74,7 @@ describe('ProductionAssembler', () => {
       expect(actualResult.every((processStep) => processStep.batch.type === BatchType.POWER)).toBe(true);
       expect(actualResult.every((processStep) => processStep.batch.active === false)).toBe(true);
       expect(actualResult.every((processStep) => processStep.batch.predecessors.length === 0)).toBe(true);
-      expect(actualResult.map((processStep) => processStep.batch.qualityDetails?.powerType)).toEqual([
+      expect(actualResult.map((processStep) => processStep.batch.qualityDetails?.productionPowerType)).toEqual([
         PowerType.RENEWABLE,
         PowerType.RENEWABLE,
       ]);
@@ -170,7 +169,7 @@ describe('ProductionAssembler', () => {
       expect(actualResult.every((processStep) => processStep.batch.type === BatchType.HYDROGEN)).toBe(true);
       expect(actualResult.every((processStep) => processStep.batch.active === true)).toBe(true);
 
-      expect(actualResult.map((processStep) => processStep.batch.qualityDetails?.powerType)).toEqual([
+      expect(actualResult.map((processStep) => processStep.batch.qualityDetails?.productionPowerType)).toEqual([
         PowerType.PARTLY_RENEWABLE,
         PowerType.PARTLY_RENEWABLE,
       ]);

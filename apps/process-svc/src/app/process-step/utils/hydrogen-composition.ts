@@ -59,9 +59,6 @@ export function computeHydrogenComposition(
   predecessorUnitIds: string[],
   rfnboType: RfnboType,
 ): HydrogenComponentEntity[] {
-  if (rfnboType === RfnboType.RFNBO_READY) {
-    return [new HydrogenComponentEntity(null, bottleAmount, RfnboType.RFNBO_READY)];
-  }
   //The list of available HydrogenComponents merged according to their RFNBO Type
   const mergedHydrogenComponents = availableHydrogenComponents.reduce<HydrogenComponentEntity[]>(
     mergeSingleComponent,
@@ -75,7 +72,9 @@ export function computeHydrogenComposition(
       `Total stored amount of units '${predecessorUnitIds}' is not greater than 0`,
     );
   }
-
+  if (rfnboType === RfnboType.RFNBO_READY) {
+    return [new HydrogenComponentEntity(null, bottleAmount, RfnboType.RFNBO_READY)];
+  }
   return mergedHydrogenComponents.map(
     ({ processId, amount, rfnboType }) =>
       new HydrogenComponentEntity(processId, (bottleAmount * amount) / totalAmount, rfnboType),

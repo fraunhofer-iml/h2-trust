@@ -107,4 +107,21 @@ export const ProcessStepEntityFixture = {
       overrides.executedBy ?? HydrogenTransportUnitEntityFixture.create(),
       overrides.documents ?? [DocumentEntityFixture.create()],
     ),
+  createHydrogenStorage: (overrides: Partial<ProcessStepEntity> = {}): ProcessStepEntity =>
+    new ProcessStepEntity(
+      overrides.id ?? 'process-step-6',
+      overrides.startedAt ?? new Date('2026-01-01T02:00:00Z'),
+      overrides.endedAt ?? new Date('2026-01-01T02:59:59Z'),
+      overrides.type ?? ProcessType.HYDROGEN_STORAGE,
+      overrides.batch ??
+        BatchEntityFixture.createHydrogenBatch({
+          id: 'batch-6',
+          processStepId: 'process-step-6',
+          type: BatchType.HYDROGEN,
+          predecessors: [BatchEntityFixture.createWaterBatch(), BatchEntityFixture.createPowerBatch()],
+        }),
+      overrides.recordedBy ?? UserEntityFixture.createHydrogenUser(),
+      overrides.executedBy ?? HydrogenProductionUnitEntityFixture.create(),
+      overrides.documents ?? [DocumentEntityFixture.create()],
+    ),
 } as const;
