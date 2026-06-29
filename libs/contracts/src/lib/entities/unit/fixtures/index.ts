@@ -6,8 +6,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+export * from './hydrogen-bottling-unit.fixture';
 export * from './hydrogen-production-unit.fixture';
 export * from './hydrogen-storage-unit.fixture';
 export * from './hydrogen-transport-unit.fixture';
 export * from './power-production-unit.fixture';
-export * from './hydrogen-bottling-unit.fixture';
