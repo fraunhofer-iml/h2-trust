@@ -10,7 +10,6 @@ import {
   type AccountingPeriodMatchingResultDto,
   type AuthenticatedKCUser,
   type CsvDocumentIntegrityResultDto,
-  type PaginatedProductionDataDto,
   type ProcessedCsvDto,
   type ProductionOverviewDto,
   type ProductionStatisticsDto,
@@ -19,7 +18,6 @@ import {
 import {
   AccountingPeriodMatchingResultDtoFixture,
   CsvDocumentIntegrityResultDtoFixture,
-  PaginatedProductionDataDtoFixture,
   ProcessedCsvDtoFixture,
   ProductionCsvUploadDtoFixture,
   ProductionOverviewDtoFixture,
@@ -61,7 +59,7 @@ describe('ProductionController', () => {
   it('should delegate readHydrogenProductionsByOwner to the service when query arguments are provided', async () => {
     // arrange
     const givenMonth = new Date('2026-05-01T00:00:00.000Z');
-    const expectedResult: PaginatedProductionDataDto = PaginatedProductionDataDtoFixture.create();
+    const expectedResult = ProductionOverviewDtoFixture.create();
 
     productionServiceMock.readHydrogenProductionsByOwner.mockResolvedValue(expectedResult);
 
@@ -153,17 +151,17 @@ describe('ProductionController', () => {
   it('should delegate verifyCsvDocumentIntegrity to the service when a document id is provided', async () => {
     // arrange
     const expectedResult: CsvDocumentIntegrityResultDto = CsvDocumentIntegrityResultDtoFixture.create({
-      id: 'document-1',
+      documentId: 'document-1',
     });
 
     productionServiceMock.verifyCsvDocumentIntegrity.mockResolvedValue(expectedResult);
 
     // act
-    const actualResult = await controller.verifyCsvDocumentIntegrity(expectedResult.id);
+    const actualResult = await controller.verifyCsvDocumentIntegrity(expectedResult.documentId);
 
     // assert
     expect(actualResult).toEqual(expectedResult);
-    expect(productionServiceMock.verifyCsvDocumentIntegrity).toHaveBeenCalledWith(expectedResult.id);
+    expect(productionServiceMock.verifyCsvDocumentIntegrity).toHaveBeenCalledWith(expectedResult.documentId);
   });
 
   it('should delegate importCsvFile to the service when files and upload DTO are provided', async () => {
