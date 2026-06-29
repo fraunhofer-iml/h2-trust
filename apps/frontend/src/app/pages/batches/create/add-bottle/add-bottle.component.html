@@ -62,7 +62,7 @@
         <mat-form-field appearance="outline" class="col-span-3">
           <mat-label>Predecessor Unit</mat-label>
           <mat-select formControlName="predecessorUnit" placeholder="Select a Unit" #predecessorUnit>
-            @for (unit of hydrogenStorageQuery.data(); track unit) {
+            @for (unit of getNonEmptyUnits(); track unit) {
               <mat-option
                 (click)="changeValue()"
                 [value]="unit"
@@ -88,9 +88,7 @@
           <mat-label>Executing Unit</mat-label>
           <mat-select formControlName="executingUnit" placeholder="Select a Unit" #executingUnit>
             @for (unit of hydrogenStorageQuery.data(); track unit) {
-              <mat-option (click)="changeValue()" [value]="unit" [disabled]="!unit.active"
-                >{{ unit.name }} ({{ unit.filling | unit: MeasurementUnit.KG }})
-              </mat-option>
+              <mat-option (click)="changeValue()" [value]="unit" [disabled]="!unit.active">{{ unit.name }} </mat-option>
             }
           </mat-select>
         </mat-form-field>
@@ -112,7 +110,7 @@
       <div class="grid grid-cols-2 gap-2 rounded-lg bg-white p-4" [formGroup]="bottleFormGroup">
         <span class="col-span-2 text-neutral-700"> Emission Information </span>
 
-        @if (bottleFormGroup.controls.processType.value === ProcessType.HYDROGEN_TRANSPORTATION) {
+        @if (isTrailerTransport()) {
           <mat-form-field appearance="outline">
             <mat-label>Distance (km)</mat-label>
             <input

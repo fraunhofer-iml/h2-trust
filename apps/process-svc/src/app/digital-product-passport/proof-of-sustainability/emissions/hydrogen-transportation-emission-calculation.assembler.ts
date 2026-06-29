@@ -109,7 +109,6 @@ export function assembleHydrogenTransportationEmissionCalculation(
   const transportUnit: UnitEntity = hydrogenTransportation.executedBy;
 
   assertValidEnum(transportUnit.specification.type, TransportType, 'TransportType');
-  assertValidEnum(transportUnit.specification.fuelType, FuelType, 'FuelType');
 
   const transportMode: string = transportUnit?.specification?.type;
 

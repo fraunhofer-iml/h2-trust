@@ -59,7 +59,7 @@ export class ProcessStepService {
 
     //validate input for new process step
     validateUnitType(payload, executingUnit);
-    validateEmissionData(payload);
+    validateEmissionData(payload, executingUnit);
 
     //the unit id from which the predecessors of the new process step should be used
     const unitIdOfPredecessors: string = payload.predecessorUnitId;

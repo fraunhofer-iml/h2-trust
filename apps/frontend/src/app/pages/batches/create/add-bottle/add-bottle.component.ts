@@ -159,6 +159,20 @@ export class AddBottleComponent {
     return this.bottleFormGroup.controls.type as FormControl<RfnboType | undefined>;
   }
 
+  getNonEmptyUnits() {
+    if (!this.hydrogenStorageQuery || !this.hydrogenStorageQuery.data()) {
+      return [];
+    }
+    return this.hydrogenStorageQuery.data()!.filter((component) => component.filling > 0);
+  }
+
+  isTrailerTransport() {
+    const isTrailerTransport = this.bottleFormGroup.controls.executingUnit.value?.unitSpecType == TransportType.TRAILER;
+    const isHydrogenTransportation =
+      this.bottleFormGroup.controls.processType.value === ProcessType.HYDROGEN_TRANSPORTATION;
+    return isHydrogenTransportation && isTrailerTransport;
+  }
+
   removeFile(file: File): void {
     this.uploadedFiles = this.uploadedFiles.filter((uploadedFile: File) => uploadedFile !== file);
   }
