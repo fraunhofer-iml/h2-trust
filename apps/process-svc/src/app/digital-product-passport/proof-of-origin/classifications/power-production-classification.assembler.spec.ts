@@ -17,7 +17,7 @@ describe('PowerProductionProofOfOriginAssembler', () => {
       // arrange
       const givenSolarPowerProduction = ProcessStepEntityFixture.createPowerProduction({
         executedBy: PowerProductionUnitEntityFixture.create({
-          specification: {
+          details: {
             type: PowerProductionType.PHOTOVOLTAIC_SYSTEM,
           },
         }),
@@ -27,7 +27,7 @@ describe('PowerProductionProofOfOriginAssembler', () => {
 
       const givenWindPowerProduction = ProcessStepEntityFixture.createPowerProduction({
         executedBy: PowerProductionUnitEntityFixture.create({
-          specification: {
+          details: {
             type: PowerProductionType.WIND_TURBINE,
           },
         }),

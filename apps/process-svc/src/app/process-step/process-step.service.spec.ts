@@ -145,7 +145,7 @@ describe('ProcessStepService', () => {
       const givenStorageProcessStep = ProcessStepEntityFixture.createHydrogenProduction({
         batch: BatchEntityFixture.createHydrogenBatch({
           amount: 100,
-          qualityDetails: QualityDetailsEntityFixture.create(),
+          details: QualityDetailsEntityFixture.create(),
         }),
       });
 
@@ -212,7 +212,7 @@ describe('ProcessStepService', () => {
           id: 'storage-batch-1',
           processStepId: 'storage-process-step-1',
           amount: 50,
-          qualityDetails: QualityDetailsEntityFixture.create({ rfnboType: RfnboType.RFNBO_READY }),
+          details: QualityDetailsEntityFixture.create({ rfnboType: RfnboType.RFNBO_READY }),
         }),
       });
       const givenNonCertifiableStorageProcessStep = ProcessStepEntityFixture.createHydrogenProduction({
@@ -221,7 +221,7 @@ describe('ProcessStepService', () => {
           id: 'storage-batch-2',
           processStepId: 'storage-process-step-2',
           amount: 50,
-          qualityDetails: QualityDetailsEntityFixture.create({ rfnboType: RfnboType.NON_CERTIFIABLE }),
+          details: QualityDetailsEntityFixture.create({ rfnboType: RfnboType.NON_CERTIFIABLE }),
         }),
       });
       const givenConsumedSplitReadyProcessStep = ProcessStepEntityFixture.createHydrogenProduction({
@@ -231,7 +231,7 @@ describe('ProcessStepService', () => {
           processStepId: 'consumed-split-ready',
           amount: 25,
           predecessors: [givenRfnboReadyStorageProcessStep.batch],
-          qualityDetails: QualityDetailsEntityFixture.create({ rfnboType: RfnboType.RFNBO_READY }),
+          details: QualityDetailsEntityFixture.create({ rfnboType: RfnboType.RFNBO_READY }),
         }),
       });
       const givenConsumedSplitNonCertifiableProcessStep = ProcessStepEntityFixture.createHydrogenProduction({
@@ -241,7 +241,7 @@ describe('ProcessStepService', () => {
           processStepId: 'consumed-split-non-certifiable',
           amount: 25,
           predecessors: [givenNonCertifiableStorageProcessStep.batch],
-          qualityDetails: QualityDetailsEntityFixture.create({ rfnboType: RfnboType.NON_CERTIFIABLE }),
+          details: QualityDetailsEntityFixture.create({ rfnboType: RfnboType.NON_CERTIFIABLE }),
         }),
       });
       const givenRemainingReadyProcessStep = ProcessStepEntityFixture.createHydrogenProduction({
@@ -250,7 +250,7 @@ describe('ProcessStepService', () => {
           id: 'remaining-ready-batch',
           processStepId: 'remaining-ready',
           amount: 25,
-          qualityDetails: QualityDetailsEntityFixture.create({ rfnboType: RfnboType.RFNBO_READY }),
+          details: QualityDetailsEntityFixture.create({ rfnboType: RfnboType.RFNBO_READY }),
         }),
       });
       const givenRemainingNonCertifiableProcessStep = ProcessStepEntityFixture.createHydrogenProduction({
@@ -259,7 +259,7 @@ describe('ProcessStepService', () => {
           id: 'remaining-non-certifiable-batch',
           processStepId: 'remaining-non-certifiable',
           amount: 25,
-          qualityDetails: QualityDetailsEntityFixture.create({ rfnboType: RfnboType.NON_CERTIFIABLE }),
+          details: QualityDetailsEntityFixture.create({ rfnboType: RfnboType.NON_CERTIFIABLE }),
         }),
       });
       const givenCreatedBottlingProcessStep = ProcessStepEntityFixture.createHydrogenBottling();
@@ -369,7 +369,7 @@ describe('ProcessStepService', () => {
       const givenStorageProcessStep = ProcessStepEntityFixture.createHydrogenProduction({
         batch: BatchEntityFixture.createHydrogenBatch({
           amount: 100,
-          qualityDetails: QualityDetailsEntityFixture.create(),
+          details: QualityDetailsEntityFixture.create(),
         }),
       });
       const givenCreatedBottlingProcessStep = ProcessStepEntityFixture.createHydrogenBottling();
@@ -417,7 +417,7 @@ describe('ProcessStepService', () => {
       const givenStorageProcessStep = ProcessStepEntityFixture.createHydrogenProduction({
         batch: BatchEntityFixture.createHydrogenBatch({
           amount: 100,
-          qualityDetails: QualityDetailsEntityFixture.create(),
+          details: QualityDetailsEntityFixture.create(),
         }),
       });
 

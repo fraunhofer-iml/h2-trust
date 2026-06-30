@@ -7,9 +7,9 @@
  */
 
 import {
+  BatchDetailsEntity,
   CreateProductionEntity,
   ProcessStepEntity,
-  QualityDetailsEntity,
   UnitEntity,
 } from '@h2-trust/contracts/entities';
 import {
@@ -74,7 +74,7 @@ describe('ProductionAssembler', () => {
       expect(actualResult.every((processStep) => processStep.batch.type === BatchType.POWER)).toBe(true);
       expect(actualResult.every((processStep) => processStep.batch.active === false)).toBe(true);
       expect(actualResult.every((processStep) => processStep.batch.predecessors.length === 0)).toBe(true);
-      expect(actualResult.map((processStep) => processStep.batch.qualityDetails?.productionPowerType)).toEqual([
+      expect(actualResult.map((processStep) => processStep.batch.details?.productionPowerType)).toEqual([
         PowerType.RENEWABLE,
         PowerType.RENEWABLE,
       ]);
@@ -116,7 +116,7 @@ describe('ProductionAssembler', () => {
             id: 'power-batch-1',
             processStepId: 'power-1',
             amount: 45,
-            qualityDetails: new QualityDetailsEntity('quality-1', undefined as never, PowerType.PARTLY_RENEWABLE, 0),
+            details: new BatchDetailsEntity('quality-1', undefined as never, PowerType.PARTLY_RENEWABLE, 0),
           }),
         }),
         ProcessStepEntityFixture.createPowerProduction({
@@ -127,7 +127,7 @@ describe('ProductionAssembler', () => {
             id: 'power-batch-2',
             processStepId: 'power-2',
             amount: 45,
-            qualityDetails: new QualityDetailsEntity('quality-2', undefined as never, PowerType.PARTLY_RENEWABLE, 0),
+            details: new BatchDetailsEntity('quality-2', undefined as never, PowerType.PARTLY_RENEWABLE, 0),
           }),
         }),
       ];
@@ -169,7 +169,7 @@ describe('ProductionAssembler', () => {
       expect(actualResult.every((processStep) => processStep.batch.type === BatchType.HYDROGEN)).toBe(true);
       expect(actualResult.every((processStep) => processStep.batch.active === true)).toBe(true);
 
-      expect(actualResult.map((processStep) => processStep.batch.qualityDetails?.productionPowerType)).toEqual([
+      expect(actualResult.map((processStep) => processStep.batch.details?.productionPowerType)).toEqual([
         PowerType.PARTLY_RENEWABLE,
         PowerType.PARTLY_RENEWABLE,
       ]);

@@ -182,7 +182,7 @@ describe('ProductionStagingService', () => {
       );
       const givenHydrogenUnit = HydrogenProductionUnitEntityFixture.create({
         id: 'hydrogen-unit-1',
-        specification: {
+        details: {
           waterConsumptionLitersPerHour: 20,
         },
       });
@@ -288,7 +288,7 @@ describe('ProductionStagingService', () => {
       );
       const givenHydrogenUnit = HydrogenProductionUnitEntityFixture.create({
         id: 'hydrogen-unit-1',
-        specification: {
+        details: {
           waterConsumptionLitersPerHour: 20,
         },
       });
@@ -355,7 +355,7 @@ describe('ProductionStagingService', () => {
       );
       const givenHydrogenUnit = HydrogenProductionUnitEntityFixture.create({
         id: 'hydrogen-unit-1',
-        specification: {
+        details: {
           waterConsumptionLitersPerHour: 20,
         },
       });

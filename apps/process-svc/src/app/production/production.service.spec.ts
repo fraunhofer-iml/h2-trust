@@ -8,7 +8,7 @@
 
 import { Test, TestingModule } from '@nestjs/testing';
 import { of } from 'rxjs';
-import { QualityDetailsEntity } from '@h2-trust/contracts/entities';
+import { BatchDetailsEntity } from '@h2-trust/contracts/entities';
 import {
   BatchEntityFixture,
   CompanyEntityFixture,
@@ -80,14 +80,14 @@ describe('ProductionService', () => {
       const givenPowerProductionUnit = PowerProductionUnitEntityFixture.create({
         id: givenPayload.powerProductionUnitId,
         owner: CompanyEntityFixture.createPowerProducer({ id: 'power-owner-1' }),
-        specification: {
+        details: {
           type: PowerProductionType.PHOTOVOLTAIC_SYSTEM,
         },
       });
       const givenHydrogenProductionUnit = HydrogenProductionUnitEntityFixture.create({
         id: givenPayload.hydrogenProductionUnitId,
         owner: CompanyEntityFixture.createHydrogenProducer({ id: 'hydrogen-owner-1' }),
-        specification: {
+        details: {
           waterConsumptionLitersPerHour: 25,
         },
       });
@@ -145,14 +145,14 @@ describe('ProductionService', () => {
       const givenPowerProductionUnit = PowerProductionUnitEntityFixture.create({
         id: givenPayload.powerProductionUnitId,
         owner: CompanyEntityFixture.createPowerProducer({ id: 'power-owner-1' }),
-        specification: {
+        details: {
           type: PowerProductionType.GRID,
         },
       });
       const givenHydrogenProductionUnit = HydrogenProductionUnitEntityFixture.create({
         id: givenPayload.hydrogenProductionUnitId,
         owner: CompanyEntityFixture.createHydrogenProducer({ id: 'hydrogen-owner-1' }),
-        specification: {
+        details: {
           waterConsumptionLitersPerHour: 25,
         },
       });
@@ -198,13 +198,13 @@ describe('ProductionService', () => {
         batch: BatchEntityFixture.createHydrogenBatch({
           amount: 10,
           active: true,
-          qualityDetails: QualityDetailsEntityFixture.create({
+          details: QualityDetailsEntityFixture.create({
             rfnboType: RfnboType.RFNBO_READY,
           }),
           predecessors: [
             BatchEntityFixture.createPowerBatch({
               amount: 4,
-              qualityDetails: QualityDetailsEntityFixture.create({ productionPowerType: PowerType.RENEWABLE }),
+              details: QualityDetailsEntityFixture.create({ productionPowerType: PowerType.RENEWABLE }),
             }),
           ],
         }),
@@ -216,19 +216,19 @@ describe('ProductionService', () => {
           processStepId: 'process-step-4',
           amount: 6,
           active: true,
-          qualityDetails: QualityDetailsEntityFixture.create({
+          details: QualityDetailsEntityFixture.create({
             rfnboType: RfnboType.NON_CERTIFIABLE,
           }),
           predecessors: [
             BatchEntityFixture.createPowerBatch({
               id: 'power-batch-2',
               amount: 3,
-              qualityDetails: QualityDetailsEntityFixture.create({ productionPowerType: PowerType.PARTLY_RENEWABLE }),
+              details: QualityDetailsEntityFixture.create({ productionPowerType: PowerType.PARTLY_RENEWABLE }),
             }),
             BatchEntityFixture.createPowerBatch({
               id: 'power-batch-3',
               amount: 5,
-              qualityDetails: QualityDetailsEntityFixture.create({ productionPowerType: PowerType.NON_RENEWABLE }),
+              details: QualityDetailsEntityFixture.create({ productionPowerType: PowerType.NON_RENEWABLE }),
             }),
           ],
         }),
@@ -240,7 +240,7 @@ describe('ProductionService', () => {
           processStepId: 'process-step-5',
           amount: 99,
           active: false,
-          qualityDetails: QualityDetailsEntityFixture.create({
+          details: QualityDetailsEntityFixture.create({
             rfnboType: RfnboType.RFNBO_READY,
           }),
           predecessors: [BatchEntityFixture.createWaterBatch({ id: 'water-batch-4', amount: 7 })],
@@ -300,7 +300,7 @@ describe('ProductionService', () => {
       const givenPayload = CreateHydrogenProductionStatisticsPayloadFixture.create();
       const givenProcessStep = ProcessStepEntityFixture.createHydrogenProduction({
         batch: BatchEntityFixture.createHydrogenBatch({
-          qualityDetails: new QualityDetailsEntity('quality-details-2', undefined as never, PowerType.RENEWABLE, 0),
+          details: new BatchDetailsEntity('quality-details-2', undefined as never, PowerType.RENEWABLE, 0),
         }),
       });
 

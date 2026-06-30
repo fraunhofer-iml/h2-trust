@@ -112,7 +112,7 @@ describe('DigitalProductPassportService', () => {
     it('should return NON_CERTIFIABLE when power type is non-renewable', () => {
       // arrange
       const givenProductionChain: ProductionChainEntity = ProductionChainEntityFixture.create();
-      givenProductionChain.powerProduction.batch.qualityDetails.productionPowerType = PowerType.NON_RENEWABLE;
+      givenProductionChain.powerProduction.batch.details.productionPowerType = PowerType.NON_RENEWABLE;
       const givenRedCompliance = new RedComplianceEntity(true, true, true, true);
       const givenProofOfSustainability = ProofOfSustainabilityEntityFixture.create({ emissionReductionPercentage: 85 });
 
@@ -129,7 +129,7 @@ describe('DigitalProductPassportService', () => {
     it('should throw when the production chain contains an invalid power type', () => {
       // arrange
       const givenProductionChain: ProductionChainEntity = ProductionChainEntityFixture.create();
-      givenProductionChain.powerProduction.batch.qualityDetails.productionPowerType = undefined as never;
+      givenProductionChain.powerProduction.batch.details.productionPowerType = undefined as never;
 
       determineRedComplianceMock.mockReturnValue(new RedComplianceEntity(true, true, true, true));
 
@@ -225,7 +225,7 @@ describe('DigitalProductPassportService', () => {
       // arrange
       const givenHydrogenBottling: ProcessStepEntity = ProcessStepEntityFixture.createHydrogenBottling();
       const givenProductionChain: ProductionChainEntity = ProductionChainEntityFixture.create();
-      givenProductionChain.powerProduction.batch.qualityDetails.productionPowerType = PowerType.NON_RENEWABLE;
+      givenProductionChain.powerProduction.batch.details.productionPowerType = PowerType.NON_RENEWABLE;
       const givenRedCompliance = new RedComplianceEntity(true, true, true, true);
       const givenProofOfSustainability: ProofOfSustainabilityEntity = ProofOfSustainabilityEntityFixture.create({
         emissionReductionPercentage: 85,
@@ -260,7 +260,7 @@ describe('DigitalProductPassportService', () => {
       const givenHydrogenBottling: ProcessStepEntity = ProcessStepEntityFixture.createHydrogenBottling();
       const givenRenewableChain: ProductionChainEntity = ProductionChainEntityFixture.create();
       const givenPartlyRenewableChain: ProductionChainEntity = ProductionChainEntityFixture.create();
-      givenPartlyRenewableChain.powerProduction.batch.qualityDetails.productionPowerType = PowerType.PARTLY_RENEWABLE;
+      givenPartlyRenewableChain.powerProduction.batch.details.productionPowerType = PowerType.PARTLY_RENEWABLE;
       const givenRedCompliance = new RedComplianceEntity(true, true, true, true);
       const givenProofOfSustainability: ProofOfSustainabilityEntity = ProofOfSustainabilityEntityFixture.create({
         emissionReductionPercentage: 85,

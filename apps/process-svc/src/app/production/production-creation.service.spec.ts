@@ -101,7 +101,6 @@ describe('ProductionCreationService', () => {
         'hydrogen-unit-1',
         10,
         'user-1',
-        'storage-unit-1',
         'power-owner-1',
         'hydrogen-owner-1',
         20,
@@ -115,7 +114,6 @@ describe('ProductionCreationService', () => {
         'hydrogen-unit-1',
         12,
         'user-1',
-        'storage-unit-1',
         'power-owner-1',
         'hydrogen-owner-1',
         24,
@@ -199,7 +197,7 @@ describe('ProductionCreationService', () => {
             id: 'hydrogen-batch-to-persist-1',
             processStepId: 'hydrogen-to-persist-1',
             predecessors: [expectedPersistedPowerProcessSteps[0].batch, expectedPersistedWaterProcessSteps[0].batch],
-            qualityDetails: QualityDetailsEntityFixture.create({ rfnboType: RfnboType.NOT_SPECIFIED }),
+            details: QualityDetailsEntityFixture.create({ rfnboType: RfnboType.NOT_SPECIFIED }),
           }),
         }),
         ProcessStepEntityFixture.createHydrogenProduction({
@@ -208,7 +206,7 @@ describe('ProductionCreationService', () => {
             id: 'hydrogen-batch-to-persist-2',
             processStepId: 'hydrogen-to-persist-2',
             predecessors: [expectedPersistedPowerProcessSteps[1].batch, expectedPersistedWaterProcessSteps[1].batch],
-            qualityDetails: QualityDetailsEntityFixture.create({ rfnboType: RfnboType.NOT_SPECIFIED }),
+            details: QualityDetailsEntityFixture.create({ rfnboType: RfnboType.NOT_SPECIFIED }),
           }),
         }),
       ];
@@ -256,8 +254,8 @@ describe('ProductionCreationService', () => {
       // assert
       expect(processStepServiceMock.createManyProcessSteps).toHaveBeenCalledTimes(4);
       expect(digitalProductPassportServiceMock.getRfnboType).toHaveBeenCalledTimes(2);
-      expect(givenHydrogenProcessStepsToPersist[0].batch.qualityDetails.rfnboType).toBe(RfnboType.RFNBO_READY);
-      expect(givenHydrogenProcessStepsToPersist[1].batch.qualityDetails.rfnboType).toBe(RfnboType.NON_CERTIFIABLE);
+      expect(givenHydrogenProcessStepsToPersist[0].batch.details.rfnboType).toBe(RfnboType.RFNBO_READY);
+      expect(givenHydrogenProcessStepsToPersist[1].batch.details.rfnboType).toBe(RfnboType.NON_CERTIFIABLE);
       expect(actualResult).toEqual([
         expectedPersistedPowerProcessSteps[0],
         expectedPersistedWaterProcessSteps[0],
@@ -312,7 +310,7 @@ describe('ProductionCreationService', () => {
           id: 'hydrogen-batch-to-persist',
           processStepId: 'hydrogen-to-persist',
           predecessors: [givenPersistedPower.batch, givenPersistedWater.batch],
-          qualityDetails: QualityDetailsEntityFixture.create({ rfnboType: RfnboType.NOT_SPECIFIED }),
+          details: QualityDetailsEntityFixture.create({ rfnboType: RfnboType.NOT_SPECIFIED }),
         }),
       });
       const givenPersistedHydrogen = ProcessStepEntityFixture.createHydrogenProduction({
@@ -344,7 +342,7 @@ describe('ProductionCreationService', () => {
         givenWaterToPersist,
       ]);
       expect(digitalProductPassportServiceMock.getRfnboType).toHaveBeenCalledTimes(1);
-      expect(givenHydrogenToPersist.batch.qualityDetails.rfnboType).toBe(RfnboType.RFNBO_READY);
+      expect(givenHydrogenToPersist.batch.details.rfnboType).toBe(RfnboType.RFNBO_READY);
       expect(processStepServiceMock.createManyProcessSteps.mock.calls[1][0].processSteps).toEqual([
         givenHydrogenToPersist,
       ]);
@@ -422,7 +420,6 @@ describe('ProductionCreationService', () => {
         'hydrogen-unit-1',
         10,
         'user-1',
-        'storage-unit-1',
         'power-owner-1',
         'hydrogen-owner-1',
         20,
@@ -442,7 +439,7 @@ describe('ProductionCreationService', () => {
             BatchEntityFixture.createPowerBatch({ id: 'unknown-power-batch', processStepId: 'unknown-power' }),
             givenPersistedWater.batch,
           ],
-          qualityDetails: QualityDetailsEntityFixture.create({ rfnboType: RfnboType.NOT_SPECIFIED }),
+          details: QualityDetailsEntityFixture.create({ rfnboType: RfnboType.NOT_SPECIFIED }),
         }),
       });
 
