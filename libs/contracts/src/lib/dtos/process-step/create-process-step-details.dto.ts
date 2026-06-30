@@ -6,13 +6,20 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
-import { IsEnum, IsNotEmpty, IsNumber, IsOptional, IsPositive } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsNumber, IsOptional } from 'class-validator';
 import { PowerType, RfnboType } from '@h2-trust/domain';
 
-export class CreateQualityDetailsDto {
+//TODO-LG: update swagger annotation
+export class CreateProcessStepDetailsDto {
   @IsNotEmpty()
   @IsEnum(RfnboType)
+  @ApiProperty({
+    enum: RfnboType,
+    example: 'RFNBO_READY',
+    description: 'RFNBO type',
+  })
   rfnboType: RfnboType;
 
   @IsEnum(PowerType)
@@ -20,43 +27,40 @@ export class CreateQualityDetailsDto {
   productionPowerType: PowerType;
 
   @IsNumber()
-  @IsPositive()
   @IsOptional()
   @Transform(({ value }) => Number(value), { toClassOnly: true })
   usedRenewablePower?: number;
 
   @IsNumber()
-  @IsPositive()
   @IsOptional()
   @Transform(({ value }) => Number(value), { toClassOnly: true })
   usedGridPower?: number;
 
   @IsOptional()
   @IsNumber()
-  @IsPositive()
   @Transform(({ value }) => Number(value), { toClassOnly: true })
+  @ApiProperty({
+    example: 1000,
+    description: 'Transport distance in km (only relevant for TRAILER)',
+  })
   distance?: number;
 
   @IsNumber()
-  @IsPositive()
   @IsOptional()
   @Transform(({ value }) => Number(value), { toClassOnly: true })
   wasteWater?: number;
 
   @IsNumber()
-  @IsPositive()
   @IsOptional()
   @Transform(({ value }) => Number(value), { toClassOnly: true })
   resinConsumption?: number;
 
   @IsNumber()
-  @IsPositive()
   @IsOptional()
   @Transform(({ value }) => Number(value), { toClassOnly: true })
   compressedAir?: number;
 
   @IsNumber()
-  @IsPositive()
   @IsOptional()
   @Transform(({ value }) => Number(value), { toClassOnly: true })
   nitrogenConsumption?: number;

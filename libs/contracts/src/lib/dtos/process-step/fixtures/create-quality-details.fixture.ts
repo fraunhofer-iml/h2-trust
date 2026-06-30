@@ -7,10 +7,10 @@
  */
 
 import { PowerType, RfnboType } from '@h2-trust/domain';
-import { CreateQualityDetailsDto } from '../create-quality-details.dto';
+import { CreateProcessStepDetailsDto } from '../create-process-step-details.dto';
 
 export const CreateQualityDetailsDtoFixture = {
-  create: (overrides: Partial<CreateQualityDetailsDto> = {}): CreateQualityDetailsDto => ({
+  create: (overrides: Partial<CreateProcessStepDetailsDto> = {}): CreateProcessStepDetailsDto => ({
     rfnboType: overrides.rfnboType ?? RfnboType.RFNBO_READY,
     productionPowerType: overrides.productionPowerType ?? PowerType.RENEWABLE,
     usedRenewablePower: overrides.usedRenewablePower ?? 0,

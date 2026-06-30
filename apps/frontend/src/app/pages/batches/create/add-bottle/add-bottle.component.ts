@@ -124,10 +124,8 @@ export class AddBottleComponent {
     this.selectedChartData = this.bottleFormGroup.value?.predecessorUnit
       ? [this.bottleFormGroup.value?.predecessorUnit]
       : [];
-    console.log(this.selectedChartData);
   }
 
-  //hydrogenStorageQuery = injectQuery(() => componentOverviewQueryOptions(this.unitsService, 'hydrogen-storage-unit-0'));
   hydrogenStorageQuery = injectQuery(() => componentOverviewsQueryOptions(this.unitsService));
 
   recipientsQuery = injectQuery(() => companiesQueryOptions(this.companiesService));
@@ -204,15 +202,18 @@ export class AddBottleComponent {
     data.append('executingUnitId', this.bottleFormGroup.value?.executingUnit?.id.toString() ?? '');
     data.append('predecessorUnitId', this.bottleFormGroup.value?.predecessorUnit?.id.toString() ?? '');
 
-    //qualityDetails
-    data.append('rfnboType', this.bottleFormGroup.value.type ?? '');
-    data.append('productionPowerType', PowerType.NOT_SPECIFIED);
-    data.append('distance', this.bottleFormGroup.value.distance?.toString() ?? '0');
-    data.append('usedRenewablePower', this.bottleFormGroup.value.renewable_power?.toString() ?? '0');
-    data.append('usedGridPower', this.bottleFormGroup.value.grid_power?.toString() ?? '0');
-    data.append('compressedAir', this.bottleFormGroup.value.compressed_air?.toString() ?? '0');
-    data.append('nitrogenConsumption', this.bottleFormGroup.value.nitrogen?.toString() ?? '0');
-
+    const processStepDetails = {
+      rfnboType: this.bottleFormGroup.value.type ?? RfnboType.NON_CERTIFIABLE,
+      productionPowerType: PowerType.NOT_SPECIFIED,
+      usedRenewablePower: this.bottleFormGroup.value.renewable_power ?? 0,
+      usedGridPower: this.bottleFormGroup.value.grid_power ?? 0,
+      distance: this.bottleFormGroup.value.distance ?? 0,
+      wasteWater: 0,
+      resinConsumption: 0,
+      compressedAir: this.bottleFormGroup.value.compressed_air ?? 0,
+      nitrogenConsumption: this.bottleFormGroup.value.nitrogen ?? 0,
+    };
+    data.append('details', JSON.stringify(processStepDetails));
     this.mutation.mutate(data);
   }
 

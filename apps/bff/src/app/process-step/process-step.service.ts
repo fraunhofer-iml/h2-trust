@@ -60,15 +60,15 @@ export class ProcessStepService {
     userId: string,
   ): Promise<ProcessStepOverviewDto> {
     const qualityDetails: CreateProcessStepQualityPayload = new CreateProcessStepQualityPayload(
-      dto.rfnboType,
-      dto.productionPowerType,
-      dto.usedRenewablePower,
-      dto.usedGridPower,
-      dto.distance,
-      dto.wasteWater,
-      dto.resinConsumption,
-      dto.compressedAir,
-      dto.nitrogenConsumption,
+      dto.details.rfnboType,
+      dto.details.productionPowerType,
+      dto.details.usedRenewablePower,
+      dto.details.usedGridPower,
+      dto.details.distance,
+      dto.details.wasteWater,
+      dto.details.resinConsumption,
+      dto.details.compressedAir,
+      dto.details.nitrogenConsumption,
     );
     const bottlingPayload: CreateProcessStepPayload = new CreateProcessStepPayload(
       qualityDetails,

@@ -7,12 +7,22 @@
  */
 
 import { ApiProperty } from '@nestjs/swagger';
-import { Transform } from 'class-transformer';
-import { IsArray, IsEnum, IsISO8601, IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString } from 'class-validator';
-import { PowerType, ProcessType, RfnboType } from '@h2-trust/domain';
+import { plainToInstance, Transform, Type } from 'class-transformer';
+import {
+  IsArray,
+  IsEnum,
+  IsISO8601,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsPositive,
+  IsString,
+  ValidateNested,
+} from 'class-validator';
+import { ProcessType } from '@h2-trust/domain';
+import { CreateProcessStepDetailsDto } from './create-process-step-details.dto';
 
 //TODO-LG: update swagger annotation
-//TODO-LG: reduce DTO size and use the CreateQualityDetails dto here
 export class CreateProcessStepDto {
   @IsEnum(ProcessType)
   @IsNotEmpty()
@@ -69,58 +79,20 @@ export class CreateProcessStepDto {
   })
   files?: Express.Multer.File[];
 
-  //quality details fields
-  @IsNotEmpty()
-  @IsEnum(RfnboType)
-  @ApiProperty({
-    enum: RfnboType,
-    example: 'RFNBO_READY',
-    description: 'RFNBO type',
+  @Transform(({ value }) => {
+    if (typeof value === 'string') {
+      try {
+        const rawJson = JSON.parse(value);
+        return plainToInstance(CreateProcessStepDetailsDto, rawJson);
+      } catch {
+        return value;
+      }
+    }
+    return value;
   })
-  rfnboType: RfnboType;
-
-  @IsEnum(PowerType)
-  @IsNotEmpty()
-  productionPowerType: PowerType;
-
-  @IsNumber()
-  @IsOptional()
-  @Transform(({ value }) => Number(value), { toClassOnly: true })
-  usedRenewablePower?: number;
-
-  @IsNumber()
-  @IsOptional()
-  @Transform(({ value }) => Number(value), { toClassOnly: true })
-  usedGridPower?: number;
-
-  @IsOptional()
-  @IsNumber()
-  @Transform(({ value }) => Number(value), { toClassOnly: true })
-  @ApiProperty({
-    example: 1000,
-    description: 'Transport distance in km (only relevant for TRAILER)',
-  })
-  distance?: number;
-
-  @IsNumber()
-  @IsOptional()
-  @Transform(({ value }) => Number(value), { toClassOnly: true })
-  wasteWater?: number;
-
-  @IsNumber()
-  @IsOptional()
-  @Transform(({ value }) => Number(value), { toClassOnly: true })
-  resinConsumption?: number;
-
-  @IsNumber()
-  @IsOptional()
-  @Transform(({ value }) => Number(value), { toClassOnly: true })
-  compressedAir?: number;
-
-  @IsNumber()
-  @IsOptional()
-  @Transform(({ value }) => Number(value), { toClassOnly: true })
-  nitrogenConsumption?: number;
+  @ValidateNested()
+  @Type(() => CreateProcessStepDetailsDto)
+  details: CreateProcessStepDetailsDto;
 
   constructor(
     processType: ProcessType,
@@ -130,15 +102,7 @@ export class CreateProcessStepDto {
     recordedBy: string,
     executingUnitId: string,
     predecessorUnitId: string,
-    rfnboType: RfnboType,
-    productionPowerType: PowerType,
-    usedRenewablePower: number,
-    usedGridPower: number,
-    distance: number,
-    wasteWater: number,
-    resinConsumption: number,
-    compressedAir: number,
-    nitrogenConsumption: number,
+    details: CreateProcessStepDetailsDto,
     files?: Express.Multer.File[],
   ) {
     this.processType = processType;
@@ -149,14 +113,6 @@ export class CreateProcessStepDto {
     this.executingUnitId = executingUnitId;
     this.predecessorUnitId = predecessorUnitId;
     this.files = files;
-    this.rfnboType = rfnboType;
-    this.productionPowerType = productionPowerType;
-    this.usedRenewablePower = usedRenewablePower;
-    this.usedGridPower = usedGridPower;
-    this.distance = distance;
-    this.wasteWater = wasteWater;
-    this.resinConsumption = resinConsumption;
-    this.compressedAir = compressedAir;
-    this.nitrogenConsumption = nitrogenConsumption;
+    this.details = details;
   }
 }
