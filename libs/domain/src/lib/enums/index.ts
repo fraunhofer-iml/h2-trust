@@ -12,7 +12,6 @@ export * from './calculation-topic.enum';
 export * from './company-type.enum';
 export * from './csv-content-type.enum';
 export * from './csv-document-integrity-status.enum';
-export * from './energy-source.enum';
 export * from './file-upload-keys.enum';
 export * from './fuel-type.enum';
 export * from './grid-level.enum';

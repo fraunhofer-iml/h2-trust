@@ -13,7 +13,7 @@ import {
   ProofOfOriginPowerBatchEntityFixture,
   ProofOfOriginSubClassificationEntityFixture,
 } from '@h2-trust/contracts/entities/fixtures';
-import { EnergySource, ProofOfOrigin } from '@h2-trust/domain';
+import { PowerProductionType, ProofOfOrigin } from '@h2-trust/domain';
 import { assembleHydrogenProductionSection } from './hydrogen-production-section.assembler';
 
 describe('HydrogenProductionProofOfOriginAssembler', () => {
@@ -29,7 +29,7 @@ describe('HydrogenProductionProofOfOriginAssembler', () => {
 
       const givenPowerSubClassifications = [
         ProofOfOriginSubClassificationEntityFixture.create({
-          name: EnergySource.SOLAR_ENERGY,
+          name: PowerProductionType.PHOTOVOLTAIC_SYSTEM,
           emissionOfProcessStep: 0,
           batches: [givenProductionPowerBatches],
         }),

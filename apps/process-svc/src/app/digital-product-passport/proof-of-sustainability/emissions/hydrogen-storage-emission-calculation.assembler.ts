@@ -11,12 +11,12 @@ import {
   CalculationTopic,
   EmissionNumericConstants,
   EmissionStringConstants,
-  EnergySource,
   MeasurementUnit,
+  PowerProductionType,
   PowerType,
   ProcessType,
 } from '@h2-trust/domain';
-import { getEnergySource } from '@h2-trust/strings';
+import { getPowerProductionType } from '@h2-trust/strings';
 
 export function assembleHydrogenStorageEmissionCalculations(
   hydrogenProduction: ProcessStepEntity,
@@ -32,7 +32,7 @@ export function assembleHydrogenStorageEmissionCalculations(
     EmissionNumericConstants.ENERGY_DEMAND_COMPRESSION_KWH_PER_KG_H2 * emissionFactor * hydrogenProduction.batch.amount;
 
   const hydrogenProducedKgInput = `Hydrogen Produced: ${hydrogenProduction.batch.amount} ${MeasurementUnit.KG_H2}`;
-  const emissionFactorLabel = getEnergySource(EnergySource.GRID);
+  const emissionFactorLabel = getPowerProductionType(PowerProductionType.GRID);
   const energyDemandInput = `Energy Demand: ${EmissionNumericConstants.ENERGY_DEMAND_COMPRESSION_KWH_PER_KG_H2} ${MeasurementUnit.KWH_PER_KG_H2}`;
   const emissionFactorInput = `Emission Factor ${emissionFactorLabel}: ${emissionFactor} ${MeasurementUnit.G_CO2_PER_KWH}`;
   const formula = `E = Energy Demand * Emission Factor ${emissionFactorLabel} * Hydrogen Produced`;

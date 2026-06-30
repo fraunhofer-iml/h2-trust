@@ -11,7 +11,6 @@ import {
   CalculationTopic,
   CsvContentType,
   CsvDocumentIntegrityStatus,
-  EnergySource,
   FuelType,
   GridLevel,
   HydrogenProductionTechnology,
@@ -64,13 +63,6 @@ const FUEL_TYPE_LABELS: Record<FuelType, string> = {
 const TRANSPORT_TYPE_LABELS: Record<TransportType, string> = {
   [TransportType.PIPELINE]: 'Pipeline',
   [TransportType.TRAILER]: 'Trailer',
-};
-
-const ENERGY_SOURCE_LABELS: Record<EnergySource, string> = {
-  [EnergySource.GRID]: 'Grid',
-  [EnergySource.HYDRO_POWER]: 'Hydro Power Plant',
-  [EnergySource.SOLAR_ENERGY]: 'Photovoltaic System',
-  [EnergySource.WIND_ENERGY]: 'Wind Turbine',
 };
 
 const BATCH_TYPE_MEASUREMENT_UNIT: Record<BatchType, string> = {
@@ -172,10 +164,6 @@ export function getFuelType(value: FuelType): string {
 
 export function getTransportType(value: TransportType): string {
   return getLabel(value, TRANSPORT_TYPE_LABELS);
-}
-
-export function getEnergySource(value: EnergySource): string {
-  return getLabel(value, ENERGY_SOURCE_LABELS);
 }
 
 export function getMeasurementUnit(value: BatchType): string {
