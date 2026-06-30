@@ -69,7 +69,7 @@ describe('HydrogenBottlingProofOfOriginAssembler', () => {
           predecessors: [
             BatchEntityFixture.createHydrogenBatch({
               amount: 100,
-              qualityDetails: QualityDetailsEntityFixture.create(),
+              details: QualityDetailsEntityFixture.create(),
             }),
           ],
         }),
@@ -92,7 +92,7 @@ describe('HydrogenBottlingProofOfOriginAssembler', () => {
           predecessors: [
             BatchEntityFixture.createHydrogenBatch({
               amount: 100,
-              qualityDetails: QualityDetailsEntityFixture.create(),
+              details: QualityDetailsEntityFixture.create(),
             }),
           ],
         }),
@@ -118,11 +118,11 @@ describe('HydrogenBottlingProofOfOriginAssembler', () => {
           predecessors: [
             BatchEntityFixture.createHydrogenBatch({
               amount: 50,
-              qualityDetails: QualityDetailsEntityFixture.create(),
+              details: QualityDetailsEntityFixture.create(),
             }),
             BatchEntityFixture.createHydrogenBatch({
               amount: 50,
-              qualityDetails: QualityDetailsEntityFixture.create(),
+              details: QualityDetailsEntityFixture.create(),
             }),
           ],
         }),

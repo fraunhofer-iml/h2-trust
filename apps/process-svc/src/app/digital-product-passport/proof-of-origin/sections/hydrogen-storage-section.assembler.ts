@@ -32,12 +32,12 @@ function assembleHydrogenStorageBatch(
       {
         processId: null,
         amount: hydrogenStorage.batch.amount,
-        rfnboType: hydrogenStorage.batch?.qualityDetails?.rfnboType,
+        rfnboType: hydrogenStorage.batch?.details?.rfnboType,
       },
     ],
     producer: hydrogenStorage.batch.owner?.name,
     unitId: hydrogenStorage.executedBy.id,
-    rfnboType: hydrogenStorage.batch?.qualityDetails?.rfnboType,
+    rfnboType: hydrogenStorage.batch?.details?.rfnboType,
     processStep: hydrogenStorage.type,
     accountingPeriodEnd: hydrogenStorage.endedAt,
   };

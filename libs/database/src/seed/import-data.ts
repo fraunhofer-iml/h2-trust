@@ -10,17 +10,19 @@ import {
   PrismaClient,
   type Address,
   type Batch,
+  type BatchDetails,
   type Company,
   type Document,
   type PowerPurchaseAgreement,
   type PowerPurchaseAgreementDecision,
   type ProcessStep,
-  type QualityDetails,
   type Unit,
+  type UnitDetails,
   type User,
 } from '@prisma/client';
 import {
   AddressSeed,
+  BatchDetailsSeed,
   BatchRelationBottlingProductionSeed,
   BatchRelationPowerHydrogenSeed,
   BatchRelationTransportationBottlingSeed,
@@ -31,9 +33,8 @@ import {
   PowerPurchaseAgreementDecisionSeed,
   PowerPurchaseAgreementSeed,
   ProcessStepSeed,
-  QualityDetailsSeed,
+  UnitDetailsSeed,
   UnitSeed,
-  UnitSpecificationSeed,
   UserSeed,
 } from './data';
 import { Data, importData } from './data-importer';
@@ -58,9 +59,9 @@ export async function seedDatabase() {
       createRecord: (data) => prisma.user.create({ data: data as User }),
     },
     {
-      name: 'unitSpecifications',
-      records: UnitSpecificationSeed,
-      createRecord: (data: any) => prisma.unitSpecification.create({ data }),
+      name: 'unitDetails',
+      records: UnitDetailsSeed,
+      createRecord: (data: any) => prisma.unitDetails.create({ data: data as UnitDetails }),
     },
     {
       name: 'unit',
@@ -117,9 +118,9 @@ export async function seedDatabase() {
       },
     },
     {
-      name: 'qualityDetails',
-      records: QualityDetailsSeed,
-      createRecord: (data) => prisma.qualityDetails.create({ data: data as QualityDetails }),
+      name: 'batchDetails',
+      records: BatchDetailsSeed,
+      createRecord: (data) => prisma.batchDetails.create({ data: data as BatchDetails }),
     },
     {
       name: 'processStep',

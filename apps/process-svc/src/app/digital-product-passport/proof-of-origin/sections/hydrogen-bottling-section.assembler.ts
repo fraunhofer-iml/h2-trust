@@ -42,7 +42,7 @@ export function assembleHydrogenBottlingSection(
     batchType: BatchType.HYDROGEN,
     hydrogenComposition: hydrogenComponentsOfBottling,
     unitId: bottling.executedBy.id,
-    rfnboType: bottling.batch?.qualityDetails?.rfnboType,
+    rfnboType: bottling.batch?.details?.rfnboType,
     processStep: bottling.type,
     accountingPeriodEnd: bottling.endedAt,
   };

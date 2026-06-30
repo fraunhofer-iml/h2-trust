@@ -76,7 +76,7 @@ export class ProcessStepService {
     const predecessorCandidateComponents: HydrogenComponentEntity[] = predecessorCandidates.map((processStep) => ({
       processId: processStep.id,
       amount: processStep.batch.amount,
-      rfnboType: processStep.batch.qualityDetails.rfnboType,
+      rfnboType: processStep.batch.details.rfnboType,
     }));
 
     //calculate the needed amount of each rfnbo typed hydrogen
@@ -120,11 +120,11 @@ export class ProcessStepService {
 
     //determine the rfnbo value of the new process step
     const rfnboTypeWithoutEmissionReduction: RfnboType =
-      bottlingProcessStep?.batch?.qualityDetails?.rfnboType ?? RfnboType.NOT_SPECIFIED;
+      bottlingProcessStep?.batch?.details?.rfnboType ?? RfnboType.NOT_SPECIFIED;
     const provenance: ProvenanceEntity = new ProvenanceEntity(bottlingProcessStep, [bottlingProcessStep], []);
     const proofOfSustainability = assembleProofOfSustainability(provenance);
     const isEmissionReductionAbove70Percent = proofOfSustainability.emissionReductionPercentage > 70;
-    bottlingProcessStep.batch.qualityDetails.rfnboType =
+    bottlingProcessStep.batch.details.rfnboType =
       rfnboTypeWithoutEmissionReduction === RfnboType.RFNBO_READY && isEmissionReductionAbove70Percent
         ? RfnboType.RFNBO_READY
         : RfnboType.NON_CERTIFIABLE;
@@ -218,11 +218,7 @@ export class ProcessStepService {
 
     return processSteps.map(
       (processStep) =>
-        new HydrogenComponentEntity(
-          processStep.id,
-          processStep.batch.amount,
-          processStep.batch.qualityDetails.rfnboType,
-        ),
+        new HydrogenComponentEntity(processStep.id, processStep.batch.amount, processStep.batch.details.rfnboType),
     );
   }
 

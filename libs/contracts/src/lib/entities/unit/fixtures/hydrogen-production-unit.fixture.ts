@@ -26,14 +26,14 @@ export const HydrogenProductionUnitEntityFixture = {
       owner: overrides.owner ?? { id: 'company-1' },
       operator: overrides.operator ?? CompanyEntityFixture.createHydrogenProducer(),
       unitType: overrides.unitType ?? UnitType.HYDROGEN_PRODUCTION,
-      ratedPower: overrides.specification?.ratedPower ?? 500,
-      type: overrides.specification?.type ?? HydrogenProductionType.ELECTROLYSIS,
-      technology: overrides.specification?.technology ?? HydrogenProductionTechnology.PEM,
-      biddingZone: overrides.specification?.biddingZone ?? BiddingZone.DE_LU,
-      waterConsumptionLitersPerHour: overrides.specification?.waterConsumptionLitersPerHour ?? 10,
+      ratedPower: overrides.details?.ratedPower ?? 500,
+      type: overrides.details?.type ?? HydrogenProductionType.ELECTROLYSIS,
+      technology: overrides.details?.technology ?? HydrogenProductionTechnology.PEM,
+      biddingZone: overrides.details?.biddingZone ?? BiddingZone.DE_LU,
+      waterConsumptionLitersPerHour: overrides.details?.waterConsumptionLitersPerHour ?? 10,
       active: true,
-      specification: overrides.specification ?? {
-        id: 'specification-1',
+      details: overrides.details ?? {
+        id: 'details-1',
       },
     }) as UnitEntity,
 } as const;

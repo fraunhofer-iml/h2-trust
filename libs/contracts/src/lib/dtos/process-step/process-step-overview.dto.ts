@@ -30,7 +30,7 @@ export class ProcessStepOverviewDto {
       filledAt: processStep.endedAt,
       owner: processStep.batch?.owner?.name,
       filledAmount: processStep.batch?.amount,
-      rfnboType: processStep.batch?.qualityDetails?.rfnboType,
+      rfnboType: processStep.batch?.details?.rfnboType,
     };
   }
 }

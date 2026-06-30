@@ -27,12 +27,12 @@ export const HydrogenStorageUnitEntityFixture = {
       owner: overrides.owner ?? { id: 'company-1' },
       operator: overrides.operator ?? CompanyEntityFixture.createHydrogenProducer(),
       unitType: overrides.unitType ?? UnitType.HYDROGEN_STORAGE,
-      capacity: overrides.specification?.capacity ?? 1000,
-      type: overrides.specification?.type ?? HydrogenStorageType.LIQUID_HYDROGEN,
-      filling: overrides.specification?.filling ?? [HydrogenComponentEntityFixture.createRfnboReady()],
+      capacity: overrides.details?.capacity ?? 1000,
+      type: overrides.details?.type ?? HydrogenStorageType.LIQUID_HYDROGEN,
+      filling: overrides.details?.filling ?? [HydrogenComponentEntityFixture.createRfnboReady()],
       active: true,
-      specification: overrides.specification ?? {
-        id: 'specification-1',
+      details: overrides.details ?? {
+        id: 'details-1',
       },
     }) as UnitEntity,
 } as const;

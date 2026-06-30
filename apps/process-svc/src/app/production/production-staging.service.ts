@@ -116,7 +116,7 @@ export class ProductionStagingService {
     const createProductionEntity: CreateProductionEntity[] = this.getStagedProductionDistribution(
       stagedHydrogenProduction,
       stagedPowerProductions,
-      hydrogenProductionUnit.specification.waterConsumptionLitersPerHour,
+      hydrogenProductionUnit.details.waterConsumptionLitersPerHour,
       payload.recordedBy,
     );
 

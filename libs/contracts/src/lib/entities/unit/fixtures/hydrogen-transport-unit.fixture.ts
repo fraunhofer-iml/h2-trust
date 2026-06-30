@@ -26,11 +26,11 @@ export const HydrogenTransportUnitEntityFixture = {
       owner: overrides.owner ?? { id: 'company-1' },
       operator: overrides.operator ?? CompanyEntityFixture.createHydrogenProducer(),
       unitType: overrides.unitType ?? UnitType.TRANSPORTATION,
-      capacity: overrides.specification?.capacity ?? 1000,
+      capacity: overrides.details?.capacity ?? 1000,
       active: true,
-      specification: overrides.specification ?? {
-        id: 'specification-1',
-        type: overrides.specification?.type ?? TransportType.PIPELINE,
+      details: overrides.details ?? {
+        id: 'details-1',
+        type: overrides.details?.type ?? TransportType.PIPELINE,
         fuelType: FuelType.DIESEL,
       },
     }) as UnitEntity,

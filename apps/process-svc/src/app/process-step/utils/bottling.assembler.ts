@@ -7,10 +7,10 @@
  */
 
 import {
+  BatchDetailsEntity,
   BatchEntity,
   CompanyEntity,
   ProcessStepEntity,
-  QualityDetailsEntity,
   UnitEntity,
   UserEntity,
 } from '@h2-trust/contracts/entities';
@@ -24,7 +24,7 @@ export function buildProcessStepEntity(
   executingUnit: UnitEntity,
 ): ProcessStepEntity {
   const bottlingTypes = determinePredecessorTypes(predecessors);
-  const qualityDetails: QualityDetailsEntity = new QualityDetailsEntity(
+  const qualityDetails: BatchDetailsEntity = new BatchDetailsEntity(
     null,
     bottlingTypes.combinedRfnboType,
     bottlingTypes.combinedPowerType,
@@ -66,14 +66,14 @@ function determinePredecessorTypes(predecessors: BatchEntity[]): {
   combinedRfnboType: RfnboType;
   combinedPowerType: PowerType;
 } {
-  const validPredecessors: BatchEntity[] = predecessors.filter((batch) => batch.qualityDetails !== undefined);
+  const validPredecessors: BatchEntity[] = predecessors.filter((batch) => batch.details !== undefined);
 
   const rfnboTypes: RfnboType[] = [];
   const powerTypes: PowerType[] = [];
 
   validPredecessors.forEach((batch) => {
-    rfnboTypes.push(batch.qualityDetails.rfnboType);
-    powerTypes.push(batch.qualityDetails.productionPowerType);
+    rfnboTypes.push(batch.details.rfnboType);
+    powerTypes.push(batch.details.productionPowerType);
   });
 
   if (rfnboTypes.length === 0 || powerTypes.length === 0) {

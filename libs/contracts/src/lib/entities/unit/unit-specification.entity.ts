@@ -21,13 +21,13 @@ import {
 import { assertDefined, assertValidEnum } from '@h2-trust/utils';
 import { HydrogenComponentEntity } from '../bottling';
 import { ProcessStepEntity } from '../process-step';
-import { UnitSpecificationType } from './unit-specification.type';
+import { UnitDetailsType } from './unit-specification.type';
 
-export class UnitSpecificationEntity {
+export class UnitDetailsEntity {
   //shared
   ratedPower?: number;
   biddingZone?: BiddingZone;
-  type?: UnitSpecificationType;
+  type?: UnitDetailsType;
 
   //power production
   decommissioningPlannedOn?: Date;
@@ -69,46 +69,46 @@ export class UnitSpecificationEntity {
   }
 
   static assertValidUnit(unit: UnitDeepDbType | UnitNestedDbType) {
-    assertDefined(unit.specification, 'unit specification');
+    assertDefined(unit.details, 'unit details');
     if (unit.type === UnitType.POWER_PRODUCTION) {
-      assertValidEnum(unit.specification.biddingZone, BiddingZone, 'BiddingZone');
+      assertValidEnum(unit.details.biddingZone, BiddingZone, 'BiddingZone');
     } else if (unit.type === UnitType.HYDROGEN_PRODUCTION) {
-      assertValidEnum(unit.specification.type, HydrogenProductionType, 'HydrogenProductionType');
-      assertValidEnum(unit.specification.technology, HydrogenProductionTechnology, 'HydrogenProductionTechnology');
-      assertValidEnum(unit.specification.biddingZone, BiddingZone, 'BiddingZone');
+      assertValidEnum(unit.details.type, HydrogenProductionType, 'HydrogenProductionType');
+      assertValidEnum(unit.details.technology, HydrogenProductionTechnology, 'HydrogenProductionTechnology');
+      assertValidEnum(unit.details.biddingZone, BiddingZone, 'BiddingZone');
     } else if (unit.type === UnitType.HYDROGEN_STORAGE) {
-      assertValidEnum(unit.specification?.type, HydrogenStorageType, 'HydrogenStorageType');
+      assertValidEnum(unit.details?.type, HydrogenStorageType, 'HydrogenStorageType');
     } else if (unit.type === UnitType.TRANSPORTATION) {
-      assertValidEnum(unit.specification?.type, TransportType, 'TransportType');
+      assertValidEnum(unit.details?.type, TransportType, 'TransportType');
     }
   }
 
-  static fromDatabase(unit: UnitDeepDbType | UnitNestedDbType): UnitSpecificationEntity {
+  static fromDatabase(unit: UnitDeepDbType | UnitNestedDbType): UnitDetailsEntity {
     this.assertValidUnit(unit);
 
-    return <UnitSpecificationEntity>{
-      decommissioningPlannedOn: unit.specification.decommissioningPlannedOn,
-      ratedPower: unit.specification.ratedPower?.toNumber() ?? 0,
-      biddingZone: unit.specification.biddingZone,
-      financialSupportReceived: unit.specification.financialSupportReceived,
-      type: unit.specification.type,
-      technology: unit.specification.technology,
-      waterConsumptionLitersPerHour: unit.specification?.waterConsumptionLitersPerHour?.toNumber(),
-      capacity: unit.specification?.capacity?.toNumber() ?? 0,
+    return <UnitDetailsEntity>{
+      decommissioningPlannedOn: unit.details.decommissioningPlannedOn,
+      ratedPower: unit.details.ratedPower?.toNumber() ?? 0,
+      biddingZone: unit.details.biddingZone,
+      financialSupportReceived: unit.details.financialSupportReceived,
+      type: unit.details.type,
+      technology: unit.details.technology,
+      waterConsumptionLitersPerHour: unit.details?.waterConsumptionLitersPerHour?.toNumber(),
+      capacity: unit.details?.capacity?.toNumber() ?? 0,
       filling: [],
-      fuelType: unit.specification.fuelType,
+      fuelType: unit.details.fuelType,
     };
   }
 
   static mapFilling(processSteps: ProcessStepEntity[]): HydrogenComponentEntity[] {
     return (
       processSteps.map((processStep) => {
-        assertValidEnum(processStep?.batch?.qualityDetails?.rfnboType, RfnboType, 'RfnboType');
+        assertValidEnum(processStep?.batch?.details?.rfnboType, RfnboType, 'RfnboType');
 
         return new HydrogenComponentEntity(
           processStep?.id ?? null,
           processStep?.batch?.amount ?? 0,
-          processStep.batch?.qualityDetails?.rfnboType,
+          processStep.batch?.details?.rfnboType,
         );
       }) ?? []
     );

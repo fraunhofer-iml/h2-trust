@@ -14,7 +14,7 @@ export const unitDeepQueryArgs = Prisma.validator<Prisma.UnitDefaultArgs>()({
     address: true,
     owner: companyNestedQueryArgs,
     operator: companyNestedQueryArgs,
-    specification: true,
+    details: true,
     documents: true,
     processSteps: true,
     stagedProductions: true,

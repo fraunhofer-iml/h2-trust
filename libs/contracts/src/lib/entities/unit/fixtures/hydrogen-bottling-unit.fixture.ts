@@ -26,10 +26,10 @@ export const HydrogenBottlingUnitEntityFixture = {
       owner: overrides.owner ?? { id: 'company-1' },
       operator: overrides.operator ?? CompanyEntityFixture.createHydrogenProducer(),
       unitType: overrides.unitType ?? UnitType.BOTTLING,
-      capacity: overrides.specification?.capacity ?? 1000,
+      capacity: overrides.details?.capacity ?? 1000,
       active: true,
-      specification: overrides.specification ?? {
-        id: 'specification-1',
+      details: overrides.details ?? {
+        id: 'details-1',
       },
     }) as UnitEntity,
 } as const;

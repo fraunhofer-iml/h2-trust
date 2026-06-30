@@ -99,7 +99,7 @@ export class UnitRepository {
               },
             },
           },
-          specification: {
+          details: {
             update: {
               data: {
                 type: payload.hydrogenProductionType,
@@ -147,7 +147,7 @@ export class UnitRepository {
               },
             },
           },
-          specification: {
+          details: {
             update: {
               data: {
                 biddingZone: payload.biddingZone,
@@ -196,7 +196,7 @@ export class UnitRepository {
               },
             },
           },
-          specification: {
+          details: {
             update: {
               data: {
                 type: payload.type,
@@ -242,7 +242,7 @@ export class UnitRepository {
               },
             },
           },
-          specification: {
+          details: {
             update: {
               data: {
                 fuelType: payload.fuelType,

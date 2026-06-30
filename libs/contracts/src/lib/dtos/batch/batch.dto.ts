@@ -30,7 +30,7 @@ export class BatchDto {
       amount: processStep.batch.amount,
       createdAt: processStep.startedAt,
       batchType: processStep.type,
-      rfnboType: processStep.batch?.qualityDetails?.rfnboType ?? RfnboType.NOT_SPECIFIED,
+      rfnboType: processStep.batch?.details?.rfnboType ?? RfnboType.NOT_SPECIFIED,
     };
   }
 }

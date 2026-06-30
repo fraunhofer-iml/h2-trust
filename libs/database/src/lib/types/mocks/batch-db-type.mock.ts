@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { BatchSeed, HydrogenProductionBatchSeed, QualityDetailsSeed } from '../../../seed';
+import { BatchDetailsSeed, BatchSeed, HydrogenProductionBatchSeed } from '../../../seed';
 import { BatchDeepDbType, BatchFlatDbType } from '../batch.db.type';
 import { CompanyNestedDbTypeMock } from './company-db-type.mock';
 
@@ -24,6 +24,6 @@ export const BatchDeepDbTypeMock = <BatchDeepDbType[]>[
 export const BatchFlatDbTypeMock = <BatchFlatDbType>{
   ...HydrogenProductionBatchSeed[0],
   qualityDetails: {
-    ...QualityDetailsSeed[0],
+    ...BatchDetailsSeed[0],
   },
 };

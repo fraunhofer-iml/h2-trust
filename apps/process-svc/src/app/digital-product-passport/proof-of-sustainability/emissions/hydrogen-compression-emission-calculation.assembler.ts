@@ -31,9 +31,9 @@ export function assembleHydrogenCompressionEmissionCalculation(
     );
   }
 
-  const usedGridPower = hydrogenCompression.batch?.qualityDetails?.usedGridPower ?? 0;
+  const usedGridPower = hydrogenCompression.batch?.details?.usedGridPower ?? 0;
   const gridPowerEmissions = usedGridPower * EmissionNumericConstants.GRID_POWER_PER_KWH;
-  const usedRenewablePower = hydrogenCompression.batch?.qualityDetails?.usedRenewablePower ?? 0;
+  const usedRenewablePower = hydrogenCompression.batch?.details?.usedRenewablePower ?? 0;
   const renewablePowerEmissions = 0;
   const result = gridPowerEmissions + renewablePowerEmissions;
 

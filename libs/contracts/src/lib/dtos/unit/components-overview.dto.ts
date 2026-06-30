@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { UnitSpecificationType } from '@h2-trust/contracts/entities';
+import { UnitDetailsType } from '@h2-trust/contracts/entities';
 import { RfnboType, UnitType } from '@h2-trust/domain';
 import { HydrogenComponentDto } from '../digital-product-passport';
 
@@ -18,7 +18,7 @@ export class ComponentsOverviewDto {
   filling: number;
   hydrogenComposition: HydrogenComponentDto[];
   active: boolean;
-  unitSpecType: UnitSpecificationType;
+  unitDetailsType: UnitDetailsType;
 
   constructor(
     id: string,
@@ -27,7 +27,7 @@ export class ComponentsOverviewDto {
     capacity: number,
     hydrogenComposition: HydrogenComponentDto[],
     active: boolean,
-    unitSpecType: UnitSpecificationType,
+    unitDetailsType: UnitDetailsType,
   ) {
     this.id = id;
     this.name = name;
@@ -36,7 +36,7 @@ export class ComponentsOverviewDto {
     this.filling = ComponentsOverviewDto.addUpFillingAmounts(hydrogenComposition);
     this.hydrogenComposition = ComponentsOverviewDto.mapHydrogenComposition(hydrogenComposition);
     this.active = active;
-    this.unitSpecType = unitSpecType;
+    this.unitDetailsType = unitDetailsType;
   }
 
   private static addUpFillingAmounts(hydrogenComponents: HydrogenComponentDto[]): number {

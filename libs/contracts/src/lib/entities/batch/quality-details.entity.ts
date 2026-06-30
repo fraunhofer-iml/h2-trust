@@ -6,11 +6,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { QualityDetailsDbType } from '@h2-trust/database';
+import { BatchDetailsDbType } from '@h2-trust/database';
 import { PowerType, RfnboType } from '@h2-trust/domain';
 import { assertValidEnum } from '@h2-trust/utils';
 
-export class QualityDetailsEntity {
+export class BatchDetailsEntity {
   id?: string;
   rfnboType: RfnboType;
   productionPowerType: PowerType;
@@ -46,21 +46,21 @@ export class QualityDetailsEntity {
     this.nitrogenConsumption = nitrogenConsumption;
   }
 
-  static fromDatabase(qualityDetails: QualityDetailsDbType): QualityDetailsEntity {
-    assertValidEnum(qualityDetails.rfnboType, RfnboType, 'RfnboType');
-    assertValidEnum(qualityDetails.productionPowerType, PowerType, 'PowerType');
+  static fromDatabase(batchDetails: BatchDetailsDbType): BatchDetailsEntity {
+    assertValidEnum(batchDetails.rfnboType, RfnboType, 'RfnboType');
+    assertValidEnum(batchDetails.productionPowerType, PowerType, 'PowerType');
 
-    return new QualityDetailsEntity(
-      qualityDetails.id,
-      qualityDetails.rfnboType,
-      qualityDetails.productionPowerType,
-      qualityDetails.usedRenewablePower?.toNumber() ?? 0,
-      qualityDetails.usedGridPower?.toNumber() ?? 0,
-      qualityDetails.distance?.toNumber() ?? 0,
-      qualityDetails.wasteWater?.toNumber() ?? 0,
-      qualityDetails.resinConsumption?.toNumber() ?? 0,
-      qualityDetails.compressedAir?.toNumber() ?? 0,
-      qualityDetails.nitrogenConsumption?.toNumber() ?? 0,
+    return new BatchDetailsEntity(
+      batchDetails.id,
+      batchDetails.rfnboType,
+      batchDetails.productionPowerType,
+      batchDetails.usedRenewablePower?.toNumber() ?? 0,
+      batchDetails.usedGridPower?.toNumber() ?? 0,
+      batchDetails.distance?.toNumber() ?? 0,
+      batchDetails.wasteWater?.toNumber() ?? 0,
+      batchDetails.resinConsumption?.toNumber() ?? 0,
+      batchDetails.compressedAir?.toNumber() ?? 0,
+      batchDetails.nitrogenConsumption?.toNumber() ?? 0,
     );
   }
 }

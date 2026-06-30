@@ -42,7 +42,7 @@ export function assembleHydrogenEndUseSection(
     batchType: BatchType.HYDROGEN,
     hydrogenComposition: hydrogenComponentsOfEndUse,
     unitId: endUse.executedBy.id,
-    rfnboType: endUse.batch?.qualityDetails?.rfnboType,
+    rfnboType: endUse.batch?.details?.rfnboType,
     processStep: endUse.type,
     accountingPeriodEnd: endUse.endedAt,
   };

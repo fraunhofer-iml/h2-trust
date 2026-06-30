@@ -21,7 +21,7 @@ export const BatchEntityFixture = {
       overrides.predecessors ?? [],
       overrides.successors ?? [],
       overrides.owner ?? CompanyEntityFixture.createPowerProducer(),
-      overrides.qualityDetails ?? QualityDetailsEntityFixture.create(),
+      overrides.details ?? QualityDetailsEntityFixture.create(),
       overrides.processStepId ?? 'process-step-1',
     ),
   createWaterBatch: (overrides: Partial<BatchEntity> = {}): BatchEntity =>
@@ -33,7 +33,7 @@ export const BatchEntityFixture = {
       overrides.predecessors ?? [],
       overrides.successors ?? [],
       overrides.owner ?? CompanyEntityFixture.createPowerProducer(),
-      overrides.qualityDetails ?? QualityDetailsEntityFixture.create(),
+      overrides.details ?? QualityDetailsEntityFixture.create(),
       overrides.processStepId ?? 'process-step-2',
     ),
   createHydrogenBatch: (overrides: Partial<BatchEntity> = {}): BatchEntity =>
@@ -45,7 +45,7 @@ export const BatchEntityFixture = {
       overrides.predecessors ?? [],
       overrides.successors ?? [],
       overrides.owner ?? CompanyEntityFixture.createHydrogenProducer(),
-      overrides.qualityDetails ?? QualityDetailsEntityFixture.create(),
+      overrides.details ?? QualityDetailsEntityFixture.create(),
       overrides.processStepId ?? 'process-step-3',
     ),
 } as const;

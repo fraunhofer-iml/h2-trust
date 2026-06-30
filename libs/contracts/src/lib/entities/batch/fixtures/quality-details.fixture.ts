@@ -6,12 +6,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { QualityDetailsEntity } from '@h2-trust/contracts/entities';
+import { BatchDetailsEntity } from '@h2-trust/contracts/entities';
 import { PowerType, RfnboType } from '@h2-trust/domain';
 
 export const QualityDetailsEntityFixture = {
-  create: (overrides: Partial<QualityDetailsEntity> = {}): QualityDetailsEntity =>
-    new QualityDetailsEntity(
+  create: (overrides: Partial<BatchDetailsEntity> = {}): BatchDetailsEntity =>
+    new BatchDetailsEntity(
       overrides.id ?? 'quality-details-1',
       overrides.rfnboType ?? RfnboType.RFNBO_READY,
       overrides.productionPowerType ?? PowerType.RENEWABLE,

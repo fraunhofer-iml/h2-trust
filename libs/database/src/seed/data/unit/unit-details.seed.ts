@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Prisma, UnitSpecification } from '@prisma/client';
+import { Prisma, UnitDetails } from '@prisma/client';
 import {
   BiddingZone,
   FuelType,
@@ -18,7 +18,7 @@ import {
 } from '@h2-trust/domain';
 import { auditTimestamp } from '../audit-timestamp.constant';
 
-export const UnitSpecificationSeed: readonly Partial<UnitSpecification>[] = Object.freeze([
+export const UnitDetailsSeed: readonly Partial<UnitDetails>[] = Object.freeze([
   {
     id: 'power-production-unit-0',
     createdAt: auditTimestamp,

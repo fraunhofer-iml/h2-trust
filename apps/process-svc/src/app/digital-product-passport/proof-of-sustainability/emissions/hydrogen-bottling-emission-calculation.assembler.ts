@@ -31,13 +31,13 @@ export function assembleHydrogenBottlingEmissionCalculation(
     );
   }
 
-  const usedGridPower = hydrogenBottling.batch?.qualityDetails?.usedGridPower ?? 0;
+  const usedGridPower = hydrogenBottling.batch?.details?.usedGridPower ?? 0;
   const gridPowerEmissions = usedGridPower * EmissionNumericConstants.GRID_POWER_PER_KWH;
-  const usedRenewablePower = hydrogenBottling.batch?.qualityDetails?.usedRenewablePower ?? 0;
+  const usedRenewablePower = hydrogenBottling.batch?.details?.usedRenewablePower ?? 0;
   const renewablePowerEmissions = 0;
-  const usedCompressedAir = hydrogenBottling.batch?.qualityDetails?.compressedAir ?? 0;
+  const usedCompressedAir = hydrogenBottling.batch?.details?.compressedAir ?? 0;
   const compressedAirEmissions = usedCompressedAir * EmissionNumericConstants.COMPRESSED_AIR_PER_M3;
-  const usedNitrogen = hydrogenBottling.batch?.qualityDetails?.nitrogenConsumption ?? 0;
+  const usedNitrogen = hydrogenBottling.batch?.details?.nitrogenConsumption ?? 0;
   const nitrogenEmissions = usedNitrogen * EmissionNumericConstants.NITROGEN_PER_KG;
 
   const result = gridPowerEmissions + renewablePowerEmissions + compressedAirEmissions + nitrogenEmissions;

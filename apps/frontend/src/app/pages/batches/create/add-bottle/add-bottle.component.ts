@@ -177,7 +177,8 @@ export class AddBottleComponent {
   }
 
   isTrailerTransport() {
-    const isTrailerTransport = this.bottleFormGroup.controls.executingUnit.value?.unitSpecType == TransportType.TRAILER;
+    const isTrailerTransport =
+      this.bottleFormGroup.controls.executingUnit.value?.unitDetailsType == TransportType.TRAILER;
     const isHydrogenTransportation =
       this.bottleFormGroup.controls.processType.value === ProcessType.HYDROGEN_TRANSPORTATION;
     return isHydrogenTransportation && isTrailerTransport;

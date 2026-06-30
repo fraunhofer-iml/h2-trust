@@ -66,11 +66,11 @@ export class PowerProductionUnitDto extends BaseUnitDto {
     return {
       ...BaseUnitDto.fromEntity(unit),
       unitType: UnitType.POWER_PRODUCTION,
-      biddingZone: unit.specification.biddingZone!,
-      ratedPower: unit.specification.ratedPower ?? 0,
-      decommissioningPlannedOn: unit.specification.decommissioningPlannedOn!,
-      type: unit.specification.type as PowerProductionType,
-      financialSupportReceived: unit.specification.financialSupportReceived ?? false,
+      biddingZone: unit.details.biddingZone!,
+      ratedPower: unit.details.ratedPower ?? 0,
+      decommissioningPlannedOn: unit.details.decommissioningPlannedOn!,
+      type: unit.details.type as PowerProductionType,
+      financialSupportReceived: unit.details.financialSupportReceived ?? false,
     };
   }
 }

@@ -134,8 +134,8 @@ model Unit {
   operator   Company @relation(name: "UnitOperator", fields: [operatorId], references: [id])
   operatorId String
 
-  specification   UnitSpecification @relation(fields: [specificationId], references: [id])
-  specificationId String            @unique
+  details   UnitDetails @relation(fields: [detailsId], references: [id])
+  detailsId String      @unique
 
   // Relations
   documents               Document[]
@@ -145,7 +145,7 @@ model Unit {
   decisions               PowerPurchaseAgreementDecision[]
 }
 
-model UnitSpecification {
+model UnitDetails {
   id        String   @id @default(uuid(7))
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -184,14 +184,14 @@ model Batch {
   owner   Company @relation(fields: [ownerId], references: [id])
   ownerId String
 
-  qualityDetails QualityDetails?
-  processStep    ProcessStep?
+  details BatchDetails?
+  processStep  ProcessStep?
 
   predecessors Batch[] @relation("BatchRelation")
   successors   Batch[] @relation("BatchRelation")
 }
 
-model QualityDetails {
+model BatchDetails {
   id        String   @id @default(uuid(7))
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

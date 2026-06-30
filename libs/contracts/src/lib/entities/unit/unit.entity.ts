@@ -10,7 +10,7 @@ import { UnitDeepDbType, UnitNestedDbType } from '@h2-trust/database';
 import { UnitType } from '@h2-trust/domain';
 import { AddressEntity } from '../address';
 import { CompanyEntity } from '../company';
-import { UnitSpecificationEntity } from './unit-specification.entity';
+import { UnitDetailsEntity } from './unit-specification.entity';
 
 export class UnitEntity {
   id: string;
@@ -26,7 +26,7 @@ export class UnitEntity {
   operator: CompanyEntity;
   unitType: UnitType;
   active: boolean;
-  specification: UnitSpecificationEntity;
+  details: UnitDetailsEntity;
 
   constructor(
     id: string,
@@ -42,7 +42,7 @@ export class UnitEntity {
     operator: CompanyEntity,
     unitType: UnitType,
     active: boolean,
-    specification: UnitSpecificationEntity,
+    details: UnitDetailsEntity,
   ) {
     this.id = id;
     this.name = name;
@@ -57,7 +57,7 @@ export class UnitEntity {
     this.operator = operator;
     this.unitType = unitType;
     this.active = active;
-    this.specification = specification;
+    this.details = details;
   }
 
   static fromDeepBaseUnit(unit: UnitDeepDbType): UnitEntity {
@@ -75,7 +75,7 @@ export class UnitEntity {
       operator: CompanyEntity.fromNestedDatabase(unit.operator),
       active: unit.active,
       unitType: unit.type,
-      specification: UnitSpecificationEntity.fromDatabase(unit),
+      details: UnitDetailsEntity.fromDatabase(unit),
     };
   }
 
@@ -94,7 +94,7 @@ export class UnitEntity {
       operator: CompanyEntity.fromFlatDatabase(unit.operator),
       active: unit.active,
       unitType: unit.type,
-      specification: UnitSpecificationEntity.fromDatabase(unit),
+      details: UnitDetailsEntity.fromDatabase(unit),
     };
   }
 

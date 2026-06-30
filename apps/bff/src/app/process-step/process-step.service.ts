@@ -24,8 +24,8 @@ import {
   HydrogenComponentEntity,
   PaginatedProcessStepEntity,
   ProcessStepEntity,
+  UnitDetailsType,
   UnitEntity,
-  UnitSpecificationType,
 } from '@h2-trust/contracts/entities';
 import {
   CreateProcessStepPayload,
@@ -124,7 +124,7 @@ export class ProcessStepService {
     const specificUnit: UnitDto = getSpecificUnit(unit);
 
     const capacity: number = 'capacity' in specificUnit ? specificUnit.capacity : 0;
-    const unitSpecType: UnitSpecificationType = 'type' in specificUnit ? specificUnit.type : undefined;
+    const unitSpecType: UnitDetailsType = 'type' in specificUnit ? specificUnit.type : undefined;
 
     const payload = new ReadProcessStepsByUnitPayload([unitId], true, userDetails.company.id);
 
@@ -156,7 +156,7 @@ export class ProcessStepService {
     const componentDtos = await Promise.all(
       specificUnits.map((specificUnit) => {
         const capacity: number = 'capacity' in specificUnit ? specificUnit.capacity : 0;
-        const unitSpecType: UnitSpecificationType = 'type' in specificUnit ? specificUnit.type : undefined;
+        const unitSpecType: UnitDetailsType = 'type' in specificUnit ? specificUnit.type : undefined;
 
         const payload = new ReadProcessStepsByUnitPayload([specificUnit.id], true, userDetails.company.id);
 

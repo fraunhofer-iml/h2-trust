@@ -8,4 +8,4 @@
 
 import { HydrogenProductionType, HydrogenStorageType, PowerProductionType, TransportType } from '@h2-trust/domain';
 
-export type UnitSpecificationType = PowerProductionType | HydrogenProductionType | HydrogenStorageType | TransportType;
+export type UnitDetailsType = PowerProductionType | HydrogenProductionType | HydrogenStorageType | TransportType;

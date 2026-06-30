@@ -33,7 +33,7 @@ function assembleHydrogenTransportationBatch(
     batchType: BatchType.HYDROGEN,
     hydrogenComposition: hydrogenComposition,
     unitId: hydrogenTransportation.executedBy.id,
-    rfnboType: hydrogenTransportation.batch?.qualityDetails?.rfnboType,
+    rfnboType: hydrogenTransportation.batch?.details?.rfnboType,
     processStep: hydrogenTransportation.type,
     accountingPeriodEnd: hydrogenTransportation.endedAt,
   };

@@ -64,7 +64,7 @@ function processBottlingForEachRfnboType(
   unitIds: string[],
 ): BottlingAllocation {
   const processStepsFromHydrogenStorageWithRequestedRFNBOType = processSteps.filter(
-    (ps) => ps.batch.qualityDetails.rfnboType === rfnboType,
+    (ps) => ps.batch.details.rfnboType === rfnboType,
   );
 
   const { selectedProcessSteps, remainingAmount } = selectProcessStepsForBottlingAndCalculateRemainingAmount(
@@ -150,14 +150,14 @@ function assembleHydrogenProductionProcessStepForRemainingAmount(
       active: active,
       amount: remainingAmount,
       qualityDetails: {
-        rfnboType: predecessorProcessStep.batch.qualityDetails.rfnboType,
-        usedRenewablePower: predecessorProcessStep.batch.qualityDetails.usedRenewablePower,
-        usedGridPower: predecessorProcessStep.batch.qualityDetails.usedGridPower,
-        distance: predecessorProcessStep.batch.qualityDetails.distance,
-        wasteWater: predecessorProcessStep.batch.qualityDetails.wasteWater,
-        resinConsumption: predecessorProcessStep.batch.qualityDetails.resinConsumption,
-        compressedAir: predecessorProcessStep.batch.qualityDetails.compressedAir,
-        nitrogenConsumption: predecessorProcessStep.batch.qualityDetails.nitrogenConsumption,
+        rfnboType: predecessorProcessStep.batch.details.rfnboType,
+        usedRenewablePower: predecessorProcessStep.batch.details.usedRenewablePower,
+        usedGridPower: predecessorProcessStep.batch.details.usedGridPower,
+        distance: predecessorProcessStep.batch.details.distance,
+        wasteWater: predecessorProcessStep.batch.details.wasteWater,
+        resinConsumption: predecessorProcessStep.batch.details.resinConsumption,
+        compressedAir: predecessorProcessStep.batch.details.compressedAir,
+        nitrogenConsumption: predecessorProcessStep.batch.details.nitrogenConsumption,
       },
       type: BatchType.HYDROGEN,
       predecessors: [

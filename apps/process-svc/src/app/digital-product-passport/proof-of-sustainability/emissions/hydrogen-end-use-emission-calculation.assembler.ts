@@ -31,13 +31,13 @@ export function assembleHydrogenEndUseEmissionCalculation(
     );
   }
 
-  const usedGridPower = hydrogenEndUse.batch?.qualityDetails?.usedGridPower ?? 0;
+  const usedGridPower = hydrogenEndUse.batch?.details?.usedGridPower ?? 0;
   const gridPowerEmissions = usedGridPower * EmissionNumericConstants.GRID_POWER_PER_KWH;
-  const usedRenewablePower = hydrogenEndUse.batch?.qualityDetails?.usedRenewablePower ?? 0;
+  const usedRenewablePower = hydrogenEndUse.batch?.details?.usedRenewablePower ?? 0;
   const renewablePowerEmissions = 0;
-  const usedCompressedAir = hydrogenEndUse.batch?.qualityDetails?.compressedAir ?? 0;
+  const usedCompressedAir = hydrogenEndUse.batch?.details?.compressedAir ?? 0;
   const compressedAirEmissions = usedCompressedAir * EmissionNumericConstants.COMPRESSED_AIR_PER_M3;
-  const usedNitrogen = hydrogenEndUse.batch?.qualityDetails?.nitrogenConsumption ?? 0;
+  const usedNitrogen = hydrogenEndUse.batch?.details?.nitrogenConsumption ?? 0;
   const nitrogenEmissions = usedNitrogen * EmissionNumericConstants.NITROGEN_PER_KG;
 
   const result = gridPowerEmissions + renewablePowerEmissions + compressedAirEmissions + nitrogenEmissions;

@@ -29,7 +29,7 @@ export const UnitSeed: readonly Unit[] = Object.freeze([
     ownerId: CompanySeed[2].id,
     operatorId: CompanySeed[2].id,
     active: false,
-    specificationId: 'power-production-unit-0',
+    detailsId: 'power-production-unit-0',
   },
   {
     id: 'power-production-unit-1',
@@ -47,7 +47,7 @@ export const UnitSeed: readonly Unit[] = Object.freeze([
     ownerId: CompanySeed[2].id,
     operatorId: CompanySeed[2].id,
     active: true,
-    specificationId: 'power-production-unit-1',
+    detailsId: 'power-production-unit-1',
   },
   {
     id: 'power-production-unit-2',
@@ -65,7 +65,7 @@ export const UnitSeed: readonly Unit[] = Object.freeze([
     ownerId: CompanySeed[0].id,
     operatorId: CompanySeed[0].id,
     active: true,
-    specificationId: 'power-production-unit-2',
+    detailsId: 'power-production-unit-2',
   },
   {
     id: 'power-production-unit-3',
@@ -83,7 +83,7 @@ export const UnitSeed: readonly Unit[] = Object.freeze([
     ownerId: CompanySeed[1].id,
     operatorId: CompanySeed[1].id,
     active: true,
-    specificationId: 'power-production-unit-3',
+    detailsId: 'power-production-unit-3',
   },
   {
     id: 'hydrogen-production-unit-0',
@@ -101,7 +101,7 @@ export const UnitSeed: readonly Unit[] = Object.freeze([
     ownerId: CompanySeed[2].id,
     operatorId: CompanySeed[2].id,
     active: true,
-    specificationId: 'hydrogen-production-unit-0',
+    detailsId: 'hydrogen-production-unit-0',
   },
   {
     id: 'hydrogen-storage-unit-0',
@@ -119,7 +119,7 @@ export const UnitSeed: readonly Unit[] = Object.freeze([
     ownerId: CompanySeed[2].id,
     operatorId: CompanySeed[2].id,
     active: true,
-    specificationId: 'hydrogen-storage-unit-0',
+    detailsId: 'hydrogen-storage-unit-0',
   },
   {
     id: 'hydrogen-bottling-unit-0',
@@ -137,7 +137,7 @@ export const UnitSeed: readonly Unit[] = Object.freeze([
     ownerId: CompanySeed[2].id,
     operatorId: CompanySeed[2].id,
     active: true,
-    specificationId: 'hydrogen-bottling-unit-0',
+    detailsId: 'hydrogen-bottling-unit-0',
   },
   {
     id: 'hydrogen-compression-unit-0',
@@ -155,7 +155,7 @@ export const UnitSeed: readonly Unit[] = Object.freeze([
     ownerId: CompanySeed[2].id,
     operatorId: CompanySeed[2].id,
     active: true,
-    specificationId: 'hydrogen-compression-unit-0',
+    detailsId: 'hydrogen-compression-unit-0',
   },
   {
     id: 'hydrogen-end-use-unit-0',
@@ -173,7 +173,7 @@ export const UnitSeed: readonly Unit[] = Object.freeze([
     ownerId: CompanySeed[2].id,
     operatorId: CompanySeed[2].id,
     active: true,
-    specificationId: 'hydrogen-end-use-unit-0',
+    detailsId: 'hydrogen-end-use-unit-0',
   },
   {
     id: 'hydrogen-transport-unit-0',
@@ -191,6 +191,6 @@ export const UnitSeed: readonly Unit[] = Object.freeze([
     ownerId: CompanySeed[2].id,
     operatorId: CompanySeed[2].id,
     active: true,
-    specificationId: 'hydrogen-transport-unit-0',
+    detailsId: 'hydrogen-transport-unit-0',
   },
 ]);

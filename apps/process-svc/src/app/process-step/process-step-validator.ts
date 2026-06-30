@@ -38,7 +38,7 @@ export function validateEmissionData(payload: CreateProcessStepPayload, executin
   }
 
   if (payload.processType === ProcessType.HYDROGEN_TRANSPORTATION) {
-    if (!payload.qualityDetails.distance && executingUnit.specification.type === TransportType.TRAILER) {
+    if (!payload.qualityDetails.distance && executingUnit.details.type === TransportType.TRAILER) {
       throw new ValidationException(`Distance is required for transport mode [${TransportType.TRAILER}].`);
     }
   }

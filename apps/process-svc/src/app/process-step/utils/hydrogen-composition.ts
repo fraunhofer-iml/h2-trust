@@ -33,7 +33,7 @@ export function assembleComposition(
         new HydrogenComponentEntity(
           '',
           hydrogenLeafProduction.batch.amount,
-          hydrogenLeafProduction.batch.qualityDetails?.rfnboType ?? RfnboType.NOT_SPECIFIED,
+          hydrogenLeafProduction.batch.details?.rfnboType ?? RfnboType.NOT_SPECIFIED,
         ),
     );
 

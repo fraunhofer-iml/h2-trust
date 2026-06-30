@@ -45,8 +45,8 @@ export class HydrogenStorageOverviewDto {
       id: unit.id,
       name: unit.name,
       unitType: UnitType.HYDROGEN_STORAGE,
-      capacity: unit.specification.capacity,
-      storageType: unit.specification.type,
+      capacity: unit.details.capacity,
+      storageType: unit.details.type,
       filling: HydrogenStorageOverviewDto.addUpFillingAmounts(unit),
       hydrogenComposition: HydrogenStorageOverviewDto.mapHydrogenComposition(unit),
       active: unit.active,
@@ -54,7 +54,7 @@ export class HydrogenStorageOverviewDto {
   }
 
   private static addUpFillingAmounts(unit: UnitEntity): number {
-    return unit.specification.filling?.reduce((sum, filling) => sum + filling.amount, 0) ?? 0;
+    return unit.details.filling?.reduce((sum, filling) => sum + filling.amount, 0) ?? 0;
   }
 
   /**
@@ -65,7 +65,7 @@ export class HydrogenStorageOverviewDto {
   private static mapHydrogenComposition(unit: UnitEntity): HydrogenComponentDto[] {
     const compositionMap = new Map<RfnboType, number>();
 
-    unit.specification?.filling?.forEach((filling: HydrogenComponentEntity) => {
+    unit.details?.filling?.forEach((filling: HydrogenComponentEntity) => {
       compositionMap.set(filling.rfnboType, (compositionMap.get(filling.rfnboType) ?? 0) + filling.amount);
     });
 

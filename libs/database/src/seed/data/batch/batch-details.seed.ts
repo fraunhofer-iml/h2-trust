@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Prisma, QualityDetails } from '@prisma/client';
+import { BatchDetails, Prisma } from '@prisma/client';
 import { PowerType, RfnboType } from '@h2-trust/domain';
 import { auditTimestamp } from '../audit-timestamp.constant';
 import { HydrogenBottlingBatchSeed } from './hydrogen-bottling-batch.seed';
@@ -14,7 +14,7 @@ import { HydrogenProductionBatchSeed } from './hydrogen-production-batch.seed';
 import { HydrogenTransportationBatchSeed } from './hydrogen-transportation-batch.seed';
 import { PowerProductionBatchSeed } from './power-production-batch.seed';
 
-export const QualityDetailsSeed: readonly Partial<QualityDetails>[] = Object.freeze([
+export const BatchDetailsSeed: readonly Partial<BatchDetails>[] = Object.freeze([
   {
     id: 'quality-details-produced-0',
     createdAt: auditTimestamp,

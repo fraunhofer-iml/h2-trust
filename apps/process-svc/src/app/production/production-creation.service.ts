@@ -109,7 +109,7 @@ export class ProductionCreationService {
           waterConsumption.executedBy,
         );
         const rfnboType: RfnboType = this.digitalProductPassportService.getRfnboType(productionChain);
-        hydrogen.batch.qualityDetails.rfnboType = rfnboType;
+        hydrogen.batch.details.rfnboType = rfnboType;
         return hydrogen;
       });
 

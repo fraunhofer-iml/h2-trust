@@ -42,7 +42,7 @@ export function assembleHydrogenCompressionSection(
     batchType: BatchType.HYDROGEN,
     hydrogenComposition: hydrogenComponentsOfCompression,
     unitId: compression.executedBy.id,
-    rfnboType: compression.batch?.qualityDetails?.rfnboType,
+    rfnboType: compression.batch?.details?.rfnboType,
     processStep: compression.type,
     accountingPeriodEnd: compression.endedAt,
   };

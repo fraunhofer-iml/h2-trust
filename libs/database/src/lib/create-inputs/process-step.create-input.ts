@@ -21,17 +21,17 @@ export function buildProcessStepCreateInput(processStep: ProcessStepEntity): Pri
       create: {
         active: processStep.batch.active ?? true,
         amount: processStep.batch.amount,
-        qualityDetails: {
+        details: {
           create: {
-            rfnboType: processStep.batch.qualityDetails?.rfnboType ?? RfnboType.NOT_SPECIFIED,
-            productionPowerType: processStep.batch.qualityDetails?.productionPowerType ?? PowerType.NOT_SPECIFIED,
-            usedRenewablePower: processStep.batch.qualityDetails?.usedRenewablePower,
-            usedGridPower: processStep.batch.qualityDetails?.usedGridPower,
-            distance: processStep.batch.qualityDetails?.distance,
-            wasteWater: processStep.batch.qualityDetails?.wasteWater,
-            resinConsumption: processStep.batch.qualityDetails?.resinConsumption,
-            compressedAir: processStep.batch.qualityDetails?.compressedAir,
-            nitrogenConsumption: processStep.batch.qualityDetails?.nitrogenConsumption,
+            rfnboType: processStep.batch.details?.rfnboType ?? RfnboType.NOT_SPECIFIED,
+            productionPowerType: processStep.batch.details?.productionPowerType ?? PowerType.NOT_SPECIFIED,
+            usedRenewablePower: processStep.batch.details?.usedRenewablePower,
+            usedGridPower: processStep.batch.details?.usedGridPower,
+            distance: processStep.batch.details?.distance,
+            wasteWater: processStep.batch.details?.wasteWater,
+            resinConsumption: processStep.batch.details?.resinConsumption,
+            compressedAir: processStep.batch.details?.compressedAir,
+            nitrogenConsumption: processStep.batch.details?.nitrogenConsumption,
           },
         },
         type: BatchType[processStep.batch.type as keyof typeof BatchType],

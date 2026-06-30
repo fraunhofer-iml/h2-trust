@@ -38,7 +38,7 @@ export function assemblePowerSupplyEmissionCalculation(
 
   const power = powerProduction.batch.amount;
   const powerInput = `Power Input: ${power} ${MeasurementUnit.KWH}`;
-  const powerType: PowerType = powerProduction.batch.qualityDetails.productionPowerType as PowerType;
+  const powerType: PowerType = powerProduction.batch.details.productionPowerType as PowerType;
 
   const emissionFactorLabel = getPowerProductionType(powerProductionType);
   const emissionFactor = EmissionNumericConstants.POWER_TYPE_EMISSION_FACTORS[powerType];
@@ -72,9 +72,9 @@ export function computePowerSupplyEmissionCalculations(
 
     const unit = powerProduction.executedBy;
 
-    assertValidEnum(unit.specification.type, PowerProductionType, 'PowerProductionType');
+    assertValidEnum(unit.details.type, PowerProductionType, 'PowerProductionType');
 
-    return assemblePowerSupplyEmissionCalculation(powerProduction, unit.specification.type);
+    return assemblePowerSupplyEmissionCalculation(powerProduction, unit.details.type);
   });
 }
 
