@@ -149,9 +149,9 @@ export class AddBottleComponent {
   }));
 
   constructor() {
-    /*this.bottleFormGroup.controls.transportMode.valueChanges.subscribe((transportMode) =>
-      this.onTransportModeChange(transportMode),
-    );*/
+    this.bottleFormGroup.controls.processType.valueChanges.subscribe((processType) =>
+      this.onProcessTypeChange(processType),
+    );
 
     this.bottleFormGroup.controls.amount?.valueChanges.subscribe((amount) => this.onAmountChange(amount));
   }
@@ -232,27 +232,57 @@ export class AddBottleComponent {
 
     return pickedDate;
   }
-  //TODO-LG: validate form group for new process steps
-  /*
-  private onTransportModeChange(transportMode: TransportType | null) {
-    if (!transportMode) return;
 
-    const fuelTypeControl = this.bottleFormGroup.controls.fuelType;
+  private onProcessTypeChange(processType: ProcessType | null) {
+    if (!processType) return;
+
+    const selectedProcessType: ProcessType = this.bottleFormGroup.controls.processType.value as ProcessType;
+
     const distanceControl = this.bottleFormGroup.controls.distance;
+    const renewablePowerControl = this.bottleFormGroup.controls.renewable_power;
+    const gridPowerControl = this.bottleFormGroup.controls.grid_power;
+    const compressedAirControl = this.bottleFormGroup.controls.compressed_air;
+    const nitrogenControl = this.bottleFormGroup.controls.nitrogen;
 
-    if (transportMode === TransportType.TRAILER) {
-      fuelTypeControl.addValidators(Validators.required);
+    if (this.isTrailerTransport()) {
       distanceControl.addValidators([Validators.required, Validators.min(1)]);
-    } else {
-      fuelTypeControl.removeValidators(Validators.required);
-      fuelTypeControl.setValue(null);
+      renewablePowerControl.removeValidators([Validators.required, Validators.min(1)]);
+      renewablePowerControl.setValue(null);
+      gridPowerControl.removeValidators([Validators.required, Validators.min(1)]);
+      gridPowerControl.setValue(null);
+      compressedAirControl.removeValidators([Validators.required, Validators.min(1)]);
+      compressedAirControl.setValue(null);
+      nitrogenControl.removeValidators([Validators.required, Validators.min(1)]);
+      nitrogenControl.setValue(null);
+    }
+    if (selectedProcessType === ProcessType.HYDROGEN_BOTTLING) {
+      renewablePowerControl.addValidators([Validators.required, Validators.min(1)]);
+      gridPowerControl.addValidators([Validators.required, Validators.min(1)]);
+      compressedAirControl.addValidators([Validators.required, Validators.min(1)]);
+      nitrogenControl.addValidators([Validators.required, Validators.min(1)]);
       distanceControl.removeValidators([Validators.required, Validators.min(1)]);
       distanceControl.setValue(null);
     }
+    if (
+      selectedProcessType === ProcessType.HYDROGEN_COMPRESSION ||
+      selectedProcessType === ProcessType.HYDROGEN_END_USE
+    ) {
+      renewablePowerControl.addValidators([Validators.required, Validators.min(1)]);
+      gridPowerControl.addValidators([Validators.required, Validators.min(1)]);
+      distanceControl.removeValidators([Validators.required, Validators.min(1)]);
+      distanceControl.setValue(null);
+      compressedAirControl.removeValidators([Validators.required, Validators.min(1)]);
+      compressedAirControl.setValue(null);
+      nitrogenControl.removeValidators([Validators.required, Validators.min(1)]);
+      nitrogenControl.setValue(null);
+    }
 
-    fuelTypeControl.updateValueAndValidity();
     distanceControl.updateValueAndValidity();
-  }*/
+    renewablePowerControl.updateValueAndValidity();
+    gridPowerControl.updateValueAndValidity();
+    compressedAirControl.updateValueAndValidity();
+    nitrogenControl.updateValueAndValidity();
+  }
 
   private onAmountChange(amount: number | null | undefined) {
     if (!amount) return;
