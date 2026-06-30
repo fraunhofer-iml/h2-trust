@@ -27,6 +27,7 @@ import {
   MeasurementUnit,
   PowerType,
   ProcessType,
+  ProcessTypeToUnitType,
   RfnboType,
   TransportType,
   UnitType,
@@ -164,6 +165,15 @@ export class AddBottleComponent {
       return [];
     }
     return this.hydrogenStorageQuery.data()!.filter((component) => component.filling > 0);
+  }
+
+  getUnitsForSelectedProcessType() {
+    if (!this.hydrogenStorageQuery || !this.hydrogenStorageQuery.data()) {
+      return [];
+    }
+    const selectedProcessType: ProcessType = this.bottleFormGroup.controls.processType.value as ProcessType;
+    const selectedUnitType: UnitType = ProcessTypeToUnitType[selectedProcessType];
+    return this.hydrogenStorageQuery.data()!.filter((component) => component.unitType === selectedUnitType);
   }
 
   isTrailerTransport() {

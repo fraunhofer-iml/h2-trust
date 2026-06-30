@@ -4,6 +4,50 @@
     <div class="flex w-2/3 flex-col gap-4">
       <div class="grid grid-cols-6 gap-x-2 gap-y-4 rounded-lg bg-white p-4">
         <span class="col-span-6 text-neutral-700"> General Information </span>
+        <mat-form-field appearance="outline" class="col-span-3">
+          <mat-label>Process Type</mat-label>
+          <mat-select formControlName="processType" placeholder="Select a Process Type">
+            @for (processType of availableProcessTypes; track processType) {
+              <mat-option [value]="processType">
+                {{ processType | enum: 'processType' }}
+              </mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="col-span-3">
+          <mat-label>Executing Unit</mat-label>
+          <mat-select formControlName="executingUnit" placeholder="Select a Unit" #executingUnit>
+            @for (unit of getUnitsForSelectedProcessType(); track unit) {
+              <mat-option (click)="changeValue()" [value]="unit" [disabled]="!unit.active">{{ unit.name }} </mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="col-span-3">
+          <mat-label>Predecessor Unit</mat-label>
+          <mat-select formControlName="predecessorUnit" placeholder="Select a Unit" #predecessorUnit>
+            @for (unit of getNonEmptyUnits(); track unit) {
+              <mat-option
+                (click)="changeValue()"
+                [value]="unit"
+                [disabled]="!unit.active || (bottleFormGroup.value.amount ?? 0) > unit.filling"
+                >{{ unit.name }} ({{ unit.filling | unit: MeasurementUnit.KG }})
+              </mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="col-span-3">
+          <mat-label>Recipients</mat-label>
+          <mat-select formControlName="recipient" placeholder="Select a Recipient">
+            @if (recipientsQuery.isSuccess() && recipientsQuery.data().length) {
+              @for (recipient of recipientsQuery.data(); track recipient) {
+                <mat-option [value]="recipient">{{ recipient.name }}</mat-option>
+              }
+            } @else {
+              <mat-option [value]="null">No data found.</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
         <mat-form-field appearance="outline" class="col-span-2">
           <mat-label>Date</mat-label>
           <input
@@ -44,53 +88,6 @@
             placeholder="e.g. 71"
             required
           />
-        </mat-form-field>
-
-        <mat-form-field appearance="outline" class="col-span-3">
-          <mat-label>Recipients</mat-label>
-          <mat-select formControlName="recipient" placeholder="Select a Recipient">
-            @if (recipientsQuery.isSuccess() && recipientsQuery.data().length) {
-              @for (recipient of recipientsQuery.data(); track recipient) {
-                <mat-option [value]="recipient">{{ recipient.name }}</mat-option>
-              }
-            } @else {
-              <mat-option [value]="null">No data found.</mat-option>
-            }
-          </mat-select>
-        </mat-form-field>
-
-        <mat-form-field appearance="outline" class="col-span-3">
-          <mat-label>Predecessor Unit</mat-label>
-          <mat-select formControlName="predecessorUnit" placeholder="Select a Unit" #predecessorUnit>
-            @for (unit of getNonEmptyUnits(); track unit) {
-              <mat-option
-                (click)="changeValue()"
-                [value]="unit"
-                [disabled]="!unit.active || (bottleFormGroup.value.amount ?? 0) > unit.filling"
-                >{{ unit.name }} ({{ unit.filling | unit: MeasurementUnit.KG }})
-              </mat-option>
-            }
-          </mat-select>
-        </mat-form-field>
-
-        <mat-form-field appearance="outline" class="col-span-3">
-          <mat-label>Process Type</mat-label>
-          <mat-select formControlName="processType" placeholder="Select a Process Type">
-            @for (processType of availableProcessTypes; track processType) {
-              <mat-option [value]="processType">
-                {{ processType | enum: 'processType' }}
-              </mat-option>
-            }
-          </mat-select>
-        </mat-form-field>
-
-        <mat-form-field appearance="outline" class="col-span-3">
-          <mat-label>Executing Unit</mat-label>
-          <mat-select formControlName="executingUnit" placeholder="Select a Unit" #executingUnit>
-            @for (unit of hydrogenStorageQuery.data(); track unit) {
-              <mat-option (click)="changeValue()" [value]="unit" [disabled]="!unit.active">{{ unit.name }} </mat-option>
-            }
-          </mat-select>
         </mat-form-field>
       </div>
       <div class="flex flex-col gap-2 rounded-lg bg-white p-4">
