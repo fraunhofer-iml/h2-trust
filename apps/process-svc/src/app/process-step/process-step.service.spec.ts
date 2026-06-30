@@ -9,7 +9,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { of } from 'rxjs';
 import { ConfigurationService } from '@h2-trust/configuration';
-import { DocumentEntity } from '@h2-trust/contracts/entities';
+import { DocumentEntity, HydrogenComponentEntity } from '@h2-trust/contracts/entities';
 import {
   BatchEntityFixture,
   HydrogenBottlingUnitEntityFixture,
@@ -551,9 +551,24 @@ describe('ProcessStepService', () => {
     });
   });
 
-  it('readAllHydrogenComponentsFromUnits', () => {
-    //TODO-LG: add tests for this
-    expect(service).toBeDefined();
+  it('readAllHydrogenComponentsFromUnits', async () => {
+    // arrange
+    const givenProcessSteps = [ProcessStepEntityFixture.createHydrogenProduction()];
+    const givenUnitIds = givenProcessSteps.map((processStep) => processStep.id);
+    const givenHydrogenComponent = new HydrogenComponentEntity(
+      givenProcessSteps[0].id,
+      givenProcessSteps[0].batch.amount,
+      givenProcessSteps[0].batch.details.rfnboType,
+    );
+
+    processStepRepositoryMock.findAllProcessStepsFromUnits.mockResolvedValue(givenProcessSteps);
+
+    // act
+    const actualResult: HydrogenComponentEntity[] = await service.readAllHydrogenComponentsFromUnits(givenUnitIds);
+
+    // assert
+    expect(processStepRepositoryMock.findAllProcessStepsFromUnits).toHaveBeenCalledWith(givenUnitIds);
+    expect(actualResult).toEqual([givenHydrogenComponent]);
   });
 
   describe('readProcessStepsByPredecessorTypesAndUnitAndDate', () => {
