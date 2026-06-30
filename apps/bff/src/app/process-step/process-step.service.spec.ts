@@ -135,6 +135,7 @@ describe('ProcessStepService', () => {
         0,
         expectedHydrogenComponents,
         givenUnit.active,
+        undefined,
       ),
     ];
     processSvcMock.send.mockClear();

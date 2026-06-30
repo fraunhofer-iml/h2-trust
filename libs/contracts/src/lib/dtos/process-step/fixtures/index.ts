@@ -8,6 +8,6 @@
 
 export * from './bottling-overview.fixture';
 export * from './create-process-step.fixture';
-export * from './create-quality-details.fixture';
+export * from './create-process-step-details.fixture';
 export * from './production-overview.fixture';
 export * from './production-statistics.fixture';
