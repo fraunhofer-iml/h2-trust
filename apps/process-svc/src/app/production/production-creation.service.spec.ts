@@ -44,7 +44,7 @@ describe('ProductionCreationService', () => {
   };
 
   const processStepServiceMock = {
-    createManyProcessSteps: jest.fn(),
+    saveManyProcessSteps: jest.fn(),
   };
 
   const digitalProductPassportServiceMock = {
@@ -236,7 +236,7 @@ describe('ProductionCreationService', () => {
       assembleHydrogenProductionsMock
         .mockReturnValueOnce([givenHydrogenProcessStepsToPersist[0]])
         .mockReturnValueOnce([givenHydrogenProcessStepsToPersist[1]]);
-      processStepServiceMock.createManyProcessSteps
+      processStepServiceMock.saveManyProcessSteps
         .mockResolvedValueOnce([expectedPersistedPowerProcessSteps[0], expectedPersistedWaterProcessSteps[0]])
         .mockResolvedValueOnce([expectedPersistedHydrogenProcessSteps[0]])
         .mockResolvedValueOnce([expectedPersistedPowerProcessSteps[1], expectedPersistedWaterProcessSteps[1]])
@@ -252,7 +252,7 @@ describe('ProductionCreationService', () => {
       );
 
       // assert
-      expect(processStepServiceMock.createManyProcessSteps).toHaveBeenCalledTimes(4);
+      expect(processStepServiceMock.saveManyProcessSteps).toHaveBeenCalledTimes(4);
       expect(digitalProductPassportServiceMock.getRfnboType).toHaveBeenCalledTimes(2);
       expect(givenHydrogenProcessStepsToPersist[0].batch.details.rfnboType).toBe(RfnboType.RFNBO_READY);
       expect(givenHydrogenProcessStepsToPersist[1].batch.details.rfnboType).toBe(RfnboType.NON_CERTIFIABLE);
@@ -324,7 +324,7 @@ describe('ProductionCreationService', () => {
       assemblePowerProductionsMock.mockReturnValue([givenPowerToPersist]);
       assembleWaterConsumptionsMock.mockReturnValue([givenWaterToPersist]);
       assembleHydrogenProductionsMock.mockReturnValue([givenHydrogenToPersist]);
-      processStepServiceMock.createManyProcessSteps
+      processStepServiceMock.saveManyProcessSteps
         .mockResolvedValueOnce([givenPersistedPower, givenPersistedWater])
         .mockResolvedValueOnce([givenPersistedHydrogen]);
       digitalProductPassportServiceMock.getRfnboType.mockReturnValue(RfnboType.RFNBO_READY);
@@ -336,14 +336,14 @@ describe('ProductionCreationService', () => {
       );
 
       // assert
-      expect(processStepServiceMock.createManyProcessSteps).toHaveBeenCalledTimes(2);
-      expect(processStepServiceMock.createManyProcessSteps.mock.calls[0][0].processSteps).toEqual([
+      expect(processStepServiceMock.saveManyProcessSteps).toHaveBeenCalledTimes(2);
+      expect(processStepServiceMock.saveManyProcessSteps.mock.calls[0][0].processSteps).toEqual([
         givenPowerToPersist,
         givenWaterToPersist,
       ]);
       expect(digitalProductPassportServiceMock.getRfnboType).toHaveBeenCalledTimes(1);
       expect(givenHydrogenToPersist.batch.details.rfnboType).toBe(RfnboType.RFNBO_READY);
-      expect(processStepServiceMock.createManyProcessSteps.mock.calls[1][0].processSteps).toEqual([
+      expect(processStepServiceMock.saveManyProcessSteps.mock.calls[1][0].processSteps).toEqual([
         givenHydrogenToPersist,
       ]);
       expect(actualResult).toEqual([givenPersistedPower, givenPersistedWater, givenPersistedHydrogen]);
@@ -375,7 +375,7 @@ describe('ProductionCreationService', () => {
       await expect(actualResult).rejects.toThrow(
         'Expected 1:1 relation between given productions and created process steps, but got 0 power and 1 water for 1 productions.',
       );
-      expect(processStepServiceMock.createManyProcessSteps).not.toHaveBeenCalled();
+      expect(processStepServiceMock.saveManyProcessSteps).not.toHaveBeenCalled();
     });
 
     it('should throw when persisted power and water counts differ', async () => {
@@ -397,9 +397,7 @@ describe('ProductionCreationService', () => {
 
       assemblePowerProductionsMock.mockReturnValue([ProcessStepEntityFixture.createPowerProduction()]);
       assembleWaterConsumptionsMock.mockReturnValue([ProcessStepEntityFixture.createWaterConsumption()]);
-      processStepServiceMock.createManyProcessSteps.mockResolvedValue([
-        ProcessStepEntityFixture.createPowerProduction(),
-      ]);
+      processStepServiceMock.saveManyProcessSteps.mockResolvedValue([ProcessStepEntityFixture.createPowerProduction()]);
 
       // act & assert
       const actualResult = service.createAndPersistProductions([givenCreateProduction], new Map());
@@ -446,7 +444,7 @@ describe('ProductionCreationService', () => {
       assemblePowerProductionsMock.mockReturnValue([ProcessStepEntityFixture.createPowerProduction()]);
       assembleWaterConsumptionsMock.mockReturnValue([ProcessStepEntityFixture.createWaterConsumption()]);
       assembleHydrogenProductionsMock.mockReturnValue([givenHydrogenWithUnknownPredecessor]);
-      processStepServiceMock.createManyProcessSteps.mockResolvedValueOnce([givenPersistedPower, givenPersistedWater]);
+      processStepServiceMock.saveManyProcessSteps.mockResolvedValueOnce([givenPersistedPower, givenPersistedWater]);
 
       // act & assert
       const actualResult = service.createAndPersistProductions([givenCreateProduction], new Map());
