@@ -11,7 +11,7 @@ import { RfnboType } from '@h2-trust/domain';
 
 export const HydrogenComponentDtoFixture = {
   create: (overrides: Partial<HydrogenComponentDto> = {}): HydrogenComponentDto => ({
-    processId: overrides.processId ?? 'process-1',
+    processId: overrides.processId ?? null,
     amount: overrides.amount ?? 10,
     rfnboType: overrides.rfnboType ?? RfnboType.RFNBO_READY,
   }),

@@ -38,8 +38,8 @@ export class PowerProductionOverviewDto {
       id: unit.id,
       name: unit.name,
       unitType: UnitType.POWER_PRODUCTION,
-      ratedPower: unit.specification.ratedPower ?? 0,
-      typeName: unit.specification.type as PowerProductionType,
+      ratedPower: unit.details.ratedPower ?? 0,
+      typeName: unit.details.type as PowerProductionType,
       active: unit.active,
     };
   }

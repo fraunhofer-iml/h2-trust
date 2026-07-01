@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { UnitOverviewDto } from '@h2-trust/contracts/dtos';
+import { ComponentsOverviewDto, UnitOverviewDto } from '@h2-trust/contracts/dtos';
 import { UnitType } from '@h2-trust/domain';
 import { UnitsService } from '../services/units/units.service';
 import {
@@ -37,6 +37,12 @@ export const powerProductionUnitsQueryOptions = (unitsService: UnitsService) =>
 
 export const hydrogenStorageUnitsQueryOptions = (unitsService: UnitsService) =>
   createUnitsQueryOptions(unitsService, UnitType.HYDROGEN_STORAGE, isHydrogenStorageUnitOverview);
+
+export const componentOverviewsQueryOptions = (unitsService: UnitsService) => ({
+  queryKey: [QueryKeyPrefix.COMPONENT_OVERVIEW],
+  queryFn: () => unitsService.getComponentOverviewsOfOwnUnits(),
+  select: (units: UnitOverviewDto[]) => units as ComponentsOverviewDto[],
+});
 
 export const unitsQueryOptions = (unitsService: UnitsService, type?: UnitType) => ({
   queryKey: [QueryKeyPrefix.UNITS, type],

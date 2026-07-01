@@ -8,6 +8,7 @@
 
 export * from './base-unit.dto';
 export * from './base-unit-overview.dto';
+export * from './components-overview.dto';
 export * from './create';
 export * from './filling.dto';
 export * from './hydrogen-bottling-overview.dto';

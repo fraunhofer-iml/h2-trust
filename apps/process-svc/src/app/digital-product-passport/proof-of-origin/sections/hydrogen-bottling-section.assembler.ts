@@ -8,48 +8,58 @@
 
 import {
   HydrogenComponentEntity,
+  ProcessStepEntity,
   ProofOfOriginEmissionEntity,
   ProofOfOriginHydrogenBatchEntity,
   ProofOfOriginSectionEntity,
   ProofOfSustainabilityEmissionCalculationEntity,
   ProvenanceEntity,
 } from '@h2-trust/contracts/entities';
-import { BatchType, ProofOfOrigin } from '@h2-trust/domain';
-import { assembleComposition } from '../../../bottling/utils/hydrogen-composition';
+import { BatchType, ProcessType, ProofOfOrigin } from '@h2-trust/domain';
+import { assembleComposition } from '../../../process-step/utils/hydrogen-composition';
 import { assembleHydrogenBottlingEmissionCalculation } from '../../proof-of-sustainability/emissions/hydrogen-bottling-emission-calculation.assembler';
 import { ProofOfOriginSectionAssembler } from '../proof-of-origin-assembler.interface';
 
-export function assembleHydrogenBottlingSection(provenance: ProvenanceEntity): ProofOfOriginSectionEntity[] {
-  if (!provenance.hydrogenBottling) {
-    return [];
-  }
-
-  const hydrogenComponentsOfBottling: HydrogenComponentEntity[] = assembleComposition(provenance);
+export function assembleHydrogenBottlingSection(
+  bottling: ProcessStepEntity,
+  provenance: ProvenanceEntity,
+): ProofOfOriginSectionEntity {
+  const hydrogenComponentsOfBottling: HydrogenComponentEntity[] = assembleComposition(bottling, provenance);
   const emissionCalculation: ProofOfSustainabilityEmissionCalculationEntity =
-    assembleHydrogenBottlingEmissionCalculation(provenance.hydrogenBottling);
+    assembleHydrogenBottlingEmissionCalculation(bottling);
 
   const emission: ProofOfOriginEmissionEntity = ProofOfOriginEmissionEntity.fromEmissionCalculation(
-    provenance.hydrogenBottling.batch.amount,
+    bottling.batch.amount,
     emissionCalculation.result,
     emissionCalculation.basisOfCalculation,
   );
 
   const batch: ProofOfOriginHydrogenBatchEntity = {
-    id: provenance.hydrogenBottling.batch.id,
+    id: bottling.batch.id,
     emission,
-    createdAt: provenance.hydrogenBottling.startedAt,
-    amount: provenance.hydrogenBottling.batch.amount,
+    createdAt: bottling.startedAt,
+    amount: bottling.batch.amount,
     batchType: BatchType.HYDROGEN,
     hydrogenComposition: hydrogenComponentsOfBottling,
-    unitId: provenance.hydrogenBottling.executedBy.id,
-    rfnboType: provenance.hydrogenBottling.batch?.qualityDetails?.rfnboType,
-    processStep: provenance.hydrogenBottling.type,
-    accountingPeriodEnd: provenance.hydrogenBottling.endedAt,
+    unitId: bottling.executedBy.id,
+    rfnboType: bottling.batch?.details?.rfnboType,
+    processStep: bottling.type,
+    accountingPeriodEnd: bottling.endedAt,
   };
 
-  return [new ProofOfOriginSectionEntity(ProofOfOrigin.HYDROGEN_BOTTLING_SECTION, [batch], [])];
+  return new ProofOfOriginSectionEntity(ProofOfOrigin.HYDROGEN_BOTTLING_SECTION, [batch], []);
+}
+
+export function assembleHydrogenBottlingSections(provenance: ProvenanceEntity): ProofOfOriginSectionEntity[] {
+  if (!provenance) {
+    return [];
+  }
+
+  return provenance
+    .getProcessStepsFromChain(ProcessType.HYDROGEN_BOTTLING)
+    .map((bottling) => assembleHydrogenBottlingSection(bottling, provenance));
 }
 
 export const hydrogenBottlingSectionAssembler: ProofOfOriginSectionAssembler = {
-  assembleSection: assembleHydrogenBottlingSection,
+  assembleSection: assembleHydrogenBottlingSections,
 };

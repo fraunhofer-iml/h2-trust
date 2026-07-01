@@ -18,4 +18,5 @@ export enum QueryKeyPrefix {
   UPLOADED_FILES = 'uploaded-files',
   BOTTLING = 'bottling',
   BATCHES = 'batches',
+  COMPONENT_OVERVIEW = 'component-overview',
 }

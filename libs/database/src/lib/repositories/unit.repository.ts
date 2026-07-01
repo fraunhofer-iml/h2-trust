@@ -26,7 +26,7 @@ import {
   buildHydrogenStorageUnitCreateInput,
   buildHydrogenTransportUnitCreateInput,
   buildPowerProductionUnitCreateInput,
-  buildUnitCreateInputWitEmptySpecification,
+  buildUnitCreateInputWitEmptyDetails,
 } from '../create-inputs';
 import { PrismaService } from '../prisma.service';
 import { unitDeepQueryArgs } from '../query-args';
@@ -55,9 +55,9 @@ export class UnitRepository {
     return units.map(UnitEntity.fromDeepBaseUnit);
   }
 
-  async findUnitsByOwnerIdAndType(ownerId: string, unitType: UnitType): Promise<UnitEntity[]> {
+  async findUnitsByOwnerIdAndType(ownerId: string, unitType?: UnitType): Promise<UnitEntity[]> {
     const units = await this.prismaService.unit
-      .findMany({ where: { ownerId, type: unitType }, ...unitDeepQueryArgs })
+      .findMany({ where: { ownerId, type: unitType ?? {} }, ...unitDeepQueryArgs })
       .catch(wrapPrismaError);
     return units.map(UnitEntity.fromDeepBaseUnit);
   }
@@ -99,14 +99,13 @@ export class UnitRepository {
               },
             },
           },
-          specification: {
+          details: {
             update: {
               data: {
                 type: payload.hydrogenProductionType,
                 technology: payload.technology,
                 biddingZone: payload.biddingZone,
                 ratedPower: new Prisma.Decimal(payload.ratedPower),
-                waterConsumptionLitersPerHour: new Prisma.Decimal(payload.waterConsumptionLitersPerHour),
               },
             },
           },
@@ -148,7 +147,7 @@ export class UnitRepository {
               },
             },
           },
-          specification: {
+          details: {
             update: {
               data: {
                 biddingZone: payload.biddingZone,
@@ -197,7 +196,7 @@ export class UnitRepository {
               },
             },
           },
-          specification: {
+          details: {
             update: {
               data: {
                 type: payload.type,
@@ -243,7 +242,7 @@ export class UnitRepository {
               },
             },
           },
-          specification: {
+          details: {
             update: {
               data: {
                 fuelType: payload.fuelType,
@@ -290,7 +289,7 @@ export class UnitRepository {
             },
           },
         },
-        create: buildUnitCreateInputWitEmptySpecification(payload, UnitType.COMPRESSION),
+        create: buildUnitCreateInputWitEmptyDetails(payload, UnitType.COMPRESSION),
 
         include: unitDeepQueryArgs.include,
       })
@@ -329,7 +328,7 @@ export class UnitRepository {
             },
           },
         },
-        create: buildUnitCreateInputWitEmptySpecification(payload, UnitType.END_USE),
+        create: buildUnitCreateInputWitEmptyDetails(payload, UnitType.END_USE),
 
         include: unitDeepQueryArgs.include,
       })
@@ -368,7 +367,7 @@ export class UnitRepository {
             },
           },
         },
-        create: buildUnitCreateInputWitEmptySpecification(payload, UnitType.BOTTLING),
+        create: buildUnitCreateInputWitEmptyDetails(payload, UnitType.BOTTLING),
 
         include: unitDeepQueryArgs.include,
       })

@@ -66,11 +66,11 @@ export class HydrogenProductionUnitDto extends BaseUnitDto {
     return {
       ...BaseUnitDto.fromEntity(unit),
       unitType: UnitType.HYDROGEN_PRODUCTION,
-      method: unit.specification.type as HydrogenProductionType,
-      technology: unit.specification.technology!,
-      biddingZone: unit.specification.biddingZone!,
-      ratedPower: unit.specification.ratedPower ?? 0,
-      waterConsumptionLitersPerHour: unit.specification.waterConsumptionLitersPerHour ?? 0,
+      method: unit.details.type as HydrogenProductionType,
+      technology: unit.details.technology!,
+      biddingZone: unit.details.biddingZone!,
+      ratedPower: unit.details.ratedPower ?? 0,
+      waterConsumptionLitersPerHour: unit.details.waterConsumptionLitersPerHour ?? 0,
     };
   }
 }

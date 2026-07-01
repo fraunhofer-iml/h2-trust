@@ -41,7 +41,6 @@ export class ProductionService {
 
   private async getProductionUnits(createProductions: CreateProductionEntity[]): Promise<Map<string, UnitEntity>> {
     const productionUnitIds: string[] = createProductions.flatMap((production) => [
-      production.hydrogenStorageUnitId,
       production.powerProductionUnitId,
       production.hydrogenProductionUnitId,
     ]);
@@ -69,15 +68,14 @@ export class ProductionService {
       payload.hydrogenProductionUnitId,
       payload.hydrogenAmountKg,
       payload.userId,
-      payload.hydrogenStorageUnitId,
       powerProductionUnit.owner.id,
       hydrogenProductionUnit.owner.id,
-      hydrogenProductionUnit.specification.waterConsumptionLitersPerHour,
+      hydrogenProductionUnit.details.waterConsumptionLitersPerHour,
     );
 
     const createProductionEntities: CreateProductionEntity[] = splitGridPowerProduction(
       createProductionEntity,
-      powerProductionUnit.specification.type as PowerProductionType,
+      powerProductionUnit.details.type as PowerProductionType,
     );
 
     const productionUnitForId: Map<string, UnitEntity> = await this.getProductionUnits(createProductionEntities);
@@ -123,11 +121,11 @@ export class ProductionService {
       rfnboReady: number;
     } = processSteps.reduce(
       (statistics, processStep) => {
-        const qualityDetails = processStep.batch.qualityDetails;
-        if (!processStep.batch.active || !qualityDetails) {
+        const batchDetails = processStep.batch.details;
+        if (!processStep.batch.active || !batchDetails) {
           return statistics;
         }
-        switch (qualityDetails.rfnboType) {
+        switch (batchDetails.rfnboType) {
           case RfnboType.RFNBO_READY:
             statistics.rfnboReady += processStep.batch.amount;
             break;
@@ -150,11 +148,11 @@ export class ProductionService {
       .flat();
     const { renewable, partlyRenewable, nonRenewable } = batches.reduce(
       (statistics, batch) => {
-        const qualityDetails = batch.qualityDetails;
-        if (!qualityDetails) {
+        const batchDetails = batch.details;
+        if (!batchDetails) {
           return statistics;
         }
-        switch (qualityDetails.powerType) {
+        switch (batchDetails.productionPowerType) {
           case PowerType.RENEWABLE:
             statistics.renewable += batch.amount;
             break;

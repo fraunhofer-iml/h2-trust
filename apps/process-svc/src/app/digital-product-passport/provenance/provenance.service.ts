@@ -19,26 +19,39 @@ export function buildProvenance(root: ProcessStepEntity, predecessorsOfRoot: Pro
   switch (root.type) {
     case ProcessType.WATER_CONSUMPTION:
     case ProcessType.POWER_PRODUCTION:
-      return new ProvenanceEntity(root, []);
+      return new ProvenanceEntity(root, predecessorsOfRoot, []);
 
     case ProcessType.HYDROGEN_PRODUCTION:
-      return new ProvenanceEntity(root, buildProductionChains(predecessorsOfRoot));
+      return new ProvenanceEntity(root, predecessorsOfRoot, buildProductionChains(predecessorsOfRoot));
 
-    case ProcessType.HYDROGEN_BOTTLING:
-    case ProcessType.HYDROGEN_TRANSPORTATION: {
-      const hydrogenBottling: ProcessStepEntity = getHydrogenBottling(predecessorsOfRoot);
-      if (!hydrogenBottling) {
-        throw new InternalException(`Missing hydrogen bottling for root production [${root.id}].`);
-      }
+    default:
       return new ProvenanceEntity(
         root,
+        handleSplitProcessSteps(predecessorsOfRoot),
         buildProductionChains(predecessorsOfRoot),
-        getHydrogenBottling(predecessorsOfRoot),
       );
-    }
-    default:
-      throw new InternalException(`Unsupported process type [${root.type}].`);
   }
+}
+
+function handleSplitProcessSteps(predecessorsOfRoot: ProcessStepEntity[]) {
+  const predecessorsWithoutSplittingSteps = predecessorsOfRoot.map((pred) =>
+    getFirstProcessStepOfSplittingChain(pred, predecessorsOfRoot),
+  );
+  return Array.from(new Map(predecessorsWithoutSplittingSteps.map((obj) => [obj.id, obj])).values());
+}
+
+function getFirstProcessStepOfSplittingChain(
+  lastProcessStep: ProcessStepEntity,
+  predecessorsOfRoot: ProcessStepEntity[],
+) {
+  const predecessorIds: string[] = lastProcessStep.batch.predecessors.map((pred) => pred.id);
+  const predecessors: ProcessStepEntity[] = predecessorsOfRoot.filter((pred) => predecessorIds.includes(pred.batch.id));
+
+  const predecessorTypes: ProcessType[] = predecessors.map((predecessor) => predecessor.type);
+  if (predecessorTypes.includes(lastProcessStep.type)) {
+    return getFirstProcessStepOfSplittingChain(predecessors[0], predecessorsOfRoot);
+  }
+  return lastProcessStep;
 }
 
 function buildProductionChains(processSteps: ProcessStepEntity[]): ProductionChainEntity[] {
@@ -126,7 +139,7 @@ function getHydrogenBottling(processSteps: ProcessStepEntity[]): ProcessStepEnti
 function findProcessStepById(id: string, processSteps: ProcessStepEntity[]): ProcessStepEntity {
   const foundProcessStep: ProcessStepEntity = processSteps.find((ps) => ps.id === id);
   if (!foundProcessStep) {
-    throw new InternalException(`Missing process step for given id.`);
+    throw new InternalException(`Missing process step for given id ${id}.`);
   }
   return foundProcessStep;
 }

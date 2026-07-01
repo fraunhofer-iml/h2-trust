@@ -22,8 +22,8 @@ import { UnitType } from '@h2-trust/domain';
 export function buildBaseUnitCreateInput(
   payload: BaseCreateUnitPayload,
   type: UnitType,
-): Omit<Prisma.UnitCreateInput, 'specification'> {
-  return Prisma.validator<Omit<Prisma.UnitCreateInput, 'specification'>>()({
+): Omit<Prisma.UnitCreateInput, 'details'> {
+  return Prisma.validator<Omit<Prisma.UnitCreateInput, 'details'>>()({
     name: payload.name,
     manufacturer: payload.manufacturer,
     modelType: payload.modelType,
@@ -53,7 +53,7 @@ export function buildBaseUnitCreateInput(
 export function buildPowerProductionUnitCreateInput(payload: CreatePowerProductionUnitPayload): Prisma.UnitCreateInput {
   return Prisma.validator<Prisma.UnitCreateInput>()({
     ...buildBaseUnitCreateInput(payload, UnitType.POWER_PRODUCTION),
-    specification: {
+    details: {
       create: {
         decommissioningPlannedOn: payload.decommissioningPlannedOn,
         ratedPower: new Prisma.Decimal(payload.ratedPower),
@@ -70,13 +70,12 @@ export function buildHydrogenProductionUnitCreateInput(
 ): Prisma.UnitCreateInput {
   return Prisma.validator<Prisma.UnitCreateInput>()({
     ...buildBaseUnitCreateInput(payload, UnitType.HYDROGEN_PRODUCTION),
-    specification: {
+    details: {
       create: {
         type: payload.hydrogenProductionType,
         technology: payload.technology,
         biddingZone: payload.biddingZone,
         ratedPower: new Prisma.Decimal(payload.ratedPower),
-        waterConsumptionLitersPerHour: new Prisma.Decimal(payload.waterConsumptionLitersPerHour),
       },
     },
   });
@@ -85,7 +84,7 @@ export function buildHydrogenProductionUnitCreateInput(
 export function buildHydrogenStorageUnitCreateInput(payload: CreateHydrogenStorageUnitPayload): Prisma.UnitCreateInput {
   return Prisma.validator<Prisma.UnitCreateInput>()({
     ...buildBaseUnitCreateInput(payload, UnitType.HYDROGEN_STORAGE),
-    specification: {
+    details: {
       create: {
         capacity: new Prisma.Decimal(payload.capacity),
         type: payload.type,
@@ -99,7 +98,7 @@ export function buildHydrogenTransportUnitCreateInput(
 ): Prisma.UnitCreateInput {
   return Prisma.validator<Prisma.UnitCreateInput>()({
     ...buildBaseUnitCreateInput(payload, UnitType.TRANSPORTATION),
-    specification: {
+    details: {
       create: {
         fuelType: payload.fuelType,
         type: payload.transportType,
@@ -108,13 +107,13 @@ export function buildHydrogenTransportUnitCreateInput(
   });
 }
 
-export function buildUnitCreateInputWitEmptySpecification(
+export function buildUnitCreateInputWitEmptyDetails(
   payload: CreateHydrogenCompressorUnitPayload | CreateHydrogenEndUseUnitPayload | CreateHydrogenBottlingUnitPayload,
   unitType: UnitType,
 ): Prisma.UnitCreateInput {
   return Prisma.validator<Prisma.UnitCreateInput>()({
     ...buildBaseUnitCreateInput(payload, unitType),
-    specification: {
+    details: {
       create: {},
     },
   });

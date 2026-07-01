@@ -33,7 +33,7 @@ function getPowerBatchEntities(
       powerSupplyEmission.result,
       powerSupplyEmission.basisOfCalculation,
     );
-    const powerType: PowerType = powerProduction.batch?.qualityDetails?.powerType ?? PowerType.NOT_SPECIFIED;
+    const powerType: PowerType = powerProduction.batch?.details?.productionPowerType ?? PowerType.NOT_SPECIFIED;
 
     return {
       id: powerProduction.batch.id,
@@ -52,8 +52,8 @@ function getPowerBatchEntities(
 
 function getPowerProductionType(powerProduction: ProcessStepEntity): PowerProductionType {
   const unit = powerProduction.executedBy;
-  assertValidEnum(unit.specification.type, PowerProductionType, 'PowerProductionType');
-  return unit.specification.type;
+  assertValidEnum(unit.details.type, PowerProductionType, 'PowerProductionType');
+  return unit.details.type;
 }
 
 function onlyPowerProduction(processSteps: ProcessStepEntity[]) {

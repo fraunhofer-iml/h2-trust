@@ -97,14 +97,31 @@ export const ProcessStepEntityFixture = {
               predecessors: [],
             }),
           ],
-          qualityDetails: {
+          details: {
             rfnboType: RfnboType.NOT_SPECIFIED,
-            powerType: PowerType.NOT_SPECIFIED,
-            distance: overrides.batch?.qualityDetails?.distance ?? 0,
+            productionPowerType: PowerType.NOT_SPECIFIED,
+            distance: 0,
           },
         }),
       overrides.recordedBy ?? UserEntityFixture.createHydrogenUser(),
       overrides.executedBy ?? HydrogenTransportUnitEntityFixture.create(),
+      overrides.documents ?? [DocumentEntityFixture.create()],
+    ),
+  createHydrogenStorage: (overrides: Partial<ProcessStepEntity> = {}): ProcessStepEntity =>
+    new ProcessStepEntity(
+      overrides.id ?? 'process-step-6',
+      overrides.startedAt ?? new Date('2026-01-01T02:00:00Z'),
+      overrides.endedAt ?? new Date('2026-01-01T02:59:59Z'),
+      overrides.type ?? ProcessType.HYDROGEN_STORAGE,
+      overrides.batch ??
+        BatchEntityFixture.createHydrogenBatch({
+          id: 'batch-6',
+          processStepId: 'process-step-6',
+          type: BatchType.HYDROGEN,
+          predecessors: [BatchEntityFixture.createWaterBatch(), BatchEntityFixture.createPowerBatch()],
+        }),
+      overrides.recordedBy ?? UserEntityFixture.createHydrogenUser(),
+      overrides.executedBy ?? HydrogenProductionUnitEntityFixture.create(),
       overrides.documents ?? [DocumentEntityFixture.create()],
     ),
 } as const;

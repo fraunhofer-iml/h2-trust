@@ -108,10 +108,9 @@ export function assembleHydrogenTransportationEmissionCalculation(
 
   const transportUnit: UnitEntity = hydrogenTransportation.executedBy;
 
-  assertValidEnum(transportUnit.specification.type, TransportType, 'TransportType');
-  assertValidEnum(transportUnit.specification.fuelType, FuelType, 'FuelType');
+  assertValidEnum(transportUnit.details.type, TransportType, 'TransportType');
 
-  const transportMode: string = transportUnit?.specification?.type;
+  const transportMode: string = transportUnit?.details?.type;
 
   switch (transportMode) {
     case TransportType.PIPELINE:
@@ -119,8 +118,8 @@ export function assembleHydrogenTransportationEmissionCalculation(
     case TransportType.TRAILER:
       return assembleTrailerEmissionCalculation(
         hydrogenTransportation.batch.amount,
-        transportUnit.specification?.fuelType,
-        hydrogenTransportation.batch?.qualityDetails?.distance,
+        transportUnit.details?.fuelType,
+        hydrogenTransportation.batch?.details?.distance,
       );
     default:
       throw new InternalException(
@@ -136,9 +135,7 @@ export function assembleHydrogenTransportationEmissionCalculations(
     return [];
   }
 
-  const hydrogenAmount = provenance.hydrogenBottling
-    ? provenance.hydrogenBottling.batch.amount
-    : provenance.root.batch.amount;
+  const hydrogenAmount = provenance.root.batch.amount;
   const hydrogenTransportation = assembleHydrogenTransportationEmissionCalculation(provenance.root);
 
   const totalEmissions = hydrogenTransportation.result;

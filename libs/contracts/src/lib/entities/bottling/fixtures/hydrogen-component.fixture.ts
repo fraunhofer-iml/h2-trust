@@ -11,7 +11,17 @@ import { RfnboType } from '@h2-trust/domain';
 
 export const HydrogenComponentEntityFixture = {
   createRfnboReady: (overrides: Partial<HydrogenComponentEntity> = {}): HydrogenComponentEntity =>
-    new HydrogenComponentEntity('', overrides.amount ?? 100, overrides.rfnboType ?? RfnboType.RFNBO_READY),
+    new HydrogenComponentEntity(
+      overrides.processId ?? '',
+      overrides.amount ?? 100,
+      overrides.rfnboType ?? RfnboType.RFNBO_READY,
+      overrides.unitId ?? '',
+    ),
   createNonCertifiable: (overrides: Partial<HydrogenComponentEntity> = {}): HydrogenComponentEntity =>
-    new HydrogenComponentEntity('', overrides.amount ?? 100, overrides.rfnboType ?? RfnboType.NON_CERTIFIABLE),
+    new HydrogenComponentEntity(
+      overrides.processId ?? '',
+      overrides.amount ?? 100,
+      overrides.rfnboType ?? RfnboType.NON_CERTIFIABLE,
+      overrides.unitId ?? '',
+    ),
 } as const;

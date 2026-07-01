@@ -6,32 +6,61 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { QualityDetailsDbType } from '@h2-trust/database';
+import { BatchDetailsDbType } from '@h2-trust/database';
 import { PowerType, RfnboType } from '@h2-trust/domain';
 import { assertValidEnum } from '@h2-trust/utils';
 
-export class QualityDetailsEntity {
+export class BatchDetailsEntity {
   id?: string;
   rfnboType: RfnboType;
-  powerType: PowerType;
-  distance: number;
+  productionPowerType: PowerType;
+  usedRenewablePower?: number;
+  usedGridPower?: number;
+  distance?: number;
+  wasteWater?: number;
+  resinConsumption?: number;
+  compressedAir?: number;
+  nitrogenConsumption?: number;
 
-  constructor(id: string | undefined, rfnboType: RfnboType, powerType: PowerType, distance: number) {
+  constructor(
+    id: string | undefined,
+    rfnboType: RfnboType,
+    productionPowerType: PowerType,
+    usedRenewablePower?: number,
+    usedGridPower?: number,
+    distance?: number,
+    wasteWater?: number,
+    resinConsumption?: number,
+    compressedAir?: number,
+    nitrogenConsumption?: number,
+  ) {
     this.id = id;
     this.rfnboType = rfnboType;
-    this.powerType = powerType;
+    this.productionPowerType = productionPowerType;
+    this.usedRenewablePower = usedRenewablePower;
+    this.usedGridPower = usedGridPower;
     this.distance = distance;
+    this.wasteWater = wasteWater;
+    this.resinConsumption = resinConsumption;
+    this.compressedAir = compressedAir;
+    this.nitrogenConsumption = nitrogenConsumption;
   }
 
-  static fromDatabase(qualityDetails: QualityDetailsDbType): QualityDetailsEntity {
-    assertValidEnum(qualityDetails.rfnboType, RfnboType, 'RfnboType');
-    assertValidEnum(qualityDetails.powerType, PowerType, 'PowerType');
+  static fromDatabase(batchDetails: BatchDetailsDbType): BatchDetailsEntity {
+    assertValidEnum(batchDetails.rfnboType, RfnboType, 'RfnboType');
+    assertValidEnum(batchDetails.productionPowerType, PowerType, 'PowerType');
 
-    return new QualityDetailsEntity(
-      qualityDetails.id,
-      qualityDetails.rfnboType,
-      qualityDetails.powerType,
-      qualityDetails.distance?.toNumber() ?? 0,
+    return new BatchDetailsEntity(
+      batchDetails.id,
+      batchDetails.rfnboType,
+      batchDetails.productionPowerType,
+      batchDetails.usedRenewablePower?.toNumber() ?? 0,
+      batchDetails.usedGridPower?.toNumber() ?? 0,
+      batchDetails.distance?.toNumber() ?? 0,
+      batchDetails.wasteWater?.toNumber() ?? 0,
+      batchDetails.resinConsumption?.toNumber() ?? 0,
+      batchDetails.compressedAir?.toNumber() ?? 0,
+      batchDetails.nitrogenConsumption?.toNumber() ?? 0,
     );
   }
 }

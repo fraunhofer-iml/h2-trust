@@ -11,6 +11,7 @@ import { of, throwError } from 'rxjs';
 import { hashBuffer } from '@h2-trust/blockchain';
 import {
   AccountingPeriodMatchingResultDto,
+  CompanyDto,
   CsvDocumentIntegrityResultDto,
   PaginatedDataDto,
   ProcessedCsvDto,
@@ -102,7 +103,7 @@ describe('ProductionService', () => {
     // arrange
     const givenUserId = 'user-id-1';
     const givenUserDetails: UserDetailsDto = UserDetailsDtoFixture.create({
-      company: { id: 'company-id-1', name: 'Company' },
+      company: { id: 'company-id-1', name: 'Company' } as CompanyDto,
     });
     const givenProcessStep = ProcessStepEntityFixture.createHydrogenProduction({ id: 'production-1' });
     const expectedPaginated = new PaginatedProcessStepEntity([givenProcessStep], 1, 10, 1);
@@ -122,7 +123,7 @@ describe('ProductionService', () => {
 
     // assert
     expect(processSvcMock.send).toHaveBeenCalledWith(
-      ProcessStepMessagePatterns.READ_PAGINATION_BY_PREDECESSOR_TYPES_AND_OWNER,
+      ProcessStepMessagePatterns.READ_PRODUCTION_PAGINATION,
       new ReadPaginatedProcessStepsByPredecessorTypesAndOwnerPayload(
         [ProcessType.POWER_PRODUCTION],
         givenUserDetails.company.id,
@@ -154,7 +155,7 @@ describe('ProductionService', () => {
     // arrange
     const givenUserId = 'user-id-1';
     const givenUserDetails: UserDetailsDto = UserDetailsDtoFixture.create({
-      company: { id: 'company-id-1', name: 'Company' },
+      company: { id: 'company-id-1', name: 'Company' } as CompanyDto,
     });
     const givenFrom = new Date('2026-01-01T00:00:00.000Z');
     const givenTo = new Date('2026-01-31T23:59:59.999Z');
@@ -202,7 +203,7 @@ describe('ProductionService', () => {
     const givenUserId = 'user-id-1';
     const givenMonth = new Date('2026-01-01T00:00:00.000Z');
     const givenUserDetails: UserDetailsDto = UserDetailsDtoFixture.create({
-      company: { id: 'company-id-1', name: 'Company' },
+      company: { id: 'company-id-1', name: 'Company' } as CompanyDto,
     });
     const expectedStatistics = new ProductionStatisticsEntity(
       new HydrogenStatisticsEntity(5, 10),
@@ -231,7 +232,7 @@ describe('ProductionService', () => {
     // arrange
     const givenUserId = 'user-id-1';
     const givenUserDetails: UserDetailsDto = UserDetailsDtoFixture.create({
-      company: { id: 'company-id-1', name: 'Company' },
+      company: { id: 'company-id-1', name: 'Company' } as CompanyDto,
     });
     const givenDto = ProductionCsvUploadDtoFixture.create({
       unitIds: ['unit-1', 'unit-2'],
@@ -337,12 +338,7 @@ describe('ProductionService', () => {
     // assert
     expect(processSvcMock.send).toHaveBeenCalledWith(
       ProductionMessagePatterns.FINALIZE,
-      new FinalizeProductionsPayload(
-        givenUserId,
-        givenDto.stagedHydrogenProduction,
-        givenDto.stagedPowerProductions,
-        givenDto.storageUnitId,
-      ),
+      new FinalizeProductionsPayload(givenUserId, givenDto.stagedHydrogenProduction, givenDto.stagedPowerProductions),
     );
     expect(actualResult).toEqual(expectedProcessSteps.map(ProductionOverviewDto.fromEntity));
   });
@@ -351,7 +347,7 @@ describe('ProductionService', () => {
     // arrange
     const givenUserId = 'user-id-1';
     const givenUserDetails: UserDetailsDto = UserDetailsDtoFixture.create({
-      company: { id: 'company-id-1', name: 'Company' },
+      company: { id: 'company-id-1', name: 'Company' } as CompanyDto,
     });
     const expectedCsvDocuments = [
       CsvDocumentEntityFixture.create({ id: 'document-1', fileName: 'document-1.csv', type: CsvContentType.HYDROGEN }),
@@ -391,6 +387,7 @@ describe('ProductionService', () => {
       'https://sepolia.arbiscan.io/tx/0xhash',
       'some-cid',
       'https://ipfs.io/ipfs/some-cid',
+      '',
     );
 
     processSvcMock.send.mockImplementation((_pattern, _payload) => of(expectedVerificationResult));

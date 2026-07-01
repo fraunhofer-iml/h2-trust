@@ -8,11 +8,11 @@
 
 import { Logger } from '@nestjs/common';
 import {
+  BatchDetailsEntity,
   BatchEntity,
   CompanyEntity,
   CreateProductionEntity,
   ProcessStepEntity,
-  QualityDetailsEntity,
   UnitEntity,
   UserEntity,
 } from '@h2-trust/contracts/entities';
@@ -80,7 +80,7 @@ export function assembleHydrogenProductions(
 ): ProcessStepEntity[] {
   const hydrogenProductionUnit = productionUnitsForId.get(entity.hydrogenProductionUnitId);
   assertDefined(hydrogenProductionUnit, 'hydrogenProductionUnit');
-  const rawPowerType = powerProductions[0]?.batch?.qualityDetails?.powerType ?? PowerType.NOT_SPECIFIED;
+  const rawPowerType = powerProductions[0]?.batch?.details?.productionPowerType ?? PowerType.NOT_SPECIFIED;
   assertValidEnum(rawPowerType, PowerType, 'PowerType');
   const params: ProcessStepParams = {
     type: ProcessType.HYDROGEN_PRODUCTION,
@@ -90,7 +90,6 @@ export function assembleHydrogenProductions(
       activity: true,
       type: BatchType.HYDROGEN,
       owner: entity.ownerIdOfHydrogenProductionUnit,
-      hydrogenStorageUnitId: entity.hydrogenStorageUnitId,
       powerType: rawPowerType,
     },
   };
@@ -124,7 +123,7 @@ function createProcessStep(accountingPeriod: AccountingPeriod, params: ProcessSt
 
   const { batchParams } = params;
 
-  const qualityDetails: QualityDetailsEntity = new QualityDetailsEntity(
+  const batchDetails: BatchDetailsEntity = new BatchDetailsEntity(
     null,
     RfnboType.NOT_SPECIFIED,
     batchParams.powerType,
@@ -139,7 +138,7 @@ function createProcessStep(accountingPeriod: AccountingPeriod, params: ProcessSt
     accountingPeriod.predecessors,
     [],
     { id: batchParams.owner } as CompanyEntity,
-    qualityDetails,
+    batchDetails,
   );
 
   return new ProcessStepEntity(

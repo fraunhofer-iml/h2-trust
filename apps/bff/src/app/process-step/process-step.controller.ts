@@ -1,0 +1,145 @@
+/*
+ * Copyright Fraunhofer Institute for Material Flow and Logistics
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License").
+ * For details on the licensing terms, see the LICENSE file.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+import { Body, Controller, Get, Param, Post, Query, UploadedFiles, UseInterceptors } from '@nestjs/common';
+import { FilesInterceptor } from '@nestjs/platform-express';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiConsumes,
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiParam,
+  ApiQuery,
+} from '@nestjs/swagger';
+import {
+  BatchDto,
+  ComponentsOverviewDto,
+  CreateProcessStepDto,
+  DigitalProductPassportDto,
+  PaginatedDataDto,
+  ProcessStepOverviewDto,
+  type AuthenticatedKCUser,
+} from '@h2-trust/contracts/dtos';
+import 'multer';
+import { KeycloakUser, Public } from 'nest-keycloak-connect';
+import { ProcessType } from '@h2-trust/domain';
+import { ProcessStepService } from './process-step.service';
+
+@Controller('process-steps')
+export class ProcessStepController {
+  constructor(private readonly processStepService: ProcessStepService) {}
+
+  @Post()
+  @UseInterceptors(FilesInterceptor('files'))
+  @ApiBearerAuth()
+  @ApiOperation({
+    description: 'Create a new process step with multiple file uploads and related metadata.',
+  })
+  @ApiCreatedResponse({
+    description: 'Returns the newly created process step.',
+    type: ProcessStepOverviewDto,
+  })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({ type: CreateProcessStepDto })
+  createProcessStep(
+    @Body() dto: CreateProcessStepDto,
+    @UploadedFiles() files: Express.Multer.File[],
+    @KeycloakUser() authenticatedUser: AuthenticatedKCUser,
+  ): Promise<ProcessStepOverviewDto> {
+    return this.processStepService.createProcessStep(dto, files, authenticatedUser.sub);
+  }
+
+  @Get()
+  @ApiBearerAuth()
+  @ApiOperation({
+    description: "Retrieve all hydrogen batches for the authenticated user's company.",
+  })
+  @ApiQuery({
+    name: 'pageNumber',
+    type: Number,
+    description: 'Used to get a specific page of pagination',
+    required: false,
+    minimum: 1,
+    example: '1',
+  })
+  @ApiQuery({
+    name: 'pageSize',
+    type: Number,
+    description: 'Used to define the amount of data retrieved',
+    required: false,
+    minimum: 5,
+    example: '5',
+  })
+  @ApiQuery({
+    name: 'id',
+    type: String,
+    description: 'Used to filter for a specific batch by its id',
+    required: false,
+    example: 'Hydrogen Electrolyzer Dortmund 001',
+  })
+  @ApiQuery({
+    name: 'batchType',
+    enum: ProcessType,
+    example: ProcessType.HYDROGEN_PRODUCTION,
+    description: 'Used to filter for a specific process type (batch type)',
+    required: false,
+  })
+  readAllHydrogenBatches(
+    @Query('pageNumber') pageNumber: number,
+    @Query('pageSize') pageSize: number,
+    @Query('id') id: string,
+    @Query('batchType') batchType: ProcessType,
+    @KeycloakUser() authenticatedUser: AuthenticatedKCUser,
+  ): Promise<PaginatedDataDto<BatchDto>> {
+    return this.processStepService.readPaginatedProcessSteps(
+      authenticatedUser.sub,
+      pageNumber,
+      pageSize,
+      id,
+      batchType,
+    );
+  }
+
+  @Public()
+  @Get('components')
+  @ApiBearerAuth()
+  @ApiOperation({
+    description: 'Retrieve a list of hydrogen components by the corresponding unit ID.',
+  })
+  @ApiOkResponse({
+    description: "Returns a list of all components belonging to the authenticated user's company.",
+    type: [ComponentsOverviewDto],
+  })
+  readHydrogenComponentsForUnits(
+    @KeycloakUser() authenticatedUser: AuthenticatedKCUser,
+  ): Promise<ComponentsOverviewDto[]> {
+    return this.processStepService.readHydrogenComponentsForOwnUnits(authenticatedUser.sub);
+  }
+
+  @Public()
+  @Get(':id')
+  @ApiBearerAuth()
+  @ApiOperation({
+    description: 'Retrieve the general information by the corresponding transportation process step ID.',
+  })
+  @ApiOkResponse({
+    description:
+      'Returns the requested product passport including general information, proof of origin and proof of sustainability of a transportation process step.',
+    type: DigitalProductPassportDto,
+  })
+  @ApiParam({
+    name: 'id',
+    description: 'Unique identifier of the transportation process step.',
+    example: 'process-step-hydrogen-bottling-1',
+  })
+  readDigitalProductPassport(@Param('id') id: string): Promise<DigitalProductPassportDto> {
+    return this.processStepService.readDigitalProductPassport(id);
+  }
+}

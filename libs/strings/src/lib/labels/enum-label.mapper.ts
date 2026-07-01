@@ -11,7 +11,6 @@ import {
   CalculationTopic,
   CsvContentType,
   CsvDocumentIntegrityStatus,
-  EnergySource,
   FuelType,
   GridLevel,
   HydrogenProductionTechnology,
@@ -66,13 +65,6 @@ const TRANSPORT_TYPE_LABELS: Record<TransportType, string> = {
   [TransportType.TRAILER]: 'Trailer',
 };
 
-const ENERGY_SOURCE_LABELS: Record<EnergySource, string> = {
-  [EnergySource.GRID]: 'Grid',
-  [EnergySource.HYDRO_POWER]: 'Hydro Power Plant',
-  [EnergySource.SOLAR_ENERGY]: 'Photovoltaic System',
-  [EnergySource.WIND_ENERGY]: 'Wind Turbine',
-};
-
 const BATCH_TYPE_MEASUREMENT_UNIT: Record<BatchType, string> = {
   [BatchType.HYDROGEN]: MeasurementUnit.KG,
   [BatchType.POWER]: MeasurementUnit.KWH,
@@ -101,6 +93,8 @@ const CALCULATION_TOPIC_LABELS: Record<CalculationTopic, string> = {
   [CalculationTopic.WATER_SUPPLY]: 'Water Supply',
   [CalculationTopic.HYDROGEN_STORAGE]: 'Hydrogen Storage',
   [CalculationTopic.HYDROGEN_TRANSPORTATION]: 'Transportation',
+  [CalculationTopic.HYDROGEN_COMPRESSION]: 'Compression',
+  [CalculationTopic.HYDROGEN_END_USE]: 'End Use',
 };
 
 const RFNBO_TYPE_LABELS: Record<RfnboType, string> = {
@@ -139,9 +133,9 @@ const PROCESS_TYPE_LABELS: Record<ProcessType, string> = {
   [ProcessType.HYDROGEN_TRANSPORTATION]: 'Hydrogen Transportation',
   [ProcessType.POWER_PRODUCTION]: 'Power Production',
   [ProcessType.WATER_CONSUMPTION]: 'Water Consumption',
-  [ProcessType.COMPRESSION]: 'Compression',
   [ProcessType.HYDROGEN_STORAGE]: 'Hydrogen Storage',
-  [ProcessType.END_USE]: 'End Use',
+  [ProcessType.HYDROGEN_COMPRESSION]: 'Hydrogen Compression',
+  [ProcessType.HYDROGEN_END_USE]: 'Hydrogen End Use',
 };
 
 export function getPowerProductionType(value: PowerProductionType): string {
@@ -170,10 +164,6 @@ export function getFuelType(value: FuelType): string {
 
 export function getTransportType(value: TransportType): string {
   return getLabel(value, TRANSPORT_TYPE_LABELS);
-}
-
-export function getEnergySource(value: EnergySource): string {
-  return getLabel(value, ENERGY_SOURCE_LABELS);
 }
 
 export function getMeasurementUnit(value: BatchType): string {

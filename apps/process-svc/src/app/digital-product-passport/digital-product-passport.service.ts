@@ -20,7 +20,7 @@ import {
 import { PowerType, RfnboType } from '@h2-trust/domain';
 import { assertValidEnum } from '@h2-trust/utils';
 import { ProcessStepService } from '../process-step/process-step.service';
-import { assembleProofOfOrigin, getHydrogenBottlingCompositions } from './proof-of-origin/proof-of-origin.assembler';
+import { assembleProofOfOrigin, getCompositionOfLatestSection } from './proof-of-origin/proof-of-origin.assembler';
 import { assembleProofOfSustainability } from './proof-of-sustainability/proof-of-sustainability.assembler';
 import { buildProvenance } from './provenance/provenance.service';
 import { determineRedCompliance, determineTotalRedCompliance } from './red-compliance/red-compliance';
@@ -40,7 +40,7 @@ export class DigitalProductPassportService {
       productionChain.powerProduction,
     );
 
-    const rawPowerType = productionChain.powerProduction.batch.qualityDetails.powerType;
+    const rawPowerType = productionChain.powerProduction.batch.details.productionPowerType;
     assertValidEnum(rawPowerType, PowerType, 'PowerType');
     const powerType: PowerType = rawPowerType;
     const provenance: ProvenanceEntity = ProvenanceEntity.fromProductionChain(productionChain);
@@ -50,11 +50,11 @@ export class DigitalProductPassportService {
 
   /**
    * Calculates all the dpp metrics for a process step, namely the RFNBO type, the ProofOfOrigin and the ProofOfSustainability.
-   * @param processStepId The ID of the process step for which the DPP is to be calculated.
+   * @param batchId The batch ID of the process step for which the DPP is to be calculated.
    * @returns The calculated dpp.
    */
-  public async readDigitalProductPassport(processStepId: string): Promise<DigitalProductPassportEntity> {
-    const processStep: ProcessStepEntity = await this.processStepService.readProcessStep(processStepId);
+  public async readDigitalProductPassport(batchId: string): Promise<DigitalProductPassportEntity> {
+    const processStep: ProcessStepEntity = await this.processStepService.readProcessStepByBatchId(batchId);
     const predecessors: ProcessStepEntity[] = await this.processStepService.getPredecessors(processStep);
 
     const provenance: ProvenanceEntity = buildProvenance(processStep, predecessors);
@@ -62,7 +62,7 @@ export class DigitalProductPassportService {
 
     const proofOfOrigin: ProofOfOriginSectionEntity[] = assembleProofOfOrigin(provenance);
 
-    const hydrogenComponentsForBottling: HydrogenComponentEntity[] = getHydrogenBottlingCompositions(proofOfOrigin);
+    const hydrogenComponentsForBottling: HydrogenComponentEntity[] = getCompositionOfLatestSection(proofOfOrigin);
 
     const proofOfSustainability: ProofOfSustainabilityEntity = assembleProofOfSustainability(provenance);
 
@@ -91,13 +91,13 @@ export class DigitalProductPassportService {
     );
     let powerType = PowerType.RENEWABLE;
     const hasRenewableGridPower = powerProductions.some(
-      (pp) => pp.batch?.qualityDetails?.powerType == PowerType.PARTLY_RENEWABLE,
+      (pp) => pp.batch?.details?.productionPowerType == PowerType.PARTLY_RENEWABLE,
     );
     if (hasRenewableGridPower) {
       powerType = PowerType.PARTLY_RENEWABLE;
     }
     const hasNotRenewableGrid = powerProductions.some(
-      (pp) => pp.batch?.qualityDetails?.powerType == PowerType.NON_RENEWABLE,
+      (pp) => pp.batch?.details?.productionPowerType == PowerType.NON_RENEWABLE,
     );
     if (hasNotRenewableGrid) {
       powerType = PowerType.NON_RENEWABLE;

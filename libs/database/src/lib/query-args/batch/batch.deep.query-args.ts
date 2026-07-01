@@ -15,7 +15,7 @@ export const batchDeepQueryArgs = Prisma.validator<Prisma.BatchDefaultArgs>()({
     owner: companyNestedQueryArgs,
     predecessors: batchNestedQueryArgs,
     successors: batchNestedQueryArgs,
-    qualityDetails: true,
+    details: true,
     processStep: true,
   },
 });

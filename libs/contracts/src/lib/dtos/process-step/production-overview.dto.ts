@@ -51,12 +51,12 @@ export class ProductionOverviewDto {
       endedAt: processStep.endedAt.toString(),
       productionUnit: processStep.executedBy?.name,
       producedAmount: processStep.batch?.amount,
-      rfnboType: processStep.batch?.qualityDetails?.rfnboType,
+      rfnboType: processStep.batch?.details?.rfnboType,
       powerProducer: processStep.batch?.predecessors?.[0]?.owner?.name,
       powerConsumed: ProductionOverviewDto.determinePowerConsumed(processStep),
       // TODO: replace powerProductionUnit & powerType with actual values (DUHGW-271)
       powerProductionUnit: 'power-production-unit',
-      powerType: processStep.batch?.qualityDetails?.powerType ?? PowerType.NOT_SPECIFIED,
+      powerType: processStep.batch?.details?.productionPowerType ?? PowerType.NOT_SPECIFIED,
     };
   }
 

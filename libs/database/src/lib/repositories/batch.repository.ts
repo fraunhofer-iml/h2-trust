@@ -7,7 +7,6 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import { RfnboType } from '@h2-trust/domain';
 import { PrismaService } from '../prisma.service';
 import { wrapPrismaError } from './prisma-error.wrapper';
 
@@ -20,15 +19,6 @@ export class BatchRepository {
       .updateMany({
         where: { id: { in: batchIds } },
         data: { active: false },
-      })
-      .catch(wrapPrismaError);
-  }
-
-  async setRfnboStatus(batchId: string, rfnboType: RfnboType): Promise<{ id: string; batchId: string }> {
-    return this.prismaService.qualityDetails
-      .update({
-        where: { batchId: batchId },
-        data: { rfnboType },
       })
       .catch(wrapPrismaError);
   }

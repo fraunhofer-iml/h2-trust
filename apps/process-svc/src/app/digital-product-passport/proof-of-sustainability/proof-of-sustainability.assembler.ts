@@ -31,9 +31,7 @@ export function assembleProofOfSustainability(provenance: ProvenanceEntity): Pro
       proofOfSustainabilityAssembler.assembleEmissionCalculations(provenance),
     );
 
-  const hydrogenAmount = provenance.hydrogenBottling
-    ? provenance.hydrogenBottling.batch.amount
-    : provenance.root.batch.amount;
+  const hydrogenAmount = provenance.root.batch.amount;
 
   if (hydrogenAmount === 0) {
     throw new ValidationException('hydrogenAmount must not be zero');
