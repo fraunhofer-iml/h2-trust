@@ -7,7 +7,7 @@
  */
 
 import { ProofOfSustainabilityEmissionCalculationEntity } from '@h2-trust/contracts/entities';
-import { CalculationTopic } from '@h2-trust/domain';
+import { CalculationTopic, MeasurementUnit } from '@h2-trust/domain';
 
 export const ProofOfSustainabilityEmissionCalculationEntityFixture = {
   create: (
@@ -17,7 +17,7 @@ export const ProofOfSustainabilityEmissionCalculationEntityFixture = {
       overrides.name ?? 'Power Supply Calculation',
       overrides.basisOfCalculation ?? ['ISO 14044', 'RED II'],
       overrides.result ?? 1.5,
-      overrides.unit ?? 'gCO2eq/MJ',
+      overrides.unit ?? MeasurementUnit.G_CO2_PER_MJ,
       overrides.calculationTopic ?? CalculationTopic.POWER_SUPPLY,
     ),
 } as const;

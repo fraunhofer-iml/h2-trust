@@ -7,7 +7,6 @@
  */
 
 export * from './create-hydrogen-production-statistics.fixture';
-export * from './create-hydrogen-transportation.fixture';
 export * from './create-many-process-steps.fixture';
 export * from './create-process-step.fixture';
 export * from './create-process-step-quality.fixture';
