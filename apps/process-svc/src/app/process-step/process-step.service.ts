@@ -175,11 +175,7 @@ export class ProcessStepService {
 
   public async readProcessStepByBatchId(batchId: string): Promise<ProcessStepEntity> {
     const processStep: ProcessStepEntity = await this.processStepRepository.findProcessStepByBatchId(batchId);
-
-    const predecessorProcessStep = await this.processStepRepository.findProcessStep(
-      processStep.batch.predecessors[0]?.processStepId,
-    );
-    processStep.documents = this.assembleDocuments(predecessorProcessStep);
+    processStep.documents = this.assembleDocuments(processStep);
 
     return processStep;
   }
