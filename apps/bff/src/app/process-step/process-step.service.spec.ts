@@ -12,7 +12,6 @@ import { DigitalProductPassportDto, ProcessStepOverviewDto } from '@h2-trust/con
 import {
   ComponentsOverviewDtoFixture,
   CreateProcessStepDtoFixture,
-  HydrogenComponentDtoFixture,
   UserDetailsDtoFixture,
 } from '@h2-trust/contracts/dtos/fixtures';
 import { HydrogenComponentEntity, UnitEntity } from '@h2-trust/contracts/entities';
@@ -26,7 +25,7 @@ import {
   CreateHydrogenBottlingPayloadFixture,
   CreateProcessStepPayload,
   ReadByIdPayload,
-  ReadProcessStepsByUnitPayload,
+  ReadProcessStepsByUnitsPayload,
 } from '@h2-trust/contracts/payloads';
 import { ProcessType } from '@h2-trust/domain';
 import { DigitalProductPassportMessagePatterns, ProcessStepMessagePatterns } from '@h2-trust/messaging';
@@ -124,11 +123,9 @@ describe('ProcessStepService', () => {
         id: givenUnit.id,
         name: givenUnit.name,
         unitType: givenUnit.unitType,
-        hydrogenComposition: [
-          HydrogenComponentDtoFixture.create({
-            amount: 100,
-          }),
-        ],
+        hydrogenComposition: [],
+        capacity: 0,
+        filling: 0,
         active: givenUnit.active,
       }),
     ];
@@ -144,8 +141,8 @@ describe('ProcessStepService', () => {
     // assert
     expect(userServiceMock.readUserWithCompany).toHaveBeenCalledWith(givenUserId);
     expect(processSvcMock.send).toHaveBeenCalledWith(
-      ProcessStepMessagePatterns.READ_ALL_BY_UNIT,
-      new ReadProcessStepsByUnitPayload([givenUnit.id], true, givenUserDetails.company.id),
+      ProcessStepMessagePatterns.READ_ALL_BY_UNITS,
+      new ReadProcessStepsByUnitsPayload([givenUnit.id]),
     );
     expect(actualResult).toEqual(expectedComponentsOverviewDtos);
   });

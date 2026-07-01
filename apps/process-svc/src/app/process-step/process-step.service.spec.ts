@@ -559,6 +559,7 @@ describe('ProcessStepService', () => {
       givenProcessSteps[0].id,
       givenProcessSteps[0].batch.amount,
       givenProcessSteps[0].batch.details.rfnboType,
+      givenProcessSteps[0].executedBy.id,
     );
 
     processStepRepositoryMock.findAllProcessStepsFromUnits.mockResolvedValue(givenProcessSteps);

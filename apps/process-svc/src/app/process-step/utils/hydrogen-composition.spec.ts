@@ -16,7 +16,7 @@ describe('computeHydrogenComposition', () => {
   it('should calculate hydrogen composition when called', () => {
     // arrange
     const givenBottleAmount = 1;
-    const givenComponents = [new HydrogenComponentEntity(null, 1, RfnboType.RFNBO_READY)];
+    const givenComponents = [new HydrogenComponentEntity(null, 1, RfnboType.RFNBO_READY, null)];
 
     // act
     const actualResponse = computeHydrogenComposition(
@@ -34,11 +34,11 @@ describe('computeHydrogenComposition', () => {
     // arrange
     const givenBottleAmount = 1;
     const givenComponents = [
-      new HydrogenComponentEntity(null, 2, RfnboType.RFNBO_READY),
-      new HydrogenComponentEntity(null, 3, RfnboType.NOT_SPECIFIED),
+      new HydrogenComponentEntity(null, 2, RfnboType.RFNBO_READY, null),
+      new HydrogenComponentEntity(null, 3, RfnboType.NOT_SPECIFIED, null),
     ];
 
-    const expectedResponse = [new HydrogenComponentEntity(null, 1, RfnboType.RFNBO_READY)];
+    const expectedResponse = [new HydrogenComponentEntity(null, 1, RfnboType.RFNBO_READY, null)];
 
     // act
     const actualResponse = computeHydrogenComposition(
@@ -56,12 +56,12 @@ describe('computeHydrogenComposition', () => {
     // arrange
     const requestedAmount = 6;
     const givenComponents = [
-      new HydrogenComponentEntity(null, 2, RfnboType.RFNBO_READY),
-      new HydrogenComponentEntity(null, 4, RfnboType.NOT_SPECIFIED),
-      new HydrogenComponentEntity(null, 2, RfnboType.RFNBO_READY),
+      new HydrogenComponentEntity(null, 2, RfnboType.RFNBO_READY, null),
+      new HydrogenComponentEntity(null, 4, RfnboType.NOT_SPECIFIED, null),
+      new HydrogenComponentEntity(null, 2, RfnboType.RFNBO_READY, null),
     ];
 
-    const expectedResponse = [new HydrogenComponentEntity(null, 6, RfnboType.RFNBO_READY)];
+    const expectedResponse = [new HydrogenComponentEntity(null, 6, RfnboType.RFNBO_READY, null)];
 
     // act
     const actualResponse = computeHydrogenComposition(
@@ -78,7 +78,7 @@ describe('computeHydrogenComposition', () => {
   it('should throw when total stored amount is zero', () => {
     // arrange
     const givenBottleAmount = 30;
-    const givenComponents = [new HydrogenComponentEntity(null, 0, RfnboType.RFNBO_READY)];
+    const givenComponents = [new HydrogenComponentEntity(null, 0, RfnboType.RFNBO_READY, null)];
 
     // act & assert
     const actualOperation = () =>
