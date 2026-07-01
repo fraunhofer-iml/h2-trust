@@ -7,6 +7,7 @@
  */
 
 export * from './base-unit.fixture';
+export * from './components-overview.fixture';
 export * from './filling.fixture';
 export * from './hydrogen-production-overview.fixture';
 export * from './hydrogen-production-unit.fixture';
@@ -21,4 +22,3 @@ export * from './power-purchase-agreement-connection.fixture';
 export * from './unit-input.fixture';
 export * from './unit-owner.fixture';
 export * from './unit-update-active.fixture';
-export * from './components-overview.fixture';

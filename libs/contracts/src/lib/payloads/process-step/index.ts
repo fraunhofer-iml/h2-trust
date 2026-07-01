@@ -10,6 +10,7 @@ export * from './create-hydrogen-production-statistics.payload';
 export * from './create-many-process-steps.payload';
 export * from './create-process-step.payload';
 export * from './create-process-step-quality.payload';
+export * from './fixtures/index';
 export * from './process-step-data-filter';
 export * from './production-data-filter';
 export * from './read-paginated-process-steps.payload';
@@ -17,4 +18,3 @@ export * from './read-paginated-process-steps-by-predecessor-types-and-company.p
 export * from './read-process-steps-by-predecessor-types-and-company.payload';
 export * from './read-process-steps-by-types-and-active-and-company.payload';
 export * from './read-process-steps-by-unit.payload';
-export * from './fixtures/index';

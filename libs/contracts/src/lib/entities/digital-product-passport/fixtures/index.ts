@@ -6,5 +6,5 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export * from './proof.fixture';
 export * from './digital-product-passport.fixture';
+export * from './proof.fixture';
