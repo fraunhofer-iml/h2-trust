@@ -8,25 +8,27 @@
 
 import { ClientProxy } from '@nestjs/microservices';
 import { of } from 'rxjs';
-import { ComponentsOverviewDto, DigitalProductPassportDto, ProcessStepOverviewDto } from '@h2-trust/contracts/dtos';
-import { CreateProcessStepDtoFixture, UserDetailsDtoFixture } from '@h2-trust/contracts/dtos/fixtures';
-import { DigitalProductPassportEntity, HydrogenComponentEntity, UnitEntity } from '@h2-trust/contracts/entities';
+import { DigitalProductPassportDto, ProcessStepOverviewDto } from '@h2-trust/contracts/dtos';
 import {
-  DocumentEntityFixture,
+  ComponentsOverviewDtoFixture,
+  CreateProcessStepDtoFixture,
+  HydrogenComponentDtoFixture,
+  UserDetailsDtoFixture,
+} from '@h2-trust/contracts/dtos/fixtures';
+import { HydrogenComponentEntity, UnitEntity } from '@h2-trust/contracts/entities';
+import {
+  DigitalProductPassportEntityFixture,
   HydrogenBottlingUnitEntityFixture,
   HydrogenComponentEntityFixture,
   ProcessStepEntityFixture,
-  ProofOfOriginSectionEntityFixture,
-  ProofOfSustainabilityEntityFixture,
-  RedComplianceEntityFixture,
 } from '@h2-trust/contracts/entities/fixtures';
 import {
+  CreateHydrogenBottlingPayloadFixture,
   CreateProcessStepPayload,
-  CreateProcessStepQualityPayload,
   ReadByIdPayload,
   ReadProcessStepsByUnitPayload,
 } from '@h2-trust/contracts/payloads';
-import { PowerType, ProcessType, RfnboType } from '@h2-trust/domain';
+import { ProcessType } from '@h2-trust/domain';
 import { DigitalProductPassportMessagePatterns, ProcessStepMessagePatterns } from '@h2-trust/messaging';
 import { UserService } from '../user/user.service';
 import { ProcessStepService } from './process-step.service';
@@ -75,29 +77,15 @@ describe('ProcessStepService', () => {
       id: 'transportation-1',
       batch: givenPersistedBottling.batch,
     });
-    const expectedCreateQualityPayload: CreateProcessStepQualityPayload = new CreateProcessStepQualityPayload(
-      RfnboType.RFNBO_READY,
-      PowerType.RENEWABLE,
-      0,
-      0,
-      1000,
-      0,
-      0,
-      0,
-      0,
-    );
-    const expectedTransportCreatePayload: CreateProcessStepPayload = new CreateProcessStepPayload(
-      expectedCreateQualityPayload,
-      ProcessType.HYDROGEN_TRANSPORTATION,
-      givenDto.amount,
-      givenDto.recipient,
-      givenDto.recordedBy,
-      new Date(givenDto.filledAt),
-      new Date(givenDto.filledAt),
-      givenDto.executingUnitId,
-      'transport-unit-1',
-      givenFiles,
-    );
+
+    const expectedTransportCreatePayload: CreateProcessStepPayload = CreateHydrogenBottlingPayloadFixture.create({
+      amount: givenDto.amount,
+      ownerId: givenDto.recipient,
+      recordedById: givenDto.recordedBy,
+      startedAt: new Date(givenDto.filledAt),
+      endedAt: new Date(givenDto.filledAt),
+      executingUnitId: givenDto.executingUnitId,
+    });
 
     processSvcMock.send.mockImplementationOnce((_pattern, _payload) => of(expectedPersistedTransportation));
 
@@ -124,19 +112,25 @@ describe('ProcessStepService', () => {
       },
     });
     const givenUnit: UnitEntity = HydrogenBottlingUnitEntityFixture.create();
-    const expectedHydrogenComponents: HydrogenComponentEntity[] = [HydrogenComponentEntityFixture.createRfnboReady()];
+    const expectedHydrogenComponents: HydrogenComponentEntity[] = [
+      HydrogenComponentEntityFixture.createRfnboReady({
+        amount: 100,
+      }),
+    ];
     const expectedUnits = [givenUnit];
 
     const expectedComponentsOverviewDtos = [
-      new ComponentsOverviewDto(
-        givenUnit.id,
-        givenUnit.name,
-        givenUnit.unitType,
-        0,
-        expectedHydrogenComponents,
-        givenUnit.active,
-        undefined,
-      ),
+      ComponentsOverviewDtoFixture.create({
+        id: givenUnit.id,
+        name: givenUnit.name,
+        unitType: givenUnit.unitType,
+        hydrogenComposition: [
+          HydrogenComponentDtoFixture.create({
+            amount: 100,
+          }),
+        ],
+        active: givenUnit.active,
+      }),
     ];
     processSvcMock.send.mockClear();
     processSvcMock.send.mockReset();
@@ -159,20 +153,7 @@ describe('ProcessStepService', () => {
   it('should request the passport by id and map the response when reading a digital product passport', async () => {
     // arrange
     const givenPassportId = 'dpp-1';
-    const expectedPassport = new DigitalProductPassportEntity(
-      givenPassportId,
-      new Date('2025-04-07T16:00:00.000Z'),
-      'H2 Logistics',
-      10,
-      'HydroGen GmbH',
-      [HydrogenComponentEntityFixture.createRfnboReady()],
-      [DocumentEntityFixture.create()],
-      RedComplianceEntityFixture.create(),
-      ProofOfSustainabilityEntityFixture.create(),
-      [ProofOfOriginSectionEntityFixture.create()],
-      PowerType.RENEWABLE,
-      RfnboType.RFNBO_READY,
-    );
+    const expectedPassport = DigitalProductPassportEntityFixture.create();
     processSvcMock.send.mockClear();
     processSvcMock.send.mockReset();
     processSvcMock.send.mockImplementation((_pattern, _payload) => of(expectedPassport));

@@ -44,7 +44,7 @@ describe('ProcessStepController', () => {
     expect(controller).toBeDefined();
   });
 
-  it('should delegate createBottlingAndTransportation to the service when uploaded files are provided', async () => {
+  it('should delegate createProcessStep to the service when uploaded files are provided', async () => {
     // arrange
     const givenDto = CreateProcessStepDtoFixture.create();
     const givenFiles = [{ originalname: 'evidence.pdf' }] as Express.Multer.File[];
@@ -53,7 +53,7 @@ describe('ProcessStepController', () => {
     processStepServiceMock.createProcessStep.mockResolvedValue(expectedOverview);
 
     // act
-    const actualResult = await controller.createBottlingAndTransportation(givenDto, givenFiles, authenticatedUser);
+    const actualResult = await controller.createProcessStep(givenDto, givenFiles, authenticatedUser);
 
     // assert
     expect(actualResult).toEqual(expectedOverview);

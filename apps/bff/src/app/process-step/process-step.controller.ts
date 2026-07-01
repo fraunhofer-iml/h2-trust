@@ -48,7 +48,7 @@ export class ProcessStepController {
   })
   @ApiConsumes('multipart/form-data')
   @ApiBody({ type: CreateProcessStepDto })
-  createBottlingAndTransportation(
+  createProcessStep(
     @Body() dto: CreateProcessStepDto,
     @UploadedFiles() files: Express.Multer.File[],
     @KeycloakUser() authenticatedUser: AuthenticatedKCUser,

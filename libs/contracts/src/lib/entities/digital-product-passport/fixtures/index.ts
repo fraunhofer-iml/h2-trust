@@ -7,3 +7,4 @@
  */
 
 export * from './proof.fixture';
+export * from './digital-product-passport.fixture';

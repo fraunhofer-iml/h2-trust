@@ -17,3 +17,4 @@ export * from './read-paginated-process-steps-by-predecessor-types-and-company.p
 export * from './read-process-steps-by-predecessor-types-and-company.payload';
 export * from './read-process-steps-by-types-and-active-and-company.payload';
 export * from './read-process-steps-by-unit.payload';
+export * from './fixtures/index';
