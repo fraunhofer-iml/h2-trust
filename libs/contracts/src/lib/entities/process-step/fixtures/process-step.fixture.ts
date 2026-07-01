@@ -100,7 +100,7 @@ export const ProcessStepEntityFixture = {
           details: {
             rfnboType: RfnboType.NOT_SPECIFIED,
             productionPowerType: PowerType.NOT_SPECIFIED,
-            distance: overrides.batch?.details?.distance ?? 0,
+            distance: 0,
           },
         }),
       overrides.recordedBy ?? UserEntityFixture.createHydrogenUser(),

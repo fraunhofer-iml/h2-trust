@@ -30,7 +30,7 @@ export const HydrogenTransportUnitEntityFixture = {
       active: true,
       details: overrides.details ?? {
         id: 'details-1',
-        type: overrides.details?.type ?? TransportType.PIPELINE,
+        type: TransportType.PIPELINE,
         fuelType: FuelType.DIESEL,
       },
     }) as UnitEntity,
