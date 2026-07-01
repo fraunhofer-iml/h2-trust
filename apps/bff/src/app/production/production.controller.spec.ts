@@ -7,6 +7,7 @@
  */
 
 import {
+  PaginatedDataDto,
   type AccountingPeriodMatchingResultDto,
   type AuthenticatedKCUser,
   type CsvDocumentIntegrityResultDto,
@@ -59,12 +60,16 @@ describe('ProductionController', () => {
   it('should delegate readHydrogenProductionsByOwner to the service when query arguments are provided', async () => {
     // arrange
     const givenMonth = new Date('2026-05-01T00:00:00.000Z');
-    const expectedResult = ProductionOverviewDtoFixture.create();
+    const expectedResult: PaginatedDataDto<ProductionOverviewDto> = new PaginatedDataDto(
+      [ProductionOverviewDtoFixture.create()],
+      1,
+      0,
+    );
 
     productionServiceMock.readHydrogenProductionsByOwner.mockResolvedValue(expectedResult);
 
     // act
-    const actualResult = await controller.readHydrogenProductionsByOwner(
+    const actualResult: PaginatedDataDto<ProductionOverviewDto> = await controller.readHydrogenProductionsByOwner(
       authenticatedUser,
       1,
       25,

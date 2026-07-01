@@ -22,8 +22,8 @@ import {
   ProcessStepEntityFixture,
 } from '@h2-trust/contracts/entities/fixtures';
 import {
-  CreateHydrogenBottlingPayloadFixture,
   CreateProcessStepPayload,
+  CreateProcessStepPayloadFixture,
   ReadByIdPayload,
   ReadProcessStepsByUnitsPayload,
 } from '@h2-trust/contracts/payloads';
@@ -77,7 +77,7 @@ describe('ProcessStepService', () => {
       batch: givenPersistedBottling.batch,
     });
 
-    const expectedTransportCreatePayload: CreateProcessStepPayload = CreateHydrogenBottlingPayloadFixture.create({
+    const expectedTransportCreatePayload: CreateProcessStepPayload = CreateProcessStepPayloadFixture.create({
       amount: givenDto.amount,
       ownerId: givenDto.recipient,
       recordedById: givenDto.recordedBy,

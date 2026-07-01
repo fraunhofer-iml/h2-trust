@@ -13,9 +13,9 @@ import { ValidationException } from '@h2-trust/exceptions';
 
 export function validateUnitType(payload: CreateProcessStepPayload, executingUnit: UnitEntity): void {
   const allowedUnitType = ProcessTypeToUnitType[payload.processType];
-  if (executingUnit.unitType != allowedUnitType) {
+  if (executingUnit.unitType !== allowedUnitType) {
     throw new ValidationException(
-      `Executing unit has the wrong type ${executingUnit.unitType} fo process type: ${payload.processType}`,
+      `Executing unit has the wrong type ${executingUnit.unitType} for process type: ${payload.processType}`,
     );
   }
 }
@@ -26,19 +26,19 @@ export function validateEmissionData(payload: CreateProcessStepPayload, executin
     payload.processType === ProcessType.HYDROGEN_BOTTLING ||
     payload.processType === ProcessType.HYDROGEN_END_USE
   ) {
-    if (!payload.batchDetails.usedGridPower || !payload.batchDetails.usedRenewablePower) {
+    if (payload.batchDetails.usedGridPower == null || payload.batchDetails.usedRenewablePower == null) {
       throw new ValidationException(`Missing power information for process step ${payload.processType}`);
     }
   }
 
   if (payload.processType === ProcessType.HYDROGEN_BOTTLING || payload.processType === ProcessType.HYDROGEN_END_USE) {
-    if (!payload.batchDetails.compressedAir || !payload.batchDetails.nitrogenConsumption) {
+    if (payload.batchDetails.compressedAir == null || payload.batchDetails.nitrogenConsumption == null) {
       throw new ValidationException(`Missing emission information for process step ${payload.processType}`);
     }
   }
 
   if (payload.processType === ProcessType.HYDROGEN_TRANSPORTATION) {
-    if (!payload.batchDetails.distance && executingUnit.details.type === TransportType.TRAILER) {
+    if (payload.batchDetails.distance == null && executingUnit.details.type === TransportType.TRAILER) {
       throw new ValidationException(`Distance is required for transport mode [${TransportType.TRAILER}].`);
     }
   }

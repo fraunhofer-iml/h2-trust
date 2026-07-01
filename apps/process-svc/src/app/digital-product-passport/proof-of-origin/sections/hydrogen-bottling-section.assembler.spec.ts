@@ -47,7 +47,7 @@ describe('HydrogenBottlingProofOfOriginAssembler', () => {
       expect(givenBatch.emission.totalEmissionsPerKgHydrogen).toBe(0);
       expect(givenBatch.emission.basisOfCalculation).toEqual([
         'Used Grid Power: 0 kwh',
-        'Used Grid Power: 0 kwh',
+        'Used Renewable Power: 0 kwh',
         'Used Compressed Air: 0 m³',
         'Used Nitrogen: 0 kg',
       ]);

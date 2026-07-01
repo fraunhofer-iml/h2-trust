@@ -28,16 +28,6 @@ export function assembleProofOfOrigin(provenance: ProvenanceEntity): ProofOfOrig
   return proofOfOriginSectionAssemblers
     .flatMap((proofOfOriginAssembler) => proofOfOriginAssembler.assembleSection(provenance))
     .sort((a, b) => getDateForSection(a) - getDateForSection(b));
-
-  function getDateForSection(section: ProofOfOriginSectionEntity): number {
-    if (section.name === ProofOfOrigin.HYDROGEN_PRODUCTION_SECTION) {
-      return 0;
-    }
-    return section.batches.reduce(
-      (min, obj) => (obj.createdAt.getTime() < min ? obj.createdAt.getTime() : min),
-      section.batches[0]?.createdAt.getTime(),
-    );
-  }
 }
 
 export function getCompositionOfLatestSection(proofOfOrigin: ProofOfOriginSectionEntity[]): HydrogenComponentEntity[] {
@@ -49,4 +39,14 @@ export function getCompositionOfLatestSection(proofOfOrigin: ProofOfOriginSectio
   return lastProofOfOrigin && lastProofOfOrigin.batches.length > 0
     ? (lastProofOfOrigin.batches[0] as ProofOfOriginHydrogenBatchEntity).hydrogenComposition
     : [];
+}
+
+function getDateForSection(section: ProofOfOriginSectionEntity): number {
+  if (section.name === ProofOfOrigin.HYDROGEN_PRODUCTION_SECTION || section.batches.length == 0) {
+    return 0;
+  }
+  return section.batches.reduce(
+    (min, obj) => (obj.createdAt.getTime() < min ? obj.createdAt.getTime() : min),
+    section.batches[0]?.createdAt.getTime(),
+  );
 }

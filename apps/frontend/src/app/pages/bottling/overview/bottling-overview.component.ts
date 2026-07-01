@@ -25,7 +25,7 @@ import { BottlingService } from '../../../shared/services/bottling/bottling.serv
 import { UnitsService } from '../../../shared/services/units/units.service';
 
 @Component({
-  selector: 'app-processing-overview',
+  selector: 'app-bottling-overview',
   imports: [
     ReactiveFormsModule,
     CommonModule,
@@ -60,12 +60,12 @@ export class BottlingOverviewComponent implements AfterViewInit {
 
   processingQuery = injectQuery(() => ({
     queryKey: [QueryKeyPrefix.BOTTLING],
-    queryFn: async () => this.processService.getBottlings(),
+    queryFn: () => this.processService.getBottlings(),
   }));
 
-  protected readonly bottlingTableEffect = effect(async () => {
-    const data = await this.processService.getBottlings();
-    this.dataSource.data = data;
+  protected readonly bottlingTableEffect = effect(() => {
+    const data = this.processingQuery.data();
+    if (data) this.dataSource.data = data;
   });
 
   ngAfterViewInit() {

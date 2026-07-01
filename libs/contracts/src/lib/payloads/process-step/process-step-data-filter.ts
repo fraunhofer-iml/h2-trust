@@ -13,12 +13,12 @@ export class ProcessStepDataFilter {
   @IsOptional()
   @IsNumber()
   @Min(0, { message: 'page number must start at minimum 0' })
-  pageNumber: number;
+  pageNumber?: number;
 
   @IsOptional()
   @IsNumber()
   @Min(1, { message: 'page size must be at lest 1' })
-  pageSize: number;
+  pageSize?: number;
 
   @IsOptional()
   @IsString()
@@ -28,7 +28,7 @@ export class ProcessStepDataFilter {
   @IsEnum(ProcessType)
   processType?: ProcessType;
 
-  constructor(pageNumber: number, pageSize: number, processStepId?: string, processType?: ProcessType) {
+  constructor(pageNumber?: number, pageSize?: number, processStepId?: string, processType?: ProcessType) {
     this.pageNumber = pageNumber;
     this.pageSize = pageSize;
     this.processStepId = processStepId;

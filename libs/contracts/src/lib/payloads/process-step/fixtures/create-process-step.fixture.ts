@@ -9,7 +9,7 @@
 import { CreateProcessStepPayload, CreateProcessStepQualityPayloadFixture } from '@h2-trust/contracts/payloads';
 import { ProcessType } from '@h2-trust/domain';
 
-export const CreateHydrogenBottlingPayloadFixture = {
+export const CreateProcessStepPayloadFixture = {
   create: (overrides: Partial<CreateProcessStepPayload> = {}): CreateProcessStepPayload =>
     new CreateProcessStepPayload(
       overrides.batchDetails ?? CreateProcessStepQualityPayloadFixture.create(),

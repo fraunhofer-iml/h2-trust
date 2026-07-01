@@ -18,7 +18,7 @@ export class ComponentsOverviewDto {
   filling: number;
   hydrogenComposition: HydrogenComponentDto[];
   active: boolean;
-  unitDetailsType: UnitDetailsType;
+  unitDetailsType?: UnitDetailsType;
 
   constructor(
     id: string,
@@ -27,7 +27,7 @@ export class ComponentsOverviewDto {
     capacity: number,
     hydrogenComposition: HydrogenComponentDto[],
     active: boolean,
-    unitDetailsType: UnitDetailsType,
+    unitDetailsType?: UnitDetailsType,
   ) {
     this.id = id;
     this.name = name;
