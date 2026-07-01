@@ -24,17 +24,17 @@ export function buildProcessStepEntity(
   executingUnit: UnitEntity,
 ): ProcessStepEntity {
   const bottlingTypes = determinePredecessorTypes(predecessors);
-  const qualityDetails: BatchDetailsEntity = new BatchDetailsEntity(
+  const batchDetails: BatchDetailsEntity = new BatchDetailsEntity(
     null,
     bottlingTypes.combinedRfnboType,
     bottlingTypes.combinedPowerType,
-    payload.qualityDetails.usedRenewablePower,
-    payload.qualityDetails.usedGridPower,
-    payload.qualityDetails.distance,
-    payload.qualityDetails.wasteWater,
-    payload.qualityDetails.resinConsumption,
-    payload.qualityDetails.compressedAir,
-    payload.qualityDetails.nitrogenConsumption,
+    payload.batchDetails.usedRenewablePower,
+    payload.batchDetails.usedGridPower,
+    payload.batchDetails.distance,
+    payload.batchDetails.wasteWater,
+    payload.batchDetails.resinConsumption,
+    payload.batchDetails.compressedAir,
+    payload.batchDetails.nitrogenConsumption,
   );
   const batch = new BatchEntity(
     null,
@@ -46,7 +46,7 @@ export function buildProcessStepEntity(
     })) as BatchEntity[],
     [],
     { id: payload.ownerId } as CompanyEntity,
-    qualityDetails,
+    batchDetails,
   );
   return new ProcessStepEntity(
     null,

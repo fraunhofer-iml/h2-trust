@@ -123,7 +123,7 @@ function createProcessStep(accountingPeriod: AccountingPeriod, params: ProcessSt
 
   const { batchParams } = params;
 
-  const qualityDetails: BatchDetailsEntity = new BatchDetailsEntity(
+  const batchDetails: BatchDetailsEntity = new BatchDetailsEntity(
     null,
     RfnboType.NOT_SPECIFIED,
     batchParams.powerType,
@@ -138,7 +138,7 @@ function createProcessStep(accountingPeriod: AccountingPeriod, params: ProcessSt
     accountingPeriod.predecessors,
     [],
     { id: batchParams.owner } as CompanyEntity,
-    qualityDetails,
+    batchDetails,
   );
 
   return new ProcessStepEntity(

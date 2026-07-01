@@ -10,13 +10,13 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { of } from 'rxjs';
 import { BatchDetailsEntity } from '@h2-trust/contracts/entities';
 import {
+  BatchDetailsEntityFixture,
   BatchEntityFixture,
   CompanyEntityFixture,
   HydrogenProductionUnitEntityFixture,
   HydrogenStorageUnitEntityFixture,
   PowerProductionUnitEntityFixture,
   ProcessStepEntityFixture,
-  QualityDetailsEntityFixture,
 } from '@h2-trust/contracts/entities/fixtures';
 import {
   CreateHydrogenProductionStatisticsPayloadFixture,
@@ -198,13 +198,13 @@ describe('ProductionService', () => {
         batch: BatchEntityFixture.createHydrogenBatch({
           amount: 10,
           active: true,
-          details: QualityDetailsEntityFixture.create({
+          details: BatchDetailsEntityFixture.create({
             rfnboType: RfnboType.RFNBO_READY,
           }),
           predecessors: [
             BatchEntityFixture.createPowerBatch({
               amount: 4,
-              details: QualityDetailsEntityFixture.create({ productionPowerType: PowerType.RENEWABLE }),
+              details: BatchDetailsEntityFixture.create({ productionPowerType: PowerType.RENEWABLE }),
             }),
           ],
         }),
@@ -216,19 +216,19 @@ describe('ProductionService', () => {
           processStepId: 'process-step-4',
           amount: 6,
           active: true,
-          details: QualityDetailsEntityFixture.create({
+          details: BatchDetailsEntityFixture.create({
             rfnboType: RfnboType.NON_CERTIFIABLE,
           }),
           predecessors: [
             BatchEntityFixture.createPowerBatch({
               id: 'power-batch-2',
               amount: 3,
-              details: QualityDetailsEntityFixture.create({ productionPowerType: PowerType.PARTLY_RENEWABLE }),
+              details: BatchDetailsEntityFixture.create({ productionPowerType: PowerType.PARTLY_RENEWABLE }),
             }),
             BatchEntityFixture.createPowerBatch({
               id: 'power-batch-3',
               amount: 5,
-              details: QualityDetailsEntityFixture.create({ productionPowerType: PowerType.NON_RENEWABLE }),
+              details: BatchDetailsEntityFixture.create({ productionPowerType: PowerType.NON_RENEWABLE }),
             }),
           ],
         }),
@@ -240,7 +240,7 @@ describe('ProductionService', () => {
           processStepId: 'process-step-5',
           amount: 99,
           active: false,
-          details: QualityDetailsEntityFixture.create({
+          details: BatchDetailsEntityFixture.create({
             rfnboType: RfnboType.RFNBO_READY,
           }),
           predecessors: [BatchEntityFixture.createWaterBatch({ id: 'water-batch-4', amount: 7 })],

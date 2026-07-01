@@ -21,7 +21,7 @@ import {
 import { assertDefined, assertValidEnum } from '@h2-trust/utils';
 import { HydrogenComponentEntity } from '../bottling';
 import { ProcessStepEntity } from '../process-step';
-import { UnitDetailsType } from './unit-specification.type';
+import { UnitDetailsType } from './unit-details.type';
 
 export class UnitDetailsEntity {
   //shared

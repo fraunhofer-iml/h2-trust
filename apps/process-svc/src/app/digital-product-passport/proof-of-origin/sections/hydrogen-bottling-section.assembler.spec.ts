@@ -14,10 +14,10 @@ import {
   ProvenanceEntity,
 } from '@h2-trust/contracts/entities';
 import {
+  BatchDetailsEntityFixture,
   BatchEntityFixture,
   ProcessStepEntityFixture,
   ProductionChainEntityFixture,
-  QualityDetailsEntityFixture,
 } from '@h2-trust/contracts/entities/fixtures';
 import { ProcessType, ProofOfOrigin } from '@h2-trust/domain';
 import { assembleHydrogenBottlingSections } from './hydrogen-bottling-section.assembler';
@@ -69,7 +69,7 @@ describe('HydrogenBottlingProofOfOriginAssembler', () => {
           predecessors: [
             BatchEntityFixture.createHydrogenBatch({
               amount: 100,
-              details: QualityDetailsEntityFixture.create(),
+              details: BatchDetailsEntityFixture.create(),
             }),
           ],
         }),
@@ -92,7 +92,7 @@ describe('HydrogenBottlingProofOfOriginAssembler', () => {
           predecessors: [
             BatchEntityFixture.createHydrogenBatch({
               amount: 100,
-              details: QualityDetailsEntityFixture.create(),
+              details: BatchDetailsEntityFixture.create(),
             }),
           ],
         }),
@@ -118,11 +118,11 @@ describe('HydrogenBottlingProofOfOriginAssembler', () => {
           predecessors: [
             BatchEntityFixture.createHydrogenBatch({
               amount: 50,
-              details: QualityDetailsEntityFixture.create(),
+              details: BatchDetailsEntityFixture.create(),
             }),
             BatchEntityFixture.createHydrogenBatch({
               amount: 50,
-              details: QualityDetailsEntityFixture.create(),
+              details: BatchDetailsEntityFixture.create(),
             }),
           ],
         }),

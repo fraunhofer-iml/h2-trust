@@ -10,11 +10,11 @@ import { Type } from 'class-transformer';
 import { IsArray, IsDate, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString } from 'class-validator';
 import { ProcessType } from '@h2-trust/domain';
 import 'multer';
-import { CreateProcessStepQualityPayload } from './create-process-step-quality.payload';
+import { CreateBatchDetailsPayload } from './create-process-step-quality.payload';
 
 export class CreateProcessStepPayload {
   @IsNotEmpty()
-  qualityDetails: CreateProcessStepQualityPayload;
+  batchDetails: CreateBatchDetailsPayload;
 
   @IsEnum(ProcessType)
   @IsNotEmpty()
@@ -56,7 +56,7 @@ export class CreateProcessStepPayload {
   files?: Express.Multer.File[];
 
   constructor(
-    qualityDetails: CreateProcessStepQualityPayload,
+    batchDetails: CreateBatchDetailsPayload,
     processType: ProcessType,
     amount: number,
     ownerId: string,
@@ -67,7 +67,7 @@ export class CreateProcessStepPayload {
     predecessorUnitId: string,
     files?: Express.Multer.File[],
   ) {
-    this.qualityDetails = qualityDetails;
+    this.batchDetails = batchDetails;
     this.processType = processType;
     this.amount = amount;
     this.ownerId = ownerId;

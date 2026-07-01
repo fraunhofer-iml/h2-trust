@@ -174,7 +174,7 @@ export class AddBottleComponent {
     return this.hydrogenStorageQuery.data()!.filter((component) => component.unitType === selectedUnitType);
   }
 
-  isTrailerTransport() {
+  isHydrogenTrailerTransport() {
     const isTrailerTransport =
       this.bottleFormGroup.controls.executingUnit.value?.unitDetailsType == TransportType.TRAILER;
     const isHydrogenTransportation =
@@ -245,8 +245,20 @@ export class AddBottleComponent {
     const compressedAirControl = this.bottleFormGroup.controls.compressed_air;
     const nitrogenControl = this.bottleFormGroup.controls.nitrogen;
 
-    if (this.isTrailerTransport()) {
+    if (this.isHydrogenTrailerTransport()) {
       distanceControl.addValidators([Validators.required, Validators.min(1)]);
+      renewablePowerControl.removeValidators([Validators.required, Validators.min(1)]);
+      renewablePowerControl.setValue(null);
+      gridPowerControl.removeValidators([Validators.required, Validators.min(1)]);
+      gridPowerControl.setValue(null);
+      compressedAirControl.removeValidators([Validators.required, Validators.min(1)]);
+      compressedAirControl.setValue(null);
+      nitrogenControl.removeValidators([Validators.required, Validators.min(1)]);
+      nitrogenControl.setValue(null);
+    }
+    if (selectedProcessType === ProcessType.HYDROGEN_STORAGE) {
+      distanceControl.removeValidators([Validators.required, Validators.min(1)]);
+      distanceControl.setValue(null);
       renewablePowerControl.removeValidators([Validators.required, Validators.min(1)]);
       renewablePowerControl.setValue(null);
       gridPowerControl.removeValidators([Validators.required, Validators.min(1)]);

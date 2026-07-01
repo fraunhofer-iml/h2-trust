@@ -10,11 +10,11 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigurationService } from '@h2-trust/configuration';
 import { CreateProductionEntity, UnitEntity } from '@h2-trust/contracts/entities';
 import {
+  BatchDetailsEntityFixture,
   BatchEntityFixture,
   HydrogenProductionUnitEntityFixture,
   PowerProductionUnitEntityFixture,
   ProcessStepEntityFixture,
-  QualityDetailsEntityFixture,
 } from '@h2-trust/contracts/entities/fixtures';
 import { PowerType, RfnboType } from '@h2-trust/domain';
 import { DigitalProductPassportService } from '../digital-product-passport/digital-product-passport.service';
@@ -197,7 +197,7 @@ describe('ProductionCreationService', () => {
             id: 'hydrogen-batch-to-persist-1',
             processStepId: 'hydrogen-to-persist-1',
             predecessors: [expectedPersistedPowerProcessSteps[0].batch, expectedPersistedWaterProcessSteps[0].batch],
-            details: QualityDetailsEntityFixture.create({ rfnboType: RfnboType.NOT_SPECIFIED }),
+            details: BatchDetailsEntityFixture.create({ rfnboType: RfnboType.NOT_SPECIFIED }),
           }),
         }),
         ProcessStepEntityFixture.createHydrogenProduction({
@@ -206,7 +206,7 @@ describe('ProductionCreationService', () => {
             id: 'hydrogen-batch-to-persist-2',
             processStepId: 'hydrogen-to-persist-2',
             predecessors: [expectedPersistedPowerProcessSteps[1].batch, expectedPersistedWaterProcessSteps[1].batch],
-            details: QualityDetailsEntityFixture.create({ rfnboType: RfnboType.NOT_SPECIFIED }),
+            details: BatchDetailsEntityFixture.create({ rfnboType: RfnboType.NOT_SPECIFIED }),
           }),
         }),
       ];
@@ -310,7 +310,7 @@ describe('ProductionCreationService', () => {
           id: 'hydrogen-batch-to-persist',
           processStepId: 'hydrogen-to-persist',
           predecessors: [givenPersistedPower.batch, givenPersistedWater.batch],
-          details: QualityDetailsEntityFixture.create({ rfnboType: RfnboType.NOT_SPECIFIED }),
+          details: BatchDetailsEntityFixture.create({ rfnboType: RfnboType.NOT_SPECIFIED }),
         }),
       });
       const givenPersistedHydrogen = ProcessStepEntityFixture.createHydrogenProduction({
@@ -439,7 +439,7 @@ describe('ProductionCreationService', () => {
             BatchEntityFixture.createPowerBatch({ id: 'unknown-power-batch', processStepId: 'unknown-power' }),
             givenPersistedWater.batch,
           ],
-          details: QualityDetailsEntityFixture.create({ rfnboType: RfnboType.NOT_SPECIFIED }),
+          details: BatchDetailsEntityFixture.create({ rfnboType: RfnboType.NOT_SPECIFIED }),
         }),
       });
 

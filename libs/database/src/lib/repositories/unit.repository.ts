@@ -26,7 +26,7 @@ import {
   buildHydrogenStorageUnitCreateInput,
   buildHydrogenTransportUnitCreateInput,
   buildPowerProductionUnitCreateInput,
-  buildUnitCreateInputWitEmptySpecification,
+  buildUnitCreateInputWitEmptyDetails,
 } from '../create-inputs';
 import { PrismaService } from '../prisma.service';
 import { unitDeepQueryArgs } from '../query-args';
@@ -289,7 +289,7 @@ export class UnitRepository {
             },
           },
         },
-        create: buildUnitCreateInputWitEmptySpecification(payload, UnitType.COMPRESSION),
+        create: buildUnitCreateInputWitEmptyDetails(payload, UnitType.COMPRESSION),
 
         include: unitDeepQueryArgs.include,
       })
@@ -328,7 +328,7 @@ export class UnitRepository {
             },
           },
         },
-        create: buildUnitCreateInputWitEmptySpecification(payload, UnitType.END_USE),
+        create: buildUnitCreateInputWitEmptyDetails(payload, UnitType.END_USE),
 
         include: unitDeepQueryArgs.include,
       })
@@ -367,7 +367,7 @@ export class UnitRepository {
             },
           },
         },
-        create: buildUnitCreateInputWitEmptySpecification(payload, UnitType.BOTTLING),
+        create: buildUnitCreateInputWitEmptyDetails(payload, UnitType.BOTTLING),
 
         include: unitDeepQueryArgs.include,
       })

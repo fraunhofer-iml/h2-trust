@@ -16,14 +16,14 @@ export const BatchDeepDbTypeMock = <BatchDeepDbType[]>[
     owner: CompanyNestedDbTypeMock[1],
     predecessors: [],
     successors: [],
-    batchDetails: null,
+    details: null,
     processStep: null,
   },
 ];
 
 export const BatchFlatDbTypeMock = <BatchFlatDbType>{
   ...HydrogenProductionBatchSeed[0],
-  qualityDetails: {
+  details: {
     ...BatchDetailsSeed[0],
   },
 };

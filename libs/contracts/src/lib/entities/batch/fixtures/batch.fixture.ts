@@ -9,7 +9,7 @@
 import { BatchEntity } from '@h2-trust/contracts/entities';
 import { BatchType } from '@h2-trust/domain';
 import { CompanyEntityFixture } from '../../company/fixtures/company.fixture';
-import { QualityDetailsEntityFixture } from './quality-details.fixture';
+import { BatchDetailsEntityFixture } from './quality-details.fixture';
 
 export const BatchEntityFixture = {
   createPowerBatch: (overrides: Partial<BatchEntity> = {}): BatchEntity =>
@@ -21,7 +21,7 @@ export const BatchEntityFixture = {
       overrides.predecessors ?? [],
       overrides.successors ?? [],
       overrides.owner ?? CompanyEntityFixture.createPowerProducer(),
-      overrides.details ?? QualityDetailsEntityFixture.create(),
+      overrides.details ?? BatchDetailsEntityFixture.create(),
       overrides.processStepId ?? 'process-step-1',
     ),
   createWaterBatch: (overrides: Partial<BatchEntity> = {}): BatchEntity =>
@@ -33,7 +33,7 @@ export const BatchEntityFixture = {
       overrides.predecessors ?? [],
       overrides.successors ?? [],
       overrides.owner ?? CompanyEntityFixture.createPowerProducer(),
-      overrides.details ?? QualityDetailsEntityFixture.create(),
+      overrides.details ?? BatchDetailsEntityFixture.create(),
       overrides.processStepId ?? 'process-step-2',
     ),
   createHydrogenBatch: (overrides: Partial<BatchEntity> = {}): BatchEntity =>
@@ -45,7 +45,7 @@ export const BatchEntityFixture = {
       overrides.predecessors ?? [],
       overrides.successors ?? [],
       overrides.owner ?? CompanyEntityFixture.createHydrogenProducer(),
-      overrides.details ?? QualityDetailsEntityFixture.create(),
+      overrides.details ?? BatchDetailsEntityFixture.create(),
       overrides.processStepId ?? 'process-step-3',
     ),
 } as const;

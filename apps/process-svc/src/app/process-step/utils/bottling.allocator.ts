@@ -20,12 +20,12 @@ export interface BottlingAllocation {
 
 /**
  * @param processSteps All process steps (hydrogen production) of the hydrogen storage unit, i.e. all batches from which the bottling is to be created.
- * @param neededHydrogenComposition The hydrogen compositions to be produced.
+ * @param hydrogenComposition The hydrogen compositions to be produced.
  * @param hydrogenStorageUnitId The ID of the HydrogenStorage unit from which the required bottlings are to be filled.
  */
 export function allocateBottling(
   processSteps: ProcessStepEntity[],
-  neededHydrogenComposition: HydrogenComponentEntity[],
+  hydrogenComposition: HydrogenComponentEntity[],
   unitIds: string[],
 ): BottlingAllocation {
   const aggregatedBatchesForBottle: BatchEntity[] = [];
@@ -33,7 +33,7 @@ export function allocateBottling(
   const aggregatedConsumedSplitProcessSteps: ProcessStepEntity[] = [];
   const aggregatedProcessStepsForRemainingAmount: ProcessStepEntity[] = [];
 
-  for (const hydrogenComponent of neededHydrogenComposition) {
+  for (const hydrogenComponent of hydrogenComposition) {
     const { batchesForBottle, processStepsToBeSplit, consumedSplitProcessSteps, processStepsForRemainingAmount } =
       processBottlingForEachRfnboType(processSteps, hydrogenComponent.rfnboType, hydrogenComponent.amount, unitIds);
 
@@ -149,7 +149,7 @@ function assembleHydrogenProductionProcessStepForRemainingAmount(
     batch: {
       active: active,
       amount: remainingAmount,
-      qualityDetails: {
+      details: {
         rfnboType: predecessorProcessStep.batch.details.rfnboType,
         usedRenewablePower: predecessorProcessStep.batch.details.usedRenewablePower,
         usedGridPower: predecessorProcessStep.batch.details.usedGridPower,

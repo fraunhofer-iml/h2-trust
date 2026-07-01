@@ -7,5 +7,5 @@
  */
 
 export * from './unit.entity';
-export * from './unit-specification.entity';
-export * from './unit-specification.type';
+export * from './unit-details.entity';
+export * from './unit-details.type';

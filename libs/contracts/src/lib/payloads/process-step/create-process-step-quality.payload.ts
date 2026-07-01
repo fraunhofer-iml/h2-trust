@@ -10,7 +10,7 @@ import { IsEnum, IsNotEmpty, IsNumber, IsOptional, IsPositive } from 'class-vali
 import { PowerType, RfnboType } from '@h2-trust/domain';
 import 'multer';
 
-export class CreateProcessStepQualityPayload {
+export class CreateBatchDetailsPayload {
   @IsEnum(RfnboType)
   @IsNotEmpty()
   rfnboType: RfnboType;

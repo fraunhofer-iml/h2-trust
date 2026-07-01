@@ -8,10 +8,10 @@
 
 import { HydrogenComponentEntity } from '@h2-trust/contracts/entities';
 import {
+  BatchDetailsEntityFixture,
   BatchEntityFixture,
   HydrogenComponentEntityFixture,
   ProcessStepEntityFixture,
-  QualityDetailsEntityFixture,
 } from '@h2-trust/contracts/entities/fixtures';
 import { BatchType, ProcessType, RfnboType } from '@h2-trust/domain';
 import { allocateBottling } from './bottling.allocator';
@@ -25,7 +25,7 @@ describe('allocateBottling', () => {
         ProcessStepEntityFixture.createHydrogenProduction({
           batch: BatchEntityFixture.createHydrogenBatch({
             amount: 100,
-            qualityDetails: QualityDetailsEntityFixture.create(),
+            details: BatchDetailsEntityFixture.create(),
           }),
         }),
       ];
@@ -51,7 +51,7 @@ describe('allocateBottling', () => {
           batch: BatchEntityFixture.createHydrogenBatch({
             id: 'batch-1',
             amount: 50,
-            qualityDetails: QualityDetailsEntityFixture.create(),
+            details: BatchDetailsEntityFixture.create(),
           }),
         }),
         ProcessStepEntityFixture.createHydrogenProduction({
@@ -59,7 +59,7 @@ describe('allocateBottling', () => {
           batch: BatchEntityFixture.createHydrogenBatch({
             id: 'batch-2',
             amount: 50,
-            qualityDetails: QualityDetailsEntityFixture.create(),
+            details: BatchDetailsEntityFixture.create(),
           }),
         }),
       ];
@@ -82,7 +82,7 @@ describe('allocateBottling', () => {
         ProcessStepEntityFixture.createHydrogenProduction({
           batch: BatchEntityFixture.createHydrogenBatch({
             amount: 150,
-            qualityDetails: QualityDetailsEntityFixture.create(),
+            details: BatchDetailsEntityFixture.create(),
           }),
         }),
       ];
@@ -110,7 +110,7 @@ describe('allocateBottling', () => {
         ProcessStepEntityFixture.createHydrogenProduction({
           batch: BatchEntityFixture.createHydrogenBatch({
             amount: 200,
-            qualityDetails: QualityDetailsEntityFixture.create(),
+            details: BatchDetailsEntityFixture.create(),
           }),
         }),
       ];
@@ -142,7 +142,7 @@ describe('allocateBottling', () => {
           batch: BatchEntityFixture.createHydrogenBatch({
             id: 'batch-green',
             amount: 100,
-            qualityDetails: QualityDetailsEntityFixture.create(),
+            details: BatchDetailsEntityFixture.create(),
           }),
         }),
         ProcessStepEntityFixture.createHydrogenProduction({
@@ -150,7 +150,7 @@ describe('allocateBottling', () => {
           batch: BatchEntityFixture.createHydrogenBatch({
             id: 'batch-yellow',
             amount: 100,
-            qualityDetails: QualityDetailsEntityFixture.create(),
+            details: BatchDetailsEntityFixture.create(),
           }),
         }),
       ];
@@ -171,7 +171,7 @@ describe('allocateBottling', () => {
         ProcessStepEntityFixture.createHydrogenProduction({
           batch: BatchEntityFixture.createHydrogenBatch({
             amount: 50,
-            qualityDetails: QualityDetailsEntityFixture.create(),
+            details: BatchDetailsEntityFixture.create(),
           }),
         }),
       ];
@@ -193,7 +193,7 @@ describe('allocateBottling', () => {
         ProcessStepEntityFixture.createHydrogenProduction({
           batch: BatchEntityFixture.createHydrogenBatch({
             amount: 100,
-            qualityDetails: QualityDetailsEntityFixture.create(),
+            details: BatchDetailsEntityFixture.create(),
           }),
         }),
       ];

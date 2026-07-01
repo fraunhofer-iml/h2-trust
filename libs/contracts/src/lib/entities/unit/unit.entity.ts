@@ -10,7 +10,7 @@ import { UnitDeepDbType, UnitNestedDbType } from '@h2-trust/database';
 import { UnitType } from '@h2-trust/domain';
 import { AddressEntity } from '../address';
 import { CompanyEntity } from '../company';
-import { UnitDetailsEntity } from './unit-specification.entity';
+import { UnitDetailsEntity } from './unit-details.entity';
 
 export class UnitEntity {
   id: string;

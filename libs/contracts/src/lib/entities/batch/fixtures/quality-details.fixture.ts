@@ -9,7 +9,7 @@
 import { BatchDetailsEntity } from '@h2-trust/contracts/entities';
 import { PowerType, RfnboType } from '@h2-trust/domain';
 
-export const QualityDetailsEntityFixture = {
+export const BatchDetailsEntityFixture = {
   create: (overrides: Partial<BatchDetailsEntity> = {}): BatchDetailsEntity =>
     new BatchDetailsEntity(
       overrides.id ?? 'quality-details-1',

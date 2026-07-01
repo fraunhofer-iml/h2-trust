@@ -11,16 +11,16 @@ import { of } from 'rxjs';
 import { ConfigurationService } from '@h2-trust/configuration';
 import { DocumentEntity, HydrogenComponentEntity } from '@h2-trust/contracts/entities';
 import {
+  BatchDetailsEntityFixture,
   BatchEntityFixture,
   HydrogenBottlingUnitEntityFixture,
   ProcessStepEntityFixture,
-  QualityDetailsEntityFixture,
 } from '@h2-trust/contracts/entities/fixtures';
 import {
+  CreateBatchDetailsPayload,
   CreateHydrogenProductionStatisticsPayload,
   CreateManyProcessStepsPayload,
   CreateProcessStepPayload,
-  CreateProcessStepQualityPayload,
   ProductionDataFilter,
   ReadPaginatedProcessStepsByPredecessorTypesAndOwnerPayload,
   ReadProcessStepsByTypesAndActiveAndOwnerPayload,
@@ -118,7 +118,7 @@ describe('ProcessStepService', () => {
 
   describe('createHydrogenBottlingProcessStep', () => {
     it(`should create a bottling process step when called`, async () => {
-      const qualityDetails: CreateProcessStepQualityPayload = new CreateProcessStepQualityPayload(
+      const batchDetails: CreateBatchDetailsPayload = new CreateBatchDetailsPayload(
         RfnboType.RFNBO_READY,
         PowerType.NOT_SPECIFIED,
         100,
@@ -131,7 +131,7 @@ describe('ProcessStepService', () => {
       );
       // arrange
       const givenPayload = new CreateProcessStepPayload(
-        qualityDetails,
+        batchDetails,
         ProcessType.HYDROGEN_BOTTLING,
         100,
         'company-1',
@@ -145,7 +145,7 @@ describe('ProcessStepService', () => {
       const givenStorageProcessStep = ProcessStepEntityFixture.createHydrogenProduction({
         batch: BatchEntityFixture.createHydrogenBatch({
           amount: 100,
-          details: QualityDetailsEntityFixture.create(),
+          details: BatchDetailsEntityFixture.create(),
         }),
       });
 
@@ -182,7 +182,7 @@ describe('ProcessStepService', () => {
 
     it('should create a bottling process step for non-certifiable hydrogen when using the computed composition', async () => {
       // arrange
-      const qualityDetails: CreateProcessStepQualityPayload = new CreateProcessStepQualityPayload(
+      const batchDetails: CreateBatchDetailsPayload = new CreateBatchDetailsPayload(
         RfnboType.NON_CERTIFIABLE,
         PowerType.NOT_SPECIFIED,
         100,
@@ -195,7 +195,7 @@ describe('ProcessStepService', () => {
       );
       // arrange
       const givenPayload = new CreateProcessStepPayload(
-        qualityDetails,
+        batchDetails,
         ProcessType.HYDROGEN_BOTTLING,
         50,
         'owner-1',
@@ -212,7 +212,7 @@ describe('ProcessStepService', () => {
           id: 'storage-batch-1',
           processStepId: 'storage-process-step-1',
           amount: 50,
-          details: QualityDetailsEntityFixture.create({ rfnboType: RfnboType.RFNBO_READY }),
+          details: BatchDetailsEntityFixture.create({ rfnboType: RfnboType.RFNBO_READY }),
         }),
       });
       const givenNonCertifiableStorageProcessStep = ProcessStepEntityFixture.createHydrogenProduction({
@@ -221,7 +221,7 @@ describe('ProcessStepService', () => {
           id: 'storage-batch-2',
           processStepId: 'storage-process-step-2',
           amount: 50,
-          details: QualityDetailsEntityFixture.create({ rfnboType: RfnboType.NON_CERTIFIABLE }),
+          details: BatchDetailsEntityFixture.create({ rfnboType: RfnboType.NON_CERTIFIABLE }),
         }),
       });
       const givenConsumedSplitReadyProcessStep = ProcessStepEntityFixture.createHydrogenProduction({
@@ -231,7 +231,7 @@ describe('ProcessStepService', () => {
           processStepId: 'consumed-split-ready',
           amount: 25,
           predecessors: [givenRfnboReadyStorageProcessStep.batch],
-          details: QualityDetailsEntityFixture.create({ rfnboType: RfnboType.RFNBO_READY }),
+          details: BatchDetailsEntityFixture.create({ rfnboType: RfnboType.RFNBO_READY }),
         }),
       });
       const givenConsumedSplitNonCertifiableProcessStep = ProcessStepEntityFixture.createHydrogenProduction({
@@ -241,7 +241,7 @@ describe('ProcessStepService', () => {
           processStepId: 'consumed-split-non-certifiable',
           amount: 25,
           predecessors: [givenNonCertifiableStorageProcessStep.batch],
-          details: QualityDetailsEntityFixture.create({ rfnboType: RfnboType.NON_CERTIFIABLE }),
+          details: BatchDetailsEntityFixture.create({ rfnboType: RfnboType.NON_CERTIFIABLE }),
         }),
       });
       const givenRemainingReadyProcessStep = ProcessStepEntityFixture.createHydrogenProduction({
@@ -250,7 +250,7 @@ describe('ProcessStepService', () => {
           id: 'remaining-ready-batch',
           processStepId: 'remaining-ready',
           amount: 25,
-          details: QualityDetailsEntityFixture.create({ rfnboType: RfnboType.RFNBO_READY }),
+          details: BatchDetailsEntityFixture.create({ rfnboType: RfnboType.RFNBO_READY }),
         }),
       });
       const givenRemainingNonCertifiableProcessStep = ProcessStepEntityFixture.createHydrogenProduction({
@@ -259,7 +259,7 @@ describe('ProcessStepService', () => {
           id: 'remaining-non-certifiable-batch',
           processStepId: 'remaining-non-certifiable',
           amount: 25,
-          details: QualityDetailsEntityFixture.create({ rfnboType: RfnboType.NON_CERTIFIABLE }),
+          details: BatchDetailsEntityFixture.create({ rfnboType: RfnboType.NON_CERTIFIABLE }),
         }),
       });
       const givenCreatedBottlingProcessStep = ProcessStepEntityFixture.createHydrogenBottling();
@@ -304,7 +304,7 @@ describe('ProcessStepService', () => {
 
     it('should throw error when no process steps found in storage unit', async () => {
       // arrange
-      const qualityDetails: CreateProcessStepQualityPayload = new CreateProcessStepQualityPayload(
+      const batchDetails: CreateBatchDetailsPayload = new CreateBatchDetailsPayload(
         RfnboType.RFNBO_READY,
         PowerType.NOT_SPECIFIED,
         100,
@@ -317,7 +317,7 @@ describe('ProcessStepService', () => {
       );
       // arrange
       const givenPayload = new CreateProcessStepPayload(
-        qualityDetails,
+        batchDetails,
         ProcessType.HYDROGEN_BOTTLING,
         100,
         'owner-1',
@@ -341,7 +341,7 @@ describe('ProcessStepService', () => {
     it('should throw when uploaded file has no buffer', async () => {
       // arrange
       const givenFile = { originalname: 'test.pdf' } as Express.Multer.File;
-      const qualityDetails: CreateProcessStepQualityPayload = new CreateProcessStepQualityPayload(
+      const batchDetails: CreateBatchDetailsPayload = new CreateBatchDetailsPayload(
         RfnboType.RFNBO_READY,
         PowerType.NOT_SPECIFIED,
         100,
@@ -354,7 +354,7 @@ describe('ProcessStepService', () => {
       );
       // arrange
       const givenPayload = new CreateProcessStepPayload(
-        qualityDetails,
+        batchDetails,
         ProcessType.HYDROGEN_BOTTLING,
         100,
         'owner-1',
@@ -369,7 +369,7 @@ describe('ProcessStepService', () => {
       const givenStorageProcessStep = ProcessStepEntityFixture.createHydrogenProduction({
         batch: BatchEntityFixture.createHydrogenBatch({
           amount: 100,
-          details: QualityDetailsEntityFixture.create(),
+          details: BatchDetailsEntityFixture.create(),
         }),
       });
       const givenCreatedBottlingProcessStep = ProcessStepEntityFixture.createHydrogenBottling();
@@ -389,7 +389,7 @@ describe('ProcessStepService', () => {
     it('should upload files when provided in the payload', async () => {
       // arrange
       const givenFile = { originalname: 'test.pdf', buffer: Buffer.from('test') } as Express.Multer.File;
-      const qualityDetails: CreateProcessStepQualityPayload = new CreateProcessStepQualityPayload(
+      const batchDetails: CreateBatchDetailsPayload = new CreateBatchDetailsPayload(
         RfnboType.RFNBO_READY,
         PowerType.NOT_SPECIFIED,
         100,
@@ -402,7 +402,7 @@ describe('ProcessStepService', () => {
       );
       // arrange
       const givenPayload = new CreateProcessStepPayload(
-        qualityDetails,
+        batchDetails,
         ProcessType.HYDROGEN_BOTTLING,
         100,
         'owner-1',
@@ -417,7 +417,7 @@ describe('ProcessStepService', () => {
       const givenStorageProcessStep = ProcessStepEntityFixture.createHydrogenProduction({
         batch: BatchEntityFixture.createHydrogenBatch({
           amount: 100,
-          details: QualityDetailsEntityFixture.create(),
+          details: BatchDetailsEntityFixture.create(),
         }),
       });
 

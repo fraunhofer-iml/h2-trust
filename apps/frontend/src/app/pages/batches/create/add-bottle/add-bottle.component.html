@@ -107,7 +107,7 @@
       <div class="grid grid-cols-2 gap-2 rounded-lg bg-white p-4" [formGroup]="bottleFormGroup">
         <span class="col-span-2 text-neutral-700"> Emission Information </span>
 
-        @if (isTrailerTransport()) {
+        @if (isHydrogenTrailerTransport()) {
           <mat-form-field appearance="outline">
             <mat-label>Distance (km)</mat-label>
             <input
@@ -207,7 +207,7 @@
 
   <div class="col-span-2 mt-4 grid grid-cols-2 gap-2 rounded-lg bg-white p-4" [formGroup]="bottleFormGroup">
     <div class="col-span-2 flex justify-end gap-2">
-      <button mat-flat-button (click)="createBottleData()" [disabled]="!bottleFormGroup.valid">Add Process Step</button>
+      <button mat-flat-button (click)="createBottleData()" [disabled]="!bottleFormGroup.valid">Add Batch</button>
     </div>
   </div>
 </div>

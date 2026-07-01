@@ -8,11 +8,11 @@
 
 import { BatchEntity, UnitEntity } from '@h2-trust/contracts/entities';
 import {
+  BatchDetailsEntityFixture,
   BatchEntityFixture,
   HydrogenBottlingUnitEntityFixture,
-  QualityDetailsEntityFixture,
 } from '@h2-trust/contracts/entities/fixtures';
-import { CreateProcessStepPayload, CreateProcessStepQualityPayload } from '@h2-trust/contracts/payloads';
+import { CreateBatchDetailsPayload, CreateProcessStepPayload } from '@h2-trust/contracts/payloads';
 import { PowerType, ProcessType, RfnboType } from '@h2-trust/domain';
 import { buildProcessStepEntity } from './bottling.assembler';
 
@@ -20,7 +20,7 @@ describe('BottlingAssembler', () => {
   describe('assembleBottling', () => {
     it('should assemble process step entity from payload and predecessor batches when called', () => {
       // arrange
-      const qualityDetails: CreateProcessStepQualityPayload = new CreateProcessStepQualityPayload(
+      const batchDetails: CreateBatchDetailsPayload = new CreateBatchDetailsPayload(
         RfnboType.RFNBO_READY,
         PowerType.NOT_SPECIFIED,
         100,
@@ -33,7 +33,7 @@ describe('BottlingAssembler', () => {
       );
 
       const givenPayload = new CreateProcessStepPayload(
-        qualityDetails,
+        batchDetails,
         ProcessType.HYDROGEN_BOTTLING,
         100,
         'company-1',
@@ -47,7 +47,7 @@ describe('BottlingAssembler', () => {
       const executingUnit: UnitEntity = HydrogenBottlingUnitEntityFixture.create();
 
       const givenBatchesForBottle = [
-        BatchEntityFixture.createHydrogenBatch({ qualityDetails: QualityDetailsEntityFixture.create() }),
+        BatchEntityFixture.createHydrogenBatch({ details: BatchDetailsEntityFixture.create() }),
       ];
 
       // act
@@ -67,7 +67,7 @@ describe('BottlingAssembler', () => {
 
     it(`should determine all predecessors when called`, () => {
       // arrange
-      const qualityDetails: CreateProcessStepQualityPayload = new CreateProcessStepQualityPayload(
+      const batchDetails: CreateBatchDetailsPayload = new CreateBatchDetailsPayload(
         RfnboType.RFNBO_READY,
         PowerType.NOT_SPECIFIED,
         100,
@@ -80,7 +80,7 @@ describe('BottlingAssembler', () => {
       );
 
       const givenPayload = new CreateProcessStepPayload(
-        qualityDetails,
+        batchDetails,
         ProcessType.HYDROGEN_BOTTLING,
         100,
         'company-1',
@@ -93,11 +93,11 @@ describe('BottlingAssembler', () => {
       const givenBatchesForBottle = [
         BatchEntityFixture.createHydrogenBatch({
           id: 'batch-1',
-          qualityDetails: QualityDetailsEntityFixture.create(),
+          details: BatchDetailsEntityFixture.create(),
         }),
         BatchEntityFixture.createHydrogenBatch({
           id: 'batch-2',
-          qualityDetails: QualityDetailsEntityFixture.create(),
+          details: BatchDetailsEntityFixture.create(),
         }),
       ];
       const executingUnit: UnitEntity = HydrogenBottlingUnitEntityFixture.create();
@@ -113,7 +113,7 @@ describe('BottlingAssembler', () => {
 
     it('should throw exception when no predecessor batches provided', () => {
       // arrange
-      const qualityDetails: CreateProcessStepQualityPayload = new CreateProcessStepQualityPayload(
+      const batchDetails: CreateBatchDetailsPayload = new CreateBatchDetailsPayload(
         RfnboType.RFNBO_READY,
         PowerType.NOT_SPECIFIED,
         100,
@@ -126,7 +126,7 @@ describe('BottlingAssembler', () => {
       );
 
       const givenPayload = new CreateProcessStepPayload(
-        qualityDetails,
+        batchDetails,
         ProcessType.HYDROGEN_BOTTLING,
         100,
         'company-1',

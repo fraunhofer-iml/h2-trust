@@ -12,7 +12,7 @@ import { ProcessType } from '@h2-trust/domain';
 export const CreateHydrogenBottlingPayloadFixture = {
   create: (overrides: Partial<CreateProcessStepPayload> = {}): CreateProcessStepPayload =>
     new CreateProcessStepPayload(
-      overrides.qualityDetails ?? CreateProcessStepQualityPayloadFixture.create(),
+      overrides.batchDetails ?? CreateProcessStepQualityPayloadFixture.create(),
       overrides.processType ?? ProcessType.HYDROGEN_TRANSPORTATION,
       overrides.amount ?? 0,
       overrides.ownerId ?? '',

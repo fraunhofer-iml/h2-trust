@@ -28,8 +28,8 @@ import {
   UnitEntity,
 } from '@h2-trust/contracts/entities';
 import {
+  CreateBatchDetailsPayload,
   CreateProcessStepPayload,
-  CreateProcessStepQualityPayload,
   ProcessStepDataFilter,
   ReadByIdPayload,
   ReadByOwnerIdAndTypePayload,
@@ -59,7 +59,7 @@ export class ProcessStepService {
     files: Express.Multer.File[],
     userId: string,
   ): Promise<ProcessStepOverviewDto> {
-    const qualityDetails: CreateProcessStepQualityPayload = new CreateProcessStepQualityPayload(
+    const details: CreateBatchDetailsPayload = new CreateBatchDetailsPayload(
       dto.details.rfnboType,
       dto.details.productionPowerType,
       dto.details.usedRenewablePower,
@@ -71,7 +71,7 @@ export class ProcessStepService {
       dto.details.nitrogenConsumption,
     );
     const bottlingPayload: CreateProcessStepPayload = new CreateProcessStepPayload(
-      qualityDetails,
+      details,
       dto.processType,
       dto.amount,
       dto.recipient,

@@ -6,12 +6,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { CreateProcessStepQualityPayload } from '@h2-trust/contracts/payloads';
+import { CreateBatchDetailsPayload } from '@h2-trust/contracts/payloads';
 import { PowerType, RfnboType } from '@h2-trust/domain';
 
 export const CreateProcessStepQualityPayloadFixture = {
-  create: (overrides: Partial<CreateProcessStepQualityPayload> = {}): CreateProcessStepQualityPayload =>
-    new CreateProcessStepQualityPayload(
+  create: (overrides: Partial<CreateBatchDetailsPayload> = {}): CreateBatchDetailsPayload =>
+    new CreateBatchDetailsPayload(
       overrides.rfnboType ?? RfnboType.RFNBO_READY,
       overrides.productionPowerType ?? PowerType.RENEWABLE,
       overrides.usedRenewablePower ?? 0,

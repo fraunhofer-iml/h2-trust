@@ -107,7 +107,7 @@ export function buildHydrogenTransportUnitCreateInput(
   });
 }
 
-export function buildUnitCreateInputWitEmptySpecification(
+export function buildUnitCreateInputWitEmptyDetails(
   payload: CreateHydrogenCompressorUnitPayload | CreateHydrogenEndUseUnitPayload | CreateHydrogenBottlingUnitPayload,
   unitType: UnitType,
 ): Prisma.UnitCreateInput {

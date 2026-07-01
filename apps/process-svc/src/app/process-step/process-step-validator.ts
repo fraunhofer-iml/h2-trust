@@ -26,19 +26,19 @@ export function validateEmissionData(payload: CreateProcessStepPayload, executin
     payload.processType === ProcessType.HYDROGEN_BOTTLING ||
     payload.processType === ProcessType.HYDROGEN_END_USE
   ) {
-    if (!payload.qualityDetails.usedGridPower || !payload.qualityDetails.usedRenewablePower) {
+    if (!payload.batchDetails.usedGridPower || !payload.batchDetails.usedRenewablePower) {
       throw new ValidationException(`Missing power information for process step ${payload.processType}`);
     }
   }
 
   if (payload.processType === ProcessType.HYDROGEN_BOTTLING || payload.processType === ProcessType.HYDROGEN_END_USE) {
-    if (!payload.qualityDetails.compressedAir || !payload.qualityDetails.nitrogenConsumption) {
+    if (!payload.batchDetails.compressedAir || !payload.batchDetails.nitrogenConsumption) {
       throw new ValidationException(`Missing emission information for process step ${payload.processType}`);
     }
   }
 
   if (payload.processType === ProcessType.HYDROGEN_TRANSPORTATION) {
-    if (!payload.qualityDetails.distance && executingUnit.details.type === TransportType.TRAILER) {
+    if (!payload.batchDetails.distance && executingUnit.details.type === TransportType.TRAILER) {
       throw new ValidationException(`Distance is required for transport mode [${TransportType.TRAILER}].`);
     }
   }

@@ -85,7 +85,7 @@ export class ProcessStepService {
       predecessorCandidateComponents,
       payload.amount,
       [],
-      payload.qualityDetails.rfnboType,
+      payload.batchDetails.rfnboType,
     );
 
     //the process steps that should be used as predecessor and those which should be split
