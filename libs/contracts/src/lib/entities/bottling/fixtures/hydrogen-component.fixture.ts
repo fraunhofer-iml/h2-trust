@@ -15,11 +15,13 @@ export const HydrogenComponentEntityFixture = {
       overrides.processId ?? '',
       overrides.amount ?? 100,
       overrides.rfnboType ?? RfnboType.RFNBO_READY,
+      overrides.unitId ?? '',
     ),
   createNonCertifiable: (overrides: Partial<HydrogenComponentEntity> = {}): HydrogenComponentEntity =>
     new HydrogenComponentEntity(
       overrides.processId ?? '',
       overrides.amount ?? 100,
       overrides.rfnboType ?? RfnboType.NON_CERTIFIABLE,
+      overrides.unitId ?? '',
     ),
 } as const;

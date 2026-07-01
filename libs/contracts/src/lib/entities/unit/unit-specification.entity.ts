@@ -109,6 +109,7 @@ export class UnitDetailsEntity {
           processStep?.id ?? null,
           processStep?.batch?.amount ?? 0,
           processStep.batch?.details?.rfnboType,
+          processStep.executedBy.unitType,
         );
       }) ?? []
     );

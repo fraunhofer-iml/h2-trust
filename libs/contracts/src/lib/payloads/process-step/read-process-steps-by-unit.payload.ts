@@ -6,27 +6,16 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ArrayNotEmpty, IsArray, IsBoolean, IsNotEmpty, IsString } from 'class-validator';
+import { ArrayNotEmpty, IsArray, IsNotEmpty, IsString } from 'class-validator';
 
-export class ReadProcessStepsByUnitPayload {
+export class ReadProcessStepsByUnitsPayload {
   @IsArray()
   @IsString({ each: true })
-  @IsNotEmpty({ each: true })
   @ArrayNotEmpty()
   @IsNotEmpty()
-  unitTypes: string[];
+  unitIds: string[];
 
-  @IsBoolean()
-  @IsNotEmpty()
-  active: boolean;
-
-  @IsString()
-  @IsNotEmpty()
-  ownerId: string;
-
-  constructor(unitTypes: string[], active: boolean, ownerId: string) {
-    this.unitTypes = unitTypes;
-    this.active = active;
-    this.ownerId = ownerId;
+  constructor(unitIds: string[]) {
+    this.unitIds = unitIds;
   }
 }

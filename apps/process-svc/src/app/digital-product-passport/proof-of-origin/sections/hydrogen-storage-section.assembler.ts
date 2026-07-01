@@ -33,6 +33,7 @@ function assembleHydrogenStorageBatch(
         processId: null,
         amount: hydrogenStorage.batch.amount,
         rfnboType: hydrogenStorage.batch?.details?.rfnboType,
+        unitId: hydrogenStorage.executedBy.id,
       },
     ],
     producer: hydrogenStorage.batch.owner?.name,

@@ -14,7 +14,7 @@ import {
   ReadPaginatedProcessStepsByPredecessorTypesAndOwnerPayload,
   ReadPaginatedProcessStepsPayload,
   ReadProcessStepsByTypesAndActiveAndOwnerPayload,
-  ReadProcessStepsByUnitPayload,
+  ReadProcessStepsByUnitsPayload,
 } from '@h2-trust/contracts/payloads';
 import { ProcessStepMessagePatterns } from '@h2-trust/messaging';
 import { ProcessStepService } from './process-step.service';
@@ -35,9 +35,9 @@ export class ProcessStepController {
     return this.processStepService.readProcessStepsByTypesAndActiveAndOwner(payload);
   }
 
-  @MessagePattern(ProcessStepMessagePatterns.READ_ALL_BY_UNIT)
-  readProcessStepsByUnit(payload: ReadProcessStepsByUnitPayload): Promise<HydrogenComponentEntity[]> {
-    return this.processStepService.readAllHydrogenComponentsFromUnits(payload.unitTypes);
+  @MessagePattern(ProcessStepMessagePatterns.READ_ALL_BY_UNITS)
+  readProcessStepsByUnit(payload: ReadProcessStepsByUnitsPayload): Promise<HydrogenComponentEntity[]> {
+    return this.processStepService.readAllHydrogenComponentsFromUnits(payload.unitIds);
   }
 
   @MessagePattern(ProcessStepMessagePatterns.READ_PRODUCTION_PAGINATION)

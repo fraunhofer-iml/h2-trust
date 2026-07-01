@@ -34,6 +34,7 @@ export function assembleComposition(
           '',
           hydrogenLeafProduction.batch.amount,
           hydrogenLeafProduction.batch.details?.rfnboType ?? RfnboType.NOT_SPECIFIED,
+          hydrogenLeafProduction.executedBy.id,
         ),
     );
 
@@ -73,11 +74,11 @@ export function computeHydrogenComposition(
     );
   }
   if (rfnboType === RfnboType.RFNBO_READY) {
-    return [new HydrogenComponentEntity(null, bottleAmount, RfnboType.RFNBO_READY)];
+    return [new HydrogenComponentEntity(null, bottleAmount, RfnboType.RFNBO_READY, null)];
   }
   return mergedHydrogenComponents.map(
-    ({ processId, amount, rfnboType }) =>
-      new HydrogenComponentEntity(processId, (bottleAmount * amount) / totalAmount, rfnboType),
+    ({ processId, amount, rfnboType, unitId }) =>
+      new HydrogenComponentEntity(processId, (bottleAmount * amount) / totalAmount, rfnboType, unitId),
   );
 }
 
@@ -98,12 +99,13 @@ function mergeSingleComponent(
       null,
       matchingComponent.amount + componentToMerge.amount,
       matchingComponent.rfnboType,
+      matchingComponent.unitId,
     );
     return combinedComponents.map((c) => (c.rfnboType === componentToMerge.rfnboType ? updatedComponent : c));
   }
 
   return [
     ...combinedComponents,
-    new HydrogenComponentEntity(null, componentToMerge.amount, componentToMerge.rfnboType),
+    new HydrogenComponentEntity(null, componentToMerge.amount, componentToMerge.rfnboType, componentToMerge.unitId),
   ];
 }

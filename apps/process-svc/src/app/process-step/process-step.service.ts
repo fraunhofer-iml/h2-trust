@@ -77,6 +77,7 @@ export class ProcessStepService {
       processId: processStep.id,
       amount: processStep.batch.amount,
       rfnboType: processStep.batch.details.rfnboType,
+      unitId: processStep.executedBy.id,
     }));
 
     //calculate the needed amount of each rfnbo typed hydrogen
@@ -218,7 +219,12 @@ export class ProcessStepService {
 
     return processSteps.map(
       (processStep) =>
-        new HydrogenComponentEntity(processStep.id, processStep.batch.amount, processStep.batch.details.rfnboType),
+        new HydrogenComponentEntity(
+          processStep.id,
+          processStep.batch.amount,
+          processStep.batch.details.rfnboType,
+          processStep.executedBy.id,
+        ),
     );
   }
 
