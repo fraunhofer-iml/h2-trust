@@ -22,10 +22,14 @@ import {
 import { ProcessType } from '@h2-trust/domain';
 import { CreateProcessStepDetailsDto } from './create-process-step-details.dto';
 
-//TODO-LG: update swagger annotation
 export class CreateProcessStepDto {
   @IsEnum(ProcessType)
   @IsNotEmpty()
+  @ApiProperty({
+    enum: ProcessType,
+    example: 'POWER_PRODUCTION',
+    description: 'Process type',
+  })
   processType: ProcessType;
 
   @IsNotEmpty()
@@ -63,10 +67,19 @@ export class CreateProcessStepDto {
 
   @IsString()
   @IsNotEmpty()
+  @ApiProperty({
+    example: 'unit-id-1',
+    description: 'ID of the unit that executed the process',
+  })
   executingUnitId: string;
 
   @IsString()
   @IsNotEmpty()
+  @ApiProperty({
+    example: 'unit-id-1',
+    description:
+      'ID of the unit that executed the processes that should be used as predecessors for the new process step',
+  })
   predecessorUnitId: string;
 
   @IsArray()

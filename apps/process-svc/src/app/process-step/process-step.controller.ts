@@ -25,7 +25,7 @@ export class ProcessStepController {
 
   @MessagePattern(ProcessStepMessagePatterns.CREATE_PROCESS_STEP)
   createGenericProcessStep(payload: CreateProcessStepPayload): Promise<ProcessStepEntity> {
-    return this.processStepService.createGenericProcessStep(payload);
+    return this.processStepService.createProcessStep(payload);
   }
 
   @MessagePattern(ProcessStepMessagePatterns.READ_ALL_BY_TYPES_AND_ACTIVE_AND_OWNER)

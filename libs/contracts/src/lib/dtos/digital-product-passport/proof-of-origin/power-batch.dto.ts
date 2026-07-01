@@ -33,7 +33,6 @@ export class PowerBatchDto extends DppBatchDto {
     this.producer = producer;
     this.unitId = unitId;
     this.powerProductionType = powerProductionType;
-    this.powerProductionType = powerProductionType;
     this.accountingPeriodEnd = accountingPeriodEnd;
     this.powerType = powerType;
   }

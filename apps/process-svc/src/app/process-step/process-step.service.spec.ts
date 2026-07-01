@@ -168,7 +168,7 @@ describe('ProcessStepService', () => {
       processStepRepositoryMock.insertProcessStep.mockResolvedValue(givenProcessStep);
 
       // act
-      const actualResult = await service.createGenericProcessStep(givenPayload);
+      const actualResult = await service.createProcessStep(givenPayload);
 
       // assert
       expect(processStepRepositoryMock.findAllProcessStepsFromUnits).toHaveBeenCalledWith([
@@ -280,7 +280,7 @@ describe('ProcessStepService', () => {
       processStepRepositoryMock.findProcessStep.mockResolvedValue(givenCreatedBottlingProcessStep);
 
       // act
-      const actualResult = await service.createGenericProcessStep(givenPayload);
+      const actualResult = await service.createProcessStep(givenPayload);
 
       // assert
       expect(batchRepositoryMock.setBatchesInactive).toHaveBeenCalledWith([
@@ -335,7 +335,7 @@ describe('ProcessStepService', () => {
       const expectedErrorMessage = `No process steps found in unit '${givenPayload.predecessorUnitId}'`;
 
       // act & assert
-      await expect(service.createGenericProcessStep(givenPayload)).rejects.toThrow(expectedErrorMessage);
+      await expect(service.createProcessStep(givenPayload)).rejects.toThrow(expectedErrorMessage);
     });
 
     it('should throw when uploaded file has no buffer', async () => {
@@ -381,7 +381,7 @@ describe('ProcessStepService', () => {
       processStepRepositoryMock.insertProcessStep.mockResolvedValue(givenCreatedBottlingProcessStep);
 
       // act & assert
-      await expect(service.createGenericProcessStep(givenPayload)).rejects.toThrow('file.buffer');
+      await expect(service.createProcessStep(givenPayload)).rejects.toThrow('file.buffer');
       expect(storageServiceMock.uploadFile).not.toHaveBeenCalled();
       expect(documentRepositoryMock.addDocumentToProcessStep).not.toHaveBeenCalled();
     });
@@ -436,7 +436,7 @@ describe('ProcessStepService', () => {
       generalSvcMock.send.mockReturnValueOnce(of(givenExecutingUnit));
 
       // act
-      await service.createGenericProcessStep(givenPayload);
+      await service.createProcessStep(givenPayload);
 
       // assert
       expect(storageServiceMock.uploadFile).toHaveBeenCalledWith(
@@ -486,7 +486,7 @@ describe('ProcessStepService', () => {
       processStepRepositoryMock.insertManyProcessSteps.mockResolvedValue(givenProcessSteps);
 
       // act
-      const actualResult = await service.createManyProcessSteps(givenPayload);
+      const actualResult = await service.saveManyProcessSteps(givenPayload);
 
       // assert
       expect(processStepRepositoryMock.insertManyProcessSteps).toHaveBeenCalledWith(givenProcessSteps);

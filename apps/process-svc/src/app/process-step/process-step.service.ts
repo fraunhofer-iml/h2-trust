@@ -51,17 +51,15 @@ export class ProcessStepService {
     @Inject(QUEUE_GENERAL_SVC) private readonly generalSvc: ClientProxy,
   ) {}
 
-  public async createGenericProcessStep(payload: CreateProcessStepPayload): Promise<ProcessStepEntity> {
-    //Get executing unit
+  public async createProcessStep(payload: CreateProcessStepPayload): Promise<ProcessStepEntity> {
     const executingUnit: UnitEntity = await firstValueFrom(
       this.generalSvc.send(UnitMessagePatterns.READ_BY_ID, new ReadByIdPayload(payload.executingUnitId)),
     );
 
-    //validate input for new process step
     validateUnitType(payload, executingUnit);
     validateEmissionData(payload, executingUnit);
 
-    //the unit id from which the predecessors of the new process step should be used
+    //retrieve the process steps that are potential candidates for the predecessor of the new process step
     const unitIdOfPredecessors: string = payload.predecessorUnitId;
     const predecessorCandidates: ProcessStepEntity[] = await this.readAllProcessStepsFromUnits([unitIdOfPredecessors]);
     if (predecessorCandidates.length === 0) {
@@ -70,9 +68,6 @@ export class ProcessStepService {
         `No process steps found in unit '${unitIdOfPredecessors}'`,
       );
     }
-
-    //all candidates from the given unit as Hydrogen Components
-    //needed for the case that the hydrogen is not enough
     const predecessorCandidateComponents: HydrogenComponentEntity[] = predecessorCandidates.map((processStep) => ({
       processId: processStep.id,
       amount: processStep.batch.amount,
@@ -80,7 +75,7 @@ export class ProcessStepService {
       unitId: processStep.executedBy.id,
     }));
 
-    //calculate the needed amount of each rfnbo typed hydrogen
+    //calculate the needed amount of each rfnbo type
     const optimalPredecessors: HydrogenComponentEntity[] = computeHydrogenComposition(
       predecessorCandidateComponents,
       payload.amount,
@@ -88,7 +83,7 @@ export class ProcessStepService {
       payload.batchDetails.rfnboType,
     );
 
-    //the process steps that should be used as predecessor and those which should be split
+    //based on the desired predecessors and the candidates, calculate the appropriate selection of predecessors and process steps to be split.
     const allocation: BottlingAllocation = allocateBottling(predecessorCandidates, optimalPredecessors, [
       unitIdOfPredecessors,
     ]);
@@ -103,16 +98,15 @@ export class ProcessStepService {
     //persist the split process steps
     //distinct between the splitted batches that are used as predecessors and those who will remain active
     const persistedConsumedSplitProcessSteps: ProcessStepEntity[] = await Promise.all(
-      allocation.consumedSplitProcessSteps.map((step) => this.createProcessStep(step)),
+      allocation.consumedSplitProcessSteps.map((step) => this.saveProcessStep(step)),
     );
     //persist the splitted batches that are inactive and used for the new process step
     const persistedConsumedSplitBatches: BatchEntity[] = persistedConsumedSplitProcessSteps.map((ps) => ps.batch);
 
     //persist the splitted batches that are active and can be used in other ps creation
-    await Promise.all(allocation.processStepsForRemainingAmount.map((ps) => this.createProcessStep(ps)));
+    await Promise.all(allocation.processStepsForRemainingAmount.map((ps) => this.saveProcessStep(ps)));
 
-    //build new process step
-
+    //build the new process step
     const bottlingProcessStep: ProcessStepEntity = buildProcessStepEntity(
       payload,
       [...allocation.batchesForBottle, ...persistedConsumedSplitBatches],
@@ -130,7 +124,7 @@ export class ProcessStepService {
         ? RfnboType.RFNBO_READY
         : RfnboType.NON_CERTIFIABLE;
 
-    const persistedBottlingProcessStep: ProcessStepEntity = await this.createProcessStep(bottlingProcessStep);
+    const persistedBottlingProcessStep: ProcessStepEntity = await this.saveProcessStep(bottlingProcessStep);
 
     if (payload.files) {
       await Promise.all(
@@ -157,11 +151,11 @@ export class ProcessStepService {
     return [processStep, ...processSteps];
   }
 
-  private createProcessStep(processStep: ProcessStepEntity): Promise<ProcessStepEntity> {
+  private saveProcessStep(processStep: ProcessStepEntity): Promise<ProcessStepEntity> {
     return this.processStepRepository.insertProcessStep(processStep);
   }
 
-  public createManyProcessSteps(payload: CreateManyProcessStepsPayload): Promise<ProcessStepEntity[]> {
+  public saveManyProcessSteps(payload: CreateManyProcessStepsPayload): Promise<ProcessStepEntity[]> {
     return this.processStepRepository.insertManyProcessSteps(payload.processSteps);
   }
 

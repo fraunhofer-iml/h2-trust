@@ -65,7 +65,7 @@ export class ProductionCreationService {
       }
 
       // Step 2: Persist power and water
-      const persistedPowerAndWater: ProcessStepEntity[] = await this.processStepService.createManyProcessSteps(
+      const persistedPowerAndWater: ProcessStepEntity[] = await this.processStepService.saveManyProcessSteps(
         new CreateManyProcessStepsPayload([...power, ...water]),
       );
 
@@ -114,7 +114,7 @@ export class ProductionCreationService {
       });
 
       // Step 6: Persist hydrogen
-      const persistedHydrogen: ProcessStepEntity[] = await this.processStepService.createManyProcessSteps(
+      const persistedHydrogen: ProcessStepEntity[] = await this.processStepService.saveManyProcessSteps(
         new CreateManyProcessStepsPayload(hydrogenToPersist),
       );
 

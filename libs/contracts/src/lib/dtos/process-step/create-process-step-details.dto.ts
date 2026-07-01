@@ -11,7 +11,6 @@ import { Transform } from 'class-transformer';
 import { IsEnum, IsNotEmpty, IsNumber, IsOptional } from 'class-validator';
 import { PowerType, RfnboType } from '@h2-trust/domain';
 
-//TODO-LG: update swagger annotation
 export class CreateProcessStepDetailsDto {
   @IsNotEmpty()
   @IsEnum(RfnboType)
@@ -24,16 +23,29 @@ export class CreateProcessStepDetailsDto {
 
   @IsEnum(PowerType)
   @IsNotEmpty()
+  @ApiProperty({
+    enum: PowerType,
+    example: 'RENEWABLE',
+    description: 'The type of the power production that is used for this process step',
+  })
   productionPowerType: PowerType;
 
   @IsNumber()
   @IsOptional()
   @Transform(({ value }) => Number(value), { toClassOnly: true })
+  @ApiProperty({
+    example: 1000,
+    description: 'The amount of used renewable power',
+  })
   usedRenewablePower?: number;
 
   @IsNumber()
   @IsOptional()
   @Transform(({ value }) => Number(value), { toClassOnly: true })
+  @ApiProperty({
+    example: 1000,
+    description: 'The amount of used grid power',
+  })
   usedGridPower?: number;
 
   @IsOptional()
@@ -48,21 +60,37 @@ export class CreateProcessStepDetailsDto {
   @IsNumber()
   @IsOptional()
   @Transform(({ value }) => Number(value), { toClassOnly: true })
+  @ApiProperty({
+    example: 1000,
+    description: 'The amount of used waste water',
+  })
   wasteWater?: number;
 
   @IsNumber()
   @IsOptional()
   @Transform(({ value }) => Number(value), { toClassOnly: true })
+  @ApiProperty({
+    example: 1000,
+    description: 'The amount of used resin',
+  })
   resinConsumption?: number;
 
   @IsNumber()
   @IsOptional()
   @Transform(({ value }) => Number(value), { toClassOnly: true })
+  @ApiProperty({
+    example: 1000,
+    description: 'The amount of used compressed air',
+  })
   compressedAir?: number;
 
   @IsNumber()
   @IsOptional()
   @Transform(({ value }) => Number(value), { toClassOnly: true })
+  @ApiProperty({
+    example: 1000,
+    description: 'The amount of used nitrogen',
+  })
   nitrogenConsumption?: number;
 
   constructor(
