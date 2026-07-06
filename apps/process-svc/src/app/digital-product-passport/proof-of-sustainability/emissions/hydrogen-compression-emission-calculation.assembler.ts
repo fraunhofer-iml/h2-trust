@@ -38,7 +38,7 @@ export function assembleHydrogenCompressionEmissionCalculation(
   const result = gridPowerEmissions + renewablePowerEmissions;
 
   const usedGridPowerInput = `Used Grid Power: ${usedGridPower} kwh`;
-  const usedRenewablePowerInput = `Used Grid Power: ${usedRenewablePower} kwh`;
+  const usedRenewablePowerInput = `Used Renewable Power: ${usedRenewablePower} kwh`;
   const basisOfCalculation = [usedGridPowerInput, usedRenewablePowerInput];
 
   return new ProofOfSustainabilityEmissionCalculationEntity(

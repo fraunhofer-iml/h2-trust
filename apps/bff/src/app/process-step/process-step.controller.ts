@@ -91,7 +91,7 @@ export class ProcessStepController {
     description: 'Used to filter for a specific process type (batch type)',
     required: false,
   })
-  readAllHydrogenBatches(
+  readProcessSteps(
     @Query('pageNumber') pageNumber: number,
     @Query('pageSize') pageSize: number,
     @Query('id') id: string,
@@ -107,7 +107,6 @@ export class ProcessStepController {
     );
   }
 
-  @Public()
   @Get('components')
   @ApiBearerAuth()
   @ApiOperation({
