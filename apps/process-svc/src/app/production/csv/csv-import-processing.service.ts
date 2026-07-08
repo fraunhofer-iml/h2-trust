@@ -19,7 +19,10 @@ import { parseAccountingPeriodCsvBuffer } from './accounting-period-csv-parser';
 
 @Injectable()
 export class CsvImportProcessingService {
-  private static readonly validHeaders: Record<Exclude<BatchType, BatchType.WATER>, string[]> = {
+  private static readonly validHeaders: Record<
+    Exclude<BatchType, BatchType.WATER | BatchType.H2_PRODUCTION>,
+    string[]
+  > = {
     POWER: ['time', 'amount'],
     HYDROGEN: ['time', 'amount', 'power'],
   };

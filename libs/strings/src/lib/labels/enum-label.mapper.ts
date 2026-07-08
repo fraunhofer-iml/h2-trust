@@ -67,6 +67,7 @@ const TRANSPORT_TYPE_LABELS: Record<TransportType, string> = {
 
 const BATCH_TYPE_MEASUREMENT_UNIT: Record<BatchType, string> = {
   [BatchType.HYDROGEN]: MeasurementUnit.KG,
+  [BatchType.H2_PRODUCTION]: MeasurementUnit.KG,
   [BatchType.POWER]: MeasurementUnit.KWH,
   [BatchType.WATER]: MeasurementUnit.L,
 };
@@ -92,6 +93,7 @@ const CALCULATION_TOPIC_LABELS: Record<CalculationTopic, string> = {
   [CalculationTopic.POWER_SUPPLY]: 'Power Supply',
   [CalculationTopic.WATER_SUPPLY]: 'Water Supply',
   [CalculationTopic.HYDROGEN_STORAGE]: 'Hydrogen Storage',
+  [CalculationTopic.HYDROGEN_PRODUCTION]: 'Hydrogen Production',
   [CalculationTopic.HYDROGEN_TRANSPORTATION]: 'Transportation',
   [CalculationTopic.HYDROGEN_COMPRESSION]: 'Compression',
   [CalculationTopic.HYDROGEN_END_USE]: 'End Use',
@@ -124,6 +126,7 @@ const CSV_CONTENT_TYPE_LABELS: Record<CsvContentType, string> = {
 const BATCH_TYPE_LABELS: Record<BatchType, string> = {
   [BatchType.POWER]: 'Power',
   [BatchType.HYDROGEN]: 'Hydrogen',
+  [BatchType.H2_PRODUCTION]: 'H2 Production',
   [BatchType.WATER]: 'Water',
 };
 

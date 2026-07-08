@@ -20,4 +20,5 @@ export enum ProofOfOrigin {
   HYDROGEN_TRANSPORTATION_SECTION = 'Hydrogen Transportation',
   POWER_SUPPLY_CLASSIFICATION = 'Power Supply',
   WATER_SUPPLY_CLASSIFICATION = 'Water Supply',
+  HHYDROGEN_PRODUCTION_CLASSIFICATION = 'H2 Production',
 }

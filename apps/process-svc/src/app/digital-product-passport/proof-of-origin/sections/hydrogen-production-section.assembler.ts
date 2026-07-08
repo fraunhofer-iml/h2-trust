@@ -15,6 +15,7 @@ import {
 } from '@h2-trust/contracts/entities';
 import { BatchType, ProofOfOrigin } from '@h2-trust/domain';
 import { assembleClassification } from '../../util';
+import { assembleHydrogenProductionClassification } from '../classifications/hydrogen-production-classification.assembler';
 import { buildPowerSupplySubClassifications } from '../classifications/power-production-classification.assembler';
 import { assembleWaterSupplyClassification } from '../classifications/water-consumption-classification.assembler';
 import { ProofOfOriginSectionAssembler } from '../proof-of-origin-assembler.interface';
@@ -25,7 +26,8 @@ export function assembleHydrogenProductionSection(provenance: ProvenanceEntity):
   }
   const powerProductions: ProcessStepEntity[] = provenance.getAllPowerProductions();
   const waterConsumptions: ProcessStepEntity[] = provenance.getAllWaterConsumptions();
-  if (powerProductions?.length == 0 && waterConsumptions?.length == 0) {
+  const hydrogenProductions: ProcessStepEntity[] = provenance.getAllHydrogenLeafProductions();
+  if (powerProductions?.length == 0 && waterConsumptions?.length == 0 && hydrogenProductions?.length == 0) {
     return [];
   }
 
@@ -58,6 +60,12 @@ export function assembleHydrogenProductionSection(provenance: ProvenanceEntity):
     classifications.push(waterSupplyClassification);
   }
 
+  if (hydrogenProductions?.length) {
+    const hydrogenProductionClassification: ProofOfOriginClassificationEntity =
+      assembleHydrogenProductionClassification(hydrogenProductions, bottledKgHydrogen);
+
+    classifications.push(hydrogenProductionClassification);
+  }
   return [new ProofOfOriginSectionEntity(ProofOfOrigin.HYDROGEN_PRODUCTION_SECTION, [], classifications)];
 }
 

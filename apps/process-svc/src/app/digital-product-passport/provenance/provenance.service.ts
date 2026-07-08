@@ -22,13 +22,13 @@ export function buildProvenance(root: ProcessStepEntity, predecessorsOfRoot: Pro
       return new ProvenanceEntity(root, predecessorsOfRoot, []);
 
     case ProcessType.HYDROGEN_PRODUCTION:
-      return new ProvenanceEntity(root, predecessorsOfRoot, buildProductionChains(predecessorsOfRoot));
+      return new ProvenanceEntity(root, predecessorsOfRoot, buildProductionChains(root, predecessorsOfRoot));
 
     default:
       return new ProvenanceEntity(
         root,
         handleSplitProcessSteps(predecessorsOfRoot),
-        buildProductionChains(predecessorsOfRoot),
+        buildProductionChains(root, predecessorsOfRoot),
       );
   }
 }
@@ -54,12 +54,8 @@ function getFirstProcessStepOfSplittingChain(
   return lastProcessStep;
 }
 
-function buildProductionChains(processSteps: ProcessStepEntity[]): ProductionChainEntity[] {
-  const bottling: ProcessStepEntity = getHydrogenBottling(processSteps);
-
-  const leafProductions: ProcessStepEntity[] = bottling
-    ? getLeafHydrogenProductions(bottling, processSteps)
-    : getHydrogenProductions(processSteps);
+function buildProductionChains(root: ProcessStepEntity, processSteps: ProcessStepEntity[]): ProductionChainEntity[] {
+  const leafProductions: ProcessStepEntity[] = getLeafHydrogenProductions(root, processSteps);
 
   return leafProductions.map((leafProduction) => {
     const rootProduction: ProcessStepEntity = getRootProductionForLeaf(leafProduction, processSteps);
@@ -87,12 +83,17 @@ function buildProductionChains(processSteps: ProcessStepEntity[]): ProductionCha
   });
 }
 
-function getLeafHydrogenProductions(
-  bottling: ProcessStepEntity,
-  processSteps: ProcessStepEntity[],
-): ProcessStepEntity[] {
-  const predecessorIds: string[] = bottling.batch.predecessors.map((pred) => pred.processStepId);
-  return processSteps.filter((processStep) => predecessorIds.includes(processStep.id));
+function getLeafHydrogenProductions(root: ProcessStepEntity, processSteps: ProcessStepEntity[]): ProcessStepEntity[] {
+  const predecessorIds: string[] = root.batch.predecessors.map((pred) => pred.processStepId);
+  const rootPredecessors: ProcessStepEntity[] = processSteps.filter((processStep) =>
+    predecessorIds.includes(processStep.id),
+  );
+  const doesProductionPredecessorExist = rootPredecessors.find((pred) => pred.type === ProcessType.HYDROGEN_PRODUCTION);
+  if (doesProductionPredecessorExist) {
+    return rootPredecessors;
+  } else {
+    return rootPredecessors.flatMap((pred) => getLeafHydrogenProductions(pred, processSteps));
+  }
 }
 
 function getRootProductionForLeaf(
@@ -120,20 +121,6 @@ function getRootProductionForLeaf(
     currentBatch = nextProcessStep.batch;
   }
   throw new InternalException(`Missing root for leaf production.`);
-}
-
-function getHydrogenProductions(processSteps: ProcessStepEntity[]): ProcessStepEntity[] {
-  const hydrogenProduction: ProcessStepEntity[] = processSteps.filter(
-    (ps) => ps.type === ProcessType.HYDROGEN_PRODUCTION,
-  );
-  if (hydrogenProduction.length == 0) {
-    throw new InternalException(`Missing [${ProcessType.HYDROGEN_PRODUCTION}] process step.`);
-  }
-  return hydrogenProduction;
-}
-
-function getHydrogenBottling(processSteps: ProcessStepEntity[]): ProcessStepEntity | undefined {
-  return processSteps.find((ps) => ps.type === ProcessType.HYDROGEN_BOTTLING);
 }
 
 function findProcessStepById(id: string, processSteps: ProcessStepEntity[]): ProcessStepEntity {

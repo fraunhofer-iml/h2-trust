@@ -12,11 +12,12 @@ import {
   ProofOfOriginEmissionEntity,
   ProofOfOriginHydrogenBatchEntity,
   ProofOfOriginPowerBatchEntity,
+  ProofOfOriginProductionBatchEntity,
   ProofOfOriginSectionEntity,
   ProofOfOriginSubClassificationEntity,
   ProofOfOriginWaterBatchEntity,
 } from '@h2-trust/contracts/entities';
-import { BatchType, HydrogenProductionType, MeasurementUnit, RfnboType } from '@h2-trust/domain';
+import { BatchType, HydrogenProductionType, MeasurementUnit, ProcessType, RfnboType } from '@h2-trust/domain';
 import { getMeasurementUnit } from '@h2-trust/strings';
 import { HydrogenComponentDto } from '../general-information';
 import { ClassificationDto } from './classification.dto';
@@ -64,6 +65,8 @@ export class SectionDto {
         return this.fromWaterBatchEntity(batch as ProofOfOriginWaterBatchEntity);
       case BatchType.HYDROGEN:
         return this.fromHydrogenBatchEntity(batch as ProofOfOriginHydrogenBatchEntity);
+      case BatchType.H2_PRODUCTION:
+        return this.fromProductionBatchEntity(batch as ProofOfOriginProductionBatchEntity);
       default:
         throw new Error(`Unsupported batch type: ${(batch as ProofOfOriginBatchEntity).batchType}`);
     }
@@ -97,6 +100,28 @@ export class SectionDto {
     return new WaterBatchDto(batch.id, emission, batch.createdAt, batch.amount, MeasurementUnit.L, waterDetails);
   }
 
+  private static fromProductionBatchEntity(batch: ProofOfOriginProductionBatchEntity): HydrogenBatchDto {
+    const emission = this.fromEmissionEntity(batch.emission);
+
+    return new HydrogenBatchDto(
+      batch.id,
+      batch.batchType,
+      emission,
+      batch.createdAt,
+      batch.amount,
+      MeasurementUnit.KG,
+      '',
+      '',
+      HydrogenProductionType.ELECTROLYSIS,
+      [],
+      RfnboType.NOT_SPECIFIED,
+      ProcessType.HYDROGEN_PRODUCTION,
+      undefined,
+      batch.resinAmount,
+      batch.wasteWaterAmount,
+    );
+  }
+
   private static fromHydrogenBatchEntity(batch: ProofOfOriginHydrogenBatchEntity): HydrogenBatchDto {
     const emission = this.fromEmissionEntity(batch.emission);
 
@@ -104,6 +129,7 @@ export class SectionDto {
 
     return new HydrogenBatchDto(
       batch.id,
+      batch.batchType,
       emission,
       batch.createdAt,
       batch.amount,

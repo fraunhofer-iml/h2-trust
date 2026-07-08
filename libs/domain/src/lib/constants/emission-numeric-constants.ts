@@ -17,6 +17,8 @@ export interface TrailerParameter {
 export const EmissionNumericConstants = {
   ENERGY_DEMAND_COMPRESSION_KWH_PER_KG_H2: 1.65, // 5.93 / 3.6 -> default values for compression from 30 bar to 300 bar
   EMISSION_FACTOR_DEIONIZED_WATER_G_CO2_PER_L: 0.43,
+  EMISSION_FACTOR_WASTE_WATER_G_CO2_PER_L: 0.43,
+  EMISSION_FACTOR_RESIN_G_CO2_PER_KG: 0.43,
   H2_LOWER_HEATING_VALUE_MJ_PER_KG: 120,
   FOSSIL_FUEL_COMPARATOR_G_CO2_PER_MJ: 94,
 

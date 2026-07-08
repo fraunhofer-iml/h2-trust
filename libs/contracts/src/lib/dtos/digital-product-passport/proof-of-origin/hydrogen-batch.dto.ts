@@ -21,9 +21,12 @@ export class HydrogenBatchDto extends DppBatchDto {
 
   // optional for all bottled batches, since bottled batches only have a creation/bottling time and no accounting period
   accountingPeriodEnd?: Date;
+  resinAmount?: number;
+  wasteWaterAmount?: number;
 
   constructor(
     id: string,
+    batchType: BatchType,
     emission: EmissionDto,
     creationDate: Date,
     amount: number,
@@ -35,8 +38,10 @@ export class HydrogenBatchDto extends DppBatchDto {
     rfnboType: RfnboType,
     processStep: ProcessType,
     accountingPeriodEnd?: Date,
+    resinAmount?: number,
+    wasteWaterAmount?: number,
   ) {
-    super(id, emission, creationDate, amount, unit, BatchType.HYDROGEN);
+    super(id, emission, creationDate, amount, unit, batchType);
     this.producer = producer;
     this.unitId = unitId;
     this.typeOfProduction = typeOfProduction;
@@ -44,5 +49,7 @@ export class HydrogenBatchDto extends DppBatchDto {
     this.rfnboType = rfnboType;
     this.processStep = processStep;
     this.accountingPeriodEnd = accountingPeriodEnd;
+    this.resinAmount = resinAmount;
+    this.wasteWaterAmount = wasteWaterAmount;
   }
 }
