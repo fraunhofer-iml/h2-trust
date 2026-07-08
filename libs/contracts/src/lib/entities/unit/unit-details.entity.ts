@@ -36,6 +36,8 @@ export class UnitDetailsEntity {
   //hydrogen production
   technology?: HydrogenProductionTechnology;
   waterConsumptionLitersPerHour?: number;
+  wasteWaterConsumptionLitersPerKgH2?: number;
+  resinConsumptionKgPerKgH2?: number;
 
   //hydrogen storage
   capacity?: number;
@@ -52,6 +54,8 @@ export class UnitDetailsEntity {
     financialSupportReceived: boolean,
     technology: HydrogenProductionTechnology,
     waterConsumptionLitersPerHour: number,
+    wasteWaterConsumptionLitersPerKgH2: number,
+    resinConsumptionKgPerKgH2: number,
     capacity: number,
     filling: HydrogenComponentEntity[],
     fuelType: FuelType,
@@ -63,6 +67,8 @@ export class UnitDetailsEntity {
     this.financialSupportReceived = financialSupportReceived;
     this.technology = technology;
     this.waterConsumptionLitersPerHour = waterConsumptionLitersPerHour;
+    this.wasteWaterConsumptionLitersPerKgH2 = wasteWaterConsumptionLitersPerKgH2;
+    this.resinConsumptionKgPerKgH2 = resinConsumptionKgPerKgH2;
     this.capacity = capacity;
     this.filling = filling;
     this.fuelType = fuelType;
@@ -94,6 +100,8 @@ export class UnitDetailsEntity {
       type: unit.details.type,
       technology: unit.details.technology,
       waterConsumptionLitersPerHour: unit.details?.waterConsumptionLitersPerHour?.toNumber(),
+      wasteWaterConsumptionLitersPerKgH2: unit.details?.wasteWaterConsumptionLitersPerKgH2?.toNumber(),
+      resinConsumptionKgPerKgH2: unit.details?.resinConsumptionKgPerKgH2?.toNumber(),
       capacity: unit.details?.capacity?.toNumber() ?? 0,
       filling: [],
       fuelType: unit.details.fuelType,

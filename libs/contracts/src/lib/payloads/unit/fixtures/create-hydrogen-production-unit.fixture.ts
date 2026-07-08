@@ -24,6 +24,8 @@ export const CreateHydrogenProductionUnitPayloadFixture = {
       overrides.biddingZone ?? BiddingZone.DE_LU,
       overrides.ratedPower ?? 500,
       overrides.waterConsumptionLitersPerHour ?? 1200,
+      overrides.wasteWaterConsumptionLitersPerKgH2 ?? 1200,
+      overrides.resinConsumptionKgPerKgH2 ?? 1200,
       defaults.manufacturer,
       defaults.modelType,
       defaults.modelNumber,

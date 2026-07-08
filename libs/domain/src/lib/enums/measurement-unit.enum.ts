@@ -17,6 +17,7 @@ export enum MeasurementUnit {
   KWH_PER_KG_H2 = 'kWh / kg H₂',
   MJ_FUEL_PER_TON_KM = 'MJ fuel / (ton, km)',
   L_PER_H = 'L/h',
+  KG_PER_KG_H2 = 'kg / kg H₂',
   KG_H2 = 'kg H₂',
   MW = 'MW',
   KWH = 'kWh',

@@ -34,6 +34,16 @@ export class CreateHydrogenProductionUnitPayload extends BaseCreateUnitPayload {
   @IsNotEmpty()
   waterConsumptionLitersPerHour: number;
 
+  @IsNumber()
+  @IsPositive()
+  @IsNotEmpty()
+  wasteWaterConsumptionLitersPerKgH2: number;
+
+  @IsNumber()
+  @IsPositive()
+  @IsNotEmpty()
+  resinConsumptionKgPerKgH2: number;
+
   constructor(
     name: string,
     commissionedOn: Date,
@@ -44,6 +54,8 @@ export class CreateHydrogenProductionUnitPayload extends BaseCreateUnitPayload {
     biddingZone: BiddingZone,
     ratedPower: number,
     waterConsumptionLitersPerHour: number,
+    wasteWaterConsumptionLitersPerKgH2: number,
+    resinConsumptionKgPerKgH2: number,
     manufacturer: string,
     modelType: string,
     modelNumber: string,
@@ -70,5 +82,7 @@ export class CreateHydrogenProductionUnitPayload extends BaseCreateUnitPayload {
     this.biddingZone = biddingZone;
     this.ratedPower = ratedPower;
     this.waterConsumptionLitersPerHour = waterConsumptionLitersPerHour;
+    this.wasteWaterConsumptionLitersPerKgH2 = wasteWaterConsumptionLitersPerKgH2;
+    this.resinConsumptionKgPerKgH2 = resinConsumptionKgPerKgH2;
   }
 }

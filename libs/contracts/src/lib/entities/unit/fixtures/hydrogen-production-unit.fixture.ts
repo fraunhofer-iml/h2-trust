@@ -30,10 +30,12 @@ export const HydrogenProductionUnitEntityFixture = {
       type: overrides.details?.type ?? HydrogenProductionType.ELECTROLYSIS,
       technology: overrides.details?.technology ?? HydrogenProductionTechnology.PEM,
       biddingZone: overrides.details?.biddingZone ?? BiddingZone.DE_LU,
-      waterConsumptionLitersPerHour: overrides.details?.waterConsumptionLitersPerHour ?? 10,
       active: true,
       details: overrides.details ?? {
         id: 'details-1',
+        waterConsumptionLitersPerHour: 10,
+        wasteWaterConsumptionLitersPerKgH2: 9,
+        resinConsumptionKgPerKgH2: 11,
       },
     }) as UnitEntity,
 } as const;
