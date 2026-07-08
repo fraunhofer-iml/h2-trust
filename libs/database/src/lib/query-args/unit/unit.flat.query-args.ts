@@ -13,7 +13,7 @@ export const unitFlatQueryArgs = Prisma.validator<Prisma.UnitDefaultArgs>()({
     address: true,
     owner: true,
     operator: true,
-    specification: true,
+    details: true,
     documents: true,
     processSteps: true,
     stagedProductions: true,

@@ -9,7 +9,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { ProcessStepEntity } from '@h2-trust/contracts/entities';
-import { BatchType } from '@h2-trust/domain';
+import { BatchType, ProcessType } from '@h2-trust/domain';
 import { InternalException } from '@h2-trust/exceptions';
 import { buildProcessStepCreateInput } from '../create-inputs';
 import { PrismaService } from '../prisma.service';
@@ -52,6 +52,15 @@ export class ProcessStepRepository {
     return ProcessStepEntity.fromDeepDatabase(processStep);
   }
 
+  async findProcessStepByBatchId(batchId: string): Promise<ProcessStepEntity> {
+    const processStep = await this.prismaService.processStep
+      .findUnique({ where: { batchId }, ...processStepDeepQueryArgs })
+      .catch(wrapPrismaError);
+
+    assertRecordFound(processStep, batchId);
+    return ProcessStepEntity.fromDeepDatabase(processStep);
+  }
+
   async findProcessSteps(ids: string[]): Promise<ProcessStepEntity[]> {
     const processSteps = await this.prismaService.processStep.findMany({
       where: {
@@ -68,6 +77,8 @@ export class ProcessStepRepository {
     ownerId: string,
     hydrogenProductionUnitName?: string,
     period?: Date,
+    batchId?: string,
+    processType?: ProcessType,
   ): Promise<ProcessStepEntity[]> {
     const predecessorsFilter: Prisma.BatchWhereInput =
       Array.isArray(predecessorProcessTypes) && predecessorProcessTypes.length > 0
@@ -82,8 +93,14 @@ export class ProcessStepRepository {
           }
         : {};
 
+    const batchIdFilter: Prisma.BatchWhereInput = batchId
+      ? {
+          id: batchId,
+        }
+      : {};
+
     const batchFilter: Prisma.BatchWhereInput = {
-      AND: [predecessorsFilter, { ownerId: ownerId }],
+      AND: [predecessorsFilter, { ...batchIdFilter, active: true }, { ownerId: ownerId }],
     };
 
     const hydrogenUnitWhereInput: Prisma.UnitWhereInput = hydrogenProductionUnitName
@@ -103,6 +120,7 @@ export class ProcessStepRepository {
           batch: batchFilter,
           startedAt: periodWhereInput,
           executedBy: { ...hydrogenUnitWhereInput },
+          type: processType ?? {},
         },
         orderBy: { endedAt: 'desc' },
         ...processStepDeepQueryArgs,
@@ -132,11 +150,11 @@ export class ProcessStepRepository {
     return processSteps.map(ProcessStepEntity.fromDeepDatabase);
   }
 
-  async findAllProcessStepsFromStorageUnit(storageUnitId: string): Promise<ProcessStepEntity[]> {
+  async findAllProcessStepsFromUnits(unitIds: string[]): Promise<ProcessStepEntity[]> {
     const processSteps = await this.prismaService.processStep
       .findMany({
         where: {
-          executedBy: { id: storageUnitId },
+          executedBy: { id: { in: unitIds } },
           batch: {
             active: true,
           },

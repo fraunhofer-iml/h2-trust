@@ -7,6 +7,7 @@
  */
 
 export * from './base-unit.fixture';
+export * from './components-overview.fixture';
 export * from './filling.fixture';
 export * from './hydrogen-production-overview.fixture';
 export * from './hydrogen-production-unit.fixture';

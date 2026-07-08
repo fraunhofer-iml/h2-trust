@@ -6,6 +6,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { QualityDetails } from '@prisma/client';
+import { BatchDetails } from '@prisma/client';
 
-export type QualityDetailsDbType = QualityDetails;
+export type BatchDetailsDbType = BatchDetails;

@@ -7,14 +7,12 @@
  */
 
 import { Module } from '@nestjs/common';
-import { BottlingModule } from './bottling/bottling.module';
 import { DigitalProductPassportModule } from './digital-product-passport/digital-product-passport.module';
 import { ProcessStepModule } from './process-step/process-step.module';
 import { ProductionModule } from './production/production.module';
-import { TransportationModule } from './transportation/transportation.module';
 
 @Module({
-  imports: [BottlingModule, DigitalProductPassportModule, ProcessStepModule, ProductionModule, TransportationModule],
+  imports: [DigitalProductPassportModule, ProcessStepModule, ProductionModule],
   controllers: [],
   providers: [],
 })

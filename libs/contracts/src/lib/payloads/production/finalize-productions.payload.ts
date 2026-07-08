@@ -22,21 +22,11 @@ export class FinalizeProductionsPayload {
 
   @IsString()
   @IsNotEmpty()
-  storageUnitId: string;
-
-  @IsString()
-  @IsNotEmpty()
   recordedBy: string;
 
-  constructor(
-    recordedBy: string,
-    stagedHydrogenProduction: string,
-    stagedPowerProductions: string[],
-    storageUnitId: string,
-  ) {
+  constructor(recordedBy: string, stagedHydrogenProduction: string, stagedPowerProductions: string[]) {
     this.recordedBy = recordedBy;
     this.stagedHydrogenProduction = stagedHydrogenProduction;
     this.stagedPowerProductions = stagedPowerProductions;
-    this.storageUnitId = storageUnitId;
   }
 }

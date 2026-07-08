@@ -12,7 +12,13 @@ import {
   ProofOfSustainabilityEmissionEntity,
   ProvenanceEntity,
 } from '@h2-trust/contracts/entities';
-import { CalculationTopic, EmissionStringConstants, MeasurementUnit, ProcessType } from '@h2-trust/domain';
+import {
+  CalculationTopic,
+  EmissionNumericConstants,
+  EmissionStringConstants,
+  MeasurementUnit,
+  ProcessType,
+} from '@h2-trust/domain';
 import { InternalException } from '@h2-trust/exceptions';
 import { ProofOfSustainabilityEmissionAssembler } from '../proof-of-sustainability-assembler.interface';
 
@@ -25,8 +31,22 @@ export function assembleHydrogenBottlingEmissionCalculation(
     );
   }
 
-  const result = 0;
-  const basisOfCalculation = ['E = [TBD]'];
+  const usedGridPower = hydrogenBottling.batch?.details?.usedGridPower ?? 0;
+  const gridPowerEmissions = usedGridPower * EmissionNumericConstants.GRID_POWER_PER_KWH;
+  const usedRenewablePower = hydrogenBottling.batch?.details?.usedRenewablePower ?? 0;
+  const renewablePowerEmissions = 0;
+  const usedCompressedAir = hydrogenBottling.batch?.details?.compressedAir ?? 0;
+  const compressedAirEmissions = usedCompressedAir * EmissionNumericConstants.COMPRESSED_AIR_PER_M3;
+  const usedNitrogen = hydrogenBottling.batch?.details?.nitrogenConsumption ?? 0;
+  const nitrogenEmissions = usedNitrogen * EmissionNumericConstants.NITROGEN_PER_KG;
+
+  const result = gridPowerEmissions + renewablePowerEmissions + compressedAirEmissions + nitrogenEmissions;
+
+  const usedGridPowerInput = `Used Grid Power: ${usedGridPower} kwh`;
+  const usedRenewablePowerInput = `Used Renewable Power: ${usedRenewablePower} kwh`;
+  const usedCompressedAirInput = `Used Compressed Air: ${usedCompressedAir} m³`;
+  const usedNitrogenInput = `Used Nitrogen: ${usedNitrogen} kg`;
+  const basisOfCalculation = [usedGridPowerInput, usedRenewablePowerInput, usedCompressedAirInput, usedNitrogenInput];
 
   return new ProofOfSustainabilityEmissionCalculationEntity(
     EmissionStringConstants.HYDROGEN_BOTTLING,
@@ -40,16 +60,18 @@ export function assembleHydrogenBottlingEmissionCalculation(
 export function assembleHydrogenBottlingEmissionCalculations(
   provenance: ProvenanceEntity,
 ): ProofOfSustainabilityEmissionCalculationEntity[] {
-  if (!provenance || !provenance.hydrogenBottling) {
+  if (!provenance) {
     return [];
   }
 
-  const hydrogenAmount = provenance.hydrogenBottling
-    ? provenance.hydrogenBottling.batch.amount
-    : provenance.root.batch.amount;
-  const hydrogenBottling = assembleHydrogenBottlingEmissionCalculation(provenance.hydrogenBottling);
+  const hydrogenAmount = provenance.root.batch.amount;
+  const hydrogenBottling: ProcessStepEntity[] = provenance.getProcessStepsFromChain(ProcessType.HYDROGEN_BOTTLING);
+  const hydrogenBottlingEmissionCalculation: ProofOfSustainabilityEmissionCalculationEntity[] = hydrogenBottling.map(
+    assembleHydrogenBottlingEmissionCalculation,
+  );
 
-  const totalEmissions = hydrogenBottling.result;
+  const totalEmissions = hydrogenBottlingEmissionCalculation.reduce((sum, curr) => sum + curr.result, 0);
+
   const totalEmissionsGrouped = [`${totalEmissions} ${MeasurementUnit.G_CO2}`];
   const totalEmissionsPerKgHydrogen = totalEmissions / hydrogenAmount;
 

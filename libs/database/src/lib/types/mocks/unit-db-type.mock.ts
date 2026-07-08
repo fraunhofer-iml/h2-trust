@@ -7,7 +7,7 @@
  */
 
 import { UnitDeepDbType } from '..';
-import { AddressSeed, CompanySeed, UnitSeed, UnitSpecificationSeed } from '../../../seed';
+import { AddressSeed, CompanySeed, UnitDetailsSeed, UnitSeed } from '../../../seed';
 
 export const UnitDeepDbTypeMock = <UnitDeepDbType[]>[
   {
@@ -33,7 +33,7 @@ export const UnitDeepDbTypeMock = <UnitDeepDbType[]>[
       users: [],
       batches: [],
     },
-    specification: UnitSpecificationSeed[0],
+    details: UnitDetailsSeed[0],
     decisions: [],
     powerPurchaseAgreements: [],
     stagedProductions: [],

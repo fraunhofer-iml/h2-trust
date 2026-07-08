@@ -66,7 +66,7 @@ describe('RedCompliance', () => {
     it('should return RedComplianceEntity with all flags true when all compliance criteria are met', () => {
       // arrange
       const givenPowerUnit = PowerProductionUnitEntityFixture.create({
-        specification: {
+        details: {
           biddingZone: BiddingZone.DE_LU,
           financialSupportReceived: false,
         },
@@ -74,7 +74,7 @@ describe('RedCompliance', () => {
       });
 
       const givenHydrogenUnit = HydrogenProductionUnitEntityFixture.create({
-        specification: {
+        details: {
           biddingZone: BiddingZone.DE_LU,
         },
         commissionedOn: new Date('2025-01-01'),
@@ -102,7 +102,7 @@ describe('RedCompliance', () => {
     it('should return RedComplianceEntity with isGeoCorrelationValid false when units are in different bidding zones', () => {
       // arrange
       const givenPowerUnit = PowerProductionUnitEntityFixture.create({
-        specification: {
+        details: {
           biddingZone: BiddingZone.DE_LU,
           financialSupportReceived: false,
         },
@@ -110,7 +110,7 @@ describe('RedCompliance', () => {
       });
 
       const givenHydrogenUnit = HydrogenProductionUnitEntityFixture.create({
-        specification: {
+        details: {
           biddingZone: BiddingZone.BE,
         },
         commissionedOn: new Date('2025-01-01'),
@@ -134,7 +134,7 @@ describe('RedCompliance', () => {
     it('should return RedComplianceEntity with isTimeCorrelationValid false when productions are not within time correlation', () => {
       // arrange
       const givenPowerUnit = PowerProductionUnitEntityFixture.create({
-        specification: {
+        details: {
           biddingZone: BiddingZone.DE_LU,
           financialSupportReceived: false,
         },
@@ -142,7 +142,7 @@ describe('RedCompliance', () => {
       });
 
       const givenHydrogenUnit = HydrogenProductionUnitEntityFixture.create({
-        specification: {
+        details: {
           biddingZone: BiddingZone.DE_LU,
         },
         commissionedOn: new Date('2025-01-01'),
@@ -166,7 +166,7 @@ describe('RedCompliance', () => {
     it('should return RedComplianceEntity with isAdditionalityFulfilled false when additionality criterion is not met', () => {
       // arrange
       const givenPowerUnit = PowerProductionUnitEntityFixture.create({
-        specification: {
+        details: {
           biddingZone: BiddingZone.DE_LU,
           financialSupportReceived: false,
         },
@@ -174,7 +174,7 @@ describe('RedCompliance', () => {
       });
 
       const givenHydrogenUnit = HydrogenProductionUnitEntityFixture.create({
-        specification: {
+        details: {
           biddingZone: BiddingZone.DE_LU,
         },
         commissionedOn: new Date('2025-01-01'),
@@ -198,7 +198,7 @@ describe('RedCompliance', () => {
     it('should return RedComplianceEntity with financialSupportReceived false when financial support was received', () => {
       // arrange
       const givenPowerUnit = PowerProductionUnitEntityFixture.create({
-        specification: {
+        details: {
           biddingZone: BiddingZone.DE_LU,
           financialSupportReceived: true,
         },
@@ -206,7 +206,7 @@ describe('RedCompliance', () => {
       });
 
       const givenHydrogenUnit = HydrogenProductionUnitEntityFixture.create({
-        specification: {
+        details: {
           biddingZone: BiddingZone.DE_LU,
         },
         commissionedOn: new Date('2025-01-01'),
@@ -273,14 +273,14 @@ describe('RedCompliance', () => {
     it('should aggregate false values across all production chains when called', () => {
       const givenFullyCompliantChain: ProductionChainEntity = {
         powerProductionUnit: PowerProductionUnitEntityFixture.create({
-          specification: {
+          details: {
             biddingZone: BiddingZone.DE_LU,
             financialSupportReceived: false,
           },
           commissionedOn: new Date('2025-01-01T00:00:00Z'),
         }),
         hydrogenProductionUnit: HydrogenProductionUnitEntityFixture.create({
-          specification: {
+          details: {
             biddingZone: BiddingZone.DE_LU,
           },
           commissionedOn: new Date('2026-01-01T00:00:00Z'),
@@ -294,14 +294,14 @@ describe('RedCompliance', () => {
       } as ProductionChainEntity;
       const givenFailingChain: ProductionChainEntity = {
         powerProductionUnit: PowerProductionUnitEntityFixture.create({
-          specification: {
+          details: {
             biddingZone: BiddingZone.BE,
             financialSupportReceived: true,
           },
           commissionedOn: new Date('2020-01-01T00:00:00Z'),
         }),
         hydrogenProductionUnit: HydrogenProductionUnitEntityFixture.create({
-          specification: {
+          details: {
             biddingZone: BiddingZone.DE_LU,
           },
           commissionedOn: new Date('2026-01-01T00:00:00Z'),
@@ -329,14 +329,14 @@ describe('RedCompliance', () => {
 
   describe('areUnitsInSameBiddingZone', () => {
     it('should return true when both units are in the same zone', () => {
-      const givenPowerUnit = { specification: { biddingZone: BiddingZone.DE_LU } } as unknown as UnitEntity;
-      const givenHydrogenUnit = { specification: { biddingZone: BiddingZone.DE_LU } } as unknown as UnitEntity;
+      const givenPowerUnit = { details: { biddingZone: BiddingZone.DE_LU } } as unknown as UnitEntity;
+      const givenHydrogenUnit = { details: { biddingZone: BiddingZone.DE_LU } } as unknown as UnitEntity;
       expect(areUnitsInSameBiddingZone(givenPowerUnit, givenHydrogenUnit)).toBe(true);
     });
 
     it('should return false when units are in different zones', () => {
-      const givenPowerUnit = { specification: { biddingZone: BiddingZone.DE_LU } } as unknown as UnitEntity;
-      const givenHydrogenUnit = { specification: { biddingZone: BiddingZone.AT } } as unknown as UnitEntity;
+      const givenPowerUnit = { details: { biddingZone: BiddingZone.DE_LU } } as unknown as UnitEntity;
+      const givenHydrogenUnit = { details: { biddingZone: BiddingZone.AT } } as unknown as UnitEntity;
       expect(areUnitsInSameBiddingZone(givenPowerUnit, givenHydrogenUnit)).toBe(false);
     });
 
@@ -389,12 +389,8 @@ describe('RedCompliance', () => {
 
   describe('hasFinancialSupport', () => {
     it('should reflect financialSupportReceived field when called', () => {
-      expect(hasFinancialSupport({ specification: { financialSupportReceived: true } } as unknown as UnitEntity)).toBe(
-        false,
-      );
-      expect(hasFinancialSupport({ specification: { financialSupportReceived: false } } as unknown as UnitEntity)).toBe(
-        true,
-      );
+      expect(hasFinancialSupport({ details: { financialSupportReceived: true } } as unknown as UnitEntity)).toBe(false);
+      expect(hasFinancialSupport({ details: { financialSupportReceived: false } } as unknown as UnitEntity)).toBe(true);
     });
   });
 });

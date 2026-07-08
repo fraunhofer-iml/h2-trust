@@ -8,7 +8,7 @@
 
 import { Prisma } from '@prisma/client';
 import { ProcessStepEntity } from '@h2-trust/contracts/entities';
-import { BatchType } from '@h2-trust/domain';
+import { BatchType, PowerType, RfnboType } from '@h2-trust/domain';
 
 export function buildProcessStepCreateInput(processStep: ProcessStepEntity): Prisma.ProcessStepCreateInput {
   const predecessors = processStep.batch.predecessors ?? [];
@@ -21,19 +21,19 @@ export function buildProcessStepCreateInput(processStep: ProcessStepEntity): Pri
       create: {
         active: processStep.batch.active ?? true,
         amount: processStep.batch.amount,
-        ...(processStep.batch.qualityDetails && {
-          batchDetails: {
-            create: {
-              qualityDetails: {
-                create: {
-                  rfnboType: processStep.batch.qualityDetails.rfnboType,
-                  powerType: processStep.batch.qualityDetails.powerType,
-                  distance: processStep.batch.qualityDetails.distance,
-                },
-              },
-            },
+        details: {
+          create: {
+            rfnboType: processStep.batch.details?.rfnboType ?? RfnboType.NOT_SPECIFIED,
+            productionPowerType: processStep.batch.details?.productionPowerType ?? PowerType.NOT_SPECIFIED,
+            usedRenewablePower: processStep.batch.details?.usedRenewablePower,
+            usedGridPower: processStep.batch.details?.usedGridPower,
+            distance: processStep.batch.details?.distance,
+            wasteWater: processStep.batch.details?.wasteWater,
+            resinConsumption: processStep.batch.details?.resinConsumption,
+            compressedAir: processStep.batch.details?.compressedAir,
+            nitrogenConsumption: processStep.batch.details?.nitrogenConsumption,
           },
-        }),
+        },
         type: BatchType[processStep.batch.type as keyof typeof BatchType],
 
         owner: {

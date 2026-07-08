@@ -12,7 +12,7 @@ import {
   ProofOfOriginSectionEntityFixture,
 } from '@h2-trust/contracts/entities/fixtures';
 import { ProcessType, ProofOfOrigin } from '@h2-trust/domain';
-import { assembleProofOfOrigin, getHydrogenBottlingCompositions } from './proof-of-origin.assembler';
+import { assembleProofOfOrigin, getCompositionOfLatestSection } from './proof-of-origin.assembler';
 
 jest.mock('./proof-of-origin-assembler.registry.const', () => ({
   proofOfOriginSectionAssemblers: [
@@ -46,16 +46,16 @@ describe('ProofOfOriginAssembler', () => {
 
       // assert
       expect(actualResult.map((section) => section.name)).toEqual([
+        ProofOfOrigin.HYDROGEN_TRANSPORTATION_SECTION,
         ProofOfOrigin.HYDROGEN_PRODUCTION_SECTION,
         ProofOfOrigin.HYDROGEN_BOTTLING_SECTION,
-        ProofOfOrigin.HYDROGEN_TRANSPORTATION_SECTION,
       ]);
     });
   });
 
   describe('getHydrogenBottlingCompositions', () => {
     it('should return an empty list when proof of origin is missing', () => {
-      expect(getHydrogenBottlingCompositions(undefined as never)).toEqual([]);
+      expect(getCompositionOfLatestSection(undefined as never)).toEqual([]);
     });
 
     it('should return an empty list when no bottling section is present', () => {
@@ -65,7 +65,7 @@ describe('ProofOfOriginAssembler', () => {
       ];
 
       // act
-      const actualResult = getHydrogenBottlingCompositions(givenProofOfOrigin);
+      const actualResult = getCompositionOfLatestSection(givenProofOfOrigin);
 
       // assert
       expect(actualResult).toEqual([]);
@@ -90,7 +90,7 @@ describe('ProofOfOriginAssembler', () => {
       ];
 
       // act
-      const actualResult = getHydrogenBottlingCompositions(givenProofOfOrigin);
+      const actualResult = getCompositionOfLatestSection(givenProofOfOrigin);
 
       // assert
       expect(actualResult).toEqual(givenHydrogenComposition);

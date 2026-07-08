@@ -21,13 +21,17 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTimepickerModule } from '@angular/material/timepicker';
 import { Router, RouterModule } from '@angular/router';
 import { injectMutation, injectQuery, QueryClient } from '@tanstack/angular-query-experimental';
+import { ComponentsOverviewDto, HydrogenComponentDto, ProcessStepOverviewDto, UserDto } from '@h2-trust/contracts/dtos';
 import {
-  BottlingOverviewDto,
-  HydrogenComponentDto,
-  HydrogenStorageOverviewDto,
-  UserDto,
-} from '@h2-trust/contracts/dtos';
-import { FuelType, MeasurementUnit, RfnboType, TransportType, UnitType } from '@h2-trust/domain';
+  FuelType,
+  MeasurementUnit,
+  PowerType,
+  ProcessType,
+  ProcessTypeToUnitType,
+  RfnboType,
+  TransportType,
+  UnitType,
+} from '@h2-trust/domain';
 import { FileDragAndDropComponent } from '../../../../layout/drag-and-drop/file-drag-and-drop.component';
 import { FileCardComponent } from '../../../../layout/file-card/file-card.component';
 import { TypeSelectionComponent } from '../../../../layout/type-selection/type-selection.component';
@@ -38,12 +42,13 @@ import { EnumPipe } from '../../../../shared/pipes/enum.pipe';
 import { UnitPipe } from '../../../../shared/pipes/unit.pipe';
 import { companiesQueryOptions } from '../../../../shared/queries/companies.query';
 import { QueryKeyPrefix } from '../../../../shared/queries/shared-query-keys';
-import { hydrogenStorageUnitsQueryOptions } from '../../../../shared/queries/units.query';
+import { componentOverviewsQueryOptions } from '../../../../shared/queries/units.query';
 import { BottlingService } from '../../../../shared/services/bottling/bottling.service';
 import { CompaniesService } from '../../../../shared/services/companies/companies.service';
 import { UnitsService } from '../../../../shared/services/units/units.service';
 import { handleMutationWithPromiseToast } from '../../../../shared/util/query-error-handler';
 import { BottlingForm } from './form';
+import { StorageFillingLevelsComponent } from './storage-filling-levels/storage-filling-levels.component';
 
 @Component({
   selector: 'app-add-bottle',
@@ -62,10 +67,12 @@ import { BottlingForm } from './form';
     MatIconModule,
     MatRadioModule,
     RouterModule,
+    EnumPipe,
     FileDragAndDropComponent,
     FileCardComponent,
     TypeSelectionComponent,
     UnitPipe,
+    StorageFillingLevelsComponent,
   ],
   templateUrl: './add-bottle.component.html',
 })
@@ -87,26 +94,45 @@ export class AddBottleComponent {
 
   dateDelimiter: Date = new Date();
   uploadedFiles: File[] = [];
+  selectedChartData: ComponentsOverviewDto[] = [];
+
+  ProcessType = ProcessType;
+  protected readonly availableProcessTypes = Object.values(ProcessType).filter(
+    (type) =>
+      type !== ProcessType.WATER_CONSUMPTION &&
+      type !== ProcessType.POWER_PRODUCTION &&
+      type !== ProcessType.HYDROGEN_PRODUCTION,
+  );
 
   bottleFormGroup: FormGroup<BottlingForm> = new FormGroup({
     date: new FormControl<Date | undefined>(new Date(), Validators.required),
     time: new FormControl<Date | undefined>(new Date(), Validators.required),
     amount: new FormControl<number | undefined>(undefined, [Validators.required, Validators.min(1)]),
     recipient: new FormControl<UserDto | undefined>(undefined, Validators.required),
-    storageUnit: new FormControl<HydrogenStorageOverviewDto | undefined>(undefined, Validators.required),
+    predecessorUnit: new FormControl<ComponentsOverviewDto | undefined>(undefined, Validators.required),
+    executingUnit: new FormControl<ComponentsOverviewDto | undefined>(undefined, Validators.required),
     type: new FormControl<'NON_CERTIFIABLE' | 'RFNBO_READY' | undefined>(undefined, Validators.required),
-    transportMode: new FormControl<TransportType | null>(null, Validators.required),
-    fuelType: new FormControl<FuelType | null>(null),
     distance: new FormControl<number | null>(null),
+    renewable_power: new FormControl<number | null>(null),
+    grid_power: new FormControl<number | null>(null),
+    compressed_air: new FormControl<number | null>(null),
+    nitrogen: new FormControl<number | null>(null),
+    processType: new FormControl<ProcessType | null>(null),
   });
 
-  hydrogenStorageQuery = injectQuery(() => hydrogenStorageUnitsQueryOptions(this.unitsService));
+  changeValue() {
+    this.selectedChartData = this.bottleFormGroup.value?.predecessorUnit
+      ? [this.bottleFormGroup.value?.predecessorUnit]
+      : [];
+  }
+
+  hydrogenStorageQuery = injectQuery(() => componentOverviewsQueryOptions(this.unitsService));
 
   recipientsQuery = injectQuery(() => companiesQueryOptions(this.companiesService));
 
   mutation = injectMutation(() => ({
     mutationFn: async (dto: FormData) => {
-      await handleMutationWithPromiseToast<BottlingOverviewDto>(
+      await handleMutationWithPromiseToast<ProcessStepOverviewDto>(
         this.processService.createBottleBatch(dto),
         'Successfully created',
       );
@@ -121,8 +147,8 @@ export class AddBottleComponent {
   }));
 
   constructor() {
-    this.bottleFormGroup.controls.transportMode.valueChanges.subscribe((transportMode) =>
-      this.onTransportModeChange(transportMode),
+    this.bottleFormGroup.controls.processType.valueChanges.subscribe((processType) =>
+      this.onProcessTypeChange(processType),
     );
 
     this.bottleFormGroup.controls.amount?.valueChanges.subscribe((amount) => this.onAmountChange(amount));
@@ -130,6 +156,30 @@ export class AddBottleComponent {
 
   get bottleTypeControl() {
     return this.bottleFormGroup.controls.type as FormControl<RfnboType | undefined>;
+  }
+
+  getNonEmptyUnits() {
+    if (!this.hydrogenStorageQuery || !this.hydrogenStorageQuery.data()) {
+      return [];
+    }
+    return this.hydrogenStorageQuery.data()!.filter((component) => component.filling > 0);
+  }
+
+  getUnitsForSelectedProcessType() {
+    if (!this.hydrogenStorageQuery || !this.hydrogenStorageQuery.data()) {
+      return [];
+    }
+    const selectedProcessType: ProcessType = this.bottleFormGroup.controls.processType.value as ProcessType;
+    const selectedUnitType: UnitType = ProcessTypeToUnitType[selectedProcessType];
+    return this.hydrogenStorageQuery.data()!.filter((component) => component.unitType === selectedUnitType);
+  }
+
+  isHydrogenTrailerTransport() {
+    const isTrailerTransport =
+      this.bottleFormGroup.controls.executingUnit.value?.unitDetailsType == TransportType.TRAILER;
+    const isHydrogenTransportation =
+      this.bottleFormGroup.controls.processType.value === ProcessType.HYDROGEN_TRANSPORTATION;
+    return isHydrogenTransportation && isTrailerTransport;
   }
 
   removeFile(file: File): void {
@@ -145,15 +195,25 @@ export class AddBottleComponent {
       }
 
     data.append('amount', this.bottleFormGroup.value?.amount?.toString() ?? '');
+    data.append('processType', this.bottleFormGroup.value?.processType?.toString() ?? '');
     data.append('recipient', this.bottleFormGroup.value.recipient?.id ?? '');
     data.append('filledAt', this.createTimestamp().toISOString());
     data.append('recordedBy', '');
-    data.append('hydrogenStorageUnit', this.bottleFormGroup.value.storageUnit?.id ?? '');
-    data.append('rfnboType', this.bottleFormGroup.value.type ?? '');
-    data.append('transportMode', this.bottleFormGroup.value.transportMode ?? '');
-    data.append('fuelType', this.bottleFormGroup.value.fuelType ?? '');
-    data.append('distance', this.bottleFormGroup.value.distance?.toString() ?? '');
+    data.append('executingUnitId', this.bottleFormGroup.value?.executingUnit?.id.toString() ?? '');
+    data.append('predecessorUnitId', this.bottleFormGroup.value?.predecessorUnit?.id.toString() ?? '');
 
+    const processStepDetails = {
+      rfnboType: this.bottleFormGroup.value.type ?? RfnboType.NON_CERTIFIABLE,
+      productionPowerType: PowerType.NOT_SPECIFIED,
+      usedRenewablePower: this.bottleFormGroup.value.renewable_power ?? 0,
+      usedGridPower: this.bottleFormGroup.value.grid_power ?? 0,
+      distance: this.bottleFormGroup.value.distance ?? 0,
+      wasteWater: 0,
+      resinConsumption: 0,
+      compressedAir: this.bottleFormGroup.value.compressed_air ?? 0,
+      nitrogenConsumption: this.bottleFormGroup.value.nitrogen ?? 0,
+    };
+    data.append('details', JSON.stringify(processStepDetails));
     this.mutation.mutate(data);
   }
 
@@ -174,24 +234,67 @@ export class AddBottleComponent {
     return pickedDate;
   }
 
-  private onTransportModeChange(transportMode: TransportType | null) {
-    if (!transportMode) return;
+  private onProcessTypeChange(processType: ProcessType | null) {
+    if (!processType) return;
 
-    const fuelTypeControl = this.bottleFormGroup.controls.fuelType;
+    const selectedProcessType: ProcessType = this.bottleFormGroup.controls.processType.value as ProcessType;
+
     const distanceControl = this.bottleFormGroup.controls.distance;
+    const renewablePowerControl = this.bottleFormGroup.controls.renewable_power;
+    const gridPowerControl = this.bottleFormGroup.controls.grid_power;
+    const compressedAirControl = this.bottleFormGroup.controls.compressed_air;
+    const nitrogenControl = this.bottleFormGroup.controls.nitrogen;
 
-    if (transportMode === TransportType.TRAILER) {
-      fuelTypeControl.addValidators(Validators.required);
+    if (this.isHydrogenTrailerTransport()) {
       distanceControl.addValidators([Validators.required, Validators.min(1)]);
-    } else {
-      fuelTypeControl.removeValidators(Validators.required);
-      fuelTypeControl.setValue(null);
+      renewablePowerControl.removeValidators([Validators.required, Validators.min(1)]);
+      renewablePowerControl.setValue(null);
+      gridPowerControl.removeValidators([Validators.required, Validators.min(1)]);
+      gridPowerControl.setValue(null);
+      compressedAirControl.removeValidators([Validators.required, Validators.min(1)]);
+      compressedAirControl.setValue(null);
+      nitrogenControl.removeValidators([Validators.required, Validators.min(1)]);
+      nitrogenControl.setValue(null);
+    }
+    if (selectedProcessType === ProcessType.HYDROGEN_STORAGE) {
+      distanceControl.removeValidators([Validators.required, Validators.min(1)]);
+      distanceControl.setValue(null);
+      renewablePowerControl.removeValidators([Validators.required, Validators.min(1)]);
+      renewablePowerControl.setValue(null);
+      gridPowerControl.removeValidators([Validators.required, Validators.min(1)]);
+      gridPowerControl.setValue(null);
+      compressedAirControl.removeValidators([Validators.required, Validators.min(1)]);
+      compressedAirControl.setValue(null);
+      nitrogenControl.removeValidators([Validators.required, Validators.min(1)]);
+      nitrogenControl.setValue(null);
+    }
+    if (selectedProcessType === ProcessType.HYDROGEN_BOTTLING) {
+      renewablePowerControl.addValidators([Validators.required, Validators.min(1)]);
+      gridPowerControl.addValidators([Validators.required, Validators.min(1)]);
+      compressedAirControl.addValidators([Validators.required, Validators.min(1)]);
+      nitrogenControl.addValidators([Validators.required, Validators.min(1)]);
       distanceControl.removeValidators([Validators.required, Validators.min(1)]);
       distanceControl.setValue(null);
     }
+    if (
+      selectedProcessType === ProcessType.HYDROGEN_COMPRESSION ||
+      selectedProcessType === ProcessType.HYDROGEN_END_USE
+    ) {
+      renewablePowerControl.addValidators([Validators.required, Validators.min(1)]);
+      gridPowerControl.addValidators([Validators.required, Validators.min(1)]);
+      distanceControl.removeValidators([Validators.required, Validators.min(1)]);
+      distanceControl.setValue(null);
+      compressedAirControl.removeValidators([Validators.required, Validators.min(1)]);
+      compressedAirControl.setValue(null);
+      nitrogenControl.removeValidators([Validators.required, Validators.min(1)]);
+      nitrogenControl.setValue(null);
+    }
 
-    fuelTypeControl.updateValueAndValidity();
     distanceControl.updateValueAndValidity();
+    renewablePowerControl.updateValueAndValidity();
+    gridPowerControl.updateValueAndValidity();
+    compressedAirControl.updateValueAndValidity();
+    nitrogenControl.updateValueAndValidity();
   }
 
   private onAmountChange(amount: number | null | undefined) {
@@ -199,8 +302,8 @@ export class AddBottleComponent {
 
     this.bottleFormGroup.controls.type.reset();
 
-    if (this.bottleFormGroup.value?.storageUnit && amount > this.bottleFormGroup.value?.storageUnit?.filling)
-      this.bottleFormGroup.controls.storageUnit?.reset();
+    if (this.bottleFormGroup.value?.predecessorUnit && amount > this.bottleFormGroup.value?.predecessorUnit?.filling)
+      this.bottleFormGroup.controls.predecessorUnit?.reset();
   }
 
   displayComposition(hydrogenComposition: HydrogenComponentDto[]) {

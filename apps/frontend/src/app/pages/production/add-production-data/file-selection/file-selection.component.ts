@@ -32,7 +32,6 @@ import { H2TrustRouterLinks } from '../../../../shared/constants/router-links';
 import { UnitPipe } from '../../../../shared/pipes/unit.pipe';
 import { invalidateByQueryPrefixes } from '../../../../shared/queries/query-invalidation';
 import { QueryKeyPrefix } from '../../../../shared/queries/shared-query-keys';
-import { hydrogenStorageUnitsQueryOptions } from '../../../../shared/queries/units.query';
 import { PowerPurchaseAgreementService } from '../../../../shared/services/power-purchase-agreement/power-purchase-agreement.service';
 import { ProductionService } from '../../../../shared/services/production/production.service';
 import { UnitsService } from '../../../../shared/services/units/units.service';
@@ -72,7 +71,6 @@ export class FileSelectionComponent {
       Validators.minLength(1),
     ]),
     powerProductions: new FormControl<StagedProductionDto[] | null>([], [Validators.required, Validators.minLength(1)]),
-    storageUnit: new FormControl<string | null>(null, Validators.required),
   });
 
   selectedHydrogenFile = toSignal(
@@ -114,8 +112,6 @@ export class FileSelectionComponent {
     queryFn: () => this.powerPurchaseAgreementService.getAgreements(PowerPurchaseAgreementStatus.APPROVED),
     select: (approvals: PpaDto[]) => approvals.filter((a) => a.powerProductionType !== 'GRID'),
   }));
-
-  storageUnitsQuery = injectQuery(() => hydrogenStorageUnitsQueryOptions(this.unitsService));
 
   data = computed(() => {
     const uploads = this.powerProductionsQuery.data();
@@ -164,11 +160,10 @@ export class FileSelectionComponent {
   }
 
   save() {
-    const { hydrogenProduction, storageUnit, powerProductions } = this.form.value;
-    if (!hydrogenProduction || !storageUnit || powerProductions?.length === 0) return;
+    const { hydrogenProduction, powerProductions } = this.form.value;
+    if (!hydrogenProduction || powerProductions?.length === 0) return;
 
     const dto: StagingSubmissionDto = {
-      storageUnitId: storageUnit,
       stagedHydrogenProduction: hydrogenProduction[0].id,
       stagedPowerProductions: (powerProductions ?? []).map((item) => item.id),
     };

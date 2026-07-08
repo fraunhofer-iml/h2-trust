@@ -6,11 +6,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { BottlingOverviewDto } from '@h2-trust/contracts/dtos';
+import { ProcessStepOverviewDto } from '@h2-trust/contracts/dtos';
 import { RfnboType } from '@h2-trust/domain';
 
 export const BottlingOverviewDtoFixture = {
-  create: (overrides: Partial<BottlingOverviewDto> = {}): BottlingOverviewDto => ({
+  create: (overrides: Partial<ProcessStepOverviewDto> = {}): ProcessStepOverviewDto => ({
     id: overrides.id ?? 'bottling-1',
     filledAt: overrides.filledAt ?? new Date('2025-04-07T00:00:00.000Z'),
     owner: overrides.owner ?? 'PowerGen AG',

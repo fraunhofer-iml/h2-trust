@@ -10,11 +10,11 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigurationService } from '@h2-trust/configuration';
 import { CreateProductionEntity, UnitEntity } from '@h2-trust/contracts/entities';
 import {
+  BatchDetailsEntityFixture,
   BatchEntityFixture,
   HydrogenProductionUnitEntityFixture,
   PowerProductionUnitEntityFixture,
   ProcessStepEntityFixture,
-  QualityDetailsEntityFixture,
 } from '@h2-trust/contracts/entities/fixtures';
 import { PowerType, RfnboType } from '@h2-trust/domain';
 import { DigitalProductPassportService } from '../digital-product-passport/digital-product-passport.service';
@@ -44,7 +44,7 @@ describe('ProductionCreationService', () => {
   };
 
   const processStepServiceMock = {
-    createManyProcessSteps: jest.fn(),
+    saveManyProcessSteps: jest.fn(),
   };
 
   const digitalProductPassportServiceMock = {
@@ -101,7 +101,6 @@ describe('ProductionCreationService', () => {
         'hydrogen-unit-1',
         10,
         'user-1',
-        'storage-unit-1',
         'power-owner-1',
         'hydrogen-owner-1',
         20,
@@ -115,7 +114,6 @@ describe('ProductionCreationService', () => {
         'hydrogen-unit-1',
         12,
         'user-1',
-        'storage-unit-1',
         'power-owner-1',
         'hydrogen-owner-1',
         24,
@@ -199,7 +197,7 @@ describe('ProductionCreationService', () => {
             id: 'hydrogen-batch-to-persist-1',
             processStepId: 'hydrogen-to-persist-1',
             predecessors: [expectedPersistedPowerProcessSteps[0].batch, expectedPersistedWaterProcessSteps[0].batch],
-            qualityDetails: QualityDetailsEntityFixture.create({ rfnboType: RfnboType.NOT_SPECIFIED }),
+            details: BatchDetailsEntityFixture.create({ rfnboType: RfnboType.NOT_SPECIFIED }),
           }),
         }),
         ProcessStepEntityFixture.createHydrogenProduction({
@@ -208,7 +206,7 @@ describe('ProductionCreationService', () => {
             id: 'hydrogen-batch-to-persist-2',
             processStepId: 'hydrogen-to-persist-2',
             predecessors: [expectedPersistedPowerProcessSteps[1].batch, expectedPersistedWaterProcessSteps[1].batch],
-            qualityDetails: QualityDetailsEntityFixture.create({ rfnboType: RfnboType.NOT_SPECIFIED }),
+            details: BatchDetailsEntityFixture.create({ rfnboType: RfnboType.NOT_SPECIFIED }),
           }),
         }),
       ];
@@ -238,7 +236,7 @@ describe('ProductionCreationService', () => {
       assembleHydrogenProductionsMock
         .mockReturnValueOnce([givenHydrogenProcessStepsToPersist[0]])
         .mockReturnValueOnce([givenHydrogenProcessStepsToPersist[1]]);
-      processStepServiceMock.createManyProcessSteps
+      processStepServiceMock.saveManyProcessSteps
         .mockResolvedValueOnce([expectedPersistedPowerProcessSteps[0], expectedPersistedWaterProcessSteps[0]])
         .mockResolvedValueOnce([expectedPersistedHydrogenProcessSteps[0]])
         .mockResolvedValueOnce([expectedPersistedPowerProcessSteps[1], expectedPersistedWaterProcessSteps[1]])
@@ -254,10 +252,10 @@ describe('ProductionCreationService', () => {
       );
 
       // assert
-      expect(processStepServiceMock.createManyProcessSteps).toHaveBeenCalledTimes(4);
+      expect(processStepServiceMock.saveManyProcessSteps).toHaveBeenCalledTimes(4);
       expect(digitalProductPassportServiceMock.getRfnboType).toHaveBeenCalledTimes(2);
-      expect(givenHydrogenProcessStepsToPersist[0].batch.qualityDetails.rfnboType).toBe(RfnboType.RFNBO_READY);
-      expect(givenHydrogenProcessStepsToPersist[1].batch.qualityDetails.rfnboType).toBe(RfnboType.NON_CERTIFIABLE);
+      expect(givenHydrogenProcessStepsToPersist[0].batch.details.rfnboType).toBe(RfnboType.RFNBO_READY);
+      expect(givenHydrogenProcessStepsToPersist[1].batch.details.rfnboType).toBe(RfnboType.NON_CERTIFIABLE);
       expect(actualResult).toEqual([
         expectedPersistedPowerProcessSteps[0],
         expectedPersistedWaterProcessSteps[0],
@@ -312,7 +310,7 @@ describe('ProductionCreationService', () => {
           id: 'hydrogen-batch-to-persist',
           processStepId: 'hydrogen-to-persist',
           predecessors: [givenPersistedPower.batch, givenPersistedWater.batch],
-          qualityDetails: QualityDetailsEntityFixture.create({ rfnboType: RfnboType.NOT_SPECIFIED }),
+          details: BatchDetailsEntityFixture.create({ rfnboType: RfnboType.NOT_SPECIFIED }),
         }),
       });
       const givenPersistedHydrogen = ProcessStepEntityFixture.createHydrogenProduction({
@@ -326,7 +324,7 @@ describe('ProductionCreationService', () => {
       assemblePowerProductionsMock.mockReturnValue([givenPowerToPersist]);
       assembleWaterConsumptionsMock.mockReturnValue([givenWaterToPersist]);
       assembleHydrogenProductionsMock.mockReturnValue([givenHydrogenToPersist]);
-      processStepServiceMock.createManyProcessSteps
+      processStepServiceMock.saveManyProcessSteps
         .mockResolvedValueOnce([givenPersistedPower, givenPersistedWater])
         .mockResolvedValueOnce([givenPersistedHydrogen]);
       digitalProductPassportServiceMock.getRfnboType.mockReturnValue(RfnboType.RFNBO_READY);
@@ -338,14 +336,14 @@ describe('ProductionCreationService', () => {
       );
 
       // assert
-      expect(processStepServiceMock.createManyProcessSteps).toHaveBeenCalledTimes(2);
-      expect(processStepServiceMock.createManyProcessSteps.mock.calls[0][0].processSteps).toEqual([
+      expect(processStepServiceMock.saveManyProcessSteps).toHaveBeenCalledTimes(2);
+      expect(processStepServiceMock.saveManyProcessSteps.mock.calls[0][0].processSteps).toEqual([
         givenPowerToPersist,
         givenWaterToPersist,
       ]);
       expect(digitalProductPassportServiceMock.getRfnboType).toHaveBeenCalledTimes(1);
-      expect(givenHydrogenToPersist.batch.qualityDetails.rfnboType).toBe(RfnboType.RFNBO_READY);
-      expect(processStepServiceMock.createManyProcessSteps.mock.calls[1][0].processSteps).toEqual([
+      expect(givenHydrogenToPersist.batch.details.rfnboType).toBe(RfnboType.RFNBO_READY);
+      expect(processStepServiceMock.saveManyProcessSteps.mock.calls[1][0].processSteps).toEqual([
         givenHydrogenToPersist,
       ]);
       expect(actualResult).toEqual([givenPersistedPower, givenPersistedWater, givenPersistedHydrogen]);
@@ -377,7 +375,7 @@ describe('ProductionCreationService', () => {
       await expect(actualResult).rejects.toThrow(
         'Expected 1:1 relation between given productions and created process steps, but got 0 power and 1 water for 1 productions.',
       );
-      expect(processStepServiceMock.createManyProcessSteps).not.toHaveBeenCalled();
+      expect(processStepServiceMock.saveManyProcessSteps).not.toHaveBeenCalled();
     });
 
     it('should throw when persisted power and water counts differ', async () => {
@@ -399,9 +397,7 @@ describe('ProductionCreationService', () => {
 
       assemblePowerProductionsMock.mockReturnValue([ProcessStepEntityFixture.createPowerProduction()]);
       assembleWaterConsumptionsMock.mockReturnValue([ProcessStepEntityFixture.createWaterConsumption()]);
-      processStepServiceMock.createManyProcessSteps.mockResolvedValue([
-        ProcessStepEntityFixture.createPowerProduction(),
-      ]);
+      processStepServiceMock.saveManyProcessSteps.mockResolvedValue([ProcessStepEntityFixture.createPowerProduction()]);
 
       // act & assert
       const actualResult = service.createAndPersistProductions([givenCreateProduction], new Map());
@@ -422,7 +418,6 @@ describe('ProductionCreationService', () => {
         'hydrogen-unit-1',
         10,
         'user-1',
-        'storage-unit-1',
         'power-owner-1',
         'hydrogen-owner-1',
         20,
@@ -442,14 +437,14 @@ describe('ProductionCreationService', () => {
             BatchEntityFixture.createPowerBatch({ id: 'unknown-power-batch', processStepId: 'unknown-power' }),
             givenPersistedWater.batch,
           ],
-          qualityDetails: QualityDetailsEntityFixture.create({ rfnboType: RfnboType.NOT_SPECIFIED }),
+          details: BatchDetailsEntityFixture.create({ rfnboType: RfnboType.NOT_SPECIFIED }),
         }),
       });
 
       assemblePowerProductionsMock.mockReturnValue([ProcessStepEntityFixture.createPowerProduction()]);
       assembleWaterConsumptionsMock.mockReturnValue([ProcessStepEntityFixture.createWaterConsumption()]);
       assembleHydrogenProductionsMock.mockReturnValue([givenHydrogenWithUnknownPredecessor]);
-      processStepServiceMock.createManyProcessSteps.mockResolvedValueOnce([givenPersistedPower, givenPersistedWater]);
+      processStepServiceMock.saveManyProcessSteps.mockResolvedValueOnce([givenPersistedPower, givenPersistedWater]);
 
       // act & assert
       const actualResult = service.createAndPersistProductions([givenCreateProduction], new Map());

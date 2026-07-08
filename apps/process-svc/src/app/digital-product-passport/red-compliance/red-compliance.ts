@@ -71,8 +71,8 @@ export function determineTotalRedCompliance(productionChains: ProductionChainEnt
 }
 
 export function areUnitsInSameBiddingZone(powerUnit: UnitEntity, hydrogenUnit: UnitEntity): boolean {
-  const powerUnitZone = powerUnit?.specification?.biddingZone;
-  const hydrogenUnitZone = hydrogenUnit?.specification?.biddingZone;
+  const powerUnitZone = powerUnit?.details?.biddingZone;
+  const hydrogenUnitZone = hydrogenUnit?.details?.biddingZone;
   assertValidEnum(powerUnitZone, BiddingZone, 'BiddingZone');
   assertValidEnum(hydrogenUnitZone, BiddingZone, 'BiddingZone');
   return powerUnitZone === hydrogenUnitZone;
@@ -104,6 +104,6 @@ export function meetsAdditionalityCriterion(powerUnit: UnitEntity, hydrogenUnit:
 }
 
 export function hasFinancialSupport(powerUnit: UnitEntity): boolean {
-  assertBoolean(powerUnit?.specification?.financialSupportReceived, 'powerUnit.financialSupportReceived');
-  return !powerUnit.specification.financialSupportReceived;
+  assertBoolean(powerUnit?.details?.financialSupportReceived, 'powerUnit.financialSupportReceived');
+  return !powerUnit.details.financialSupportReceived;
 }

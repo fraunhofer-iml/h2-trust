@@ -55,6 +55,8 @@ export class ProofOfSustainabilityComponent {
       [CalculationTopic.HYDROGEN_STORAGE]: [],
       [CalculationTopic.HYDROGEN_BOTTLING]: [],
       [CalculationTopic.HYDROGEN_TRANSPORTATION]: [],
+      [CalculationTopic.HYDROGEN_COMPRESSION]: [],
+      [CalculationTopic.HYDROGEN_END_USE]: [],
     };
 
     for (const item of calculations) {

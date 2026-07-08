@@ -60,10 +60,10 @@ export class HydrogenStorageUnitDto extends BaseUnitDto {
     return {
       ...BaseUnitDto.fromEntity(unit),
       unitType: UnitType.HYDROGEN_STORAGE,
-      storageType: unit.specification.type as HydrogenStorageType,
-      capacity: unit.specification.capacity ?? 0,
+      storageType: unit.details.type as HydrogenStorageType,
+      capacity: unit.details.capacity ?? 0,
       filling:
-        unit.specification.filling?.map((filling) => ({
+        unit.details.filling?.map((filling) => ({
           id: '',
           amount: filling.amount,
         })) ?? [],

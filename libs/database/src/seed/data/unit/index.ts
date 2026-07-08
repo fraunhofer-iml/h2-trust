@@ -7,4 +7,4 @@
  */
 
 export * from './unit.seed';
-export * from './unit-specification.seed';
+export * from './unit-details.seed';

@@ -38,7 +38,6 @@ describe('Provenance', () => {
 
       // assert
       expect(actualResult.root).toBe(givenProcessStep);
-      expect(actualResult.hydrogenBottling).toBeUndefined();
       expect(actualResult.getAllHydrogenRootProductions()).toEqual([]);
       expect(actualResult.getAllWaterConsumptions()).toEqual([]);
       expect(actualResult.getAllPowerProductions()).toEqual([]);
@@ -53,7 +52,6 @@ describe('Provenance', () => {
 
       // assert
       expect(actualResult.root).toBe(givenProcessStep);
-      expect(actualResult.hydrogenBottling).toBeUndefined();
       expect(actualResult.getAllHydrogenRootProductions()).toEqual([]);
       expect(actualResult.getAllWaterConsumptions()).toEqual([]);
       expect(actualResult.getAllPowerProductions()).toEqual([]);
@@ -74,7 +72,6 @@ describe('Provenance', () => {
 
       // assert
       expect(actualResult.root).toBe(givenProcessStep);
-      expect(actualResult.hydrogenBottling).toBeUndefined();
       expect(actualResult.getAllHydrogenRootProductions()).toEqual([givenProcessStep]);
       expect(actualResult.getAllWaterConsumptions()).toEqual(givenWaterConsumptions);
       expect(actualResult.getAllPowerProductions()).toEqual(givenPowerProductions);
@@ -97,7 +94,6 @@ describe('Provenance', () => {
 
       // assert
       expect(actualResult.root).toBe(givenProcessStep);
-      expect(actualResult.hydrogenBottling).toBe(givenProcessStep);
       expect(actualResult.getAllHydrogenRootProductions()).toEqual(givenHydrogenProductions);
       expect(actualResult.getAllWaterConsumptions()).toEqual(givenWaterConsumptions);
       expect(actualResult.getAllPowerProductions()).toEqual(givenPowerProductions);
@@ -122,7 +118,6 @@ describe('Provenance', () => {
 
       // assert
       expect(actualResult.root).toBe(givenProcessStep);
-      expect(actualResult.hydrogenBottling).toBe(givenHydrogenBottling);
       expect(actualResult.getAllHydrogenRootProductions()).toEqual(givenHydrogenProductions);
       expect(actualResult.getAllWaterConsumptions()).toEqual(givenWaterConsumptions);
       expect(actualResult.getAllPowerProductions()).toEqual(givenPowerProductions);
@@ -179,7 +174,6 @@ describe('Provenance', () => {
       ]);
 
       // assert
-      expect(actualResult.hydrogenBottling).toBe(givenHydrogenBottling);
       expect(actualResult.productionChains).toHaveLength(1);
       expect(actualResult.productionChains[0]).toEqual(
         expect.objectContaining({
@@ -190,17 +184,6 @@ describe('Provenance', () => {
         }),
       );
       expect(actualResult.getAllHydrogenRootProductions()).toEqual([givenRootHydrogenProduction]);
-    });
-
-    it('should throw when a hydrogen bottling root has no bottling process step in the predecessor set', () => {
-      // arrange
-      const givenProcessStep = ProcessStepEntityFixture.createHydrogenTransportation();
-
-      // act & assert
-      const actualOperation = () =>
-        buildProvenance(givenProcessStep, [ProcessStepEntityFixture.createHydrogenProduction()]);
-
-      expect(actualOperation).toThrow(`Missing hydrogen bottling for root production [${givenProcessStep.id}].`);
     });
 
     it('should throw when the resolved hydrogen root production is missing a water predecessor', () => {
