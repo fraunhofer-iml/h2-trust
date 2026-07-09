@@ -21,7 +21,6 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTimepickerModule } from '@angular/material/timepicker';
 import { Router, RouterModule } from '@angular/router';
 import { injectMutation, injectQuery, QueryClient } from '@tanstack/angular-query-experimental';
-import { invalidateByQueryPrefixes } from 'apps/frontend/src/app/shared/queries/query-invalidation';
 import { ComponentsOverviewDto, HydrogenComponentDto, ProcessStepOverviewDto, UserDto } from '@h2-trust/contracts/dtos';
 import {
   FuelType,
@@ -42,6 +41,7 @@ import { H2TrustRoutes } from '../../../../shared/constants/routes';
 import { EnumPipe } from '../../../../shared/pipes/enum.pipe';
 import { UnitPipe } from '../../../../shared/pipes/unit.pipe';
 import { companiesQueryOptions } from '../../../../shared/queries/companies.query';
+import { invalidateByQueryPrefixes } from '../../../../shared/queries/query-invalidation';
 import { QueryKeyPrefix } from '../../../../shared/queries/shared-query-keys';
 import { componentOverviewsQueryOptions } from '../../../../shared/queries/units.query';
 import { BottlingService } from '../../../../shared/services/bottling/bottling.service';
