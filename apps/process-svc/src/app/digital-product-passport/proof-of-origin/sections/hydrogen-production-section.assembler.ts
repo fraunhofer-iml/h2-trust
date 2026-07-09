@@ -31,7 +31,7 @@ export function assembleHydrogenProductionSection(provenance: ProvenanceEntity):
     return [];
   }
 
-  const bottledKgHydrogen: number = provenance.root.batch.amount;
+  const bottledKgHydrogen: number = provenance?.root?.batch?.amount ?? 0;
 
   const classifications: ProofOfOriginClassificationEntity[] = [];
 

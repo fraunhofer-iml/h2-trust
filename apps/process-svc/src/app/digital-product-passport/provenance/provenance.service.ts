@@ -83,17 +83,27 @@ function buildProductionChains(root: ProcessStepEntity, processSteps: ProcessSte
   });
 }
 
+/**
+ * Accepts any node in the process chain and the list of all nodes in the process chain. Starting from the specified node, it
+ * searches for the first or last HYDROGEN_PRODUCTION element in the process chain that is designated as leaf hydrogen production.
+ * @param root Any node in the process chain.
+ * @param processSteps The list of all process steps in the process chain.
+ * @returns The last HYDROGEN_PRODUCTION process step in the process chain (leaf hydrogen production).
+ */
 function getLeafHydrogenProductions(root: ProcessStepEntity, processSteps: ProcessStepEntity[]): ProcessStepEntity[] {
+  if (root.type === ProcessType.HYDROGEN_PRODUCTION) {
+    //The specified root element is of type HYDROGEN_PRODUCTION, so it automatically becomes the production leaf element.
+    return [root];
+  }
+  if (root.type === ProcessType.POWER_PRODUCTION || root.type === ProcessType.WATER_CONSUMPTION) {
+    //The specified root element is of type POWER_PRODUCTION or WATER_CONSUMPTION and has therefore no HYDROGEN_PRODUCTION predecessor.
+    return [];
+  }
   const predecessorIds: string[] = root.batch.predecessors.map((pred) => pred.processStepId);
   const rootPredecessors: ProcessStepEntity[] = processSteps.filter((processStep) =>
     predecessorIds.includes(processStep.id),
   );
-  const doesProductionPredecessorExist = rootPredecessors.find((pred) => pred.type === ProcessType.HYDROGEN_PRODUCTION);
-  if (doesProductionPredecessorExist) {
-    return rootPredecessors;
-  } else {
-    return rootPredecessors.flatMap((pred) => getLeafHydrogenProductions(pred, processSteps));
-  }
+  return rootPredecessors.flatMap((pred) => getLeafHydrogenProductions(pred, processSteps));
 }
 
 function getRootProductionForLeaf(
