@@ -22,13 +22,13 @@ export function buildProvenance(root: ProcessStepEntity, predecessorsOfRoot: Pro
       return new ProvenanceEntity(root, predecessorsOfRoot, []);
 
     case ProcessType.HYDROGEN_PRODUCTION:
-      return new ProvenanceEntity(root, predecessorsOfRoot, buildProductionChains(predecessorsOfRoot));
+      return new ProvenanceEntity(root, predecessorsOfRoot, buildProductionChains(root, predecessorsOfRoot));
 
     default:
       return new ProvenanceEntity(
         root,
         handleSplitProcessSteps(predecessorsOfRoot),
-        buildProductionChains(predecessorsOfRoot),
+        buildProductionChains(root, predecessorsOfRoot),
       );
   }
 }
@@ -54,8 +54,8 @@ function getFirstProcessStepOfSplittingChain(
   return lastProcessStep;
 }
 
-function buildProductionChains(processSteps: ProcessStepEntity[]): ProductionChainEntity[] {
-  const leafProductions: ProcessStepEntity[] = getLeafHydrogenProductions(processSteps);
+function buildProductionChains(root: ProcessStepEntity, processSteps: ProcessStepEntity[]): ProductionChainEntity[] {
+  const leafProductions: ProcessStepEntity[] = getLeafHydrogenProductions(root, processSteps);
 
   return leafProductions.map((leafProduction) => {
     const rootProduction: ProcessStepEntity = getRootProductionForLeaf(leafProduction, processSteps);
@@ -89,7 +89,11 @@ function buildProductionChains(processSteps: ProcessStepEntity[]): ProductionCha
  * @param processSteps The list of all process steps in the process chain.
  * @returns The last HYDROGEN_PRODUCTION process steps in the process chain (leaf hydrogen production).
  */
-function getLeafHydrogenProductions(processSteps: ProcessStepEntity[]): ProcessStepEntity[] {
+function getLeafHydrogenProductions(root: ProcessStepEntity, processSteps: ProcessStepEntity[]): ProcessStepEntity[] {
+  //If the leaf productions are to be retrieved for a root element that is itself of type HYDROGEN_PRODUCTION, then this root element is also the leaf productions element.
+  if (root.type === ProcessType.HYDROGEN_PRODUCTION) {
+    return [root];
+  }
   //Since hydrogen production is at the beginning of every process chain, all process steps that do not have one of the production types (HYDROGEN_PRODUCTION,
   //POWER_PRODUCTION, and WATER_CONSUMPTION) necessarily have a HYDROGEN_PRODUCTION element as a (distant) predecessor.
   const nonProductionProcessSteps: ProcessStepEntity[] = processSteps.filter(
