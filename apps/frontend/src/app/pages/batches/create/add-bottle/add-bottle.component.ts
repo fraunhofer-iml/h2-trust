@@ -21,6 +21,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTimepickerModule } from '@angular/material/timepicker';
 import { Router, RouterModule } from '@angular/router';
 import { injectMutation, injectQuery, QueryClient } from '@tanstack/angular-query-experimental';
+import { invalidateByQueryPrefixes } from 'apps/frontend/src/app/shared/queries/query-invalidation';
 import { ComponentsOverviewDto, HydrogenComponentDto, ProcessStepOverviewDto, UserDto } from '@h2-trust/contracts/dtos';
 import {
   FuelType,
@@ -126,6 +127,10 @@ export class AddBottleComponent {
       : [];
   }
 
+  ngOnInit() {
+    invalidateByQueryPrefixes(this.queryClient, [QueryKeyPrefix.COMPONENT_OVERVIEW]);
+  }
+
   hydrogenStorageQuery = injectQuery(() => componentOverviewsQueryOptions(this.unitsService));
 
   recipientsQuery = injectQuery(() => companiesQueryOptions(this.companiesService));
@@ -142,6 +147,7 @@ export class AddBottleComponent {
       await this.queryClient.invalidateQueries({
         queryKey: [QueryKeyPrefix.BOTTLING],
       });
+      await this.queryClient.invalidateQueries({ queryKey: [QueryKeyPrefix.BATCHES] });
       this.router.navigateByUrl(H2TrustRoutes.BATCHES);
     },
   }));
