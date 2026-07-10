@@ -69,7 +69,7 @@ export function assembleHydrogenProductionClassification(
   );
 
   return assembleClassification(
-    ProofOfOrigin.HHYDROGEN_PRODUCTION_CLASSIFICATION,
+    ProofOfOrigin.HYDROGEN_PRODUCTION_CLASSIFICATION,
     BatchType.H2_PRODUCTION,
     productionBatches,
     [],
