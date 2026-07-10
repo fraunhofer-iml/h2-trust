@@ -65,12 +65,6 @@ export class FileSelectionComponent {
   private readonly router = inject(Router);
   private queryClient = inject(QueryClient);
 
-  ngOnInit() {
-    invalidateByQueryPrefixes(this.queryClient, [QueryKeyPrefix.PENDING_HYDROGEN_PRODUCTIONS]);
-    invalidateByQueryPrefixes(this.queryClient, [QueryKeyPrefix.PENDING_POWER_PRODUCTIONS]);
-    invalidateByQueryPrefixes(this.queryClient, [QueryKeyPrefix.PRODUCTIONS]);
-  }
-
   form = new FormGroup({
     hydrogenProduction: new FormControl<StagedProductionDto[] | null>(null, [
       Validators.required,
@@ -146,9 +140,11 @@ export class FileSelectionComponent {
       );
     },
     onSuccess: async () => {
-      await invalidateByQueryPrefixes(this.queryClient, [QueryKeyPrefix.PENDING_HYDROGEN_PRODUCTIONS]);
-      await invalidateByQueryPrefixes(this.queryClient, [QueryKeyPrefix.PENDING_POWER_PRODUCTIONS]);
-      await invalidateByQueryPrefixes(this.queryClient, [QueryKeyPrefix.PRODUCTIONS]);
+      await invalidateByQueryPrefixes(this.queryClient, [
+        QueryKeyPrefix.PENDING_HYDROGEN_PRODUCTIONS,
+        QueryKeyPrefix.PENDING_POWER_PRODUCTIONS,
+        QueryKeyPrefix.PRODUCTIONS,
+      ]);
 
       const tree = this.router.createUrlTree(H2TrustRouterLinks.PRODUCTION_DATA);
       this.router.navigateByUrl(tree);
