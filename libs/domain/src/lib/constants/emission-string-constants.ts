@@ -8,6 +8,7 @@
 
 export const EmissionStringConstants = {
   CH4_N2O: 'CH₄ & N₂O',
+  END_USE: 'End use',
   COMPRESSION: 'Compression from 30 bar to 300 bar',
   DEIONIZED_WATER: 'Deionized Water',
   HYDROGEN_BOTTLING: 'Hydrogen Bottling',

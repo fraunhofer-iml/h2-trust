@@ -13,6 +13,8 @@
 // On the other hand it can be an EnergySource or something else...
 export enum ProofOfOrigin {
   HYDROGEN_BOTTLING_SECTION = 'Hydrogen Bottling',
+  HYDROGEN_COMPRESSION_SECTION = 'Hydrogen Compression',
+  HYDROGEN_END_USE_SECTION = 'Hydrogen End Use',
   HYDROGEN_PRODUCTION_SECTION = 'Hydrogen Production',
   HYDROGEN_STORAGE_SECTION = 'Hydrogen Storage',
   HYDROGEN_TRANSPORTATION_SECTION = 'Hydrogen Transportation',

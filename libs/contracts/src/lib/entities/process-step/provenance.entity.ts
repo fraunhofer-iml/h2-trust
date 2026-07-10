@@ -6,22 +6,31 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { ProcessType } from '@h2-trust/domain';
 import { ProductionChainEntity } from '../production';
 import { ProcessStepEntity } from './process-step.entity';
 
 export class ProvenanceEntity {
   root: ProcessStepEntity;
-  hydrogenBottling?: ProcessStepEntity;
+  processStepChain: ProcessStepEntity[];
   productionChains: ProductionChainEntity[];
 
-  constructor(root: ProcessStepEntity, productionChain: ProductionChainEntity[], hydrogenBottling?: ProcessStepEntity) {
+  constructor(
+    root: ProcessStepEntity,
+    processStepChain: ProcessStepEntity[],
+    productionChain: ProductionChainEntity[],
+  ) {
     this.root = root;
-    this.hydrogenBottling = hydrogenBottling;
+    this.processStepChain = processStepChain;
     this.productionChains = productionChain;
   }
 
   public static fromProductionChain(productionChain: ProductionChainEntity): ProvenanceEntity {
-    return new ProvenanceEntity(productionChain.hydrogenRootProduction, [productionChain]);
+    return new ProvenanceEntity(productionChain.hydrogenRootProduction, [], [productionChain]);
+  }
+
+  public getProcessStepsFromChain(processType: ProcessType): ProcessStepEntity[] {
+    return this.processStepChain.filter((processStep) => processStep?.type === processType);
   }
 
   public getAllPowerProductions(): ProcessStepEntity[] {

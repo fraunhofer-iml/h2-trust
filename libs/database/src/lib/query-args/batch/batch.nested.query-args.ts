@@ -15,7 +15,7 @@ export const batchNestedQueryArgs = Prisma.validator<Prisma.BatchDefaultArgs>()(
     owner: companyFlatQueryArgs,
     predecessors: batchFlatQueryArgs,
     successors: batchFlatQueryArgs,
-    qualityDetails: true,
+    details: true,
     processStep: true,
   },
 });

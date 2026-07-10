@@ -56,8 +56,8 @@ export class HydrogenTransportUnitDto extends BaseUnitDto {
     return {
       ...BaseUnitDto.fromEntity(unit),
       unitType: UnitType.TRANSPORTATION,
-      type: unit.specification.type as TransportType,
-      fuelType: unit.specification.fuelType as FuelType,
+      type: unit.details.type as TransportType,
+      fuelType: unit.details.fuelType as FuelType,
     };
   }
 }

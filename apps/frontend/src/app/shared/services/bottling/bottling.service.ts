@@ -9,7 +9,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { lastValueFrom } from 'rxjs';
-import { BottlingOverviewDto, DigitalProductPassportDto } from '@h2-trust/contracts/dtos';
+import { DigitalProductPassportDto, ProcessStepOverviewDto } from '@h2-trust/contracts/dtos';
 import { API } from '../../constants/api-endpoints';
 
 @Injectable()
@@ -17,14 +17,14 @@ export class BottlingService {
   private readonly httpClient = inject(HttpClient);
 
   getBottlings() {
-    return lastValueFrom(this.httpClient.get<BottlingOverviewDto[]>(API.BOTTLING.BASE));
+    return lastValueFrom(this.httpClient.get<ProcessStepOverviewDto[]>(API.PROCESS_STEPS.BASE));
   }
 
   createBottleBatch(data: FormData) {
-    return lastValueFrom(this.httpClient.post<BottlingOverviewDto>(API.BOTTLING.BASE, data));
+    return lastValueFrom(this.httpClient.post<ProcessStepOverviewDto>(API.PROCESS_STEPS.BASE, data));
   }
 
   findBatchById(id: string): Promise<DigitalProductPassportDto> {
-    return lastValueFrom(this.httpClient.get<DigitalProductPassportDto>(API.BOTTLING.DETAILS(id)));
+    return lastValueFrom(this.httpClient.get<DigitalProductPassportDto>(API.PROCESS_STEPS.DETAILS(id)));
   }
 }

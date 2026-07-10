@@ -14,7 +14,7 @@ export const unitNestedQueryArgs = Prisma.validator<Prisma.UnitDefaultArgs>()({
     address: true,
     owner: companyFlatQueryArgs,
     operator: companyFlatQueryArgs,
-    specification: true,
+    details: true,
     documents: true,
     processSteps: true,
     stagedProductions: true,

@@ -10,12 +10,14 @@ import { RfnboType } from '@h2-trust/domain';
 
 export class HydrogenComponentEntity {
   processId: string | null;
+  unitId: string | null;
   amount: number;
   rfnboType: RfnboType;
 
-  constructor(processId: string | null, amount: number, rfnboType: RfnboType) {
+  constructor(processId: string | null, amount: number, rfnboType: RfnboType, unitId: string | null) {
     this.processId = processId;
     this.amount = amount;
     this.rfnboType = rfnboType;
+    this.unitId = unitId;
   }
 }

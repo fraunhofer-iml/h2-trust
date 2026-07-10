@@ -238,7 +238,7 @@ describe('PowerPurchaseAgreementService', () => {
       const givenPayload = new ReadByIdPayload('user-1');
       const givenUser = UserEntityFixture.createHydrogenUser({ id: givenPayload.id });
       const expectedGridUnit = PowerProductionUnitEntityFixture.create({
-        specification: {
+        details: {
           type: PowerProductionType.GRID,
         },
       });
@@ -268,7 +268,7 @@ describe('PowerPurchaseAgreementService', () => {
       const givenUser = UserEntityFixture.createHydrogenUser({ id: givenPayload.id });
       const givenNonGridAgreement = PowerPurchaseAgreementEntityFixture.create({
         powerProductionUnit: PowerProductionUnitEntityFixture.create({
-          specification: { type: PowerProductionType.PHOTOVOLTAIC_SYSTEM },
+          details: { type: PowerProductionType.PHOTOVOLTAIC_SYSTEM },
         }),
       });
 

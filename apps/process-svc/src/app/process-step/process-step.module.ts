@@ -9,12 +9,15 @@
 import { Module } from '@nestjs/common';
 import { ConfigurationModule } from '@h2-trust/configuration';
 import { DatabaseModule } from '@h2-trust/database';
-import { TransportationService } from '../transportation/transportation.service';
+import { getGeneralSvcBroker } from '@h2-trust/messaging';
+import { StorageModule } from '@h2-trust/storage';
+import { ProcessStepController } from './process-step.controller';
 import { ProcessStepService } from './process-step.service';
 
 @Module({
-  imports: [ConfigurationModule, DatabaseModule],
-  providers: [ProcessStepService, TransportationService],
+  imports: [ConfigurationModule, DatabaseModule, StorageModule, getGeneralSvcBroker()],
+  controllers: [ProcessStepController],
+  providers: [ProcessStepService],
   exports: [ProcessStepService],
 })
 export class ProcessStepModule {}

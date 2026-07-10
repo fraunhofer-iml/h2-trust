@@ -245,7 +245,6 @@ function createEntityForNewAmounts(
     createProductionEntity.hydrogenProductionUnitId,
     hydrogenAmount,
     createProductionEntity.recordedBy,
-    createProductionEntity.hydrogenStorageUnitId,
     createProductionEntity.ownerIdOfPowerProductionUnit,
     createProductionEntity.ownerIdOfHydrogenProductionUnit,
     waterConsumption,

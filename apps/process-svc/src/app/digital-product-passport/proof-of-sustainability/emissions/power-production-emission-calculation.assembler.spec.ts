@@ -16,7 +16,7 @@ describe('PowerProductionEmissionCalculationAssembler', () => {
     it('should compute emissions for provenance with hydrogen bottling only when called', () => {
       // arrange
       const givenHydrogenBottling = ProcessStepEntityFixture.createHydrogenBottling();
-      const givenProvenance = new ProvenanceEntity(givenHydrogenBottling, [], givenHydrogenBottling);
+      const givenProvenance = new ProvenanceEntity(givenHydrogenBottling, [givenHydrogenBottling], []);
 
       // act
       const actualResult = assemblePowerProductionEmissionCalculations(givenProvenance)[0];

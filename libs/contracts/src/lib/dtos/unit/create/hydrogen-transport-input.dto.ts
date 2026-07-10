@@ -18,10 +18,10 @@ export class HydrogenTransportUnitInputDto extends UnitInputDto {
   @IsNotEmpty()
   transportType: TransportType;
 
-  @ValidateIf((dto) => dto.transportType === TransportType.TRAILER)
+  @ValidateIf((payload) => payload.transportType === TransportType.TRAILER)
   @IsEnum(FuelType)
   @IsNotEmpty()
-  fuelType?: FuelType;
+  fuelType: FuelType;
 
   constructor(
     type: UnitType,
@@ -36,7 +36,7 @@ export class HydrogenTransportUnitInputDto extends UnitInputDto {
     commissionedOn: Date,
     address: AddressDto,
     transportType: TransportType,
-    fuelType?: FuelType,
+    fuelType: FuelType,
   ) {
     super(
       type,

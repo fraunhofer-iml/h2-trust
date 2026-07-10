@@ -7,13 +7,14 @@
  */
 
 import { CsvDocumentEntity } from '@h2-trust/contracts/entities';
+import { CsvContentType } from '@h2-trust/domain';
 
 export const CsvDocumentEntityFixture = {
   create: (overrides: Partial<CsvDocumentEntity> = {}): CsvDocumentEntity =>
     new CsvDocumentEntity(
       overrides.id ?? 'document-1',
       overrides.fileName ?? 'document-1',
-      overrides.type ?? typeof String,
+      overrides.type ?? CsvContentType.HYDROGEN,
       overrides.startedAt ?? new Date('2026-01-01T00:00:00.000Z'),
       overrides.endedAt ?? new Date('2026-01-01T00:15:00.000Z'),
       overrides.amount ?? 100,

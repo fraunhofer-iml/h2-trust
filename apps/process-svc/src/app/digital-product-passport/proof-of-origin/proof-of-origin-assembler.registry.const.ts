@@ -8,6 +8,8 @@
 
 import { ProofOfOriginSectionAssembler } from './proof-of-origin-assembler.interface';
 import { hydrogenBottlingSectionAssembler } from './sections/hydrogen-bottling-section.assembler';
+import { hydrogenCompressionSectionAssembler } from './sections/hydrogen-compress-section.assembler';
+import { hydrogenEndUseSectionAssembler } from './sections/hydrogen-end-use-section.assembler';
 import { hydrogenProductionSectionAssembler } from './sections/hydrogen-production-section.assembler';
 import { hydrogenStorageSectionAssembler } from './sections/hydrogen-storage-section.assembler';
 import { hydrogenTransportationSectionAssembler } from './sections/hydrogen-transportation-section.assembler';
@@ -17,4 +19,6 @@ export const proofOfOriginSectionAssemblers: ProofOfOriginSectionAssembler[] = [
   hydrogenProductionSectionAssembler,
   hydrogenStorageSectionAssembler,
   hydrogenTransportationSectionAssembler,
+  hydrogenCompressionSectionAssembler,
+  hydrogenEndUseSectionAssembler,
 ];

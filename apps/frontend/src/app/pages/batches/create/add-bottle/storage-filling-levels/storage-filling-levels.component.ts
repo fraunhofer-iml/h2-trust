@@ -11,7 +11,7 @@ import { Component, computed, inject, input } from '@angular/core';
 import * as echarts from 'echarts';
 import { EChartsOption, TooltipComponentFormatterCallbackParams } from 'echarts';
 import { NgxEchartsDirective, provideEchartsCore } from 'ngx-echarts';
-import { HydrogenStorageOverviewDto } from '@h2-trust/contracts/dtos';
+import { ComponentsOverviewDto } from '@h2-trust/contracts/dtos';
 import { MeasurementUnit, RfnboType } from '@h2-trust/domain';
 import { CHART_COLORS } from '../../../../../shared/constants/chart-colors';
 import { Warnings } from '../../../../../shared/constants/warnings';
@@ -30,10 +30,10 @@ export class StorageFillingLevelsComponent {
   percentPipe = inject(PercentPipe);
   enumPipe = inject(EnumPipe);
 
-  chartData = input<HydrogenStorageOverviewDto[]>();
+  chartData = input<ComponentsOverviewDto[]>();
   chartOption$ = computed(() => this.getOption(this.chartData() ?? []));
 
-  private getOption(data: HydrogenStorageOverviewDto[]): EChartsOption {
+  private getOption(data: ComponentsOverviewDto[]): EChartsOption {
     const emptyOption: echarts.BarSeriesOption = {
       name: 'EMPTY',
       color: 'transparent',
@@ -118,7 +118,7 @@ export class StorageFillingLevelsComponent {
     };
   }
 
-  private getSeriesForColor(h2color: string, data: HydrogenStorageOverviewDto[]): echarts.BarSeriesOption {
+  private getSeriesForColor(h2color: string, data: ComponentsOverviewDto[]): echarts.BarSeriesOption {
     const barSeries: echarts.BarSeriesOption = {
       name: h2color,
       color: CHART_COLORS.get(h2color) + '30',
@@ -139,7 +139,7 @@ export class StorageFillingLevelsComponent {
     return barSeries;
   }
 
-  private getLabel(data: HydrogenStorageOverviewDto[], value: string, index: number) {
+  private getLabel(data: ComponentsOverviewDto[], value: string, index: number) {
     const item = data[index];
     const totalH2Amount = formatNumberForChart(
       item?.hydrogenComposition.reduce((sum, portion) => sum + portion.amount, 0),

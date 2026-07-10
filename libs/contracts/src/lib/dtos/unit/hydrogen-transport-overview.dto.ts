@@ -31,8 +31,8 @@ export class HydrogenTransportOverviewDto {
       id: unit.id,
       name: unit.name,
       unitType: unit.unitType,
-      type: unit.specification.type as TransportType,
-      fuelType: unit.specification.fuelType as FuelType,
+      type: unit.details.type as TransportType,
+      fuelType: unit.details.fuelType as FuelType,
       active: unit.active,
     };
   }

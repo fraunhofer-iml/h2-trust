@@ -7,18 +7,28 @@
  */
 
 import { Test, TestingModule } from '@nestjs/testing';
+import { of } from 'rxjs';
 import { ConfigurationService } from '@h2-trust/configuration';
-import { ProcessStepEntityFixture } from '@h2-trust/contracts/entities/fixtures';
+import { DocumentEntity, HydrogenComponentEntity } from '@h2-trust/contracts/entities';
 import {
+  BatchDetailsEntityFixture,
+  BatchEntityFixture,
+  HydrogenBottlingUnitEntityFixture,
+  ProcessStepEntityFixture,
+} from '@h2-trust/contracts/entities/fixtures';
+import {
+  CreateBatchDetailsPayload,
   CreateHydrogenProductionStatisticsPayload,
   CreateManyProcessStepsPayload,
+  CreateProcessStepPayload,
   ProductionDataFilter,
   ReadPaginatedProcessStepsByPredecessorTypesAndOwnerPayload,
-  ReadProcessStepsByPredecessorTypesAndOwnerPayload,
   ReadProcessStepsByTypesAndActiveAndOwnerPayload,
 } from '@h2-trust/contracts/payloads';
-import { BatchRepository, ProcessStepRepository } from '@h2-trust/database';
-import { ProcessType, RfnboType } from '@h2-trust/domain';
+import { BatchRepository, DocumentRepository, ProcessStepRepository } from '@h2-trust/database';
+import { PowerType, ProcessType, RfnboType } from '@h2-trust/domain';
+import { QUEUE_GENERAL_SVC } from '@h2-trust/messaging';
+import { CentralizedStorageService, ContentType } from '@h2-trust/storage';
 import { ProcessStepService } from './process-step.service';
 
 describe('ProcessStepService', () => {
@@ -38,15 +48,30 @@ describe('ProcessStepService', () => {
     setBatchesInactive: jest.fn(),
   };
 
+  const storageServiceMock = {
+    uploadFile: jest.fn(),
+  };
+
+  const documentRepositoryMock = {
+    addDocumentToProcessStep: jest.fn(),
+  };
+
+  const generalSvcMock = {
+    send: jest.fn(),
+  };
+
   const processStepRepositoryMock = {
-    findPredecessorProcessSteps: jest.fn(),
-    findProcessSteps: jest.fn(),
+    findAllProcessStepsFromUnits: jest.fn(),
     insertProcessStep: jest.fn(),
     insertManyProcessSteps: jest.fn(),
+    setBatchesInactive: jest.fn(),
+    findPredecessorProcessSteps: jest.fn(),
     findProcessStep: jest.fn(),
-    findAllProcessStepsFromStorageUnit: jest.fn(),
+    findProcessSteps: jest.fn(),
     findProcessStepsByPredecessorTypesAndOwner: jest.fn(),
+    findAllProcessStepsFromStorageUnit: jest.fn(),
     findProcessStepsByTypesAndActiveAndOwner: jest.fn(),
+    readAllProcessStepsFromUnits: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -65,6 +90,18 @@ describe('ProcessStepService', () => {
           provide: ProcessStepRepository,
           useValue: processStepRepositoryMock,
         },
+        {
+          provide: CentralizedStorageService,
+          useValue: storageServiceMock,
+        },
+        {
+          provide: DocumentRepository,
+          useValue: documentRepositoryMock,
+        },
+        {
+          provide: QUEUE_GENERAL_SVC,
+          useValue: generalSvcMock,
+        },
       ],
     }).compile();
 
@@ -77,6 +114,341 @@ describe('ProcessStepService', () => {
 
   it('should be defined', () => {
     expect(service).toBeDefined();
+  });
+
+  describe('createHydrogenBottlingProcessStep', () => {
+    it(`should create a bottling process step when called`, async () => {
+      const batchDetails: CreateBatchDetailsPayload = new CreateBatchDetailsPayload(
+        RfnboType.RFNBO_READY,
+        PowerType.NOT_SPECIFIED,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+      );
+      // arrange
+      const givenPayload = new CreateProcessStepPayload(
+        batchDetails,
+        ProcessType.HYDROGEN_BOTTLING,
+        100,
+        'company-1',
+        'owner-1',
+        new Date('2024-01-15T10:00:00Z'),
+        new Date('2024-01-15T10:00:00Z'),
+        'storage-unit-1',
+        'hydrogen-production-unit-1',
+      );
+
+      const givenStorageProcessStep = ProcessStepEntityFixture.createHydrogenProduction({
+        batch: BatchEntityFixture.createHydrogenBatch({
+          amount: 100,
+          details: BatchDetailsEntityFixture.create(),
+        }),
+      });
+
+      const givenCreatedBottlingProcessStep = ProcessStepEntityFixture.createHydrogenBottling();
+      const expectedResult = { count: 2 };
+      const givenProcessStep = ProcessStepEntityFixture.createHydrogenBottling();
+      const givenProcessSteps = [
+        ProcessStepEntityFixture.createHydrogenProduction(),
+        ProcessStepEntityFixture.createHydrogenProduction(),
+      ];
+      const givenExecutingUnit = HydrogenBottlingUnitEntityFixture.create();
+
+      generalSvcMock.send.mockReturnValueOnce(of(givenExecutingUnit));
+      processStepRepositoryMock.findProcessStep.mockResolvedValue(givenProcessStep);
+      processStepRepositoryMock.findProcessStepsByPredecessorTypesAndOwner.mockResolvedValue(givenProcessSteps);
+      processStepRepositoryMock.findAllProcessStepsFromStorageUnit.mockResolvedValue(givenProcessSteps);
+      processStepRepositoryMock.findAllProcessStepsFromUnits.mockResolvedValue([givenStorageProcessStep]);
+      processStepRepositoryMock.setBatchesInactive.mockResolvedValue(givenCreatedBottlingProcessStep);
+      batchRepositoryMock.setBatchesInactive.mockResolvedValue(expectedResult);
+      processStepRepositoryMock.insertProcessStep.mockResolvedValue(givenProcessStep);
+
+      // act
+      const actualResult = await service.createProcessStep(givenPayload);
+
+      // assert
+      expect(processStepRepositoryMock.findAllProcessStepsFromUnits).toHaveBeenCalledWith([
+        givenPayload.predecessorUnitId,
+      ]);
+      expect(batchRepositoryMock.setBatchesInactive).toHaveBeenCalledWith([givenStorageProcessStep.batch.id]);
+      expect(processStepRepositoryMock.insertProcessStep).toHaveBeenCalledTimes(1);
+      expect(actualResult.id).toBe(givenCreatedBottlingProcessStep.id);
+      expect(batchRepositoryMock.setBatchesInactive).toHaveBeenCalledWith([givenProcessSteps[0].batch.id]);
+    });
+
+    it('should create a bottling process step for non-certifiable hydrogen when using the computed composition', async () => {
+      // arrange
+      const batchDetails: CreateBatchDetailsPayload = new CreateBatchDetailsPayload(
+        RfnboType.NON_CERTIFIABLE,
+        PowerType.NOT_SPECIFIED,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+      );
+      // arrange
+      const givenPayload = new CreateProcessStepPayload(
+        batchDetails,
+        ProcessType.HYDROGEN_BOTTLING,
+        50,
+        'owner-1',
+        'recorder-1',
+        new Date('2024-01-15T10:00:00Z'),
+        new Date('2024-01-15T10:00:00Z'),
+        'storage-unit-1',
+        'hydrogen-production-unit-1',
+      );
+
+      const givenRfnboReadyStorageProcessStep = ProcessStepEntityFixture.createHydrogenProduction({
+        id: 'storage-process-step-1',
+        batch: BatchEntityFixture.createHydrogenBatch({
+          id: 'storage-batch-1',
+          processStepId: 'storage-process-step-1',
+          amount: 50,
+          details: BatchDetailsEntityFixture.create({ rfnboType: RfnboType.RFNBO_READY }),
+        }),
+      });
+      const givenNonCertifiableStorageProcessStep = ProcessStepEntityFixture.createHydrogenProduction({
+        id: 'storage-process-step-2',
+        batch: BatchEntityFixture.createHydrogenBatch({
+          id: 'storage-batch-2',
+          processStepId: 'storage-process-step-2',
+          amount: 50,
+          details: BatchDetailsEntityFixture.create({ rfnboType: RfnboType.NON_CERTIFIABLE }),
+        }),
+      });
+      const givenConsumedSplitReadyProcessStep = ProcessStepEntityFixture.createHydrogenProduction({
+        id: 'consumed-split-ready',
+        batch: BatchEntityFixture.createHydrogenBatch({
+          id: 'consumed-split-ready-batch',
+          processStepId: 'consumed-split-ready',
+          amount: 25,
+          predecessors: [givenRfnboReadyStorageProcessStep.batch],
+          details: BatchDetailsEntityFixture.create({ rfnboType: RfnboType.RFNBO_READY }),
+        }),
+      });
+      const givenConsumedSplitNonCertifiableProcessStep = ProcessStepEntityFixture.createHydrogenProduction({
+        id: 'consumed-split-non-certifiable',
+        batch: BatchEntityFixture.createHydrogenBatch({
+          id: 'consumed-split-non-certifiable-batch',
+          processStepId: 'consumed-split-non-certifiable',
+          amount: 25,
+          predecessors: [givenNonCertifiableStorageProcessStep.batch],
+          details: BatchDetailsEntityFixture.create({ rfnboType: RfnboType.NON_CERTIFIABLE }),
+        }),
+      });
+      const givenRemainingReadyProcessStep = ProcessStepEntityFixture.createHydrogenProduction({
+        id: 'remaining-ready',
+        batch: BatchEntityFixture.createHydrogenBatch({
+          id: 'remaining-ready-batch',
+          processStepId: 'remaining-ready',
+          amount: 25,
+          details: BatchDetailsEntityFixture.create({ rfnboType: RfnboType.RFNBO_READY }),
+        }),
+      });
+      const givenRemainingNonCertifiableProcessStep = ProcessStepEntityFixture.createHydrogenProduction({
+        id: 'remaining-non-certifiable',
+        batch: BatchEntityFixture.createHydrogenBatch({
+          id: 'remaining-non-certifiable-batch',
+          processStepId: 'remaining-non-certifiable',
+          amount: 25,
+          details: BatchDetailsEntityFixture.create({ rfnboType: RfnboType.NON_CERTIFIABLE }),
+        }),
+      });
+      const givenCreatedBottlingProcessStep = ProcessStepEntityFixture.createHydrogenBottling();
+      const givenExecutingUnit = HydrogenBottlingUnitEntityFixture.create();
+
+      generalSvcMock.send.mockReturnValueOnce(of(givenExecutingUnit));
+      processStepRepositoryMock.findAllProcessStepsFromUnits.mockResolvedValue([
+        givenRfnboReadyStorageProcessStep,
+        givenNonCertifiableStorageProcessStep,
+      ]);
+      processStepRepositoryMock.setBatchesInactive.mockResolvedValue({ count: 2 });
+      processStepRepositoryMock.insertProcessStep
+        .mockResolvedValueOnce(givenConsumedSplitReadyProcessStep)
+        .mockResolvedValueOnce(givenConsumedSplitNonCertifiableProcessStep)
+        .mockResolvedValueOnce(givenRemainingReadyProcessStep)
+        .mockResolvedValueOnce(givenRemainingNonCertifiableProcessStep)
+        .mockResolvedValueOnce(givenCreatedBottlingProcessStep);
+      processStepRepositoryMock.findProcessStep.mockResolvedValue(givenCreatedBottlingProcessStep);
+
+      // act
+      const actualResult = await service.createProcessStep(givenPayload);
+
+      // assert
+      expect(batchRepositoryMock.setBatchesInactive).toHaveBeenCalledWith([
+        givenRfnboReadyStorageProcessStep.batch.id,
+        givenNonCertifiableStorageProcessStep.batch.id,
+      ]);
+      expect(processStepRepositoryMock.insertProcessStep).toHaveBeenCalledTimes(5);
+      expect(processStepRepositoryMock.insertProcessStep.mock.calls[4][0]).toEqual(
+        expect.objectContaining({
+          type: ProcessType.HYDROGEN_BOTTLING,
+          batch: expect.objectContaining({
+            predecessors: expect.arrayContaining([
+              expect.objectContaining({ id: givenConsumedSplitReadyProcessStep.batch.id }),
+              expect.objectContaining({ id: givenConsumedSplitNonCertifiableProcessStep.batch.id }),
+            ]),
+          }),
+        }),
+      );
+      expect(actualResult).toEqual(givenCreatedBottlingProcessStep);
+    });
+
+    it('should throw error when no process steps found in storage unit', async () => {
+      // arrange
+      const batchDetails: CreateBatchDetailsPayload = new CreateBatchDetailsPayload(
+        RfnboType.RFNBO_READY,
+        PowerType.NOT_SPECIFIED,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+      );
+      // arrange
+      const givenPayload = new CreateProcessStepPayload(
+        batchDetails,
+        ProcessType.HYDROGEN_BOTTLING,
+        100,
+        'owner-1',
+        'recorder-1',
+        new Date('2024-01-15T10:00:00Z'),
+        new Date('2024-01-15T10:00:00Z'),
+        'storage-unit-1',
+        'hydrogen-production-unit-1',
+      );
+      const givenExecutingUnit = HydrogenBottlingUnitEntityFixture.create();
+
+      generalSvcMock.send.mockReturnValueOnce(of(givenExecutingUnit));
+      processStepRepositoryMock.findAllProcessStepsFromUnits.mockResolvedValue([]);
+
+      const expectedErrorMessage = `No process steps found in unit '${givenPayload.predecessorUnitId}'`;
+
+      // act & assert
+      await expect(service.createProcessStep(givenPayload)).rejects.toThrow(expectedErrorMessage);
+    });
+
+    it('should throw when uploaded file has no buffer', async () => {
+      // arrange
+      const givenFile = { originalname: 'test.pdf' } as Express.Multer.File;
+      const batchDetails: CreateBatchDetailsPayload = new CreateBatchDetailsPayload(
+        RfnboType.RFNBO_READY,
+        PowerType.NOT_SPECIFIED,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+      );
+      // arrange
+      const givenPayload = new CreateProcessStepPayload(
+        batchDetails,
+        ProcessType.HYDROGEN_BOTTLING,
+        100,
+        'owner-1',
+        'recorder-1',
+        new Date('2024-01-15T10:00:00Z'),
+        new Date('2024-01-15T10:00:00Z'),
+        'storage-unit-1',
+        'hydrogen-production-unit-1',
+        [givenFile],
+      );
+
+      const givenStorageProcessStep = ProcessStepEntityFixture.createHydrogenProduction({
+        batch: BatchEntityFixture.createHydrogenBatch({
+          amount: 100,
+          details: BatchDetailsEntityFixture.create(),
+        }),
+      });
+      const givenCreatedBottlingProcessStep = ProcessStepEntityFixture.createHydrogenBottling();
+      const givenExecutingUnit = HydrogenBottlingUnitEntityFixture.create();
+
+      generalSvcMock.send.mockReturnValueOnce(of(givenExecutingUnit));
+      processStepRepositoryMock.findAllProcessStepsFromUnits.mockResolvedValue([givenStorageProcessStep]);
+      processStepRepositoryMock.setBatchesInactive.mockResolvedValue({ count: 1 });
+      processStepRepositoryMock.insertProcessStep.mockResolvedValue(givenCreatedBottlingProcessStep);
+
+      // act & assert
+      await expect(service.createProcessStep(givenPayload)).rejects.toThrow('file.buffer');
+      expect(storageServiceMock.uploadFile).not.toHaveBeenCalled();
+      expect(documentRepositoryMock.addDocumentToProcessStep).not.toHaveBeenCalled();
+    });
+
+    it('should upload files when provided in the payload', async () => {
+      // arrange
+      const givenFile = { originalname: 'test.pdf', buffer: Buffer.from('test') } as Express.Multer.File;
+      const batchDetails: CreateBatchDetailsPayload = new CreateBatchDetailsPayload(
+        RfnboType.RFNBO_READY,
+        PowerType.NOT_SPECIFIED,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+      );
+      // arrange
+      const givenPayload = new CreateProcessStepPayload(
+        batchDetails,
+        ProcessType.HYDROGEN_BOTTLING,
+        100,
+        'owner-1',
+        'recorder-1',
+        new Date('2024-01-15T10:00:00Z'),
+        new Date('2024-01-15T10:00:00Z'),
+        'storage-unit-1',
+        'hydrogen-production-unit-1',
+        [givenFile],
+      );
+
+      const givenStorageProcessStep = ProcessStepEntityFixture.createHydrogenProduction({
+        batch: BatchEntityFixture.createHydrogenBatch({
+          amount: 100,
+          details: BatchDetailsEntityFixture.create(),
+        }),
+      });
+
+      const givenCreatedBottlingProcessStep = ProcessStepEntityFixture.createHydrogenBottling();
+      const givenExecutingUnit = HydrogenBottlingUnitEntityFixture.create();
+
+      processStepRepositoryMock.insertProcessStep.mockClear();
+      processStepRepositoryMock.insertProcessStep.mockReset();
+      processStepRepositoryMock.findAllProcessStepsFromUnits.mockResolvedValue([givenStorageProcessStep]);
+      processStepRepositoryMock.setBatchesInactive.mockResolvedValue({ count: 1 });
+      processStepRepositoryMock.insertProcessStep.mockResolvedValue(givenCreatedBottlingProcessStep);
+      processStepRepositoryMock.findProcessStep.mockResolvedValue(givenCreatedBottlingProcessStep);
+      storageServiceMock.uploadFile.mockResolvedValue(givenFile.originalname);
+      documentRepositoryMock.addDocumentToProcessStep.mockResolvedValue({});
+
+      generalSvcMock.send.mockReturnValueOnce(of(givenExecutingUnit));
+
+      // act
+      await service.createProcessStep(givenPayload);
+
+      // assert
+      expect(storageServiceMock.uploadFile).toHaveBeenCalledWith(
+        givenFile.originalname,
+        Buffer.from(givenFile.buffer),
+        ContentType.PDF,
+      );
+      expect(documentRepositoryMock.addDocumentToProcessStep).toHaveBeenCalledWith(
+        new DocumentEntity(undefined, givenFile.originalname),
+        givenCreatedBottlingProcessStep.id,
+      );
+    });
   });
 
   describe('getPredecessors', () => {
@@ -102,39 +474,6 @@ describe('ProcessStepService', () => {
     });
   });
 
-  describe('updateRfnboStatus', () => {
-    it('should delegate to BatchRepository with the batch id and RFNBO type when called', async () => {
-      // arrange
-      const givenProcessStep = ProcessStepEntityFixture.createHydrogenProduction();
-      const expectedResult = { id: 'quality-details-1', batchId: givenProcessStep.batch.id };
-
-      batchRepositoryMock.setRfnboStatus.mockResolvedValue(expectedResult);
-
-      // act
-      const actualResult = await service.updateRfnboStatus(givenProcessStep, RfnboType.RFNBO_READY);
-
-      // assert
-      expect(batchRepositoryMock.setRfnboStatus).toHaveBeenCalledWith(givenProcessStep.batch.id, RfnboType.RFNBO_READY);
-      expect(actualResult).toEqual(expectedResult);
-    });
-  });
-
-  describe('createProcessStep', () => {
-    it('should delegate to ProcessStepRepository when called', async () => {
-      // arrange
-      const givenProcessStep = ProcessStepEntityFixture.createHydrogenBottling();
-
-      processStepRepositoryMock.insertProcessStep.mockResolvedValue(givenProcessStep);
-
-      // act
-      const actualResult = await service.createProcessStep(givenProcessStep);
-
-      // assert
-      expect(processStepRepositoryMock.insertProcessStep).toHaveBeenCalledWith(givenProcessStep);
-      expect(actualResult).toEqual(givenProcessStep);
-    });
-  });
-
   describe('createManyProcessSteps', () => {
     it('should delegate to ProcessStepRepository when called', async () => {
       // arrange
@@ -147,7 +486,7 @@ describe('ProcessStepService', () => {
       processStepRepositoryMock.insertManyProcessSteps.mockResolvedValue(givenProcessSteps);
 
       // act
-      const actualResult = await service.createManyProcessSteps(givenPayload);
+      const actualResult = await service.saveManyProcessSteps(givenPayload);
 
       // assert
       expect(processStepRepositoryMock.insertManyProcessSteps).toHaveBeenCalledWith(givenProcessSteps);
@@ -210,67 +549,27 @@ describe('ProcessStepService', () => {
 
       await expect(actualResult).rejects.toThrow(expectedErrorMessage);
     });
-
-    it('should throw error when predecessor is not hydrogen bottling', async () => {
-      // arrange
-      const givenPredecessorProcessStep = ProcessStepEntityFixture.createHydrogenProduction();
-      const givenTransportationProcessStep = ProcessStepEntityFixture.createHydrogenTransportation();
-      givenTransportationProcessStep.batch.predecessors = [givenPredecessorProcessStep.batch];
-
-      processStepRepositoryMock.findProcessStep
-        .mockResolvedValueOnce(givenTransportationProcessStep)
-        .mockResolvedValueOnce(givenPredecessorProcessStep);
-
-      const expectedErrorMessage = `Expected process type of predecessor to be ${ProcessType.HYDROGEN_BOTTLING}, but got ${ProcessType.HYDROGEN_PRODUCTION}.`;
-
-      // act & assert
-      const actualResult = service.readProcessStep(givenTransportationProcessStep.id);
-
-      await expect(actualResult).rejects.toThrow(expectedErrorMessage);
-    });
   });
 
-  describe('readAllProcessStepsFromStorageUnit', () => {
-    it('should delegate to ProcessStepRepository when called', async () => {
-      // arrange
-      const givenStorageUnitId = 'storage-unit-1';
-      const givenProcessSteps = [
-        ProcessStepEntityFixture.createHydrogenProduction(),
-        ProcessStepEntityFixture.createHydrogenProduction(),
-      ];
+  it('readAllHydrogenComponentsFromUnits', async () => {
+    // arrange
+    const givenProcessSteps = [ProcessStepEntityFixture.createHydrogenProduction()];
+    const givenUnitIds = givenProcessSteps.map((processStep) => processStep.id);
+    const givenHydrogenComponent = new HydrogenComponentEntity(
+      givenProcessSteps[0].id,
+      givenProcessSteps[0].batch.amount,
+      givenProcessSteps[0].batch.details.rfnboType,
+      givenProcessSteps[0].executedBy.id,
+    );
 
-      processStepRepositoryMock.findAllProcessStepsFromStorageUnit.mockResolvedValue(givenProcessSteps);
+    processStepRepositoryMock.findAllProcessStepsFromUnits.mockResolvedValue(givenProcessSteps);
 
-      // act
-      const actualResult = await service.readAllProcessStepsFromStorageUnit(givenStorageUnitId);
+    // act
+    const actualResult: HydrogenComponentEntity[] = await service.readAllHydrogenComponentsFromUnits(givenUnitIds);
 
-      // assert
-      expect(processStepRepositoryMock.findAllProcessStepsFromStorageUnit).toHaveBeenCalledWith(givenStorageUnitId);
-      expect(actualResult).toEqual(givenProcessSteps);
-    });
-  });
-
-  describe('readProcessStepsByPredecessorTypesAndOwner', () => {
-    it('should delegate to ProcessStepRepository when called', async () => {
-      // arrange
-      const givenPayload = new ReadProcessStepsByPredecessorTypesAndOwnerPayload(
-        [ProcessType.HYDROGEN_PRODUCTION],
-        'company-1',
-      );
-      const givenProcessSteps = [ProcessStepEntityFixture.createHydrogenBottling()];
-
-      processStepRepositoryMock.findProcessStepsByPredecessorTypesAndOwner.mockResolvedValue(givenProcessSteps);
-
-      // act
-      const actualResult = await service.readProcessStepsByPredecessorTypesAndOwner(givenPayload);
-
-      // assert
-      expect(processStepRepositoryMock.findProcessStepsByPredecessorTypesAndOwner).toHaveBeenCalledWith(
-        givenPayload.predecessorProcessTypes,
-        givenPayload.ownerId,
-      );
-      expect(actualResult).toEqual(givenProcessSteps);
-    });
+    // assert
+    expect(processStepRepositoryMock.findAllProcessStepsFromUnits).toHaveBeenCalledWith(givenUnitIds);
+    expect(actualResult).toEqual([givenHydrogenComponent]);
   });
 
   describe('readProcessStepsByPredecessorTypesAndUnitAndDate', () => {
@@ -303,39 +602,6 @@ describe('ProcessStepService', () => {
     });
   });
 
-  describe('readPaginatedProcessStepsByPredecessorTypesAndOwner', () => {
-    it('should return the requested page of process steps with pagination metadata when called', async () => {
-      // arrange
-      const givenProcesses = [
-        ProcessStepEntityFixture.createHydrogenBottling({ id: 'process-step-1' }),
-        ProcessStepEntityFixture.createHydrogenProduction({ id: 'process-step-2' }),
-        ProcessStepEntityFixture.createPowerProduction({ id: 'process-step-3' }),
-      ];
-      const givenPayload = new ReadPaginatedProcessStepsByPredecessorTypesAndOwnerPayload(
-        [ProcessType.HYDROGEN_PRODUCTION],
-        'company-1',
-        new ProductionDataFilter(2, 1, 'Hydrogen Production Unit 1', new Date('2026-01-01T00:00:00Z')),
-      );
-
-      processStepRepositoryMock.findProcessStepsByPredecessorTypesAndOwner.mockResolvedValue(givenProcesses);
-
-      // act
-      const actualResult = await service.readPaginatedProcessStepsByPredecessorTypesAndOwner(givenPayload);
-
-      // assert
-      expect(processStepRepositoryMock.findProcessStepsByPredecessorTypesAndOwner).toHaveBeenCalledWith(
-        givenPayload.predecessorProcessTypes,
-        givenPayload.ownerId,
-        givenPayload.filter.unitName,
-        new Date(givenPayload.filter.month),
-      );
-      expect(actualResult.processSteps).toEqual([givenProcesses[1]]);
-      expect(actualResult.currentPage).toBe(2);
-      expect(actualResult.pageSize).toBe(1);
-      expect(actualResult.totalAmountOfItems).toBe(3);
-    });
-  });
-
   describe('readProcessStepsByTypesAndActiveAndOwner', () => {
     it('should delegate to ProcessStepRepository when called', async () => {
       // arrange
@@ -361,20 +627,91 @@ describe('ProcessStepService', () => {
     });
   });
 
-  describe('setBatchesInactive', () => {
-    it('should delegate to BatchRepository when called', async () => {
+  describe('readPaginatedProcessStepsByPredecessorTypesAndOwner', () => {
+    it('should throw when page number is not greater than zero', async () => {
       // arrange
-      const givenBatchIds = ['batch-1', 'batch-2'];
-      const expectedResult = { count: 2 };
+      const givenPayload = new ReadPaginatedProcessStepsByPredecessorTypesAndOwnerPayload(
+        [ProcessType.HYDROGEN_PRODUCTION],
+        'company-1',
+        new ProductionDataFilter(0, 10),
+      );
 
-      batchRepositoryMock.setBatchesInactive.mockResolvedValue(expectedResult);
+      // act & assert
+      await expect(service.readPaginatedProductions(givenPayload)).rejects.toThrow(
+        'pageNumber must be greater than 0, got 0',
+      );
+      expect(processStepRepositoryMock.findProcessStepsByPredecessorTypesAndOwner).not.toHaveBeenCalled();
+    });
+
+    it('should throw when page size is not greater than zero', async () => {
+      // arrange
+      const givenPayload = new ReadPaginatedProcessStepsByPredecessorTypesAndOwnerPayload(
+        [ProcessType.HYDROGEN_PRODUCTION],
+        'company-1',
+        new ProductionDataFilter(1, 0),
+      );
+
+      // act & assert
+      await expect(service.readPaginatedProductions(givenPayload)).rejects.toThrow(
+        'pageSize must be greater than 0, got 0',
+      );
+      expect(processStepRepositoryMock.findProcessStepsByPredecessorTypesAndOwner).not.toHaveBeenCalled();
+    });
+
+    it('should return the requested page of process steps with pagination metadata when called', async () => {
+      // arrange
+      const givenProcesses = [
+        ProcessStepEntityFixture.createHydrogenBottling({ id: 'process-step-1' }),
+        ProcessStepEntityFixture.createHydrogenProduction({ id: 'process-step-2' }),
+        ProcessStepEntityFixture.createPowerProduction({ id: 'process-step-3' }),
+      ];
+      const givenPayload = new ReadPaginatedProcessStepsByPredecessorTypesAndOwnerPayload(
+        [ProcessType.HYDROGEN_PRODUCTION],
+        'company-1',
+        new ProductionDataFilter(2, 1, 'Hydrogen Production Unit 1', new Date('2026-01-01T00:00:00Z')),
+      );
+
+      processStepRepositoryMock.findProcessStepsByPredecessorTypesAndOwner.mockResolvedValue(givenProcesses);
 
       // act
-      const actualResult = await service.setBatchesInactive(givenBatchIds);
+      const actualResult = await service.readPaginatedProductions(givenPayload);
 
       // assert
-      expect(batchRepositoryMock.setBatchesInactive).toHaveBeenCalledWith(givenBatchIds);
-      expect(actualResult).toEqual(expectedResult);
+      expect(processStepRepositoryMock.findProcessStepsByPredecessorTypesAndOwner).toHaveBeenCalledWith(
+        givenPayload.predecessorProcessTypes,
+        givenPayload.ownerId,
+        givenPayload.filter.unitName,
+        new Date(givenPayload.filter.month),
+      );
+      expect(actualResult.processSteps).toEqual([givenProcesses[1]]);
+      expect(actualResult.currentPage).toBe(2);
+      expect(actualResult.pageSize).toBe(1);
+      expect(actualResult.totalAmountOfItems).toBe(3);
+    });
+  });
+
+  describe('readProcessStepsByTypesAndActiveAndOwner', () => {
+    it('should delegate to ProcessStepService when called', async () => {
+      // arrange
+      const givenPayload = new ReadProcessStepsByTypesAndActiveAndOwnerPayload(
+        [ProcessType.HYDROGEN_BOTTLING],
+        true,
+        'company-1',
+      );
+      const givenProcessSteps = [ProcessStepEntityFixture.createHydrogenBottling()];
+
+      processStepRepositoryMock.findProcessStepsByTypesAndActiveAndOwner.mockResolvedValue(givenProcessSteps);
+
+      // act
+      const actualResult = await service.readProcessStepsByTypesAndActiveAndOwner(givenPayload);
+
+      // assert
+      expect(processStepRepositoryMock.findProcessStepsByTypesAndActiveAndOwner).toHaveBeenCalledWith(
+        givenPayload.processTypes,
+        givenPayload.active,
+        givenPayload.ownerId,
+      );
+      expect(actualResult).toEqual(givenProcessSteps);
     });
   });
 });

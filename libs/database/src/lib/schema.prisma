@@ -134,8 +134,8 @@ model Unit {
   operator   Company @relation(name: "UnitOperator", fields: [operatorId], references: [id])
   operatorId String
 
-  specification   UnitSpecification @relation(fields: [specificationId], references: [id])
-  specificationId String            @unique
+  details   UnitDetails @relation(fields: [detailsId], references: [id])
+  detailsId String      @unique
 
   // Relations
   documents               Document[]
@@ -145,7 +145,7 @@ model Unit {
   decisions               PowerPurchaseAgreementDecision[]
 }
 
-model UnitSpecification {
+model UnitDetails {
   id        String   @id @default(uuid(7))
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -184,24 +184,28 @@ model Batch {
   owner   Company @relation(fields: [ownerId], references: [id])
   ownerId String
 
-  qualityDetails QualityDetails?
-  processStep    ProcessStep?
+  details BatchDetails?
+  processStep  ProcessStep?
 
   predecessors Batch[] @relation("BatchRelation")
   successors   Batch[] @relation("BatchRelation")
 }
 
-model QualityDetails {
+model BatchDetails {
   id        String   @id @default(uuid(7))
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   // Emission Data
-  rfnboType          String
-  powerType          String
-  usedRenewablePower Decimal? @db.Decimal(18, 6)
-  usedGridPower      Decimal? @db.Decimal(18, 6)
-  distance           Decimal? @db.Decimal(8, 3)
+  rfnboType           String
+  productionPowerType String
+  usedRenewablePower  Decimal? @db.Decimal(18, 6)
+  usedGridPower       Decimal? @db.Decimal(18, 6)
+  distance            Decimal? @db.Decimal(8, 3)
+  wasteWater          Decimal? @db.Decimal(8, 3)
+  resinConsumption    Decimal? @db.Decimal(8, 3)
+  compressedAir       Decimal? @db.Decimal(8, 3)
+  nitrogenConsumption Decimal? @db.Decimal(8, 3)
 
   batch   Batch  @relation(fields: [batchId], references: [id])
   batchId String @unique

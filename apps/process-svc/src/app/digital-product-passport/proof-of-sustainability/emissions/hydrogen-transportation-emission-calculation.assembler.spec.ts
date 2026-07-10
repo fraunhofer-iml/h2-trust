@@ -17,7 +17,11 @@ describe('HydrogenTransportationEmissionCalculationAssembler', () => {
       // arrange
       const givenHydrogenBottling = ProcessStepEntityFixture.createHydrogenBottling();
       const givenHydrogenTransportation = ProcessStepEntityFixture.createHydrogenTransportation();
-      const givenProvenance = new ProvenanceEntity(givenHydrogenTransportation, [], givenHydrogenBottling);
+      const givenProvenance = new ProvenanceEntity(
+        givenHydrogenTransportation,
+        [givenHydrogenTransportation, givenHydrogenBottling],
+        [],
+      );
 
       // act
       const actualResult = assembleHydrogenTransportationEmissionCalculations(givenProvenance)[0];

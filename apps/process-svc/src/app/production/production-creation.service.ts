@@ -65,7 +65,7 @@ export class ProductionCreationService {
       }
 
       // Step 2: Persist power and water
-      const persistedPowerAndWater: ProcessStepEntity[] = await this.processStepService.createManyProcessSteps(
+      const persistedPowerAndWater: ProcessStepEntity[] = await this.processStepService.saveManyProcessSteps(
         new CreateManyProcessStepsPayload([...power, ...water]),
       );
 
@@ -109,12 +109,12 @@ export class ProductionCreationService {
           waterConsumption.executedBy,
         );
         const rfnboType: RfnboType = this.digitalProductPassportService.getRfnboType(productionChain);
-        hydrogen.batch.qualityDetails.rfnboType = rfnboType;
+        hydrogen.batch.details.rfnboType = rfnboType;
         return hydrogen;
       });
 
       // Step 6: Persist hydrogen
-      const persistedHydrogen: ProcessStepEntity[] = await this.processStepService.createManyProcessSteps(
+      const persistedHydrogen: ProcessStepEntity[] = await this.processStepService.saveManyProcessSteps(
         new CreateManyProcessStepsPayload(hydrogenToPersist),
       );
 
