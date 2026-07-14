@@ -4,6 +4,7 @@
 :toclevels: 3
 :sectnums:
 :copyright: Apache License 2.0
+:projectName: H2-trust
 
 = Runtime View
 
@@ -15,20 +16,94 @@
 
 == General Component Communication
 
-TBD
+All inter-component communication is carried out using JSON messages.
+This communication occurs either through direct REST interactions from the frontend to the BFF (backend for frontend), or for inter-service communication, an AMQP messaging queue via a broker instance, as provided by https://www.rabbitmq.com/[RabbitMQ].
 
 == Transaction related schemes and definitions
 
-TBD
+This Chapter outlines all available APIs in the following Order:
 
-=== REST specific messaging interfaces and API
-
-TBD
+1. The Backend which accepts AMQP messages related to the process.
+2. The API exposed through the BFF which the {projectName} Frontend uses to query for data.
 
 === AMQP specific messaging interfaces and API
 
-TBD
+The General SVC and Process SVC allow the following AMQP endpoints.
 
-== Use Cases and process flows
+==== Company API
+|===
+| *Company Controller* | Path | Description
+| READ | `company.read` | Read all company details
+|===
 
-TBD
+
+==== Power Purchase Agreement API
+|===
+| *Power Purchase Agreement Controller* | Path | Description
+| READ | `power-purchase-agreement.read` | Read all power purchase agreements
+| CREATE | `power-purchase-agreement.create` | Create a new power purchase agreement
+| UPDATE | `power-purchase-agreement.update` | Update the status of a certain power purchase agreement
+| READ_APPROVED_GRID_POWER_PRODUCTION_UNIT_BY_USER_ID | `power-purchase-agreement.read-approved-grid-power-production-unit-by-user-id` | Read all power purchase agreements that have been approved
+|===
+
+==== Unit API
+|===
+| *Unit Controller* | Path | Description
+| READ_BY_ID | `unit.read-by-id` | READ a single Unit by id
+| READ_MANY_BY_IDS | `unit.read-many-by-ids` | READ all units with the given ids
+| READ_BY_OWNER_ID_AND_TYPE | `unit.read-by-owner-id-and-type` | READ all units filtered by owner and type
+| CREATE_POWER_PRODUCTION | `unit.create-power-production` | Create new Power Production Unit
+| CREATE_HYDROGEN_PRODUCTION | `unit.create-hydrogen-production` | Create new Hydrogen Production Unit
+| CREATE_HYDROGEN_STORAGE | `unit.create-hydrogen-storage` | Create new Hydrogen Storage Unit
+| CREATE_HYDROGEN_TRANSPORT | `unit.create-hydrogen-transport` | Create new Hydrogen Transport Unit
+| CREATE_HYDROGEN_COMPRESSOR | `unit.create-hydrogen-compressor` | Create new Hydrogen Compressor Unit
+| CREATE_HYDROGEN_BOTTLING | `unit.create-hydrogen-bottling` | Create new Hydrogen Bottling Unit
+| CREATE_HYDROGEN_END_USE | `unit.create-hydrogen-end-use` | Create new Hydrogen End Use Unit
+| UPDATE_HYDROGEN_PRODUCTION | `unit.update-hydrogen-production` | Update Hydrogen Production Unit
+| UPDATE_POWER_PRODUCTION | `unit.update-power-production` | Update Power Production Unit
+| UPDATE_HYDROGEN_STORAGE | `unit.update-hydrogen-storage` | Update Hydrogen Storage Unit
+| UPDATE_HYDROGEN_TRANSPORT | `unit.update-hydrogen-transport` | Update Hydrogen Transport Unit
+| UPDATE_HYDROGEN_COMPRESSOR | `unit.update-hydrogen-compressor` | Update Hydrogen Compressor Unit
+| UPDATE_HYDROGEN_BOTTLING | `unit.update-hydrogen-bottling` | Update Hydrogen Bottling Unit
+| UPDATE_HYDROGEN_END_USE | `unit.update-hydrogen-end-use` | Update Hydrogen End Use Unit
+| UPDATE_STATUS | `unit.update-status` | Update the active/inactive status of a unit
+|===
+
+==== User API
+|===
+| *User Controller* | Path | Description
+| READ | `user.read` | Read user for a given id
+|===
+
+==== Digital Product Passport API
+|===
+| *Digital Product Passport Controller* | Path | Description
+| READ | `digital-product-passport.read` | Read the digital product passport for a given process step id
+|===
+
+==== Process Step API
+|===
+| *Process Step Controller* | Path | Description
+| CREATE_PROCESS_STEP | `process-step.create-process-step` | Create a new process step with the given payload
+| READ_ALL_BY_TYPES_AND_ACTIVE_AND_OWNER | `process-step.read-all-by-types-and-active-and-owner` | Read all process steps with a certain type that are active and where the logged in user is the owner
+| READ_ALL_BY_UNITS | `process-step.read-all-by-units` | Read all process steps that were executed by a certain unit
+| READ_PRODUCTION_PAGINATION | `process-step.read-pagination-by-predecessor-types-and-owner` | Read all H2 production process steps and return them paginated
+| READ_PROCESS_STEP_PAGINATION | `process-step.read-pagination-by-filter` | Read all process steps and return them paginated
+|===
+
+==== Production API
+|===
+| *Production Controller* | Path | Description
+| CREATE | `production.create` | Create a new Production
+| ASSEMBLE_PRODUCTION_STATISTICS | `production.assemble-production-statistics` | Return the statistics for the stored productions 
+| STAGE | `production.stage` | Create new staged production
+| FINALIZE | `production.finalize` | Remove two staged productions and create a new production
+| READ_CSV_DOCUMENTS_BY_COMPANY | `production.read-csv-documents-by-company` | Read the stored csv documents
+| READ_STAGED_PRODUCTION_BY_COMPANY | `production.read-staged-productions-by-company` | Read the staged production for a certain company
+| VERIFY_CSV_DOCUMENT_INTEGRITY | `production.verify-csv-document-integrity` | Verify a certain csv document with the hash stored on the blockchain
+|===
+
+=== REST specific messaging interfaces and API
+
+The BFF serves as a bridge for the frontend and enables RESTful endpoints.
+Once the BFF service has been launched, the Swagger documentation (OpenAPI) is available at <bff-host>:3000/api/

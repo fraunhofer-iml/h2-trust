@@ -4,6 +4,7 @@
 :toclevels: 3
 :sectnums:
 :copyright: Apache License 2.0
+:projectName: H2-trust
 
 = Building Block View
 

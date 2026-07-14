@@ -15,9 +15,9 @@ export enum UnitMessagePatterns {
   CREATE_HYDROGEN_PRODUCTION = 'unit.create-hydrogen-production',
   CREATE_HYDROGEN_STORAGE = 'unit.create-hydrogen-storage',
   CREATE_HYDROGEN_TRANSPORT = 'unit.create-hydrogen-transport',
-  CREATE_HYDROGEN_COMPRESSOR = 'unit.create-hydrongen-compressor',
-  CREATE_HYDROGEN_BOTTLING = 'unit.create-hydrongen-bottling',
-  CREATE_HYDROGEN_END_USE = 'unit.create-hydrongen-end-use',
+  CREATE_HYDROGEN_COMPRESSOR = 'unit.create-hydrogen-compressor',
+  CREATE_HYDROGEN_BOTTLING = 'unit.create-hydrogen-bottling',
+  CREATE_HYDROGEN_END_USE = 'unit.create-hydrogen-end-use',
 
   UPDATE_HYDROGEN_PRODUCTION = 'unit.update-hydrogen-production',
   UPDATE_POWER_PRODUCTION = 'unit.update-power-production',
