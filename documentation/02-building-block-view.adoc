@@ -258,7 +258,7 @@ In addition, you must specify the type of the newly created process step and, de
 |Process Step Service
 |The Step Service process handles all functions relating to the creation of new process steps or to reading process steps. The functions for paginating process steps are also carried out here.
 
-.4+|**Production**
+.6+|**Production**
 |CSV
 |The CSV Services are used to upload new CSV files and store the information in the database as provisional production data. The new CSV files are also stored on the minIO server. Furthermore, the uploaded files are hashed, and this hash is stored on the blockchain along with a reference to the stored file. This service is also used to verify these files at a later date.
 
