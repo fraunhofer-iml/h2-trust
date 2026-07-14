@@ -25,7 +25,7 @@ describe('HydrogenProductionEmissionCalculationAssembler', () => {
       // assert
       expect(actualResult).toBeDefined();
       expect(actualResult.result).toBe(0); // TODO-MP: batchId or processStepId -> DUHGW-314
-      expect(actualResult.calculationTopic).toEqual(CalculationTopic.HYDROGEN_STORAGE);
+      expect(actualResult.calculationTopic).toEqual(CalculationTopic.HYDROGEN_PRODUCTION);
     });
   });
 });

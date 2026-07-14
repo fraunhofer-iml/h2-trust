@@ -30,10 +30,10 @@ function assembleWasteWaterEmissionCalculations(
   const wasteWaterEmissionFactorLabel = EmissionStringConstants.WASTE_WATER;
   const wasteWaterOutput = `Waste Water Output: ${wasteWaterConsumptionOfProduction} ${MeasurementUnit.L}`;
   const wasteWaterEmissionFactor = `Emission Factor ${wasteWaterEmissionFactorLabel}: ${EmissionNumericConstants.EMISSION_FACTOR_WASTE_WATER_G_CO2_PER_L} ${MeasurementUnit.G_CO2_PER_L}`;
-  const wasteWatterFormula = `E = Waste Water Output * Emission Factor ${wasteWaterEmissionFactorLabel}`;
-  const wasteWaterFormulaResult = `${wasteWaterResult} ${MeasurementUnit.G_CO2} = ${wasteWaterOutput} ${MeasurementUnit.L} * ${EmissionNumericConstants.EMISSION_FACTOR_DEIONIZED_WATER_G_CO2_PER_L} ${MeasurementUnit.G_CO2_PER_L}`;
+  const wasteWaterFormula = `E = Waste Water Output * Emission Factor ${wasteWaterEmissionFactorLabel}`;
+  const wasteWaterFormulaResult = `${wasteWaterResult} ${MeasurementUnit.G_CO2} = ${wasteWaterConsumptionOfProduction} ${MeasurementUnit.L} * ${EmissionNumericConstants.EMISSION_FACTOR_WASTE_WATER_G_CO2_PER_L} ${MeasurementUnit.G_CO2_PER_L}`;
 
-  const basisOfCalculation = [wasteWaterOutput, wasteWaterEmissionFactor, wasteWatterFormula, wasteWaterFormulaResult];
+  const basisOfCalculation = [wasteWaterOutput, wasteWaterEmissionFactor, wasteWaterFormula, wasteWaterFormulaResult];
 
   return new ProofOfSustainabilityEmissionCalculationEntity(
     EmissionStringConstants.WASTE_WATER,
@@ -56,9 +56,9 @@ function assembleResinEmissionCaclulations(
     resinConsumptionOfProduction * EmissionNumericConstants.EMISSION_FACTOR_RESIN_G_CO2_PER_KG;
   const resinEmissionFactorLabel = EmissionStringConstants.RESIN;
   const resinOutput = `Resin Input: ${resinConsumptionOfProduction} ${MeasurementUnit.KG}`;
-  const resinEmissionFactor = `Emission Factor ${resinEmissionFactorLabel}: ${EmissionNumericConstants.EMISSION_FACTOR_RESIN_G_CO2_PER_KG} ${MeasurementUnit.G_CO2_PER_L}`;
-  const resinFormula = `E = Waste Water Output * Emission Factor ${resinEmissionFactorLabel}`;
-  const resinFormulaResult = `${resinResult} ${MeasurementUnit.G_CO2} = ${resinOutput} ${MeasurementUnit.KG} * ${EmissionNumericConstants.EMISSION_FACTOR_RESIN_G_CO2_PER_KG} ${MeasurementUnit.KG_PER_KG_H2}`;
+  const resinEmissionFactor = `Emission Factor ${resinEmissionFactorLabel}: ${EmissionNumericConstants.EMISSION_FACTOR_RESIN_G_CO2_PER_KG} ${MeasurementUnit.G_CO2_PER_KG_H2}`;
+  const resinFormula = `E = Resin Input * Emission Factor ${resinEmissionFactorLabel}`;
+  const resinFormulaResult = `${resinResult} ${MeasurementUnit.G_CO2} = ${resinConsumptionOfProduction} ${MeasurementUnit.KG} * ${EmissionNumericConstants.EMISSION_FACTOR_RESIN_G_CO2_PER_KG} ${MeasurementUnit.G_CO2_PER_KG_H2}`;
 
   const basisOfCalculation = [resinOutput, resinEmissionFactor, resinFormula, resinFormulaResult];
 
@@ -114,7 +114,7 @@ export function assembleHydrogenProductionEmissionCalculations(
       totalEmissionsGrouped,
       totalEmissionsPerKgHydrogen,
       MeasurementUnit.G_CO2_PER_KG_H2,
-      CalculationTopic.HYDROGEN_STORAGE,
+      CalculationTopic.HYDROGEN_PRODUCTION,
     ),
   ];
 }

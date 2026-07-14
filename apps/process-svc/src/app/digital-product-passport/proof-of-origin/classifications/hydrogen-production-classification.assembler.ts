@@ -51,7 +51,7 @@ function getProductionBatchEntities(
 }
 
 function onlyHydrogenProduction(processSteps: ProcessStepEntity[]) {
-  return !processSteps.some((processStep) => processStep.type != ProcessType.HYDROGEN_PRODUCTION);
+  return !processSteps.some((processStep) => processStep.type !== ProcessType.HYDROGEN_PRODUCTION);
 }
 
 export function assembleHydrogenProductionClassification(

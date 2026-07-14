@@ -78,7 +78,7 @@ export class ProofOfOriginWaterBatchEntity extends ProofOfOriginBaseBatchEntity 
 }
 
 export class ProofOfOriginProductionBatchEntity extends ProofOfOriginBaseBatchEntity {
-  batchType: BatchType = BatchType.HYDROGEN;
+  batchType: BatchType = BatchType.H2_PRODUCTION;
   resinAmount: number;
   wasteWaterAmount: number;
 
