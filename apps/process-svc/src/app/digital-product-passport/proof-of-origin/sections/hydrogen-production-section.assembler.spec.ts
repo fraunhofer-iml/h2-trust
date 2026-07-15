@@ -6,14 +6,19 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ProductionChainEntity, ProofOfOriginBatchEntity, ProvenanceEntity } from '@h2-trust/contracts/entities';
+import {
+  ProductionChainEntity,
+  ProofOfOriginBatchEntity,
+  ProofOfOriginSectionEntity,
+  ProvenanceEntity,
+} from '@h2-trust/contracts/entities';
 import {
   ProcessStepEntityFixture,
   ProductionChainEntityFixture,
   ProofOfOriginPowerBatchEntityFixture,
   ProofOfOriginSubClassificationEntityFixture,
 } from '@h2-trust/contracts/entities/fixtures';
-import { PowerProductionType, ProofOfOrigin } from '@h2-trust/domain';
+import { BatchType, PowerProductionType, ProofOfOrigin } from '@h2-trust/domain';
 import { assembleHydrogenProductionSection } from './hydrogen-production-section.assembler';
 
 describe('HydrogenProductionProofOfOriginAssembler', () => {
@@ -46,18 +51,18 @@ describe('HydrogenProductionProofOfOriginAssembler', () => {
 
       // assert
       expect(actualResult.name).toBe(ProofOfOrigin.HYDROGEN_PRODUCTION_SECTION);
-      expect(actualResult.classifications).toHaveLength(2);
+      expect(actualResult.classifications).toHaveLength(3);
       expect(actualResult.classifications[0].name).toBe(ProofOfOrigin.POWER_SUPPLY_CLASSIFICATION);
       expect(actualResult.classifications[0].emissionOfProcessStep).toEqual(
         givenPowerSubClassifications[0].emissionOfProcessStep,
       );
     });
 
-    it('should return a section with only power supply classification when no water consumptions are present', () => {
+    it('should return a section with only power supply and h2 production classification when no water consumptions are present', () => {
       // arrange
       const givenProductionChain: ProductionChainEntity = new ProductionChainEntity(
-        ProcessStepEntityFixture.createHydrogenBottling(),
-        ProcessStepEntityFixture.createHydrogenBottling(),
+        ProcessStepEntityFixture.createHydrogenProduction(),
+        ProcessStepEntityFixture.createHydrogenProduction(),
         ProcessStepEntityFixture.createPowerProduction(),
         ProcessStepEntityFixture.createWaterConsumption(),
         ProcessStepEntityFixture.createPowerProduction().executedBy,
@@ -75,15 +80,15 @@ describe('HydrogenProductionProofOfOriginAssembler', () => {
 
       // assert
       expect(actualResult.name).toBe(ProofOfOrigin.HYDROGEN_PRODUCTION_SECTION);
-      expect(actualResult.classifications).toHaveLength(2);
+      expect(actualResult.classifications).toHaveLength(3);
       expect(actualResult.classifications[0].name).toBe(ProofOfOrigin.POWER_SUPPLY_CLASSIFICATION);
     });
 
-    it('should return a section with only water supply classification when no power productions are present', () => {
+    it('should return a section with only water supply and h2 production classification when no power productions are present', () => {
       // arrange
       const givenProductionChain: ProductionChainEntity = new ProductionChainEntity(
-        ProcessStepEntityFixture.createHydrogenBottling(),
-        ProcessStepEntityFixture.createHydrogenBottling(),
+        ProcessStepEntityFixture.createHydrogenProduction(),
+        ProcessStepEntityFixture.createHydrogenProduction(),
         ProcessStepEntityFixture.createPowerProduction(),
         ProcessStepEntityFixture.createWaterConsumption(),
         ProcessStepEntityFixture.createPowerProduction().executedBy,
@@ -101,14 +106,14 @@ describe('HydrogenProductionProofOfOriginAssembler', () => {
 
       // assert
       expect(actualResult.name).toBe(ProofOfOrigin.HYDROGEN_PRODUCTION_SECTION);
-      expect(actualResult.classifications).toHaveLength(2);
+      expect(actualResult.classifications).toHaveLength(3);
     });
 
-    it('should return a section with empty classifications when no power productions and no water consumptions are present', () => {
+    it('should return a section with one classification for h2 production when no power productions and no water consumptions are present', () => {
       // arrange
       const givenProductionChain: ProductionChainEntity = new ProductionChainEntity(
-        ProcessStepEntityFixture.createHydrogenBottling(),
-        ProcessStepEntityFixture.createHydrogenBottling(),
+        ProcessStepEntityFixture.createHydrogenProduction(),
+        ProcessStepEntityFixture.createHydrogenProduction(),
         undefined,
         undefined,
         ProcessStepEntityFixture.createPowerProduction().executedBy,
@@ -122,10 +127,13 @@ describe('HydrogenProductionProofOfOriginAssembler', () => {
       );
 
       // act
-      const actualResult = assembleHydrogenProductionSection(givenProvenance);
+      const actualResult: ProofOfOriginSectionEntity[] = assembleHydrogenProductionSection(givenProvenance);
 
       // assert
-      expect(actualResult).toEqual([]);
+      expect(actualResult[0].classifications[0].amount).toEqual(1);
+      expect(actualResult[0].classifications[0].classificationType).toEqual(BatchType.H2_PRODUCTION);
+      expect(actualResult[0].classifications[0].emissionOfProcessStep).toEqual(8.6);
+      expect(actualResult[0].classifications[0].name).toEqual('H2 Production');
     });
   });
 });

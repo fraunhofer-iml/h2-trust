@@ -48,7 +48,7 @@ describe('ProofOfSustainabilityAssembler', () => {
       1,
     );
     expect(
-      actualResult.calculations.filter((c) => c.calculationTopic === CalculationTopic.HYDROGEN_STORAGE).length,
+      actualResult.calculations.filter((c) => c.calculationTopic === CalculationTopic.HYDROGEN_PRODUCTION).length,
     ).toBe(1);
     expect(
       actualResult.calculations.filter((c) => c.calculationTopic === CalculationTopic.HYDROGEN_BOTTLING).length,

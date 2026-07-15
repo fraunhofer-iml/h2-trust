@@ -68,6 +68,8 @@ export const UnitDetailsSeed: readonly Partial<UnitDetails>[] = Object.freeze([
     biddingZone: BiddingZone.DE_LU,
     ratedPower: new Prisma.Decimal(5),
     waterConsumptionLitersPerHour: new Prisma.Decimal(50),
+    wasteWaterConsumptionLitersPerKgH2: new Prisma.Decimal(80),
+    resinConsumptionKgPerKgH2: new Prisma.Decimal(40),
   },
   {
     id: 'hydrogen-storage-unit-0',

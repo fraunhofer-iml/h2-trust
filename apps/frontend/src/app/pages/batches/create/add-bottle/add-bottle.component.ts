@@ -41,6 +41,7 @@ import { H2TrustRoutes } from '../../../../shared/constants/routes';
 import { EnumPipe } from '../../../../shared/pipes/enum.pipe';
 import { UnitPipe } from '../../../../shared/pipes/unit.pipe';
 import { companiesQueryOptions } from '../../../../shared/queries/companies.query';
+import { invalidateByQueryPrefixes } from '../../../../shared/queries/query-invalidation';
 import { QueryKeyPrefix } from '../../../../shared/queries/shared-query-keys';
 import { componentOverviewsQueryOptions } from '../../../../shared/queries/units.query';
 import { BottlingService } from '../../../../shared/services/bottling/bottling.service';
@@ -126,6 +127,10 @@ export class AddBottleComponent {
       : [];
   }
 
+  ngOnInit() {
+    invalidateByQueryPrefixes(this.queryClient, [QueryKeyPrefix.COMPONENT_OVERVIEW]);
+  }
+
   hydrogenStorageQuery = injectQuery(() => componentOverviewsQueryOptions(this.unitsService));
 
   recipientsQuery = injectQuery(() => companiesQueryOptions(this.companiesService));
@@ -142,6 +147,7 @@ export class AddBottleComponent {
       await this.queryClient.invalidateQueries({
         queryKey: [QueryKeyPrefix.BOTTLING],
       });
+      await this.queryClient.invalidateQueries({ queryKey: [QueryKeyPrefix.BATCHES] });
       this.router.navigateByUrl(H2TrustRoutes.BATCHES);
     },
   }));

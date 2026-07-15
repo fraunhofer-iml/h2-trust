@@ -161,8 +161,10 @@ model UnitDetails {
   financialSupportReceived Boolean?
 
   // Hydrogen Production
-  technology                    String?
-  waterConsumptionLitersPerHour Decimal? @db.Decimal(7, 3)
+  technology                         String?
+  waterConsumptionLitersPerHour      Decimal? @db.Decimal(7, 3)
+  wasteWaterConsumptionLitersPerKgH2 Decimal? @db.Decimal(7, 3)
+  resinConsumptionKgPerKgH2          Decimal? @db.Decimal(7, 3)
 
   // Transport
   fuelType String?
@@ -184,8 +186,8 @@ model Batch {
   owner   Company @relation(fields: [ownerId], references: [id])
   ownerId String
 
-  details BatchDetails?
-  processStep  ProcessStep?
+  details     BatchDetails?
+  processStep ProcessStep?
 
   predecessors Batch[] @relation("BatchRelation")
   successors   Batch[] @relation("BatchRelation")

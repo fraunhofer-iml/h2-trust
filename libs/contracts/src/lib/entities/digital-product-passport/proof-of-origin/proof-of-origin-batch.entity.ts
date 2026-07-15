@@ -13,6 +13,7 @@ import { ProofOfOriginEmissionEntity } from './proof-of-origin-emission.entity';
 export type ProofOfOriginBatchEntity =
   | ProofOfOriginPowerBatchEntity
   | ProofOfOriginWaterBatchEntity
+  | ProofOfOriginProductionBatchEntity
   | ProofOfOriginHydrogenBatchEntity;
 
 class ProofOfOriginBaseBatchEntity {
@@ -73,6 +74,25 @@ export class ProofOfOriginWaterBatchEntity extends ProofOfOriginBaseBatchEntity 
     super(id, emission, createdAt, amount);
     this.deionizedWaterAmount = deionizedWaterAmount;
     this.deionizedWaterEmission = deionizedWaterEmission;
+  }
+}
+
+export class ProofOfOriginProductionBatchEntity extends ProofOfOriginBaseBatchEntity {
+  batchType: BatchType = BatchType.H2_PRODUCTION;
+  resinAmount: number;
+  wasteWaterAmount: number;
+
+  constructor(
+    id: string,
+    emission: ProofOfOriginEmissionEntity,
+    createdAt: Date,
+    amount: number,
+    resinAmount: number,
+    wasteWaterAmount: number,
+  ) {
+    super(id, emission, createdAt, amount);
+    this.resinAmount = resinAmount;
+    this.wasteWaterAmount = wasteWaterAmount;
   }
 }
 

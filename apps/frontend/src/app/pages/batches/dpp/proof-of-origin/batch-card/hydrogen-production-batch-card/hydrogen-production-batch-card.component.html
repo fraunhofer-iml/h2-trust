@@ -1,0 +1,33 @@
+<app-proof-of-origin-card [icon]="'water_drop '" (click)="sheet.open()" class="cursor-pointer">
+  <div>
+    <h3 class="text-base">H2 Production</h3>
+    <p class="text-sm text-neutral-500">
+      {{ batch().emission.amountCO2 | unit: MeasurementUnit.G_CO2 }}
+    </p>
+  </div>
+  <span>{{ batch().amount | unit: batch().unit }} </span>
+</app-proof-of-origin-card>
+
+<app-base-sheet #sheet>
+  <div class="flex flex-col gap-4">
+    <div>
+      <div class="flex w-full items-center justify-between">
+        <h3>H2 Production Batch</h3>
+      </div>
+      <span class="text-sm text-neutral-400"> Batch-Id: {{ batch().id }}</span>
+    </div>
+
+    <div class="grid grid-cols-2 gap-4 rounded-xl border-2 border-solid border-neutral-100 bg-neutral-50 p-4">
+      <span class="col-span-2 text-neutral-600">Batch Details</span>
+      <div class="flex flex-col text-sm">
+        <span class="text-sm text-neutral-500">Used Resin Amount:</span
+        ><span>{{ batch().resinAmount | unit: MeasurementUnit.KG }}</span>
+      </div>
+      <div class="flex flex-col text-sm">
+        <span class="text-sm text-neutral-500">Waste Water Amount:</span
+        ><span>{{ batch().wasteWaterAmount | unit: MeasurementUnit.L }}</span>
+      </div>
+    </div>
+    <app-batch-emissions [emissions]="batch().emission"></app-batch-emissions>
+  </div>
+</app-base-sheet>

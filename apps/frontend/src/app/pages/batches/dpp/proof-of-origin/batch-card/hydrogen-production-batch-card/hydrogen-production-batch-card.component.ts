@@ -1,0 +1,26 @@
+/*
+ * Copyright Fraunhofer Institute for Material Flow and Logistics
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License").
+ * For details on the licensing terms, see the LICENSE file.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+import { Component, input } from '@angular/core';
+import { HydrogenBatchDto } from '@h2-trust/contracts/dtos';
+import { MeasurementUnit } from '@h2-trust/domain';
+import { ProofOfOriginCardComponent } from '../../../../../../layout/proof-of-origin-card/proof-of-origin-card.component';
+import { BaseSheetComponent } from '../../../../../../layout/sheet/sheet.component';
+import { UnitPipe } from '../../../../../../shared/pipes/unit.pipe';
+import { BatchEmissionsComponent } from '../batch-emissions/batch-emissions.component';
+
+@Component({
+  selector: 'app-hydrogen-production-batch-card',
+  imports: [BaseSheetComponent, BatchEmissionsComponent, UnitPipe, ProofOfOriginCardComponent],
+  templateUrl: './hydrogen-production-batch-card.component.html',
+})
+export class HydrogenProductionBatchCardComponent {
+  batch = input.required<HydrogenBatchDto>();
+
+  readonly MeasurementUnit = MeasurementUnit;
+}

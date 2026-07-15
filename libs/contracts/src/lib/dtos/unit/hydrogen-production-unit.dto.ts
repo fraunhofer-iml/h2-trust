@@ -19,6 +19,8 @@ export class HydrogenProductionUnitDto extends BaseUnitDto {
   biddingZone: BiddingZone;
   ratedPower: number;
   waterConsumptionLitersPerHour: number;
+  wasteWaterConsumptionLitersPerKgH2: number;
+  resinConsumptionKgPerKgH2: number;
 
   override readonly unitType = UnitType.HYDROGEN_PRODUCTION;
 
@@ -39,6 +41,8 @@ export class HydrogenProductionUnitDto extends BaseUnitDto {
     method: HydrogenProductionType,
     technology: HydrogenProductionTechnology,
     waterConsumptionLitersPerHour: number,
+    wasteWaterConsumptionLitersPerKgH2: number,
+    resinConsumptionKgPerKgH2: number,
     active: boolean,
   ) {
     super(
@@ -60,6 +64,8 @@ export class HydrogenProductionUnitDto extends BaseUnitDto {
     this.biddingZone = biddingZone;
     this.ratedPower = ratedPower;
     this.waterConsumptionLitersPerHour = waterConsumptionLitersPerHour;
+    this.wasteWaterConsumptionLitersPerKgH2 = wasteWaterConsumptionLitersPerKgH2;
+    this.resinConsumptionKgPerKgH2 = resinConsumptionKgPerKgH2;
   }
 
   static override fromEntity(unit: UnitEntity): HydrogenProductionUnitDto {
@@ -71,6 +77,8 @@ export class HydrogenProductionUnitDto extends BaseUnitDto {
       biddingZone: unit.details.biddingZone!,
       ratedPower: unit.details.ratedPower ?? 0,
       waterConsumptionLitersPerHour: unit.details.waterConsumptionLitersPerHour ?? 0,
+      wasteWaterConsumptionLitersPerKgH2: unit.details.wasteWaterConsumptionLitersPerKgH2 ?? 0,
+      resinConsumptionKgPerKgH2: unit.details.resinConsumptionKgPerKgH2 ?? 0,
     };
   }
 }

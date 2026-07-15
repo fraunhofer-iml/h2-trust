@@ -10,4 +10,5 @@ export enum BatchType {
   POWER = 'POWER',
   HYDROGEN = 'HYDROGEN',
   WATER = 'WATER',
+  H2_PRODUCTION = 'H2_PRODUCTION',
 }

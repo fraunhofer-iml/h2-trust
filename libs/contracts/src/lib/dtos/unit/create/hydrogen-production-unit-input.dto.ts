@@ -35,6 +35,16 @@ export class HydrogenProductionUnitInputDto extends UnitInputDto {
   @IsNotEmpty()
   waterConsumptionLitersPerHour: number;
 
+  @IsNumber()
+  @IsPositive()
+  @IsNotEmpty()
+  wasteWaterConsumptionLitersPerKgH2: number;
+
+  @IsNumber()
+  @IsPositive()
+  @IsNotEmpty()
+  resinConsumptionKgPerKgH2: number;
+
   constructor(
     type: UnitType,
     name: string,
@@ -52,6 +62,8 @@ export class HydrogenProductionUnitInputDto extends UnitInputDto {
     biddingZone: BiddingZone,
     ratedPower: number,
     waterConsumptionLitersPerHour: number,
+    wasteWaterConsumptionLitersPerKgH2: number,
+    resinConsumptionKgPerKgH2: number,
   ) {
     super(
       type,
@@ -71,6 +83,8 @@ export class HydrogenProductionUnitInputDto extends UnitInputDto {
     this.biddingZone = biddingZone;
     this.ratedPower = ratedPower;
     this.waterConsumptionLitersPerHour = waterConsumptionLitersPerHour;
+    this.wasteWaterConsumptionLitersPerKgH2 = wasteWaterConsumptionLitersPerKgH2;
+    this.resinConsumptionKgPerKgH2 = resinConsumptionKgPerKgH2;
   }
 
   static toPayload(
@@ -94,6 +108,8 @@ export class HydrogenProductionUnitInputDto extends UnitInputDto {
       dto.biddingZone,
       dto.ratedPower,
       dto.waterConsumptionLitersPerHour,
+      dto.wasteWaterConsumptionLitersPerKgH2,
+      dto.resinConsumptionKgPerKgH2,
       dto.manufacturer,
       dto.modelType,
       dto.modelNumber,

@@ -15,6 +15,9 @@ export class HydrogenProductionOverviewDto {
   unitType: UnitType;
   ratedPower: number;
   technology: HydrogenProductionTechnology;
+  waterConsumptionLitersPerHour?: number;
+  wasteWaterConsumptionLitersPerKgH2?: number;
+  resinConsumptionKgPerKgH2?: number;
   powerPurchaseAgreementStatus: boolean;
   powerProducerId: string;
   powerProducerName: string;
@@ -26,6 +29,9 @@ export class HydrogenProductionOverviewDto {
     unitType: UnitType,
     ratedPower: number,
     technology: HydrogenProductionTechnology,
+    waterConsumptionLitersPerHour: number,
+    wasteWaterConsumptionLitersPerKgH2: number,
+    resinConsumptionKgPerKgH2: number,
     powerPurchaseAgreementStatus: boolean,
     powerProducerId: string,
     powerProducerName: string,
@@ -36,6 +42,9 @@ export class HydrogenProductionOverviewDto {
     this.unitType = unitType;
     this.ratedPower = ratedPower;
     this.technology = technology;
+    this.waterConsumptionLitersPerHour = waterConsumptionLitersPerHour;
+    this.wasteWaterConsumptionLitersPerKgH2 = wasteWaterConsumptionLitersPerKgH2;
+    this.resinConsumptionKgPerKgH2 = resinConsumptionKgPerKgH2;
     this.powerPurchaseAgreementStatus = powerPurchaseAgreementStatus;
     this.powerProducerId = powerProducerId;
     this.powerProducerName = powerProducerName;
@@ -54,6 +63,9 @@ export class HydrogenProductionOverviewDto {
       powerPurchaseAgreementStatus: HydrogenProductionOverviewDto.existsPowerProducer(unit),
       powerProducerId: firstAgreement?.requestedCompany.id ?? '',
       powerProducerName: firstAgreement?.requestedCompany.name ?? '',
+      waterConsumptionLitersPerHour: unit.details.waterConsumptionLitersPerHour ?? 0,
+      wasteWaterConsumptionLitersPerKgH2: unit.details.wasteWaterConsumptionLitersPerKgH2 ?? 0,
+      resinConsumptionKgPerKgH2: unit.details.resinConsumptionKgPerKgH2 ?? 0,
       active: unit.active,
     };
   }
