@@ -7,7 +7,7 @@
  */
 
 import { DatePipe } from '@angular/common';
-import { AfterViewInit, Component, inject, signal, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, effect, inject, signal, ViewChild } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { debounce, form, FormField } from '@angular/forms/signals';
 import { provideLuxonDateAdapter } from '@angular/material-luxon-adapter';
@@ -137,6 +137,14 @@ export class ProductionViewComponent implements AfterViewInit {
     };
     this.dataSource.sort = this.sort;
   }
+
+  protected readonly productionTableEffect = effect(() => {
+    if (this.productionQuery.data()) {
+      const paginatedData = this.productionQuery.data()!;
+      this.dataSource.data = paginatedData.data;
+      this.totalItems = paginatedData.totalItems;
+    }
+  });
 
   onPageChange(e: PageEvent) {
     this.pagination.set({ pageIndex: e.pageIndex, pageSize: e.pageSize });

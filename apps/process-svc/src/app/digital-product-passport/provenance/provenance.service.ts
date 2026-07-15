@@ -22,13 +22,13 @@ export function buildProvenance(root: ProcessStepEntity, predecessorsOfRoot: Pro
       return new ProvenanceEntity(root, predecessorsOfRoot, []);
 
     case ProcessType.HYDROGEN_PRODUCTION:
-      return new ProvenanceEntity(root, predecessorsOfRoot, buildProductionChains(predecessorsOfRoot));
+      return new ProvenanceEntity(root, predecessorsOfRoot, buildProductionChains(root, predecessorsOfRoot));
 
     default:
       return new ProvenanceEntity(
         root,
         handleSplitProcessSteps(predecessorsOfRoot),
-        buildProductionChains(predecessorsOfRoot),
+        buildProductionChains(root, predecessorsOfRoot),
       );
   }
 }
@@ -54,12 +54,8 @@ function getFirstProcessStepOfSplittingChain(
   return lastProcessStep;
 }
 
-function buildProductionChains(processSteps: ProcessStepEntity[]): ProductionChainEntity[] {
-  const bottling: ProcessStepEntity = getHydrogenBottling(processSteps);
-
-  const leafProductions: ProcessStepEntity[] = bottling
-    ? getLeafHydrogenProductions(bottling, processSteps)
-    : getHydrogenProductions(processSteps);
+function buildProductionChains(root: ProcessStepEntity, processSteps: ProcessStepEntity[]): ProductionChainEntity[] {
+  const leafProductions: ProcessStepEntity[] = getLeafHydrogenProductions(root, processSteps);
 
   return leafProductions.map((leafProduction) => {
     const rootProduction: ProcessStepEntity = getRootProductionForLeaf(leafProduction, processSteps);
@@ -87,14 +83,43 @@ function buildProductionChains(processSteps: ProcessStepEntity[]): ProductionCha
   });
 }
 
-function getLeafHydrogenProductions(
-  bottling: ProcessStepEntity,
-  processSteps: ProcessStepEntity[],
-): ProcessStepEntity[] {
-  const predecessorIds: string[] = bottling.batch.predecessors.map((pred) => pred.processStepId);
-  return processSteps.filter((processStep) => predecessorIds.includes(processStep.id));
+/**
+ * Accepts the list of all nodes in the process chain. The entire process chain is examined for elements
+ * that are HYDROGEN_PRODUCTION but do not have HYDROGEN_PRODUCTION as a successor. These elements are referred to as leaf hydrogen production.
+ * @param processSteps The list of all process steps in the process chain.
+ * @returns The last HYDROGEN_PRODUCTION process steps in the process chain (leaf hydrogen production).
+ */
+function getLeafHydrogenProductions(root: ProcessStepEntity, processSteps: ProcessStepEntity[]): ProcessStepEntity[] {
+  //If the leaf productions are to be retrieved for a root element that is itself of type HYDROGEN_PRODUCTION, then this root element is also the leaf productions element.
+  if (root.type === ProcessType.HYDROGEN_PRODUCTION) {
+    return [root];
+  }
+  //Since hydrogen production is at the beginning of every process chain, all process steps that do not have one of the production types (HYDROGEN_PRODUCTION,
+  //POWER_PRODUCTION, and WATER_CONSUMPTION) necessarily have a HYDROGEN_PRODUCTION element as a (distant) predecessor.
+  const nonProductionProcessSteps: ProcessStepEntity[] = processSteps.filter(
+    (processStep) =>
+      processStep.type !== ProcessType.HYDROGEN_PRODUCTION &&
+      processStep.type !== ProcessType.WATER_CONSUMPTION &&
+      processStep.type !== ProcessType.POWER_PRODUCTION,
+  );
+  //All predecessor ids of non-production process steps of type HYDROGEN_PRODUCTION are returned. By definition, these are the leaf production elements.
+  const predecessorIdsOfNonProductionProcessSteps = nonProductionProcessSteps.flatMap((processStep) =>
+    processStep.batch.predecessors.map((pred) => pred.processStepId),
+  );
+  return processSteps.filter(
+    (processStep) =>
+      predecessorIdsOfNonProductionProcessSteps.includes(processStep.id) &&
+      processStep.type === ProcessType.HYDROGEN_PRODUCTION,
+  );
 }
 
+/**
+ * Accepts a hydrogen leaf element in the process chain. Traverse the list of predecessors until a HYDROGEN_PRODUCTION element is reached that has no further
+ * HYDROGEN_PRODUCTION elements as predecessors (root hydrogen production).
+ * @param leafHydrogenProduction The leaf hydrogen production element, which may have other hydrogen production elements as its predecessors.
+ * @param processSteps The list of all process steps in the process chain.
+ * @returns the corresponding hydrogen root production for the given hydrogen leaf production, i.e. the first HYDROGEN_PRODUCTION process step in the process chain.
+ */
 function getRootProductionForLeaf(
   leafHydrogenProduction: ProcessStepEntity,
   processSteps: ProcessStepEntity[],
@@ -120,20 +145,6 @@ function getRootProductionForLeaf(
     currentBatch = nextProcessStep.batch;
   }
   throw new InternalException(`Missing root for leaf production.`);
-}
-
-function getHydrogenProductions(processSteps: ProcessStepEntity[]): ProcessStepEntity[] {
-  const hydrogenProduction: ProcessStepEntity[] = processSteps.filter(
-    (ps) => ps.type === ProcessType.HYDROGEN_PRODUCTION,
-  );
-  if (hydrogenProduction.length == 0) {
-    throw new InternalException(`Missing [${ProcessType.HYDROGEN_PRODUCTION}] process step.`);
-  }
-  return hydrogenProduction;
-}
-
-function getHydrogenBottling(processSteps: ProcessStepEntity[]): ProcessStepEntity | undefined {
-  return processSteps.find((ps) => ps.type === ProcessType.HYDROGEN_BOTTLING);
 }
 
 function findProcessStepById(id: string, processSteps: ProcessStepEntity[]): ProcessStepEntity {

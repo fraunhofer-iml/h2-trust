@@ -53,6 +53,7 @@ export class ProofOfSustainabilityComponent {
       [CalculationTopic.POWER_SUPPLY]: [],
       [CalculationTopic.WATER_SUPPLY]: [],
       [CalculationTopic.HYDROGEN_STORAGE]: [],
+      [CalculationTopic.HYDROGEN_PRODUCTION]: [],
       [CalculationTopic.HYDROGEN_BOTTLING]: [],
       [CalculationTopic.HYDROGEN_TRANSPORTATION]: [],
       [CalculationTopic.HYDROGEN_COMPRESSION]: [],

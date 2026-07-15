@@ -38,6 +38,9 @@
         @if (isInstanceOfHydrogenBatch(batch); as hydrogenBatch) {
           <app-h2-batch-card [batch]="hydrogenBatch"></app-h2-batch-card>
         }
+        @if (isInstanceOfProductionBatch(batch); as hydrogenBatch) {
+          <app-hydrogen-production-batch-card [batch]="hydrogenBatch"></app-hydrogen-production-batch-card>
+        }
         @if (isInstanceOfPowerBatch(batch); as powerBatch) {
           <app-power-batch-card [batch]="powerBatch"></app-power-batch-card>
         }

@@ -19,6 +19,7 @@ import {
 import { BatchType } from '@h2-trust/domain';
 import { PrettyStringPipe } from '../../../../shared/pipes/pretty-string.pipe';
 import { H2BatchCardComponent } from './batch-card/h2-batch-card/h2-batch-card.component';
+import { HydrogenProductionBatchCardComponent } from './batch-card/hydrogen-production-batch-card/hydrogen-production-batch-card.component';
 import { PowerBatchCardComponent } from './batch-card/power-batch-card/power-batch-card.component';
 import { WaterBatchCardComponent } from './batch-card/water-batch-card/water-batch-card.component';
 import { ClassificationComponent } from './classification/classification.component';
@@ -30,6 +31,7 @@ import { ClassificationComponent } from './classification/classification.compone
     ClassificationComponent,
     WaterBatchCardComponent,
     H2BatchCardComponent,
+    HydrogenProductionBatchCardComponent,
     PowerBatchCardComponent,
     PrettyStringPipe,
   ],
@@ -83,6 +85,9 @@ export class ProofOfOriginComponent {
   }
   isInstanceOfHydrogenBatch(batch: DppBatchDto): HydrogenBatchDto | null {
     return batch.batchType === BatchType.HYDROGEN ? (batch as HydrogenBatchDto) : null;
+  }
+  isInstanceOfProductionBatch(batch: DppBatchDto): HydrogenBatchDto | null {
+    return batch.batchType === BatchType.H2_PRODUCTION ? (batch as HydrogenBatchDto) : null;
   }
   isInstanceOfPowerBatch(batch: DppBatchDto): PowerBatchDto | null {
     return batch.batchType === BatchType.POWER ? (batch as PowerBatchDto) : null;
