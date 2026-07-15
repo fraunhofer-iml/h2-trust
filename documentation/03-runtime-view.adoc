@@ -106,4 +106,4 @@ The General SVC and Process SVC allow the following AMQP endpoints.
 === REST specific messaging interfaces and API
 
 The BFF serves as a bridge for the frontend and enables RESTful endpoints.
-Once the BFF service has been launched, the Swagger documentation (OpenAPI) is available at <bff-host>:3000/api/
+Once the BFF service has been launched, the Swagger documentation (OpenAPI) is available at `http://<bff-host>:3000/api/`.

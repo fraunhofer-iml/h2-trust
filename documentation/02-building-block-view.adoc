@@ -72,7 +72,7 @@ In level 1, the components of H2-Trust are shown.
 | An Ethereum-based blockchain used to secure the uploaded CSV files containing production data via a hash. This makes it possible to detect any subsequent alterations to the version stored on the MinIO file storage system.
 
 | Filebase/kubo
-| Single sign-on system
+| IPFS node
 | An IPFS node that distributes, stores and makes the uploaded CSV files accessible.
 |===
 
@@ -217,10 +217,10 @@ In addition, you must specify the type of the newly created process step and, de
 |This service offers functionalities such as creating, updating or reading units.
 
 .2+|**User**
-|Unit Controller
-|Provides an AMQP endpoints that enables to read user information.
+|User Controller
+|Provides an AMQP endpoint that enables reading user information.
 
-|Unit Service
+|User Service
 |This service offers functionalities to read user information.
 
 |===

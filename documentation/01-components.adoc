@@ -34,7 +34,7 @@ Another key component of process-svc is the calculation of the proof of origin, 
 
 == BFF
 
-The BFF is also a Nest.js service, although it receives its requests via REST. Its role is to forward the request to the appropriate endpoints of the backend services. The results from the backend services are then aggregated and formatted accordingly. The BFF is designed to act as an intermediary between the frontend and backend servic
+The BFF is also a Nest.js service, although it receives its requests via REST. Its role is to forward the request to the appropriate endpoints of the backend services. The results from the backend services are then aggregated and formatted accordingly. The BFF is designed to act as an intermediary between the frontend and backend services.
 
 == Frontend
 
