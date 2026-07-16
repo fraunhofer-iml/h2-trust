@@ -1,0 +1,87 @@
+[[chapter-tutorial]]
+:docinfo: shared
+:toc: left
+:toclevels: 3
+:sectnums:
+:copyright: Apache License 2.0
+:projectName: H2-trust
+
+= Tutorial
+
+This chapter provides a detailed guide to using the features of the {projectName} project.
+The installation process is already described in the link:https://github.com/fraunhofer-iml/h2-trust/blob/main/README.md[README] file and will not be covered further here. Instead, we will look at exactly how to use the functions.
+
+== Create and Update Units
+
+In {projectName}, units are used to store emissions data which can later be used to calculate the emissions from individual process steps.
+
+To create a new unit, follow these steps. Click the "Units" option in the menu on the left to go to the Unit Overview.
+
+All saved units that the logged-in user has access to are displayed there. Click the "Add Unit" button to go to the page for creating a new unit.
+
+On the page for creating new units, you can first specify the type of the new unit and then enter additional information about it. Once all the necessary information has been entered, you can click the Save button to create a new unit.
+
+After creating the unit, you will be automatically redirected back to the Overview page, where the new unit should be displayed.
+
+The units displayed on the Overview page can be filtered by type.
+
+If you want to deactivate a unit or edit its information, you can do so by clicking "Details" in the field for the selected unit.
+
+You will then be redirected to the page for updating units, where you can edit the unit's fields or deactivate the unit.
+
+== Upload Production Data
+
+To add new H2 production data to the system, the production data must be uploaded via a CSV file. H2 and Power Production files are uploaded separately to allow for the use of electricity from other companies.
+
+To begin the upload process, go to the Upload Overview page via the menu on the left. On the Upload Overview page, you can view all files uploaded so far and download or verify them using the buttons. If the data has been successfully verified via the blockchain, you can view additional information by clicking the Inspect button.
+
+If you want to upload a new file, click the "Upload" button to go to the upload page. There, you can upload new CSV files depending on the available H2 or Power Unit. After the CSV file has been uploaded via the form, you must select the unit that will execute it. If you then confirm by clicking the “Submit” button, new preliminary production data will be created, which can be combined in the next step to generate new H2 productions.
+
+== Create and Accept Power Purchase Agreement
+
+In addition to using our own electricity for hydrogen production, we can also use electricity from other companies. To do this, we need a Power Purchase Agreement with those companies.
+
+The PPAs can be viewed by clicking the "PPA Requests" button in the lower left corner. Clicking it will redirect you to the PPA page.
+
+Once you're on the PPA page, you can use the "Request PPA" button to request a new Power Purchase Agreement from another company.
+
+To do this, you must specify the desired company, the type of electricity, and, optionally, a comment, and then submit the PPA by clicking the "Send" button.
+
+On the recipient side, the received PPAs are then displayed on this page. If you want to accept them, you must specify a suitable unit that produces the required type of electricity. You can then confirm the PPA.
+
+Afterward, the electricity production data which was uploaded via a CSV file and produced by this unit is available for consolidation into an H2 production record.
+
+== Create new Production Data
+
+To view the list, go to the "Production" section in the menu on the left and click the "Data" button to access the production overview page.
+There, you'll see all H2 productions that the currently logged-in user has access to.
+
+In addition, the RFNBO value is displayed for each saved production, which provides information about the quality of the hydrogen produced.
+
+To add a new production, click the "Add Data" button to go to the page for combining electricity and H2 productions. On the left side of that page, select the hydrogen batch you want to create. Once a hydrogen batch is selected, a matching electricity batch if available will be displayed on the right side. Select the desired electricity batch and confirm the combination by clicking the "Save" button.
+
+The two selected temporary productions are set to "inactive," and a new hydrogen production is created. You are automatically redirected back to the Production Overview page, where the new hydrogen batch is displayed.
+
+If there is insufficient electricity available for a production, grid power is used to make up the difference. In this case, the batches are also split to categorize the hydrogen into different quality categories.
+
+== Create new Process Step
+
+Based on the H2 batches that have been produced, you can only create additional process steps that further process this hydrogen.
+
+To do this, click the "Batches" button in the menu on the left. You will then be redirected to the "Process Step Overview." There, you can view all the process steps that have been created.
+
+The process steps also have an RFNBO value that indicates the quality of the batch.
+
+If you want to create a new process step, click the “Add Batch” button to go to the page for creating a new batch.
+
+There, you select the amount of hydrogen to be processed and specify which unit previously processed these hydrogen batches.
+
+Next, you specify who is responsible for this process step and which unit is to carry it out. Then you enter the process-specific emissions that have been generated and confirm by clicking "Add Batch."
+
+You will then be redirected back to the Process Step Overview page.
+
+== Show the Digital Product Passport
+
+To view the digital product passport and the emissions generated for a process chain, click the "Show DPP" button for the respective process step in the Process Step Overview.
+
+You will be redirected to the DPP page, where the selected process step is the last node in the process chain being viewed. On this page, you can then view the composition of the hydrogen in terms of its emission values.
