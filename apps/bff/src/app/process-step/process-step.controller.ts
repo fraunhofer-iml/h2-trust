@@ -30,6 +30,7 @@ import {
 import 'multer';
 import { KeycloakUser, Public } from 'nest-keycloak-connect';
 import { ProcessType } from '@h2-trust/domain';
+import { ApiPaginatedResponse } from '../share/consts/ApiPaginatedResponse';
 import { ProcessStepService } from './process-step.service';
 
 @Controller('process-steps')
@@ -58,6 +59,7 @@ export class ProcessStepController {
 
   @Get()
   @ApiBearerAuth()
+  @ApiPaginatedResponse(BatchDto)
   @ApiOperation({
     description: "Retrieve all hydrogen batches for the authenticated user's company.",
   })

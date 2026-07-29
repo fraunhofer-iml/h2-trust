@@ -23,6 +23,7 @@ import {
   type AuthenticatedKCUser,
 } from '@h2-trust/contracts/dtos';
 import { CsvContentType, StagingScope } from '@h2-trust/domain';
+import { ApiPaginatedResponse } from '../share/consts/ApiPaginatedResponse';
 import { ProductionService } from './production.service';
 
 @Controller('productions')
@@ -31,6 +32,7 @@ export class ProductionController {
 
   @Get()
   @ApiBearerAuth()
+  @ApiPaginatedResponse(ProductionOverviewDto)
   @ApiOperation({
     description: "Retrieve all hydrogen productions for the authenticated user's company.",
   })
