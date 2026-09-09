@@ -99,7 +99,7 @@ export class SidebarComponent implements OnInit {
       ],
     },
     {
-      title: 'Batches',
+      title: 'Process Steps',
       icon: 'data_table',
       route: H2TrustRouterLinks.BATCH,
       visible: signal(true),
