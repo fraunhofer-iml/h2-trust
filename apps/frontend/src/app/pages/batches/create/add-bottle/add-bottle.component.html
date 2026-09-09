@@ -1,5 +1,10 @@
 <div class="flex flex-col gap-4 p-6">
-  <app-storage-filling-levels [chartData]="selectedChartData"></app-storage-filling-levels>
+  <!-- <app-storage-filling-levels [chartData]="selectedChartData"></app-storage-filling-levels> -->
+
+  <app-storage-filling-levels
+    [chartData]="selectedChartData"
+    [plannedAmount]="bottleFormGroup.controls.amount.value"
+  ></app-storage-filling-levels>
   <div [formGroup]="bottleFormGroup" class="flex w-full flex-row gap-4">
     <div class="flex w-2/3 flex-col gap-4">
       <div class="grid grid-cols-6 gap-x-2 gap-y-4 rounded-lg bg-white p-4">
@@ -88,6 +93,12 @@
             placeholder="e.g. 71"
             required
           />
+
+          @if (bottleFormGroup.controls.amount.hasError('required')) {
+            <mat-error>Amount is required.</mat-error>
+          } @else if (bottleFormGroup.controls.amount.hasError('min')) {
+            <mat-error>Amount must be greater than 0.</mat-error>
+          }
         </mat-form-field>
       </div>
       <div class="flex flex-col gap-2 rounded-lg bg-white p-4">
