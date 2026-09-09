@@ -1,20 +1,126 @@
 <div class="flex flex-col gap-2 rounded-lg bg-white p-4">
-  <h3 class="text-neutral-500">Filling Levels</h3>
-  @if (chartData()?.length === 0) {
+  <h3 class="text-neutral-500">Hydrogen Availability</h3>
+
+  @if (!chartData()) {
+    <div><span class="material-symbols-outlined animate-spin">progress_activity</span></div>
+  } @else if (availabilityStats().total === 0) {
     <div class="flex flex-col items-center gap-2">
       <span class="material-symbols-outlined text-neutral-300">bar_chart</span>
       <p class="text-sm text-neutral-500">No data available.</p>
     </div>
-  } @else if (chartData()) {
-    <div class="max-h-[30vh] overflow-y-auto">
-      <div
-        echarts
-        [options]="chartOption$()"
-        class="echart"
-        [style]="{ height: (chartData()?.length ?? 1) * 10 + 'rem' }"
-      ></div>
-    </div>
   } @else {
-    <div><span class="material-symbols-outlined animate-spin">progress_activity</span></div>
+    <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+      <div class="flex min-h-32 flex-col justify-between rounded-xl bg-sky-100 p-4">
+        <div class="flex h-10 w-10 items-center justify-center rounded-full border border-sky-300 bg-white">
+          <span class="material-symbols-outlined text-sky-600">water_drop</span>
+        </div>
+
+        <div>
+          <div class="text-lg font-semibold text-neutral-800">
+            {{ availabilityStats().total | unit: MeasurementUnit.KG }}
+          </div>
+          <div class="text-sm text-neutral-600">Total hydrogen</div>
+
+          @if (availabilityStats().unitName) {
+            <p class="mt-1 text-xs text-neutral-500">Predecessor unit: {{ availabilityStats().unitName }}</p>
+          }
+
+          @if (availabilityStats().plannedAmount > 0) {
+            <div class="mt-4">
+              <div class="mb-1 flex justify-between text-xs text-neutral-600">
+                <span>Planned amount</span>
+                <span>
+                  {{ availabilityStats().plannedAmount | unit: MeasurementUnit.KG }}
+                  /
+                  {{ availabilityStats().total | unit: MeasurementUnit.KG }}
+                </span>
+              </div>
+
+              <div class="h-2 overflow-hidden rounded-full bg-neutral-200">
+                <div
+                  class="h-full transition-all duration-300"
+                  [class.bg-primary-500]="!availabilityStats().reachesLimit"
+                  [class.bg-tertiary-500]="availabilityStats().reachesLimit"
+                  [style.width.%]="
+                    availabilityStats().total > 0
+                      ? Math.min((availabilityStats().plannedAmount / availabilityStats().total) * 100, 100)
+                      : 0
+                  "
+                ></div>
+              </div>
+
+              @if (availabilityStats().exceedsAvailableAmount) {
+                <p class="mt-2 text-xs font-medium text-red-600">
+                  The selected predecessor unit does not contain enough hydrogen. Please select another unit or reduce
+                  the amount. Missing:
+                  {{ -availabilityStats().remainingAmount | unit: MeasurementUnit.KG }}.
+                </p>
+              } @else if (availabilityStats().reachesLimit) {
+                <p class="text-tertiary-600 mt-2 text-xs font-medium">
+                  The planned amount uses all available hydrogen.
+                </p>
+              } @else {
+                <p class="mt-2 text-xs text-neutral-500">
+                  Remaining after process step:
+                  {{ availabilityStats().remainingAmount | unit: MeasurementUnit.KG }}.
+                </p>
+              }
+            </div>
+          }
+        </div>
+      </div>
+
+      <div class="flex min-h-32 items-center justify-between rounded-xl border border-neutral-100 bg-white p-4">
+        <div class="flex flex-col justify-between gap-4">
+          <div class="flex h-10 w-10 items-center justify-center rounded-full border border-sky-300 bg-sky-100">
+            <span class="material-symbols-outlined text-sky-600">verified</span>
+          </div>
+
+          <div>
+            <div class="text-lg font-semibold text-neutral-800">
+              {{ availabilityStats().rfnboReady | unit: MeasurementUnit.KG }}
+            </div>
+            <div class="text-sm text-neutral-600">Hydrogen RFNBO-ready</div>
+          </div>
+        </div>
+
+        <div
+          class="flex h-16 w-16 items-center justify-center rounded-full"
+          [style.background]="getProgressBackground(availabilityStats().rfnboReadyPercentage)"
+        >
+          <div
+            class="flex h-11 w-11 items-center justify-center rounded-full bg-white text-sm font-semibold text-neutral-600"
+          >
+            {{ availabilityStats().rfnboReadyPercentage | percent: '1.0-0' }}
+          </div>
+        </div>
+      </div>
+
+      <div class="flex min-h-32 items-center justify-between rounded-xl border border-neutral-100 bg-white p-4">
+        <div class="flex flex-col justify-between gap-4">
+          <div class="flex h-10 w-10 items-center justify-center rounded-full border border-sky-300 bg-sky-100">
+            <span class="material-symbols-outlined text-sky-600">settings</span>
+          </div>
+
+          <div>
+            <div class="text-lg font-semibold text-neutral-800">
+              {{ availabilityStats().nonCertifiable | unit: MeasurementUnit.KG }}
+            </div>
+            <div class="text-sm text-neutral-600">Non-certifiable hydrogen</div>
+          </div>
+        </div>
+
+        <div
+          class="flex h-16 w-16 items-center justify-center rounded-full"
+          [style.background]="getProgressBackground(availabilityStats().nonCertifiablePercentage)"
+        >
+          <div
+            class="flex h-11 w-11 items-center justify-center rounded-full bg-white text-sm font-semibold text-neutral-600"
+          >
+            {{ availabilityStats().nonCertifiablePercentage | percent: '1.0-0' }}
+          </div>
+        </div>
+      </div>
+    </div>
   }
 </div>
