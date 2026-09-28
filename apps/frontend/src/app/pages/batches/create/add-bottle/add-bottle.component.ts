@@ -275,7 +275,7 @@ export class AddBottleComponent {
       nitrogenControl.setValue(null);
     }
     if (selectedProcessType === ProcessType.HYDROGEN_BOTTLING) {
-      renewablePowerControl.addValidators([Validators.required, Validators.min(1)]);
+      renewablePowerControl.addValidators([Validators.required, Validators.min(0)]);
       gridPowerControl.addValidators([Validators.required, Validators.min(1)]);
       compressedAirControl.addValidators([Validators.required, Validators.min(1)]);
       nitrogenControl.addValidators([Validators.required, Validators.min(1)]);
@@ -286,7 +286,7 @@ export class AddBottleComponent {
       selectedProcessType === ProcessType.HYDROGEN_COMPRESSION ||
       selectedProcessType === ProcessType.HYDROGEN_END_USE
     ) {
-      renewablePowerControl.addValidators([Validators.required, Validators.min(1)]);
+      renewablePowerControl.addValidators([Validators.required, Validators.min(0)]);
       gridPowerControl.addValidators([Validators.required, Validators.min(1)]);
       distanceControl.removeValidators([Validators.required, Validators.min(1)]);
       distanceControl.setValue(null);
