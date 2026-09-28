@@ -42,15 +42,15 @@ export class ProcessedCsvDto {
     this.verifiable = verifiable;
   }
 
-  static fromEntity(entity: CsvDocumentEntity, storageUrl: string, companyName: string): ProcessedCsvDto {
+  static fromEntity(entity: CsvDocumentEntity, storageUrl: string): ProcessedCsvDto {
     return new ProcessedCsvDto(
       entity.id,
       `${storageUrl}/${entity.fileName}`,
       entity.fileName,
-      companyName,
+      entity.uploadedBy ?? 'Unknown Company',
       entity.startedAt,
       entity.endedAt,
-      entity.type as CsvContentType,
+      entity.type,
       entity.amount,
       Boolean(entity.transactionHash),
     );

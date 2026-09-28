@@ -6,6 +6,16 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { CsvDocument } from '@prisma/client';
+import { CsvDocument, Prisma } from '@prisma/client';
 
-export type CsvDocumentDbType = CsvDocument;
+export type CsvDocumentDbType = CsvDocument & {
+  csvImport?: Prisma.CsvImportGetPayload<{
+    include: {
+      uploadedBy: {
+        include: {
+          company: true;
+        };
+      };
+    };
+  }>;
+};

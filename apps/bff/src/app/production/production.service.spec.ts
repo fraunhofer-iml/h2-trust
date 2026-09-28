@@ -343,14 +343,20 @@ describe('ProductionService', () => {
     expect(actualResult).toEqual(expectedProcessSteps.map(ProductionOverviewDto.fromEntity));
   });
 
-  it('should map each CSV document including its storage URL when reading CSV documents by company', async () => {
+  it('should map each CSV document with its actual uploader company when reading CSV documents by company', async () => {
     // arrange
     const givenUserId = 'user-id-1';
     const givenUserDetails: UserDetailsDto = UserDetailsDtoFixture.create({
-      company: { id: 'company-id-1', name: 'Company' } as CompanyDto,
+      company: { id: 'company-id-1', name: 'Hydrogen Solutions GmbH' } as CompanyDto,
     });
+
     const expectedCsvDocuments = [
-      CsvDocumentEntityFixture.create({ id: 'document-1', fileName: 'document-1.csv', type: CsvContentType.HYDROGEN }),
+      CsvDocumentEntityFixture.create({
+        id: 'document-1',
+        fileName: 'wind-turbine-002.csv',
+        type: CsvContentType.POWER,
+        uploadedBy: 'GreenPower GmbH',
+      }),
     ];
 
     userServiceMock.readUserWithCompany.mockResolvedValue(givenUserDetails);
@@ -364,11 +370,11 @@ describe('ProductionService', () => {
       ProductionMessagePatterns.READ_CSV_DOCUMENTS_BY_COMPANY,
       new ReadByIdPayload(givenUserDetails.company.id),
     );
-    expect(actualResult).toEqual(
-      expectedCsvDocuments.map((givenDocument) =>
-        ProcessedCsvDto.fromEntity(givenDocument, storageServiceMock.endpointUrl, givenUserDetails.company.name),
-      ),
-    );
+
+    expect(actualResult).toHaveLength(1);
+    expect(actualResult[0].name).toBe('wind-turbine-002.csv');
+    expect(actualResult[0].url).toBe('http://storage.local/wind-turbine-002.csv');
+    expect(actualResult[0].uploadedBy).toBe('GreenPower GmbH');
   });
 
   it('should request the verification result by document id and map the response when verifying CSV document integrity', async () => {

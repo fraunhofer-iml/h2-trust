@@ -9,6 +9,7 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { CsvDocumentEntity } from '@h2-trust/contracts/entities';
+import { CsvContentType, PowerPurchaseAgreementStatus } from '@h2-trust/domain';
 import { PrismaService } from '../prisma.service';
 import { wrapPrismaError } from './prisma-error.wrapper';
 
@@ -19,6 +20,18 @@ export interface CreateCsvDocumentInput {
   endedAt: Date;
   amount: number;
 }
+
+const csvDocumentWithUploaderInclude = {
+  csvImport: {
+    include: {
+      uploadedBy: {
+        include: {
+          company: true,
+        },
+      },
+    },
+  },
+} as const;
 
 @Injectable()
 export class CsvImportRepository {
@@ -54,8 +67,38 @@ export class CsvImportRepository {
   }
 
   async findAllCsvDocumentsByCompanyId(companyId: string): Promise<CsvDocumentEntity[]> {
+    const ownUploadFilter = { csvImport: { uploadedBy: { companyId } } };
+
+    const ppaPowerUploadFilter = {
+      AND: [
+        { type: CsvContentType.POWER },
+        {
+          csvImport: {
+            stagedProductions: {
+              some: {
+                type: CsvContentType.POWER,
+                productionUnit: {
+                  powerPurchaseAgreements: {
+                    some: {
+                      hydrogenProducerId: companyId,
+                      status: PowerPurchaseAgreementStatus.APPROVED,
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      ],
+    };
+
     const documents = await this.prismaService.csvDocument
-      .findMany({ where: { csvImport: { uploadedBy: { companyId } } } })
+      .findMany({
+        where: {
+          OR: [ownUploadFilter, ppaPowerUploadFilter],
+        },
+        include: csvDocumentWithUploaderInclude,
+      })
       .catch(wrapPrismaError);
 
     return documents.map(CsvDocumentEntity.fromDatabase);
@@ -73,7 +116,9 @@ export class CsvImportRepository {
   }
 
   async findCsvDocumentById(id: string): Promise<CsvDocumentEntity | null> {
-    const document = await this.prismaService.csvDocument.findUnique({ where: { id } }).catch(wrapPrismaError);
+    const document = await this.prismaService.csvDocument
+      .findUnique({ where: { id }, include: csvDocumentWithUploaderInclude })
+      .catch(wrapPrismaError);
 
     return document ? CsvDocumentEntity.fromDatabase(document) : null;
   }
