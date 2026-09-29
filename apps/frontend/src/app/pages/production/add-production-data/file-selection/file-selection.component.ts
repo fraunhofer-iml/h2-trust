@@ -134,7 +134,7 @@ export class FileSelectionComponent {
 
   mutation = injectMutation(() => ({
     mutationFn: async (dto: StagingSubmissionDto) => {
-      handleMutationWithPromiseToast<ProductionOverviewDto[]>(
+      return await handleMutationWithPromiseToast<ProductionOverviewDto[]>(
         this.productionService.submitCsv(dto),
         'Successfully created',
       );
@@ -147,7 +147,7 @@ export class FileSelectionComponent {
       ]);
 
       const tree = this.router.createUrlTree(H2TrustRouterLinks.PRODUCTION_DATA);
-      this.router.navigateByUrl(tree);
+      await this.router.navigateByUrl(tree);
     },
   }));
 
