@@ -738,7 +738,20 @@
       "fullScopeAllowed": true,
       "nodeReRegistrationTimeout": -1,
       "defaultClientScopes": ["web-origins", "acr", "profile", "roles", "basic", "email"],
-      "optionalClientScopes": ["address", "phone", "offline_access", "organization", "microprofile-jwt"]
+      "optionalClientScopes": ["address", "phone", "offline_access", "organization", "microprofile-jwt"],
+      "protocolMappers": [
+        {
+          "name": "audience-h2-trust-bff",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-audience-mapper",
+          "consentRequired": false,
+          "config": {
+            "included.client.audience": "h2-trust-bff",
+            "id.token.claim": "false",
+            "access.token.claim": "true"
+          }
+        }
+      ]
     },
     {
       "id": "9708220c-cb94-4902-a185-01e3c56896aa",
