@@ -137,20 +137,20 @@
           bottleFormGroup.controls.processType.value === ProcessType.HYDROGEN_END_USE
         ) {
           <mat-form-field appearance="outline">
-            <mat-label>Renewable Power</mat-label>
+            <mat-label>Renewable Power (kWh)</mat-label>
             <input
               matInput
               type="number"
               inputmode="numeric"
               formControlName="renewable_power"
-              min="1"
+              min="0"
               step="1"
               placeholder="e.g. 1337"
             />
           </mat-form-field>
 
           <mat-form-field appearance="outline">
-            <mat-label>Grid Power</mat-label>
+            <mat-label>Grid Power (kWh)</mat-label>
             <input
               matInput
               type="number"
@@ -168,7 +168,7 @@
           bottleFormGroup.controls.processType.value === ProcessType.HYDROGEN_END_USE
         ) {
           <mat-form-field appearance="outline">
-            <mat-label>Compressed Air</mat-label>
+            <mat-label>Compressed Air (kg)</mat-label>
             <input
               matInput
               type="number"
@@ -181,7 +181,7 @@
           </mat-form-field>
 
           <mat-form-field appearance="outline">
-            <mat-label>Nitrogen</mat-label>
+            <mat-label>Nitrogen (kg)</mat-label>
             <input
               matInput
               type="number"
