@@ -9,12 +9,10 @@
 import { inject, Injectable } from '@angular/core';
 import Keycloak, { KeycloakProfile } from 'keycloak-js';
 import { UserProfile } from '../../model/user-profile.model';
-import { VerificationResultStore } from '../../store/verification-result.store';
 
 @Injectable()
 export class AuthService {
   private readonly keycloak = inject(Keycloak);
-  private readonly verificationStore = inject(VerificationResultStore);
   async getUserId(): Promise<string> {
     const profile: KeycloakProfile = await this.keycloak.loadUserProfile();
     return profile.id ?? '';
@@ -30,7 +28,6 @@ export class AuthService {
   }
 
   logout() {
-    this.verificationStore.clear();
     this.keycloak.logout();
   }
 
