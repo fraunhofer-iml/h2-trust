@@ -63,10 +63,13 @@ export class ProofOfSustainabilityComponent {
     for (const item of calculations) {
       groupedObj[item.calculationTopic].push(item);
     }
-    return Object.entries(groupedObj).map(([key, items]) => ({
-      key: key as CalculationTopic,
-      items,
-    }));
+
+    return Object.entries(groupedObj)
+      .filter(([, items]) => items.length > 0)
+      .map(([key, items]) => ({
+        key: key as CalculationTopic,
+        items,
+      }));
   }
 
   get totalEmissionsTooltip() {
