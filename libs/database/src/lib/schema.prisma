@@ -71,8 +71,8 @@ model CsvDocument {
   csvImport   CsvImport @relation(fields: [csvImportId], references: [id])
   csvImportId String
 
-  unit   Unit   @relation(fields: [unitId], references: [id])
-  unitId String
+  unit   Unit?   @relation(fields: [unitId], references: [id])
+  unitId String?
 }
 
 model Company {
