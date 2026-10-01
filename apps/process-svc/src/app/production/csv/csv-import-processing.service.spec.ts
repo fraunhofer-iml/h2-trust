@@ -211,6 +211,7 @@ describe('CsvImportProcessingService', () => {
           endedAt: new Date('2026-01-01T02:00:00Z'),
           fileName: 'hash-1.csv',
           amount: 10,
+          unitId: 'unit-1',
         },
       ]);
     });

@@ -19,6 +19,7 @@ export interface CreateCsvDocumentInput {
   startedAt: Date;
   endedAt: Date;
   amount: number;
+  unitId: string;
 }
 
 const csvDocumentWithUploaderInclude = {
@@ -58,6 +59,7 @@ export class CsvImportRepository {
           startedAt: input.startedAt,
           endedAt: input.endedAt,
           amount: input.amount,
+          unitId: input.unitId,
           csvImportId,
         })),
       })
@@ -70,26 +72,15 @@ export class CsvImportRepository {
     const ownUploadFilter = { csvImport: { uploadedBy: { companyId } } };
 
     const ppaPowerUploadFilter = {
-      AND: [
-        { type: CsvContentType.POWER },
-        {
-          csvImport: {
-            stagedProductions: {
-              some: {
-                type: CsvContentType.POWER,
-                productionUnit: {
-                  powerPurchaseAgreements: {
-                    some: {
-                      hydrogenProducerId: companyId,
-                      status: PowerPurchaseAgreementStatus.APPROVED,
-                    },
-                  },
-                },
-              },
-            },
+      type: CsvContentType.POWER,
+      unit: {
+        powerPurchaseAgreements: {
+          some: {
+            hydrogenProducerId: companyId,
+            status: PowerPurchaseAgreementStatus.APPROVED,
           },
         },
-      ],
+      },
     };
 
     const documents = await this.prismaService.csvDocument

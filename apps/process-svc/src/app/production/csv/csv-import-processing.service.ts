@@ -96,6 +96,7 @@ export class CsvImportProcessingService {
         endedAt: new Date(endedAt),
         fileName: production.fileName,
         amount,
+        unitId: production.periods.unitId,
       };
     });
   }
