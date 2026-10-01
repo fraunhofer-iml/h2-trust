@@ -157,7 +157,15 @@ export class AddBottleComponent {
       this.onProcessTypeChange(processType),
     );
 
-    this.bottleFormGroup.controls.amount?.valueChanges.subscribe((amount) => this.onAmountChange(amount));
+    this.bottleFormGroup.controls.amount.valueChanges.subscribe(() => {
+      this.onAmountChange();
+    });
+
+    this.bottleFormGroup.controls.predecessorUnit.valueChanges.subscribe((unit) => {
+      this.updateSelectedChartData(unit);
+      this.bottleFormGroup.controls.type.reset();
+      this.validateAmountAgainstPredecessorUnit();
+    });
   }
 
   get bottleTypeControl() {
@@ -303,13 +311,32 @@ export class AddBottleComponent {
     nitrogenControl.updateValueAndValidity();
   }
 
-  private onAmountChange(amount: number | null | undefined) {
-    if (!amount) return;
+  private updateSelectedChartData(unit: ComponentsOverviewDto | null | undefined): void {
+    this.selectedChartData = unit ? [unit] : [];
+  }
 
+  private onAmountChange(): void {
     this.bottleFormGroup.controls.type.reset();
+    this.validateAmountAgainstPredecessorUnit();
+  }
 
-    if (this.bottleFormGroup.value?.predecessorUnit && amount > this.bottleFormGroup.value?.predecessorUnit?.filling)
-      this.bottleFormGroup.controls.predecessorUnit?.reset();
+  private validateAmountAgainstPredecessorUnit(): void {
+    const amountControl = this.bottleFormGroup.controls.amount;
+    const predecessorUnit = this.bottleFormGroup.controls.predecessorUnit.value;
+    const amount = amountControl.value;
+
+    const errors = { ...(amountControl.errors ?? {}) };
+    delete errors['exceedsAvailableAmount'];
+
+    if (amount && predecessorUnit && amount > predecessorUnit.filling) {
+      errors['exceedsAvailableAmount'] = {
+        availableAmount: predecessorUnit.filling,
+        requestedAmount: amount,
+        unitName: predecessorUnit.name,
+      };
+    }
+
+    amountControl.setErrors(Object.keys(errors).length > 0 ? errors : null);
   }
 
   displayComposition(hydrogenComposition: HydrogenComponentDto[]) {
