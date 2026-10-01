@@ -11,30 +11,34 @@ import { CsvDocumentIntegrityResultDto } from '@h2-trust/contracts/dtos';
 
 @Injectable()
 export class VerificationResultStore {
-  private verificationResults: Map<string, CsvDocumentIntegrityResultDto> = new Map();
+  private readonly storagePrefix = 'verify_';
+  private verificationResults = new Map<string, CsvDocumentIntegrityResultDto>();
 
-  setVerificationResult(key: string, value: CsvDocumentIntegrityResultDto) {
+  setVerificationResult(key: string, value: CsvDocumentIntegrityResultDto): void {
     this.verificationResults.set(key, value);
-    sessionStorage.setItem(`verify_${key}`, JSON.stringify(value));
+    localStorage.setItem(`${this.storagePrefix}${key}`, JSON.stringify(value));
   }
 
   getVerificationResult(key: string): CsvDocumentIntegrityResultDto | undefined {
     let result = this.verificationResults.get(key);
 
     if (!result) {
-      const stored = sessionStorage.getItem(`verify_${key}`);
+      const stored = localStorage.getItem(`${this.storagePrefix}${key}`);
+
       if (stored) {
-        const parsed = JSON.parse(stored);
-        this.verificationResults.set(key, parsed);
-        result = parsed;
+        result = JSON.parse(stored) as CsvDocumentIntegrityResultDto;
+        this.verificationResults.set(key, result);
       }
     }
 
     return result;
   }
 
-  clear() {
+  clear(): void {
     this.verificationResults.clear();
-    sessionStorage.clear();
+
+    Object.keys(localStorage)
+      .filter((key) => key.startsWith(this.storagePrefix))
+      .forEach((key) => localStorage.removeItem(key));
   }
 }

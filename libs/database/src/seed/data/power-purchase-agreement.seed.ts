@@ -49,7 +49,7 @@ export const PowerPurchaseAgreementSeed: readonly PowerPurchaseAgreement[] = Obj
     status: PowerPurchaseAgreementStatus.APPROVED,
     requestingUserId: UserSeed[0].id,
     suggestedPowerTypeName: PowerProductionType.HYDRO_POWER_PLANT,
-    requestedCompanyId: CompanySeed[2].id,
+    requestedCompanyId: CompanySeed[0].id,
     powerProductionUnitId: UnitSeed[2].id,
     hydrogenProducerId: CompanySeed[2].id,
   },
