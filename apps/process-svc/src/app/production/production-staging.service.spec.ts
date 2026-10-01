@@ -524,6 +524,7 @@ describe('ProductionStagingService', () => {
           endedAt: new Date('2026-01-01T00:00:00Z'),
           fileName: 'hash-1.csv',
           amount: 12,
+          unitId: 'power-unit-1',
         },
       ];
       const givenCsvDocuments = [
@@ -620,6 +621,7 @@ describe('ProductionStagingService', () => {
           endedAt: new Date('2026-01-01T00:00:00Z'),
           fileName: 'hash-1.csv',
           amount: 12,
+          unitId: 'power-unit-1',
         },
       ];
       const givenCsvDocuments = [

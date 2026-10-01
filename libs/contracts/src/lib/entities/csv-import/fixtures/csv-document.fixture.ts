@@ -19,5 +19,6 @@ export const CsvDocumentEntityFixture = {
       overrides.endedAt ?? new Date('2026-01-01T00:15:00.000Z'),
       overrides.amount ?? 100,
       overrides.transactionHash ?? 'hash-1',
+      overrides.uploadedBy ?? 'GreenPower GmbH',
     ),
 } as const;

@@ -18,6 +18,7 @@ export class CsvDocumentEntity {
   endedAt: Date;
   amount: number;
   transactionHash?: string;
+  uploadedBy?: string;
 
   constructor(
     id: string,
@@ -27,6 +28,7 @@ export class CsvDocumentEntity {
     endedAt: Date,
     amount: number,
     transactionHash?: string,
+    uploadedBy?: string,
   ) {
     this.id = id;
     this.fileName = fileName;
@@ -35,6 +37,7 @@ export class CsvDocumentEntity {
     this.endedAt = endedAt;
     this.amount = amount;
     this.transactionHash = transactionHash;
+    this.uploadedBy = uploadedBy;
   }
 
   static fromDatabase(csvDocument: CsvDocumentDbType): CsvDocumentEntity {
@@ -48,6 +51,7 @@ export class CsvDocumentEntity {
       csvDocument.endedAt,
       Number(csvDocument.amount),
       csvDocument.transactionHash ?? undefined,
+      csvDocument.csvImport?.uploadedBy.company.name,
     );
   }
 }

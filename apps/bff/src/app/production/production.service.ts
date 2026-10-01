@@ -182,9 +182,7 @@ export class ProductionService {
       ),
     );
 
-    return csvDocuments.map((doc) =>
-      ProcessedCsvDto.fromEntity(doc, this.storageService.endpointUrl, userDetails.company.name),
-    );
+    return csvDocuments.map((doc) => ProcessedCsvDto.fromEntity(doc, this.storageService.endpointUrl));
   }
 
   async verifyCsvDocumentIntegrity(id: string): Promise<CsvDocumentIntegrityResultDto> {

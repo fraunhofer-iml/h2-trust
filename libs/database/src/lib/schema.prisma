@@ -70,6 +70,9 @@ model CsvDocument {
 
   csvImport   CsvImport @relation(fields: [csvImportId], references: [id])
   csvImportId String
+
+  unit   Unit?   @relation(fields: [unitId], references: [id])
+  unitId String?
 }
 
 model Company {
@@ -143,6 +146,7 @@ model Unit {
   stagedProductions       StagedProduction[]
   powerPurchaseAgreements PowerPurchaseAgreement[]
   decisions               PowerPurchaseAgreementDecision[]
+  csvDocuments            CsvDocument[]
 }
 
 model UnitDetails {
