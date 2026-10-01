@@ -54,8 +54,13 @@ import { BatchService } from '../../../shared/services/batch/batch.service';
 })
 export class BatchPageComponent {
   protected readonly MeasurementUnit = MeasurementUnit;
+  protected readonly hiddenProcessTypes: ProcessType[] = [
+    ProcessType.WATER_CONSUMPTION,
+    ProcessType.POWER_PRODUCTION,
+    ProcessType.HYDROGEN_PRODUCTION,
+  ];
   protected readonly availableBatchTypes = Object.values(ProcessType).filter(
-    (type) => type !== ProcessType.WATER_CONSUMPTION,
+    (type) => !this.hiddenProcessTypes.includes(type),
   );
 
   batchService = inject(BatchService);
@@ -89,7 +94,9 @@ export class BatchPageComponent {
 
     if (!paginatedData) return;
 
-    this.dataSource.data = paginatedData.data;
+    this.dataSource.data = paginatedData.data.filter(
+      (batch) => !this.hiddenProcessTypes.includes(batch.batchType as ProcessType),
+    );
     this.totalItems = paginatedData.totalItems;
   });
 
@@ -98,7 +105,6 @@ export class BatchPageComponent {
   }
 
   isDppEnabled(batchType: string): boolean {
-    const disabledTypes = [ProcessType.WATER_CONSUMPTION, ProcessType.POWER_PRODUCTION];
-    return !disabledTypes.includes(batchType as ProcessType);
+    return !this.hiddenProcessTypes.includes(batchType as ProcessType);
   }
 }
