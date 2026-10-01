@@ -32,7 +32,7 @@ export const appRoutes: Route[] = [
   {
     path: H2TrustRoutes.BATCHES,
     canActivate: [canActivateAuth],
-    data: { breadcrumb: 'Batches' },
+    data: { breadcrumb: 'Process Steps' },
     loadChildren: () => import('./pages/batches/routes').then((m) => m.BATCH_ROUTES),
   },
 ];
