@@ -100,12 +100,20 @@ export class ProcessStepRepository {
       : {};
 
     const batchFilter: Prisma.BatchWhereInput = {
-      AND: [predecessorsFilter, { ...batchIdFilter, active: true }, { ownerId: ownerId }],
+      AND: [predecessorsFilter, batchIdFilter],
     };
 
-    const hydrogenUnitWhereInput: Prisma.UnitWhereInput = hydrogenProductionUnitName
-      ? { name: { contains: hydrogenProductionUnitName, mode: 'insensitive' } }
-      : {};
+    const hydrogenUnitWhereInput: Prisma.UnitWhereInput = {
+      ownerId,
+      ...(hydrogenProductionUnitName
+        ? {
+            name: {
+              contains: hydrogenProductionUnitName,
+              mode: 'insensitive',
+            },
+          }
+        : {}),
+    };
 
     const periodWhereInput: Prisma.DateTimeFilter = period
       ? {
@@ -119,7 +127,7 @@ export class ProcessStepRepository {
         where: {
           batch: batchFilter,
           startedAt: periodWhereInput,
-          executedBy: { ...hydrogenUnitWhereInput },
+          executedBy: hydrogenUnitWhereInput,
           type: processType ?? {},
         },
         orderBy: { endedAt: 'desc' },

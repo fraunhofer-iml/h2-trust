@@ -10,9 +10,7 @@ import { AppException } from './app.exception';
 import { ErrorCode } from './error-codes';
 
 export type DomainErrorCode =
-  | ErrorCode.DOMAIN_BUSINESS_RULE_VIOLATION
-  | ErrorCode.DOMAIN_INCOMPATIBLE_DATA
-  | ErrorCode.DOMAIN_RESOURCE_INACTIVE;
+  ErrorCode.DOMAIN_BUSINESS_RULE_VIOLATION | ErrorCode.DOMAIN_INCOMPATIBLE_DATA | ErrorCode.DOMAIN_RESOURCE_INACTIVE;
 
 export class DomainException extends AppException {
   constructor(errorCode: DomainErrorCode, message: string, cause?: unknown) {
