@@ -9,7 +9,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { lastValueFrom } from 'rxjs';
-import { BatchDto, PaginatedDataDto } from '@h2-trust/contracts/dtos';
+import { BatchDto, PaginatedDataDto, ProcessStepActivityDto } from '@h2-trust/contracts/dtos';
 import { API } from '../../constants/api-endpoints';
 import { BatchFilterModel } from '../../model/batch-filter.model';
 import { PaginationModel } from '../../model/pagination.model';
@@ -29,5 +29,9 @@ export class BatchService {
     params = params.set('pageSize', pageSize);
 
     return lastValueFrom(this.httpClient.get<PaginatedDataDto<BatchDto>>(API.PROCESS_STEPS.BASE, { params }));
+  }
+
+  getActivity() {
+    return lastValueFrom(this.httpClient.get<ProcessStepActivityDto[]>(API.PROCESS_STEPS.ACTIVITY));
   }
 }

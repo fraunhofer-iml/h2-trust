@@ -9,7 +9,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { of } from 'rxjs';
 import { ConfigurationService } from '@h2-trust/configuration';
-import { DocumentEntity, HydrogenComponentEntity } from '@h2-trust/contracts/entities';
+import { DocumentEntity, HydrogenComponentEntity, ProcessStepEntity } from '@h2-trust/contracts/entities';
 import {
   BatchDetailsEntityFixture,
   BatchEntityFixture,
@@ -72,6 +72,7 @@ describe('ProcessStepService', () => {
     findAllProcessStepsFromStorageUnit: jest.fn(),
     findProcessStepsByTypesAndActiveAndOwner: jest.fn(),
     readAllProcessStepsFromUnits: jest.fn(),
+    findProcessStepActivityByCompanyId: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -178,6 +179,15 @@ describe('ProcessStepService', () => {
       expect(processStepRepositoryMock.insertProcessStep).toHaveBeenCalledTimes(1);
       expect(actualResult.id).toBe(givenCreatedBottlingProcessStep.id);
       expect(batchRepositoryMock.setBatchesInactive).toHaveBeenCalledWith([givenProcessSteps[0].batch.id]);
+    });
+
+    it('should return historical process step activity for a company', async () => {
+      const givenCompanyId = 'company-1';
+      const expectedProcessSteps = [{} as ProcessStepEntity];
+      processStepRepositoryMock.findProcessStepActivityByCompanyId.mockResolvedValue(expectedProcessSteps);
+      const actualResult = await service.readProcessStepActivity(givenCompanyId);
+      expect(processStepRepositoryMock.findProcessStepActivityByCompanyId).toHaveBeenCalledWith(givenCompanyId);
+      expect(actualResult).toEqual(expectedProcessSteps);
     });
 
     it('should create a bottling process step for non-certifiable hydrogen when using the computed composition', async () => {
