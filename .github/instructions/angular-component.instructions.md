@@ -15,9 +15,7 @@ import { SomeService } from '../../shared/services/some/some.service';
 
 @Component({
   selector: 'app-feature',
-  imports: [
-    /* Angular + Material modules used in template */
-  ],
+  imports: [/* Angular + Material modules used in template */],
   templateUrl: './feature.component.html',
 })
 export class FeatureComponent {

@@ -10,9 +10,7 @@ import { AppException } from './app.exception';
 import { ErrorCode } from './error-codes';
 
 export type BlockchainErrorCode =
-  | ErrorCode.BLOCKCHAIN_NOT_INITIALIZED
-  | ErrorCode.BLOCKCHAIN_STORE_FAILED
-  | ErrorCode.BLOCKCHAIN_RETRIEVE_FAILED;
+  ErrorCode.BLOCKCHAIN_NOT_INITIALIZED | ErrorCode.BLOCKCHAIN_STORE_FAILED | ErrorCode.BLOCKCHAIN_RETRIEVE_FAILED;
 
 export class BlockchainException extends AppException {
   constructor(errorCode: BlockchainErrorCode, message: string, cause?: unknown) {
