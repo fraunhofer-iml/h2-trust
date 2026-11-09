@@ -130,6 +130,33 @@ export class ProcessStepRepository {
     return processSteps.map(ProcessStepEntity.fromDeepDatabase);
   }
 
+  async findProcessStepActivityByCompanyId(companyId: string): Promise<ProcessStepEntity[]> {
+    const excludedProcessTypes = [
+      ProcessType.POWER_PRODUCTION,
+      ProcessType.WATER_CONSUMPTION,
+      ProcessType.HYDROGEN_PRODUCTION,
+    ];
+
+    const processSteps = await this.prismaService.processStep.findMany({
+      where: {
+        type: {
+          notIn: excludedProcessTypes,
+        },
+        batch: {
+          ownerId: {
+            not: companyId,
+          },
+        },
+      },
+      orderBy: {
+        startedAt: 'desc',
+      },
+      ...processStepDeepQueryArgs,
+    });
+
+    return processSteps.map(ProcessStepEntity.fromDeepDatabase);
+  }
+
   async findProcessStepsByTypesAndActiveAndOwner(
     processTypes: string[],
     active: boolean,

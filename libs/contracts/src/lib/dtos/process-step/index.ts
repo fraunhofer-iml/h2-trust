@@ -10,6 +10,7 @@ export * from './classification-type.type';
 export * from './create-process-step.dto';
 export * from './create-process-step-details.dto';
 export * from './emission-process-step.type';
+export * from './process-step-activity.dto';
 export * from './process-step-overview.dto';
 export * from './production-overview.dto';
 export * from './production-statistics.dto';

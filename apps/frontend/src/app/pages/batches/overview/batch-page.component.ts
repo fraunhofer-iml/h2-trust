@@ -29,6 +29,7 @@ import { EnumPipe } from '../../../shared/pipes/enum.pipe';
 import { UnitPipe } from '../../../shared/pipes/unit.pipe';
 import { QueryKeyPrefix } from '../../../shared/queries/shared-query-keys';
 import { BatchService } from '../../../shared/services/batch/batch.service';
+import { BatchActivityComponent } from './batch-page-activity/batch-activity.component';
 
 @Component({
   selector: 'app-batch-page',
@@ -49,6 +50,7 @@ import { BatchService } from '../../../shared/services/batch/batch.service';
     BatchTypeChipComponent,
     RouterLink,
     MatTooltipModule,
+    BatchActivityComponent,
   ],
   templateUrl: './batch-page.component.html',
 })

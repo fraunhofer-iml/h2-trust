@@ -159,6 +159,10 @@ export class ProcessStepService {
     return this.processStepRepository.insertManyProcessSteps(payload.processSteps);
   }
 
+  public async readProcessStepActivity(companyId: string): Promise<ProcessStepEntity[]> {
+    return this.processStepRepository.findProcessStepActivityByCompanyId(companyId);
+  }
+
   public async readProcessStep(processStepId: string): Promise<ProcessStepEntity> {
     const processStep: ProcessStepEntity = await this.processStepRepository.findProcessStep(processStepId);
 
