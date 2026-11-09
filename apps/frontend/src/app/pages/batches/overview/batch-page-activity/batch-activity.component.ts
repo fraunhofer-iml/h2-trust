@@ -23,13 +23,12 @@ import { injectQuery } from '@tanstack/angular-query-experimental';
 import { MeasurementUnit } from '@h2-trust/domain';
 import { RfnboChipComponent } from '../../../../layout/chips/rfnbo-chip.component';
 import { H2TrustRouterLinks } from '../../../../shared/constants/router-links';
-import { ProcessStepActivity, ProcessStepOwnershipStatus } from '../../../../shared/model/process-step-activity.model';
+import { ProcessStepActivity } from '../../../../shared/model/process-step-activity.model';
 import { EnumPipe } from '../../../../shared/pipes/enum.pipe';
 import { UnitPipe } from '../../../../shared/pipes/unit.pipe';
 import { BatchService } from '../../../../shared/services/batch/batch.service';
 
 interface ActivityFilter {
-  status: ProcessStepOwnershipStatus | null;
   startDate: string | null;
   endDate: string | null;
 }
@@ -58,15 +57,13 @@ interface ActivityFilter {
 export class BatchActivityComponent {
   protected readonly MeasurementUnit = MeasurementUnit;
   protected readonly H2TrustRouterLinks = H2TrustRouterLinks;
-  protected readonly ProcessStepOwnershipStatus = ProcessStepOwnershipStatus;
 
   private readonly batchService = inject(BatchService);
 
-  protected readonly statusControl = new FormControl<ProcessStepOwnershipStatus | null>(null);
   protected readonly startDateControl = new FormControl<Date | null>(null);
   protected readonly endDateControl = new FormControl<Date | null>(null);
 
-  protected readonly displayedColumns = ['createdAt', 'processType', 'amount', 'rfnboType', 'owner', 'status', 'dpp'];
+  protected readonly displayedColumns = ['id', 'amount', 'createdAt', 'processType', 'rfnboType', 'recipient', 'dpp'];
 
   protected readonly dataSource = new MatTableDataSource<ProcessStepActivity>();
 
@@ -85,17 +82,13 @@ export class BatchActivityComponent {
       const filter = JSON.parse(serializedFilter) as ActivityFilter;
       const activityDate = new Date(activity.createdAt);
 
-      const matchesStatus = !filter.status || activity.ownershipStatus === filter.status;
-
       const matchesStartDate = !filter.startDate || activityDate >= new Date(filter.startDate);
 
       const matchesEndDate =
         !filter.endDate || activityDate <= new Date(new Date(filter.endDate).setHours(23, 59, 59, 999));
 
-      return matchesStatus && matchesStartDate && matchesEndDate;
+      return matchesStartDate && matchesEndDate;
     };
-
-    this.statusControl.valueChanges.subscribe(() => this.applyFilters());
     this.startDateControl.valueChanges.subscribe(() => this.applyFilters());
     this.endDateControl.valueChanges.subscribe(() => this.applyFilters());
   }
@@ -110,19 +103,13 @@ export class BatchActivityComponent {
     this.applyFilters();
   }
 
-  protected isOwned(activity: ProcessStepActivity): boolean {
-    return activity.ownershipStatus === ProcessStepOwnershipStatus.OWNED;
-  }
-
   protected clearFilters(): void {
-    this.statusControl.reset();
     this.startDateControl.reset();
     this.endDateControl.reset();
   }
 
   private applyFilters(): void {
     const filter: ActivityFilter = {
-      status: this.statusControl.value,
       startDate: this.startDateControl.value?.toISOString() ?? null,
       endDate: this.endDateControl.value?.toISOString() ?? null,
     };
