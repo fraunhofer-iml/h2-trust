@@ -131,14 +131,18 @@ export function assembleHydrogenTransportationEmissionCalculation(
 export function assembleHydrogenTransportationEmissionCalculations(
   provenance: ProvenanceEntity,
 ): ProofOfSustainabilityEmissionCalculationEntity[] {
-  if (!provenance || provenance.root.type !== ProcessType.HYDROGEN_TRANSPORTATION) {
+  if (!provenance) {
     return [];
   }
 
   const hydrogenAmount = provenance.root.batch.amount;
-  const hydrogenTransportation = assembleHydrogenTransportationEmissionCalculation(provenance.root);
 
-  const totalEmissions = hydrogenTransportation.result;
+  const hydrogenTransportation = provenance.getProcessStepsFromChain(ProcessType.HYDROGEN_TRANSPORTATION);
+
+  const transportationCalculations = hydrogenTransportation.map(assembleHydrogenTransportationEmissionCalculation);
+
+  const totalEmissions = transportationCalculations.reduce((sum, calculation) => sum + calculation.result, 0);
+
   const totalEmissionsGrouped = [`${totalEmissions} ${MeasurementUnit.G_CO2}`];
   const totalEmissionsPerKgHydrogen = totalEmissions / hydrogenAmount;
 
