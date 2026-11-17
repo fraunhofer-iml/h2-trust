@@ -119,24 +119,24 @@ export function assembleHydrogenProductionEmissionCalculations(
   ];
 }
 
-export function calculateHydrogenStorageEmissions(
+export function calculateHydrogenProductionEmissions(
   emissionCalculations: ProofOfSustainabilityEmissionCalculationEntity[],
 ): ProofOfSustainabilityEmissionEntity[] {
-  const hydrogenStorageEmissionAmount = emissionCalculations
-    .filter((emissionCalculation) => emissionCalculation.calculationTopic === CalculationTopic.HYDROGEN_STORAGE)
-    .reduce((acc, emissionCalculation) => acc + Number(emissionCalculation.name), 0);
+  const hydrogenProductionEmissionAmount = emissionCalculations
+    .filter((calculation) => calculation.calculationTopic === CalculationTopic.HYDROGEN_PRODUCTION)
+    .reduce((sum, calculation) => sum + Number(calculation.name), 0);
 
-  const hydrogenStorageEmission = new ProofOfSustainabilityEmissionEntity(
-    hydrogenStorageEmissionAmount,
-    EmissionStringConstants.TYPES.EHS,
-    EmissionStringConstants.HYDROGEN_STORAGE,
-    EmissionStringConstants.TYPES.APPLICATION,
-  );
-
-  return [hydrogenStorageEmission];
+  return [
+    new ProofOfSustainabilityEmissionEntity(
+      hydrogenProductionEmissionAmount,
+      EmissionStringConstants.TYPES.EHP,
+      EmissionStringConstants.HYDROGEN_PRODUCTION,
+      EmissionStringConstants.TYPES.APPLICATION,
+    ),
+  ];
 }
 
 export const hydrogenProductionEmissionAssembler: ProofOfSustainabilityEmissionAssembler = {
   assembleEmissionCalculations: assembleHydrogenProductionEmissionCalculations,
-  calculateEmissions: calculateHydrogenStorageEmissions,
+  calculateEmissions: calculateHydrogenProductionEmissions,
 };

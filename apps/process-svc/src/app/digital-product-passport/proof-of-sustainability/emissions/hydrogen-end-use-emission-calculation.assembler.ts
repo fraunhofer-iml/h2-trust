@@ -43,7 +43,7 @@ export function assembleHydrogenEndUseEmissionCalculation(
   const result = gridPowerEmissions + renewablePowerEmissions + compressedAirEmissions + nitrogenEmissions;
 
   const usedGridPowerInput = `Used Grid Power: ${usedGridPower} kwh`;
-  const usedRenewablePowerInput = `Used Grid Power: ${usedRenewablePower} kwh`;
+  const usedRenewablePowerInput = `Used Renewable Power: ${usedRenewablePower} kwh`;
   const usedCompressedAirInput = `Used Compressed Air: ${usedCompressedAir} m³`;
   const usedNitrogenInput = `Used Nitrogen: ${usedNitrogen} kg`;
   const basisOfCalculation = [usedGridPowerInput, usedRenewablePowerInput, usedCompressedAirInput, usedNitrogenInput];
@@ -95,7 +95,7 @@ export function calculateHydrogenEndUseEmissions(
 
   const hydrogenEndUseEmission = new ProofOfSustainabilityEmissionEntity(
     hydrogenEndUseEmissionAmount,
-    EmissionStringConstants.TYPES.EHB,
+    EmissionStringConstants.TYPES.EHE,
     EmissionStringConstants.END_USE,
     EmissionStringConstants.TYPES.APPLICATION,
   );

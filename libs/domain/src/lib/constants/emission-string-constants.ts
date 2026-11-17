@@ -30,9 +30,12 @@ export const EmissionStringConstants = {
     APPLICATION: 'APPLICATION',
     EPS: 'eps',
     EWS: 'ews',
+    EHP: 'ehp',
     EHS: 'ehs',
     EHB: 'ehb',
     EHT: 'eht',
+    EHC: 'ehc',
+    EHE: 'ehe',
 
     REGULATORY: 'REGULATORY',
     EI: 'ei',

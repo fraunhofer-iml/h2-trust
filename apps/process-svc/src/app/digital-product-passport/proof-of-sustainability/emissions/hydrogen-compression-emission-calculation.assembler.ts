@@ -89,7 +89,7 @@ export function calculateHydrogenCompressionEmissions(
 
   const hydrogenCompressionEmission = new ProofOfSustainabilityEmissionEntity(
     hydrogenCompressionEmissionAmount,
-    EmissionStringConstants.TYPES.EHB,
+    EmissionStringConstants.TYPES.EHC,
     EmissionStringConstants.COMPRESSION,
     EmissionStringConstants.TYPES.APPLICATION,
   );

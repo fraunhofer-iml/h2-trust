@@ -13,7 +13,7 @@ import * as echarts from 'echarts';
 import { DefaultLabelFormatterCallbackParams, EChartsOption, LegendComponentOption, PieSeriesOption } from 'echarts';
 import { NgxEchartsDirective, provideEchartsCore } from 'ngx-echarts';
 import { EmissionForProcessStepDto, EmissionProcessStepType } from '@h2-trust/contracts/dtos';
-import { MeasurementUnit } from '@h2-trust/domain';
+import { CalculationTopic, EmissionStringConstants, MeasurementUnit } from '@h2-trust/domain';
 
 @Component({
   selector: 'app-emission-pie-chart',
@@ -26,17 +26,35 @@ export class EmissionPieChartComponent {
   percentPipe = inject(PercentPipe);
 
   data = input<EmissionForProcessStepDto[]>([]);
-  chartData$ = computed(() => this.toChartData(this.data()));
+  availableCalculationTopics = input<CalculationTopic[]>([]);
+  chartData$ = computed(() => this.toChartData(this.data(), this.availableCalculationTopics()));
 
   readonly headings: Record<EmissionProcessStepType, string> = {
     APPLICATION: 'Emissions according to Proof of Origin',
     REGULATORY: 'Emissions according to RED III',
   };
 
-  private toChartData(emissionItems: EmissionForProcessStepDto[]): EChartsOption {
-    const applicationItems = emissionItems.filter((i) => i.processStepType === 'APPLICATION');
-    const regulatoryItems = emissionItems.filter((i) => i.processStepType === 'REGULATORY');
+  private toChartData(
+    emissionItems: EmissionForProcessStepDto[],
+    availableCalculationTopics: CalculationTopic[],
+  ): EChartsOption {
+    const visibleEmissionItems = emissionItems.filter((item) => {
+      if (item.processStepType === 'REGULATORY') {
+        return true;
+      }
 
+      const topic = this.emissionTopicMap[item.name];
+
+      return topic !== undefined && availableCalculationTopics.includes(topic);
+    });
+
+    const applicationItems = visibleEmissionItems.filter(
+      (item) => item.processStepType === 'APPLICATION' && item.amount > 0,
+    );
+
+    const regulatoryItems = visibleEmissionItems.filter(
+      (item) => item.processStepType === 'REGULATORY' && item.amount > 0,
+    );
     const chartOption: EChartsOption = this.getChartOption(regulatoryItems, applicationItems);
 
     if (applicationItems.length === 0) {
@@ -45,9 +63,21 @@ export class EmissionPieChartComponent {
       const outerColors = ['#d2e5eb', '#6aa7b4', '#1f6a79'];
       const innerColors = ['#a8d0bf', '#85b8a6', '#689f8e', '#40665b', '#3c605c'];
 
-      const outerPie = this.createPieSeries(['40%', '60%'], 'outer', regulatoryItems, outerColors, emissionItems);
-      const innerPie = this.createPieSeries(['10%', '35%'], 'inner', applicationItems, innerColors, emissionItems);
+      const outerPie = this.createPieSeries(
+        ['40%', '60%'],
+        'outer',
+        regulatoryItems,
+        outerColors,
+        visibleEmissionItems,
+      );
 
+      const innerPie = this.createPieSeries(
+        ['10%', '35%'],
+        'inner',
+        applicationItems,
+        innerColors,
+        visibleEmissionItems,
+      );
       chartOption.series = [outerPie, innerPie];
     }
 
@@ -81,6 +111,17 @@ export class EmissionPieChartComponent {
       data: [{ value: 0, name: '' }],
     };
   }
+
+  private readonly emissionTopicMap: Partial<Record<string, CalculationTopic>> = {
+    [EmissionStringConstants.TYPES.EPS]: CalculationTopic.POWER_SUPPLY,
+    [EmissionStringConstants.TYPES.EWS]: CalculationTopic.WATER_SUPPLY,
+    [EmissionStringConstants.TYPES.EHP]: CalculationTopic.HYDROGEN_PRODUCTION,
+    [EmissionStringConstants.TYPES.EHS]: CalculationTopic.HYDROGEN_STORAGE,
+    [EmissionStringConstants.TYPES.EHB]: CalculationTopic.HYDROGEN_BOTTLING,
+    [EmissionStringConstants.TYPES.EHT]: CalculationTopic.HYDROGEN_TRANSPORTATION,
+    [EmissionStringConstants.TYPES.EHC]: CalculationTopic.HYDROGEN_COMPRESSION,
+    [EmissionStringConstants.TYPES.EHE]: CalculationTopic.HYDROGEN_END_USE,
+  };
 
   private readonly tooltipFormatter = (
     params: DefaultLabelFormatterCallbackParams,
