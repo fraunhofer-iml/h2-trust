@@ -260,34 +260,34 @@ export class AddBottleComponent {
     const nitrogenControl = this.bottleFormGroup.controls.nitrogen;
 
     if (this.isHydrogenTrailerTransport()) {
-      distanceControl.addValidators([Validators.required, Validators.min(1)]);
-      renewablePowerControl.removeValidators([Validators.required, Validators.min(1)]);
+      distanceControl.addValidators([Validators.required, Validators.min(0)]);
+      renewablePowerControl.removeValidators([Validators.required, Validators.min(0)]);
       renewablePowerControl.setValue(null);
-      gridPowerControl.removeValidators([Validators.required, Validators.min(1)]);
+      gridPowerControl.removeValidators([Validators.required, Validators.min(0)]);
       gridPowerControl.setValue(null);
-      compressedAirControl.removeValidators([Validators.required, Validators.min(1)]);
+      compressedAirControl.removeValidators([Validators.required, Validators.min(0)]);
       compressedAirControl.setValue(null);
-      nitrogenControl.removeValidators([Validators.required, Validators.min(1)]);
+      nitrogenControl.removeValidators([Validators.required, Validators.min(0)]);
       nitrogenControl.setValue(null);
     }
     if (selectedProcessType === ProcessType.HYDROGEN_STORAGE) {
-      distanceControl.removeValidators([Validators.required, Validators.min(1)]);
+      distanceControl.removeValidators([Validators.required, Validators.min(0)]);
       distanceControl.setValue(null);
-      renewablePowerControl.removeValidators([Validators.required, Validators.min(1)]);
+      renewablePowerControl.removeValidators([Validators.required, Validators.min(0)]);
       renewablePowerControl.setValue(null);
-      gridPowerControl.removeValidators([Validators.required, Validators.min(1)]);
+      gridPowerControl.removeValidators([Validators.required, Validators.min(0)]);
       gridPowerControl.setValue(null);
-      compressedAirControl.removeValidators([Validators.required, Validators.min(1)]);
+      compressedAirControl.removeValidators([Validators.required, Validators.min(0)]);
       compressedAirControl.setValue(null);
-      nitrogenControl.removeValidators([Validators.required, Validators.min(1)]);
+      nitrogenControl.removeValidators([Validators.required, Validators.min(0)]);
       nitrogenControl.setValue(null);
     }
     if (selectedProcessType === ProcessType.HYDROGEN_BOTTLING) {
       renewablePowerControl.addValidators([Validators.required, Validators.min(0)]);
-      gridPowerControl.addValidators([Validators.required, Validators.min(1)]);
-      compressedAirControl.addValidators([Validators.required, Validators.min(1)]);
-      nitrogenControl.addValidators([Validators.required, Validators.min(1)]);
-      distanceControl.removeValidators([Validators.required, Validators.min(1)]);
+      gridPowerControl.addValidators([Validators.required, Validators.min(0)]);
+      compressedAirControl.addValidators([Validators.required, Validators.min(0)]);
+      nitrogenControl.addValidators([Validators.required, Validators.min(0)]);
+      distanceControl.removeValidators([Validators.required, Validators.min(0)]);
       distanceControl.setValue(null);
     }
     if (
@@ -295,12 +295,12 @@ export class AddBottleComponent {
       selectedProcessType === ProcessType.HYDROGEN_END_USE
     ) {
       renewablePowerControl.addValidators([Validators.required, Validators.min(0)]);
-      gridPowerControl.addValidators([Validators.required, Validators.min(1)]);
-      distanceControl.removeValidators([Validators.required, Validators.min(1)]);
+      gridPowerControl.addValidators([Validators.required, Validators.min(0)]);
+      distanceControl.removeValidators([Validators.required, Validators.min(0)]);
       distanceControl.setValue(null);
-      compressedAirControl.removeValidators([Validators.required, Validators.min(1)]);
+      compressedAirControl.removeValidators([Validators.required, Validators.min(0)]);
       compressedAirControl.setValue(null);
-      nitrogenControl.removeValidators([Validators.required, Validators.min(1)]);
+      nitrogenControl.removeValidators([Validators.required, Validators.min(0)]);
       nitrogenControl.setValue(null);
     }
 
