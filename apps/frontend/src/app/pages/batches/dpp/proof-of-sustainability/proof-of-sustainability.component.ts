@@ -41,14 +41,15 @@ export class ProofOfSustainabilityComponent {
   bottlingService = inject(BottlingService);
 
   proofOfSustainability$ = input<ProofOfSustainabilityDto>();
-
+  availableCalculationTopics = input<CalculationTopic[]>([]);
   readonly MeasurementUnit = MeasurementUnit;
   readonly CalculationTopic = CalculationTopic;
   readonly ChemicalNames = ChemicalNames;
 
-  calculations = computed(() => this.mapCalculations(this.proofOfSustainability$()?.calculations ?? []));
-
-  mapCalculations(calculations: EmissionCalculationDto[]) {
+  calculations = computed(() =>
+    this.mapCalculations(this.proofOfSustainability$()?.calculations ?? [], this.availableCalculationTopics()),
+  );
+  mapCalculations(calculations: EmissionCalculationDto[], availableCalculationTopics: CalculationTopic[]) {
     const groupedObj: Record<CalculationTopic, EmissionCalculationDto[]> = {
       [CalculationTopic.POWER_SUPPLY]: [],
       [CalculationTopic.WATER_SUPPLY]: [],
@@ -65,7 +66,11 @@ export class ProofOfSustainabilityComponent {
     }
 
     return Object.entries(groupedObj)
-      .filter(([, items]) => items.length > 0)
+      .filter(([key, items]) => {
+        const calculationTopic = key as CalculationTopic;
+
+        return items.length > 0 && availableCalculationTopics.includes(calculationTopic);
+      })
       .map(([key, items]) => ({
         key: key as CalculationTopic,
         items,
