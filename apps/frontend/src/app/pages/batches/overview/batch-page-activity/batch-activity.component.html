@@ -1,0 +1,110 @@
+<div class="flex w-full flex-col gap-4 rounded-lg bg-white p-5">
+  <div>
+    <h2 class="font-semibold text-neutral-600">Transferred Hydrogen</h2>
+    <p class="text-neutral-400">View hydrogen transferred to other companies.</p>
+  </div>
+
+  <div class="flex flex-wrap items-center gap-2">
+    <mat-form-field appearance="outline" class="w-sm">
+      <mat-label>Date range</mat-label>
+
+      <mat-date-range-input [rangePicker]="activityDatePicker">
+        <input matStartDate placeholder="Start date" [formControl]="startDateControl" />
+        <input matEndDate placeholder="End date" [formControl]="endDateControl" />
+      </mat-date-range-input>
+
+      <mat-datepicker-toggle matIconSuffix [for]="activityDatePicker"></mat-datepicker-toggle>
+      <mat-date-range-picker #activityDatePicker></mat-date-range-picker>
+    </mat-form-field>
+
+    <button matIconButton matTooltip="Clear filters" (click)="clearFilters()">
+      <span class="material-symbols-outlined">close</span>
+    </button>
+  </div>
+
+  @if (activityQuery.isPending()) {
+    <div class="flex items-center gap-2 p-4 text-neutral-500">
+      <span class="material-symbols-outlined animate-spin">progress_activity</span>
+      Loading activity history...
+    </div>
+  } @else {
+    <table mat-table [dataSource]="dataSource">
+      <ng-container matColumnDef="id">
+        <th mat-header-cell *matHeaderCellDef>
+          <div class="bold">Process Step ID</div>
+        </th>
+        <td mat-cell *matCellDef="let activity">
+          {{ activity.batchId }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="createdAt">
+        <th mat-header-cell *matHeaderCellDef>
+          <div class="bold">Date</div>
+        </th>
+        <td mat-cell *matCellDef="let activity">
+          {{ activity.createdAt | date: 'medium' }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="amount">
+        <th mat-header-cell *matHeaderCellDef>
+          <div class="bold">Amount</div>
+        </th>
+        <td mat-cell *matCellDef="let activity">
+          {{ activity.amount | unit: MeasurementUnit.KG_H2 }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="processType">
+        <th mat-header-cell *matHeaderCellDef>
+          <div class="bold">Process Type</div>
+        </th>
+        <td mat-cell *matCellDef="let activity">
+          {{ activity.processType | enum: 'processType' }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="rfnboType">
+        <th mat-header-cell *matHeaderCellDef>
+          <div class="bold">RFNBO Status</div>
+        </th>
+        <td mat-cell *matCellDef="let activity">
+          <app-rfnbo-chip [rfnboType]="activity.rfnboType"></app-rfnbo-chip>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="recipient">
+        <th mat-header-cell *matHeaderCellDef>
+          <div class="bold">Recipient</div>
+        </th>
+        <td mat-cell *matCellDef="let activity">
+          {{ activity.ownerName }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="dpp">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let activity">
+          <a [routerLink]="activity.batchId" matIconButton matTooltip="Show DPP" class="group">
+            <span class="material-symbols-outlined text-neutral-400 group-hover:text-neutral-600">
+              content_paste_search
+            </span>
+          </a>
+        </td>
+      </ng-container>
+
+      <tr class="mat-row" *matNoDataRow>
+        <td class="mat-cell p-4" [attr.colspan]="displayedColumns.length">No activity found.</td>
+      </tr>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+    <mat-paginator
+      [pageSizeOptions]="[5, 10, 25, 100]"
+      [pageSize]="5"
+      aria-label="Select page of process step activity"
+    ></mat-paginator>
+  }
+</div>

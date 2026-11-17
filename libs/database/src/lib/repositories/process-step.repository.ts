@@ -100,7 +100,17 @@ export class ProcessStepRepository {
       : {};
 
     const batchFilter: Prisma.BatchWhereInput = {
-      AND: [predecessorsFilter, { ...batchIdFilter, active: true }, { ownerId: ownerId }],
+      AND: [
+        predecessorsFilter,
+        {
+          ...batchIdFilter,
+          active: true,
+          ownerId,
+          successors: {
+            none: {},
+          },
+        },
+      ],
     };
 
     const hydrogenUnitWhereInput: Prisma.UnitWhereInput = hydrogenProductionUnitName
@@ -126,6 +136,33 @@ export class ProcessStepRepository {
         ...processStepDeepQueryArgs,
       })
       .catch(wrapPrismaError);
+
+    return processSteps.map(ProcessStepEntity.fromDeepDatabase);
+  }
+
+  async findProcessStepActivityByCompanyId(companyId: string): Promise<ProcessStepEntity[]> {
+    const excludedProcessTypes = [
+      ProcessType.POWER_PRODUCTION,
+      ProcessType.WATER_CONSUMPTION,
+      ProcessType.HYDROGEN_PRODUCTION,
+    ];
+
+    const processSteps = await this.prismaService.processStep.findMany({
+      where: {
+        type: {
+          notIn: excludedProcessTypes,
+        },
+        batch: {
+          ownerId: {
+            not: companyId,
+          },
+        },
+      },
+      orderBy: {
+        startedAt: 'desc',
+      },
+      ...processStepDeepQueryArgs,
+    });
 
     return processSteps.map(ProcessStepEntity.fromDeepDatabase);
   }

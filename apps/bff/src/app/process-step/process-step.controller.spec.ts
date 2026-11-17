@@ -8,6 +8,8 @@
 
 import { META_PUBLIC } from 'nest-keycloak-connect';
 import {
+  ProcessStepActivityDto,
+  ProcessStepOwnershipStatus,
   type AuthenticatedKCUser,
   type DigitalProductPassportDto,
   type ProcessStepOverviewDto,
@@ -17,6 +19,7 @@ import {
   CreateProcessStepDtoFixture,
   DigitalProductPassportDtoFixture,
 } from '@h2-trust/contracts/dtos/fixtures';
+import { ProcessType, RfnboType } from '@h2-trust/domain';
 import { ProcessStepController } from './process-step.controller';
 import { ProcessStepService } from './process-step.service';
 
@@ -28,6 +31,7 @@ describe('ProcessStepController', () => {
     readHydrogenComponentsForUnits: jest.fn(),
     readHydrogenComponentsForOwnUnits: jest.fn(),
     readDigitalProductPassport: jest.fn(),
+    readProcessStepActivity: jest.fn(),
   };
 
   const authenticatedUser = { sub: 'user-id-1' } as AuthenticatedKCUser;
@@ -94,5 +98,34 @@ describe('ProcessStepController', () => {
 
     // assert
     expect(actualResult).toBe(true);
+  });
+
+  it('should return the process step activity for the authenticated user', async () => {
+    // arrange
+    const givenUser = {
+      sub: 'user-1',
+    } as AuthenticatedKCUser;
+
+    const expectedActivity = [
+      {
+        processStepId: 'process-step-1',
+        batchId: 'batch-1',
+        amount: 10,
+        createdAt: new Date('2026-10-14T10:00:00.000Z'),
+        processType: ProcessType.HYDROGEN_STORAGE,
+        rfnboType: RfnboType.RFNBO_READY,
+        ownerName: 'Hydrogen Solutions GmbH',
+        ownershipStatus: ProcessStepOwnershipStatus.OWNED,
+      } as ProcessStepActivityDto,
+    ];
+
+    processStepServiceMock.readProcessStepActivity.mockResolvedValue(expectedActivity);
+
+    // act
+    const actualResult = await controller.readProcessStepActivity(givenUser);
+
+    // assert
+    expect(processStepServiceMock.readProcessStepActivity).toHaveBeenCalledWith(givenUser.sub);
+    expect(actualResult).toEqual(expectedActivity);
   });
 });

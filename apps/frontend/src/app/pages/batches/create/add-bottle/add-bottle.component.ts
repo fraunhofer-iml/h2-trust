@@ -141,14 +141,24 @@ export class AddBottleComponent {
         this.processService.createBottleBatch(dto),
         'Successfully created',
       );
+
       await this.queryClient.invalidateQueries({
         queryKey: [QueryKeyPrefix.UNITS, UnitType.HYDROGEN_STORAGE],
       });
+
       await this.queryClient.invalidateQueries({
         queryKey: [QueryKeyPrefix.BOTTLING],
       });
-      await this.queryClient.invalidateQueries({ queryKey: [QueryKeyPrefix.BATCHES] });
-      this.router.navigateByUrl(H2TrustRoutes.BATCHES);
+
+      await this.queryClient.invalidateQueries({
+        queryKey: [QueryKeyPrefix.BATCHES],
+      });
+
+      await this.queryClient.invalidateQueries({
+        queryKey: ['process-step-activity'],
+      });
+
+      await this.router.navigateByUrl(H2TrustRoutes.BATCHES);
     },
   }));
 

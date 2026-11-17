@@ -28,6 +28,11 @@ export class ProcessStepController {
     return this.processStepService.createProcessStep(payload);
   }
 
+  @MessagePattern(ProcessStepMessagePatterns.READ_PROCESS_STEP_ACTIVITY)
+  readProcessStepActivity(companyId: string): Promise<ProcessStepEntity[]> {
+    return this.processStepService.readProcessStepActivity(companyId);
+  }
+
   @MessagePattern(ProcessStepMessagePatterns.READ_ALL_BY_TYPES_AND_ACTIVE_AND_OWNER)
   readProcessStepsByTypesAndActiveAndOwner(
     payload: ReadProcessStepsByTypesAndActiveAndOwnerPayload,

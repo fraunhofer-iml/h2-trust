@@ -16,6 +16,7 @@ import {
   DigitalProductPassportDto,
   getSpecificUnit,
   PaginatedDataDto,
+  ProcessStepActivityDto,
   ProcessStepOverviewDto,
   UnitDto,
 } from '@h2-trust/contracts/dtos';
@@ -113,6 +114,19 @@ export class ProcessStepService {
       paginatedProcessSteps.totalAmountOfItems,
       paginatedProcessSteps.currentPage,
     );
+  }
+
+  public async readProcessStepActivity(userId: string): Promise<ProcessStepActivityDto[]> {
+    const userDetails = await this.userService.readUserWithCompany(userId);
+
+    const processSteps = await firstValueFrom(
+      this.processSvc.send<ProcessStepEntity[]>(
+        ProcessStepMessagePatterns.READ_PROCESS_STEP_ACTIVITY,
+        userDetails.company.id,
+      ),
+    );
+
+    return processSteps.map((processStep) => ProcessStepActivityDto.fromEntity(processStep, userDetails.company.id));
   }
 
   public async readHydrogenComponentsForOwnUnits(userId: string): Promise<ComponentsOverviewDto[]> {
