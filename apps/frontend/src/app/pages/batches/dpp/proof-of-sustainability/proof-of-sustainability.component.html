@@ -46,7 +46,10 @@
   <!-- Emission Composition -->
   <div class="rounded-xl border-neutral-100">
     <span class="text-base text-neutral-400">Emission Composition </span>
-    <app-emission-pie-chart [data]="proofOfSustainability$()?.processStepEmissions ?? []"></app-emission-pie-chart>
+    <app-emission-pie-chart
+      [data]="proofOfSustainability$()?.processStepEmissions ?? []"
+      [availableCalculationTopics]="availableCalculationTopics()"
+    ></app-emission-pie-chart>
   </div>
 
   <!-- Calculations -->

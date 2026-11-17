@@ -143,14 +143,11 @@ export function assembleHydrogenTransportationEmissionCalculations(
 
   const totalEmissions = transportationCalculations.reduce((sum, calculation) => sum + calculation.result, 0);
 
-  const totalEmissionsGrouped = [`${totalEmissions} ${MeasurementUnit.G_CO2}`];
-  const totalEmissionsPerKgHydrogen = totalEmissions / hydrogenAmount;
-
   return [
     new ProofOfSustainabilityEmissionCalculationEntity(
       totalEmissions.toString(),
-      totalEmissionsGrouped,
-      totalEmissionsPerKgHydrogen,
+      [`${totalEmissions} ${MeasurementUnit.G_CO2}`],
+      totalEmissions / hydrogenAmount,
       MeasurementUnit.G_CO2_PER_KG_H2,
       CalculationTopic.HYDROGEN_TRANSPORTATION,
     ),

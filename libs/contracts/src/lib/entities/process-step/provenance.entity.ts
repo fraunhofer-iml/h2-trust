@@ -30,7 +30,13 @@ export class ProvenanceEntity {
   }
 
   public getProcessStepsFromChain(processType: ProcessType): ProcessStepEntity[] {
-    return this.processStepChain.filter((processStep) => processStep?.type === processType);
+    const processSteps = this.processStepChain.filter((processStep) => processStep?.type === processType);
+
+    if (this.root?.type === processType && !processSteps.some((processStep) => processStep.id === this.root.id)) {
+      processSteps.push(this.root);
+    }
+
+    return processSteps;
   }
 
   public getAllPowerProductions(): ProcessStepEntity[] {
