@@ -122,7 +122,7 @@ export class ProductionService {
     } = processSteps.reduce(
       (statistics, processStep) => {
         const batchDetails = processStep.batch.details;
-        if (!processStep.batch.active || !batchDetails) {
+        if (!batchDetails) {
           return statistics;
         }
         switch (batchDetails.rfnboType) {

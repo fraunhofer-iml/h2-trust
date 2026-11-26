@@ -191,7 +191,7 @@ describe('ProductionService', () => {
   });
 
   describe('assembleProductionStatistics', () => {
-    it('should return hydrogen and power totals for valid hydrogen production steps when called', async () => {
+    it('should return hydrogen and power totals including historical hydrogen production steps when called', async () => {
       // arrange
       const givenPayload = CreateHydrogenProductionStatisticsPayloadFixture.create();
       const givenHydrogenProcessStepOne = ProcessStepEntityFixture.createHydrogenProduction({
@@ -264,8 +264,8 @@ describe('ProductionService', () => {
       expect(actualResult.hydrogen).toEqual(
         expect.objectContaining({
           nonCertifiable: 6,
-          rfnboReady: 10,
-          total: 16,
+          rfnboReady: 109,
+          total: 115,
         }),
       );
       expect(actualResult.power).toEqual(

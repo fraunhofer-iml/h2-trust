@@ -259,8 +259,7 @@ export class ProcessStepService {
     if (payload.filter.pageSize <= 0) {
       throw new ValidationException(`pageSize must be greater than 0, got ${payload.filter.pageSize}`);
     }
-    const processes: ProcessStepEntity[] = await this.processStepRepository.findProcessStepsByPredecessorTypesAndOwner(
-      payload.predecessorProcessTypes,
+    const processes = await this.processStepRepository.findHydrogenProductionsByUnitOwner(
       payload.ownerId,
       payload.filter.unitName,
       payload.filter.month ? new Date(payload.filter.month) : payload.filter.month,

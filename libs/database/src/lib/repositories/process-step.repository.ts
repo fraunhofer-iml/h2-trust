@@ -100,12 +100,20 @@ export class ProcessStepRepository {
       : {};
 
     const batchFilter: Prisma.BatchWhereInput = {
-      AND: [predecessorsFilter, { ...batchIdFilter, active: true }, { ownerId: ownerId }],
+      AND: [predecessorsFilter, { ...batchIdFilter, active: true }, { ownerId }],
     };
 
-    const hydrogenUnitWhereInput: Prisma.UnitWhereInput = hydrogenProductionUnitName
-      ? { name: { contains: hydrogenProductionUnitName, mode: 'insensitive' } }
-      : {};
+    const hydrogenUnitWhereInput: Prisma.UnitWhereInput = {
+      ownerId,
+      ...(hydrogenProductionUnitName
+        ? {
+            name: {
+              contains: hydrogenProductionUnitName,
+              mode: 'insensitive',
+            },
+          }
+        : {}),
+    };
 
     const periodWhereInput: Prisma.DateTimeFilter = period
       ? {
@@ -119,10 +127,60 @@ export class ProcessStepRepository {
         where: {
           batch: batchFilter,
           startedAt: periodWhereInput,
-          executedBy: { ...hydrogenUnitWhereInput },
+          executedBy: hydrogenUnitWhereInput,
           type: processType ?? {},
         },
         orderBy: { endedAt: 'desc' },
+        ...processStepDeepQueryArgs,
+      })
+      .catch(wrapPrismaError);
+
+    return processSteps.map(ProcessStepEntity.fromDeepDatabase);
+  }
+
+  async findHydrogenProductionsByUnitOwner(
+    ownerId: string,
+    hydrogenProductionUnitName?: string,
+    period?: Date,
+  ): Promise<ProcessStepEntity[]> {
+    const hydrogenUnitWhereInput: Prisma.UnitWhereInput = {
+      ownerId,
+      ...(hydrogenProductionUnitName
+        ? {
+            name: {
+              contains: hydrogenProductionUnitName,
+              mode: 'insensitive',
+            },
+          }
+        : {}),
+    };
+
+    const periodWhereInput: Prisma.DateTimeFilter = period
+      ? {
+          gte: new Date(period.getFullYear(), period.getMonth(), 1),
+          lt: new Date(period.getFullYear(), period.getMonth() + 1, 1),
+        }
+      : {};
+
+    const processSteps = await this.prismaService.processStep
+      .findMany({
+        where: {
+          type: ProcessType.HYDROGEN_PRODUCTION,
+          startedAt: periodWhereInput,
+          executedBy: hydrogenUnitWhereInput,
+          batch: {
+            predecessors: {
+              some: {
+                processStep: {
+                  type: ProcessType.POWER_PRODUCTION,
+                },
+              },
+            },
+          },
+        },
+        orderBy: {
+          endedAt: 'desc',
+        },
         ...processStepDeepQueryArgs,
       })
       .catch(wrapPrismaError);
