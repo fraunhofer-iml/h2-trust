@@ -24,6 +24,7 @@ import {
   CreateProcessStepDto,
   DigitalProductPassportDto,
   PaginatedDataDto,
+  ProcessStepActivityDto,
   ProcessStepOverviewDto,
   type AuthenticatedKCUser,
 } from '@h2-trust/contracts/dtos';
@@ -122,6 +123,19 @@ export class ProcessStepController {
     @KeycloakUser() authenticatedUser: AuthenticatedKCUser,
   ): Promise<ComponentsOverviewDto[]> {
     return this.processStepService.readHydrogenComponentsForOwnUnits(authenticatedUser.sub);
+  }
+
+  @Get('activity')
+  @ApiBearerAuth()
+  @ApiOperation({
+    description: 'Retrieve historical process step activity for the authenticated user company.',
+  })
+  @ApiOkResponse({
+    description: "Returns the hydrogen process steps transferred by the authenticated user's company.",
+    type: [ProcessStepActivityDto],
+  })
+  readProcessStepActivity(@KeycloakUser() authenticatedUser: AuthenticatedKCUser): Promise<ProcessStepActivityDto[]> {
+    return this.processStepService.readProcessStepActivity(authenticatedUser.sub);
   }
 
   @Public()

@@ -10,6 +10,7 @@ export enum ProcessStepMessagePatterns {
   READ_ALL_BY_PREDECESSOR_TYPES_AND_OWNER = 'process-step.read-all-by-predecessor-types-and-owner',
   READ_PRODUCTION_PAGINATION = 'process-step.read-pagination-by-predecessor-types-and-owner',
   READ_PROCESS_STEP_PAGINATION = 'process-step.read-pagination-by-filter',
+  READ_PROCESS_STEP_ACTIVITY = 'process-step.read-activity',
   READ_ALL_BY_TYPES_AND_ACTIVE_AND_OWNER = 'process-step.read-all-by-types-and-active-and-owner',
   READ_ALL_BY_UNITS = 'process-step.read-all-by-units',
   CREATE_PROCESS_STEP = 'process-step.create-process-step',

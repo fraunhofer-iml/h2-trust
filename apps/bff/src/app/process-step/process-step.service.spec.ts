@@ -8,13 +8,18 @@
 
 import { ClientProxy } from '@nestjs/microservices';
 import { of } from 'rxjs';
-import { DigitalProductPassportDto, ProcessStepOverviewDto } from '@h2-trust/contracts/dtos';
+import {
+  CompanyDto,
+  DigitalProductPassportDto,
+  ProcessStepActivityDto,
+  ProcessStepOverviewDto,
+} from '@h2-trust/contracts/dtos';
 import {
   ComponentsOverviewDtoFixture,
   CreateProcessStepDtoFixture,
   UserDetailsDtoFixture,
 } from '@h2-trust/contracts/dtos/fixtures';
-import { HydrogenComponentEntity, UnitEntity } from '@h2-trust/contracts/entities';
+import { HydrogenComponentEntity, ProcessStepEntity, UnitEntity } from '@h2-trust/contracts/entities';
 import {
   DigitalProductPassportEntityFixture,
   HydrogenBottlingUnitEntityFixture,
@@ -27,7 +32,7 @@ import {
   ReadByIdPayload,
   ReadProcessStepsByUnitsPayload,
 } from '@h2-trust/contracts/payloads';
-import { ProcessType } from '@h2-trust/domain';
+import { ProcessType, RfnboType } from '@h2-trust/domain';
 import { DigitalProductPassportMessagePatterns, ProcessStepMessagePatterns } from '@h2-trust/messaging';
 import { UserService } from '../user/user.service';
 import { ProcessStepService } from './process-step.service';
@@ -164,5 +169,54 @@ describe('ProcessStepService', () => {
       new ReadByIdPayload(givenPassportId),
     );
     expect(actualResult).toEqual(DigitalProductPassportDto.fromEntity(expectedPassport));
+  });
+
+  it('should resolve the user company, request activity data and map the result', async () => {
+    // arrange
+    const givenUserId = 'user-1';
+    const givenCompanyId = 'company-1';
+
+    const givenUserDetails = UserDetailsDtoFixture.create({
+      company: {
+        id: givenCompanyId,
+        name: 'Hydrogen Solutions GmbH',
+      } as CompanyDto,
+    });
+
+    const givenProcessSteps = [
+      {
+        id: 'process-step-1',
+        startedAt: new Date('2026-10-14T10:00:00.000Z'),
+        type: ProcessType.HYDROGEN_STORAGE,
+        batch: {
+          id: 'batch-1',
+          amount: 10,
+          owner: {
+            id: givenCompanyId,
+            name: 'Hydrogen Solutions GmbH',
+          },
+          details: {
+            rfnboType: RfnboType.RFNBO_READY,
+          },
+        },
+      } as ProcessStepEntity,
+    ];
+    userServiceMock.readUserWithCompany.mockResolvedValue(givenUserDetails);
+    processSvcMock.send.mockImplementation(() => of(givenProcessSteps));
+
+    // act
+    const actualResult = await service.readProcessStepActivity(givenUserId);
+
+    // assert
+    expect(userServiceMock.readUserWithCompany).toHaveBeenCalledWith(givenUserId);
+
+    expect(processSvcMock.send).toHaveBeenCalledWith(
+      ProcessStepMessagePatterns.READ_PROCESS_STEP_ACTIVITY,
+      givenCompanyId,
+    );
+
+    expect(actualResult).toEqual(
+      givenProcessSteps.map((processStep) => ProcessStepActivityDto.fromEntity(processStep, givenCompanyId)),
+    );
   });
 });

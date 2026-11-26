@@ -63,6 +63,7 @@ export const API = {
   },
   PROCESS_STEPS: {
     BASE: PROCESS_STEPS_ENDPOINT,
+    ACTIVITY: PROCESS_STEPS_ENDPOINT + 'activity',
     DETAILS: (id: string) => `${PROCESS_STEPS_ENDPOINT}${id}`,
   },
   PRODUCTION: {
