@@ -69,6 +69,7 @@ describe('ProcessStepService', () => {
     findProcessStep: jest.fn(),
     findProcessSteps: jest.fn(),
     findProcessStepsByPredecessorTypesAndOwner: jest.fn(),
+    findHydrogenProductionsByUnitOwner: jest.fn(),
     findAllProcessStepsFromStorageUnit: jest.fn(),
     findProcessStepsByTypesAndActiveAndOwner: jest.fn(),
     readAllProcessStepsFromUnits: jest.fn(),
@@ -660,33 +661,31 @@ describe('ProcessStepService', () => {
 
     it('should return the requested page of process steps with pagination metadata when called', async () => {
       // arrange
-      const givenProcesses = [
-        ProcessStepEntityFixture.createHydrogenBottling({ id: 'process-step-1' }),
-        ProcessStepEntityFixture.createHydrogenProduction({ id: 'process-step-2' }),
-        ProcessStepEntityFixture.createPowerProduction({ id: 'process-step-3' }),
-      ];
       const givenPayload = new ReadPaginatedProcessStepsByPredecessorTypesAndOwnerPayload(
-        [ProcessType.HYDROGEN_PRODUCTION],
+        [ProcessType.POWER_PRODUCTION],
         'company-1',
-        new ProductionDataFilter(2, 1, 'Hydrogen Production Unit 1', new Date('2026-01-01T00:00:00Z')),
+        new ProductionDataFilter(1, 5),
       );
 
-      processStepRepositoryMock.findProcessStepsByPredecessorTypesAndOwner.mockResolvedValue(givenProcesses);
+      const givenProcessSteps = [
+        ProcessStepEntityFixture.createHydrogenProduction({ id: 'process-step-1' }),
+        ProcessStepEntityFixture.createHydrogenProduction({ id: 'process-step-2' }),
+      ];
+
+      processStepRepositoryMock.findHydrogenProductionsByUnitOwner.mockResolvedValue(givenProcessSteps);
 
       // act
       const actualResult = await service.readPaginatedProductions(givenPayload);
 
       // assert
-      expect(processStepRepositoryMock.findProcessStepsByPredecessorTypesAndOwner).toHaveBeenCalledWith(
-        givenPayload.predecessorProcessTypes,
+      expect(processStepRepositoryMock.findHydrogenProductionsByUnitOwner).toHaveBeenCalledWith(
         givenPayload.ownerId,
         givenPayload.filter.unitName,
-        new Date(givenPayload.filter.month),
+        givenPayload.filter.month ? new Date(givenPayload.filter.month) : givenPayload.filter.month,
       );
-      expect(actualResult.processSteps).toEqual([givenProcesses[1]]);
-      expect(actualResult.currentPage).toBe(2);
-      expect(actualResult.pageSize).toBe(1);
-      expect(actualResult.totalAmountOfItems).toBe(3);
+
+      expect(actualResult.processSteps).toEqual(givenProcessSteps);
+      expect(actualResult.totalAmountOfItems).toBe(2);
     });
   });
 
