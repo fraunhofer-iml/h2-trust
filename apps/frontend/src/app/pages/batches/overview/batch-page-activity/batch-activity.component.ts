@@ -20,14 +20,14 @@ import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
 import { injectQuery } from '@tanstack/angular-query-experimental';
-import { ErrorCardComponent } from 'apps/frontend/src/app/layout/error-card/error-card.component';
-import { processStepActivityQueryOptions } from 'apps/frontend/src/app/shared/queries/batch.query';
 import { ProcessStepActivityDto } from '@h2-trust/contracts/dtos';
 import { MeasurementUnit } from '@h2-trust/domain';
 import { RfnboChipComponent } from '../../../../layout/chips/rfnbo-chip.component';
+import { ErrorCardComponent } from '../../../../layout/error-card/error-card.component';
 import { H2TrustRouterLinks } from '../../../../shared/constants/router-links';
 import { EnumPipe } from '../../../../shared/pipes/enum.pipe';
 import { UnitPipe } from '../../../../shared/pipes/unit.pipe';
+import { processStepActivityQueryOptions } from '../../../../shared/queries/batch.query';
 import { BatchService } from '../../../../shared/services/batch/batch.service';
 
 interface ActivityFilter {
