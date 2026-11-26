@@ -20,10 +20,12 @@ import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
 import { injectQuery } from '@tanstack/angular-query-experimental';
+import { ErrorCardComponent } from 'apps/frontend/src/app/layout/error-card/error-card.component';
+import { processStepActivityQueryOptions } from 'apps/frontend/src/app/shared/queries/batch.query';
+import { ProcessStepActivityDto } from '@h2-trust/contracts/dtos';
 import { MeasurementUnit } from '@h2-trust/domain';
 import { RfnboChipComponent } from '../../../../layout/chips/rfnbo-chip.component';
 import { H2TrustRouterLinks } from '../../../../shared/constants/router-links';
-import { ProcessStepActivity } from '../../../../shared/model/process-step-activity.model';
 import { EnumPipe } from '../../../../shared/pipes/enum.pipe';
 import { UnitPipe } from '../../../../shared/pipes/unit.pipe';
 import { BatchService } from '../../../../shared/services/batch/batch.service';
@@ -50,6 +52,7 @@ interface ActivityFilter {
     UnitPipe,
     EnumPipe,
     RfnboChipComponent,
+    ErrorCardComponent,
   ],
   providers: [provideNativeDateAdapter()],
   templateUrl: './batch-activity.component.html',
@@ -65,12 +68,9 @@ export class BatchActivityComponent {
 
   protected readonly displayedColumns = ['id', 'amount', 'createdAt', 'processType', 'rfnboType', 'recipient', 'dpp'];
 
-  protected readonly dataSource = new MatTableDataSource<ProcessStepActivity>();
+  protected readonly dataSource = new MatTableDataSource<ProcessStepActivityDto>();
 
-  protected readonly activityQuery = injectQuery(() => ({
-    queryKey: ['process-step-activity'],
-    queryFn: () => this.batchService.getActivity(),
-  }));
+  protected readonly activityQuery = injectQuery(() => processStepActivityQueryOptions(this.batchService));
 
   protected readonly activityEffect = effect(() => {
     this.dataSource.data = this.activityQuery.data() ?? [];
@@ -78,7 +78,7 @@ export class BatchActivityComponent {
   });
 
   constructor() {
-    this.dataSource.filterPredicate = (activity: ProcessStepActivity, serializedFilter: string): boolean => {
+    this.dataSource.filterPredicate = (activity: ProcessStepActivityDto, serializedFilter: string): boolean => {
       const filter = JSON.parse(serializedFilter) as ActivityFilter;
       const activityDate = new Date(activity.createdAt);
 

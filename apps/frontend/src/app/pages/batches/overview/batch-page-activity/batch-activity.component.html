@@ -27,6 +27,8 @@
       <span class="material-symbols-outlined animate-spin">progress_activity</span>
       Loading activity history...
     </div>
+  } @else if (activityQuery.isError()) {
+    <app-error-card [error]="activityQuery.error()"></app-error-card>
   } @else {
     <table mat-table [dataSource]="dataSource">
       <ng-container matColumnDef="id">
