@@ -126,7 +126,7 @@ export class ProcessStepService {
       ),
     );
 
-    return processSteps.map((processStep) => ProcessStepActivityDto.fromEntity(processStep, userDetails.company.id));
+    return processSteps.map((processStep) => ProcessStepActivityDto.fromEntity(processStep));
   }
 
   public async readHydrogenComponentsForOwnUnits(userId: string): Promise<ComponentsOverviewDto[]> {

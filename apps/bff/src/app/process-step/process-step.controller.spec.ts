@@ -9,7 +9,6 @@
 import { META_PUBLIC } from 'nest-keycloak-connect';
 import {
   ProcessStepActivityDto,
-  ProcessStepOwnershipStatus,
   type AuthenticatedKCUser,
   type DigitalProductPassportDto,
   type ProcessStepOverviewDto,
@@ -114,8 +113,7 @@ describe('ProcessStepController', () => {
         createdAt: new Date('2026-10-14T10:00:00.000Z'),
         processType: ProcessType.HYDROGEN_STORAGE,
         rfnboType: RfnboType.RFNBO_READY,
-        ownerName: 'Hydrogen Solutions GmbH',
-        ownershipStatus: ProcessStepOwnershipStatus.OWNED,
+        ownerName: 'GreenPower GmbH',
       } as ProcessStepActivityDto,
     ];
 

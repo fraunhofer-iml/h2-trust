@@ -142,6 +142,9 @@ export class ProcessStepRepository {
         type: {
           notIn: excludedProcessTypes,
         },
+        executedBy: {
+          ownerId: companyId,
+        },
         batch: {
           ownerId: {
             not: companyId,
